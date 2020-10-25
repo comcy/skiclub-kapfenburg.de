@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "skiclub-kapfenburg"
+    }
+  },
+  "defaultProject": "skiclub-kapfenburg",
+  "cli": {
+    "analytics": false
+  }
 }
