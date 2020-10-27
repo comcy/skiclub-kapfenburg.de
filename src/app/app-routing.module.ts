@@ -1,22 +1,35 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { from } from 'rxjs';
 import { AppComponent } from './app.component';
 import { DatenschutzComponent } from './components/datenschutz/datenschutz.component';
+import { HomeComponent } from './components/home/home.component';
 import { ImpressumComponent } from './components/impressum/impressum.component';
+import {NewsComponent} from './components/news/news.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AppComponent
-  },
-  {
-    path: 'impressum',
-    component: ImpressumComponent
-  },
-  {
-    path: 'datenschutz',
-    component: DatenschutzComponent
-  },
+    component: AppComponent,
+    children: [
+      {
+        path: '',
+        component: HomeComponent
+      },
+      {
+        path: 'impressum',
+        component: ImpressumComponent
+      },
+      {
+        path: 'datenschutz',
+        component: DatenschutzComponent
+      },
+      {
+        path: 'home',
+        component: HomeComponent
+      },
+    ]
+  }
 ];
 
 @NgModule({

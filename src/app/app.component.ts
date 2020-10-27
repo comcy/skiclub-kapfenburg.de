@@ -5,7 +5,5 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'Skiclub Kapfenburg e.V.';
-  subtitle = 'Herzlich Willkomen';
+export class AppComponent{
 }

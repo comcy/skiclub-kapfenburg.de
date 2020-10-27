@@ -7,6 +7,8 @@ import { HomeComponent } from './components/home/home.component';
 import { DatenschutzComponent } from './components/datenschutz/datenschutz.component';
 import { ImpressumComponent } from './components/impressum/impressum.component';
 import { NewsComponent } from './components/news/news.component';
+import { HeaderComponent } from './components/home/header/header.component';
+import { FooterComponent } from './components/home/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +16,9 @@ import { NewsComponent } from './components/news/news.component';
     HomeComponent,
     DatenschutzComponent,
     ImpressumComponent,
-    NewsComponent
+    NewsComponent,
+    HeaderComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
