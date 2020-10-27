@@ -1,0 +1,88 @@
+@use "src/assets/styles/mixins";
+@import "src/assets/styles/variables";
+
+:host {
+    flex: 1;
+    text-align: center;
+}
+
+
+#home {
+    // background: url("/assets/img/header/1.jpeg");
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+
+#home h1 {
+    margin: 240px auto 0 auto;
+    font-size: 110px;
+}
+
+
+#home h2 {
+    margin: 0 auto 0 auto;
+    font-size: 25px;
+}
+
+
+#home img {
+    width: 32px;
+    margin-top: 150px;
+    opacity: 0.7;
+    @include mixins.transition;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+
+#skischule {
+    h4 {
+        font-size: 25px;
+    }
+    p {
+        width: 700px;
+        margin: 0 auto 0 auto;
+    }
+}
+
+
+#ausfahrten {
+    background-color: $primarySectionBgColor;
+    h4 {
+        font-size: 25px;
+    }
+    p {
+        width: 700px;
+        margin: 0 auto 0 auto;
+    }
+}
+
+
+#gymnastik {
+    h4 {
+        font-size: 25px;
+    }
+    p {
+        width: 700px;
+        margin: 0 auto 0 auto;
+    }
+}
+
+
+#image-one { 
+    background: url("/assets/img/header/2.jpg");
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+#image-two { 
+    background: url("/assets/img/header/2.jpg");
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
