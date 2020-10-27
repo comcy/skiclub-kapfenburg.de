@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -18,18 +17,25 @@ export class HomeComponent implements OnInit {
   headerImages = ["1.jpeg", "2.jpg", "3.jpg"];
   contentImages = ["01.jpeg", "02.jpeg", "03.jpeg", "04.jpeg", "05.jpg"];
 
+  headerImg = '';
+  contentImgOne = '';
+  contentImgTwo = '';
+
   constructor() { }
 
   ngOnInit(): void {
 
+    this.headerImg = this.headerImgPath + this.getHeaderImage();
+    this.contentImgOne = this.contentImgPath + this.getContentImage();
+    this.contentImgTwo = this.contentImgPath + this.getContentImage();
 
   }
 
-  getHeaderImage(): string {
+  private getHeaderImage(): string {
     return this.getRandomElement(this.headerImages);
   }
 
-  getContentImage() {
+  private getContentImage() {
     return this.getRandomElement(this.contentImages);
   }
 
