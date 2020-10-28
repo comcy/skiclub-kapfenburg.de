@@ -14,8 +14,8 @@ export class HomeComponent implements OnInit {
   headerImgPath = '/assets/img/header/';
   contentImgPath = '/assets/img/content/';
 
-  headerImages = ["1.jpeg", "2.jpg", "3.jpg"];
-  contentImages = ["01.jpeg", "02.jpeg", "03.jpeg", "04.jpeg", "05.jpg"];
+  headerImages = ["1.jpeg", "2.jpg", "3.jpg", "04.jpeg", "05.jpg", "06.jpg", "07.jpg"];
+  contentImages = ["01.jpeg", "02.jpeg", "03.jpeg", "04.jpeg", "05.jpg", "06.jpg", "07.jpg", "08.jpg", "09.jpg", "10.jpg"];
 
   headerImg = '';
   contentImgOne = '';
