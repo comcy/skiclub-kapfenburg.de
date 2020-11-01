@@ -6,6 +6,10 @@
     text-align: center;
 }
 
+.lock {
+    opacity: 0.4;
+    pointer-events:none;
+}
 
 #home {
     // background: url("/assets/img/header/1.jpeg");
@@ -14,18 +18,15 @@
     background-attachment: fixed;
 }
 
-
 #home h1 {
     margin: 240px auto 0 auto;
     font-size: 110px;
 }
 
-
 #home h2 {
     margin: 0 auto 0 auto;
     font-size: 25px;
 }
-
 
 #home img {
     width: 32px;
@@ -38,7 +39,6 @@
     }
 }
 
-
 #skischule {
     h4 {
         font-size: 25px;
@@ -48,7 +48,6 @@
         margin: 0 auto 0 auto;
     }
 }
-
 
 #ausfahrten {
     background-color: $primarySectionBgColor;
@@ -61,7 +60,6 @@
     }
 }
 
-
 #gymnastik {
     h4 {
         font-size: 25px;
@@ -72,17 +70,76 @@
     }
 }
 
-
-#image-one { 
+#image-one {
     background: url("/assets/img/header/2.jpg");
     background-position: center center;
     background-size: cover;
     background-attachment: fixed;
 }
 
-#image-two { 
+#image-two {
     background: url("/assets/img/header/2.jpg");
     background-position: center center;
     background-size: cover;
     background-attachment: fixed;
+}
+
+#news-modal {
+    padding: 40px;
+    margin: 90px 90px 90px 90px;
+    background-color: #fff;
+    height: 75%;
+    width: 85%;
+    // height: auto;
+    // width: auto;
+    z-index: 1000;
+    position: absolute;
+    box-shadow: 0 9px 20px rgba($color: #000000, $alpha: 0.2);
+    border-radius: 20px;
+    // opacity: .85;
+}
+
+#news-content {
+    height: 100%;
+}
+
+#news-logo {
+    margin: 10px 0 0 10px;
+    float: left;
+}
+
+#news-logo img {
+    align-content: center;
+    width: 600px !important;
+}
+
+#news-text {
+    margin: 45px 45px 0 0;
+    padding-bottom: 180px;
+
+    &p {
+        margin-bottom: 20px;
+    }
+}
+
+#news-text ul li {
+    margin-top: 12px;
+}
+
+#news-close {
+    bottom: 0;
+}
+
+#news-close button {
+    background-color: $footerBgColor;
+    color: $footerTextColor;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+        opacity: .8;
+    }
+
+    @include mixins.transition;
 }
