@@ -1,6 +1,6 @@
 # SkiclubKapfenburg
 
-[![Build Status](https://comcy.visualstudio.com/SCK/_apis/build/status/comcy.skiclub-kapfenburg.de?branchName=master)](https://comcy.visualstudio.com/SCK/_build/latest?definitionId=4?branchName=master)
+[![Build Status](https://comcy.visualstudio.com/SCK/_apis/build/status/comcy.skiclub-kapfenburg.de?branchName=master)](https://comcy.visualstudio.com/SCK/_build/latest?definitionId=4&branchName=master)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
 
