@@ -27,7 +27,7 @@ steps:
     serverUrl: '$(FTP_SERVER)'
     username: '$(FTP_USER)'
     password: '$(FTP_USER_PW)'
-    rootDirectory: '$(FTP_DIR_DIST)'
+    rootDirectory: '$(FTP_DIR_SRC)'
     filePatterns: '**'
     remoteDirectory: '$(FTP_DIR_DIST)'
     clean: false
