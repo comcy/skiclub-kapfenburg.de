@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+// import * as fs from 'fs-extra';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
+  newsVisible = true;
 
   title = 'Skiclub Kapfenburg e.V.';
   subtitle = 'Herzlich Willkomen';
@@ -25,6 +27,14 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
 
+    // const testFolder = '/assets/img/header/';
+
+    // var fs = require('fs-extra')
+
+    // fs.readdirSync(testFolder).forEach(file => {
+    //   console.log(file);
+    // });
+
     this.headerImg = this.headerImgPath + this.getHeaderImage();
     this.contentImgOne = this.contentImgPath + this.getContentImage();
     this.contentImgTwo = this.contentImgPath + this.getContentImage();
@@ -42,6 +52,10 @@ export class HomeComponent implements OnInit {
   private getRandomElement(elements: string[]): string {
     const random = Math.floor(Math.random() * elements.length);
     return elements[random];
+  }
+
+  closeNews() {
+    this.newsVisible = false;
   }
 
 }
