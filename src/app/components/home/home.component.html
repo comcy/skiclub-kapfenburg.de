@@ -1,5 +1,13 @@
 <div id="news-modal" *ngIf="isNewsVisible">
 
+    <div id="news-close">
+    
+        <div (click)="closeNews()">
+            <b>X</b>
+        </div>
+        <!-- <button (click)="closeNews()">Schließen</button> -->
+    </div>
+
     <div id="news-logo">
 
         <img width="130" alt="Logo" src="assets/img/logo.jpg" />
@@ -35,9 +43,6 @@
         </ul>
     </div>
 
-    <div id="news-close">
-        <button (click)="closeNews()">Schließen</button>
-    </div>
 </div>
 
 
