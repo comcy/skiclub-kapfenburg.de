@@ -20,15 +20,11 @@ export class AppComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
 
-    console.log('app component');
-
     await this.loadImages();
 
   }
 
   private async loadImages(): Promise<boolean> {
-
-    console.log('load images');
 
     const images = {
       headerImage: this.headerImgPath + this.getHeaderImage(),
@@ -36,6 +32,7 @@ export class AppComponent implements OnInit {
       secondContentImage: this.contentImgPath + this.getContentImage(),
 
     }
+    
     this.store.dispatch(new Images(images));
 
     return true;

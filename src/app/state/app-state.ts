@@ -1,11 +1,14 @@
 export interface AppStateModel {
-    images: AppImages;
-    newsVisibility: boolean;
-
+    images: AppImagesState;
+    news: NewsState
 }
 
-export interface AppImages {
+export interface AppImagesState {
     headerImage: string;
     firstContentImage: string;
     secondContentImage: string;
+}
+
+export interface NewsState {
+    visibility: boolean;
 }
