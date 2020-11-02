@@ -119,19 +119,18 @@
 }
 
 #news-close {
-    bottom: 0;
-}
+    float: right;
+    margin: 0px 10px 0px 0px;
 
-#news-close button {
-    background-color: $footerBgColor;
-    color: $footerTextColor;
-    font-size: 18px;
-    border-radius: 6px;
-    cursor: pointer;
-
-    &:hover {
-        opacity: 0.8;
+    div {
+        font-family: Arial, sans-serif;
+        font-size: 28px;
+        cursor: pointer;
+        color: $textColor;
+        &:hover {
+            color: $subtextColor;
+            opacity: 0.8;
+            @include mixins.transition;
+        }
     }
-
-    @include mixins.transition;
 }
