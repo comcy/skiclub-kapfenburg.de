@@ -1,6 +1,6 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { AppStateModel } from './app-state';
-import { Images } from './app.actions';
+import { AppStateModel, NewsState } from './app-state';
+import { Images, NewsVisibility } from './app.actions';
 import { Injectable } from '@angular/core';
 
 const defaults: AppStateModel = {
@@ -10,8 +10,9 @@ const defaults: AppStateModel = {
         firstContentImage: '',
         secondContentImage: ''
     },
-    newsVisibility: true
-
+    news: {
+        visibility: true
+    }
 };
 
 @State<AppStateModel>({
@@ -30,7 +31,7 @@ export class AppState {
 
     @Selector()
     static getNewsVisibilityStatus(state: AppStateModel) {
-        return state.newsVisibility;
+        return state.news.visibility;
     }
 
     //// Actions
@@ -42,11 +43,15 @@ export class AppState {
         patchState({ images });
     }
 
-    @Action(Images)
-    setImages(
+    @Action(NewsVisibility)
+    setNewsVisibility(
         { patchState }: StateContext<AppStateModel>,
-        { value }: boolean) {
-        patchState({ value });
+        { visibility }: NewsState) {
+        patchState({
+            news: {
+                visibility
+            }
+        });
     }
 
 }
