@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-// import * as fs from 'fs-extra';
+import { Select, Store } from '@ngxs/store';
+import { AppState } from 'src/app/state/app.state';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -8,16 +11,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
+  @Select(AppState.getImages) images$;
+
   newsVisible = true;
 
   title = 'Skiclub Kapfenburg e.V.';
   subtitle = 'Herzlich Willkomen';
-
-  headerImgPath = '/assets/img/header/';
-  contentImgPath = '/assets/img/content/';
-
-  headerImages = ["1.jpeg", "2.jpg", "3.jpg", "04.jpeg", "05.jpg", "06.jpg", "07.jpg"];
-  contentImages = ["01.jpeg", "02.jpeg", "03.jpeg", "04.jpeg", "05.jpg", "06.jpg", "07.jpg", "08.jpg", "09.jpg", "10.jpg"];
 
   headerImg = '';
   contentImgOne = '';
@@ -27,31 +26,17 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // const testFolder = '/assets/img/header/';
+    console.log('home component');
 
-    // var fs = require('fs-extra')
+    this.images$.subscribe((images) => {
 
-    // fs.readdirSync(testFolder).forEach(file => {
-    //   console.log(file);
-    // });
+      console.log('images ', images);
 
-    this.headerImg = this.headerImgPath + this.getHeaderImage();
-    this.contentImgOne = this.contentImgPath + this.getContentImage();
-    this.contentImgTwo = this.contentImgPath + this.getContentImage();
+      this.headerImg = images.headerImage;
+      this.contentImgOne = images.firstContentImage;
+      this.contentImgTwo = images.secondContentImage;
+    });
 
-  }
-
-  private getHeaderImage(): string {
-    return this.getRandomElement(this.headerImages);
-  }
-
-  private getContentImage() {
-    return this.getRandomElement(this.contentImages);
-  }
-
-  private getRandomElement(elements: string[]): string {
-    const random = Math.floor(Math.random() * elements.length);
-    return elements[random];
   }
 
   closeNews() {
