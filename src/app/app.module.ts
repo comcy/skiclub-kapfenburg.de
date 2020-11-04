@@ -10,6 +10,12 @@ import { NewsComponent } from './components/news/news.component';
 import { HeaderComponent } from './components/home/header/header.component';
 import { FooterComponent } from './components/home/footer/footer.component';
 
+import { AppState } from './state/app.state';
+
+import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,6 +27,9 @@ import { FooterComponent } from './components/home/footer/footer.component';
     FooterComponent
   ],
   imports: [
+    NgxsModule.forRoot([AppState]),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot(),
     BrowserModule,
     AppRoutingModule
   ],
