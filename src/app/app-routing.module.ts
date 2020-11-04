@@ -1,11 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { from } from 'rxjs';
 import { AppComponent } from './app.component';
 import { DatenschutzComponent } from './components/datenschutz/datenschutz.component';
 import { HomeComponent } from './components/home/home.component';
 import { ImpressumComponent } from './components/impressum/impressum.component';
-import {NewsComponent} from './components/news/news.component';
 
 const routes: Routes = [
   {
@@ -14,7 +12,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: HomeComponent
+        component: HomeComponent,
       },
       {
         path: 'impressum',
