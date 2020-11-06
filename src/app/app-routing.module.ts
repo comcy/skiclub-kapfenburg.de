@@ -13,6 +13,20 @@ const routes: Routes = [
       {
         path: '',
         component: HomeComponent,
+        children: [
+          {
+            path: 'skischule',
+            component: HomeComponent
+          },
+          {
+            path: 'ausfahrten',
+            component: HomeComponent
+          },
+          {
+            path: 'gymnastik',
+            component: HomeComponent
+          },
+        ]
       },
       {
         path: 'impressum',
@@ -31,7 +45,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true, scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
