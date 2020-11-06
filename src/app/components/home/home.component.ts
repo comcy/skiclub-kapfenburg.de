@@ -43,4 +43,8 @@ export class HomeComponent implements OnInit {
     this.store.dispatch(new NewsVisibility(false));
   }
 
+  routerSki() { 
+    this.router.navigateByUrl('skischule')
+  };
+
 }
