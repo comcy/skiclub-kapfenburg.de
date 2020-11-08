@@ -134,3 +134,11 @@
         }
     }
 }
+
+.download {
+    color: $donwloadLinkColor;
+    &:hover {
+        opacity: 0.8;
+        @include mixins.transition;
+    }
+}
