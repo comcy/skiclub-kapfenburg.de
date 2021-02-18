@@ -1,6 +1,8 @@
 # Skiclub Kapfenburg e.V.
 
 ![build status](https://comcy.visualstudio.com/SCK/_apis/build/status/comcy.skiclub-kapfenburg.de?branchName=master)
+
+
 This project represents the web page of "Skiclub Kapfenburg e.V." a society to promote and support winter sports.
 
 The website is based on the Angular framework and is written as standalone client application.
