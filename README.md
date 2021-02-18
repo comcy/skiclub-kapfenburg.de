@@ -1,6 +1,6 @@
 # Skiclub Kapfenburg e.V.
 
-![build status](https://comcy.visualstudio.com/SCK/_apis/build/status/comcy.skiclub-kapfenburg.de?branchName=master)
+[![Build Status](https://comcy.visualstudio.com/SCK/_apis/build/status/comcy.skiclub-kapfenburg.de?branchName=master)](https://comcy.visualstudio.com/SCK/_build/latest?definitionId=4&branchName=master)
 
 
 This project represents the web page of "Skiclub Kapfenburg e.V." a society to promote and support winter sports.
