@@ -136,9 +136,29 @@
 }
 
 .download {
-    color: $donwloadLinkColor;
+    color: $donwloadLinkColorNews;
     &:hover {
         opacity: 0.8;
         @include mixins.transition;
     }
+}
+
+.download-link {
+    
+    margin: 0 auto 0 auto;
+    background-color: $donwloadLinkColorBackground;
+    width: 320px;
+    height: 80px;
+    opacity: 0.7;
+
+    &:hover {
+        opacity: 0.9;
+        @include mixins.transition;
+    }
+    p {
+        padding: 20px 10px 10px 10px;
+        color: $textColor;
+        font-size: 32px;
+    }
+
 }
