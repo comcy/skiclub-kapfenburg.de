@@ -34,6 +34,8 @@ export class HomeComponent implements OnInit {
   title = 'Skiclub Kapfenburg e.V.';
   subtitle = 'Herzlich Willkomen';
 
+  oneDriveLink: string = 'https://1drv.ms/b/s!AlpybhuWN2nhgeNuHja8yp2t5yNwQw';
+
   headerImg = '';
   contentImgOne = '';
   contentImgTwo = '';

@@ -1,7 +1,7 @@
 <div id="news-modal" *ngIf="isNewsVisible">
 
     <div id="news-close">
-    
+
         <div (click)="closeNews()">
             <b>X</b>
         </div>
@@ -18,8 +18,9 @@
 
         <h1>Neuigkeiten</h1>
         <br>
-        <h2>Ob wir in dieser Saison die geplanten Ausfahrten durchführen können, ist bisher noch unklar. Unser geplantes Programm findet ihr hier als Download:</h2>
-        <h2> <a class="download" href="https://1drv.ms/b/s!AlpybhuWN2nhgcxEEIyRpKNfVt-LNQ?e=CRt9HS">Programm 20/21</a></h2>
+        <h2>Ob wir in dieser Saison die geplanten Ausfahrten durchführen können, ist bisher noch unklar. Unser geplantes
+            Programm findet ihr hier als Download:</h2>
+        <h2> <a class="download" href="{{ oneDriveLink }}">Programm 21/22</a></h2>
         <br>
         <p>Sobald wir nähere Informationen haben werden wir euch auf unserer Website und auf unseren Social-Media
             Kanälen darüber informieren.</p>
@@ -57,6 +58,12 @@
     <h1>{{title}}</h1>
     <hr>
     <!-- <h2>{{subtitle}}</h2> -->
+
+    <div class="download-link">
+        <a href="{{ oneDriveLink }}">
+            <p>Programm 21/22</p>
+        </a>
+    </div>
 
     <a href="#skischule" (click)="routerSki()">
         <img src="assets/img/arrow.png" alt="">
@@ -99,7 +106,8 @@
     <h3>Ausfahrten</h3>
     <hr>
 
-    <p>Unserem <a class="download" href="https://1drv.ms/b/s!AlpybhuWN2nhgcxEEIyRpKNfVt-LNQ?e=CRt9HS">Programm 20/21</a> sind alle für die Saison geplanten Ausfahrtn und aktuelle Preise zu entnehmen.</p>
+    <p>Unserem <a class="download" href="{{ oneDriveLink }}">Programm 21/22</a> sind alle für die Saison geplanten
+        Ausfahrtn und aktuelle Preise zu entnehmen.</p>
 
     <h4>Zustiegs- und Abfahrtszeiten</h4>
     <br>
