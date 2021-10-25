@@ -22,7 +22,7 @@ export class Images {
 
 export class NewsVisibility {
   static readonly type = '[App] Set News Visibility';
-  constructor(public visibility: NewsState) { }
+  constructor(public news: NewsState) { }
 }
 
 export class MobileResolution {

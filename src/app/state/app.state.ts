@@ -69,23 +69,16 @@ export class AppState {
     @Action(NewsVisibility)
     setNewsVisibility(
         { patchState }: StateContext<AppStateModel>,
-        { visibility }: NewsState) {
-        patchState({
-            news: {
-                visibility
-            }
-        });
+        { news }: NewsVisibility) {
+        patchState({ news });
+
     }
 
     @Action(MobileResolution)
     setMobileResolution(
         { patchState }: StateContext<AppStateModel>,
-        { isMobileResolution }: MobileResolutionState) {
-        patchState({
-            resolution: {
-                isMobileResolution
-            }
-        });
+        { resolution }: MobileResolution) {
+        patchState({ resolution });
     }
 
 }

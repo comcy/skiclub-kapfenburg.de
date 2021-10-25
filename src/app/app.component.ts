@@ -13,76 +13,46 @@
  *
  */
 
-import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { MobileResolution, NewsVisibility } from './state/app.actions';
+import { MobileResolution } from './state/app.actions';
 import { Router } from '@angular/router';
 import { AppState } from './state/app.state';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
-  @Select(AppState.getNewsVisibilityStatus) news$;
+  @Select(AppState.getNewsVisibilityStatus) newsVisibility$: Observable<boolean>;
+  @Select(AppState.getMobileResolutionStatus) isMobileResolution$: Observable<boolean>;
+
 
   protected toDestroy$: Subject<boolean> = new Subject<boolean>();
 
-  isNewsVisible = true;
-  oneDriveLink = 'https://1drv.ms/b/s!AlpybhuWN2nhgeNuHja8yp2t5yNwQw';
-
-  constructor(private store: Store, private router: Router) {
+  constructor(private router: Router) {
   }
 
-  async ngOnInit(): Promise<void> {
-    await this.checkResolution();
-    // await this.newsBanner();
+  ngOnInit(): void {
+    let routePath = 'desktop';
+    this.isMobileResolution$
+      //   // .pipe(takeUntil(this.toDestroy$))
+      .subscribe((mobile: boolean) => {
+        if (mobile) {
+          routePath = 'mobile';
+        }
+
+        this.router.navigate([routePath]);
+    });
   }
-  //
-  // ngOnChanges(): void {
-  //   this.news$
-  //     .pipe(takeUntil(this.toDestroy$))
-  //     .subscribe((visible) => {
-  //       console.log('### visible ch ', visible);
-  //       this.isNewsVisible = visible; // --> disabled NEWS banner
-  //     });
-  // }
 
   ngOnDestroy(): void {
     this.toDestroy$.next(true);
     this.toDestroy$.complete();
   }
 
-  private async checkResolution(): Promise<void> {
-    console.log('### WIDTH ', window.innerWidth);
-    if (window.innerWidth < 768) {
-      this.store.dispatch(new MobileResolution({isMobileResolution: true}));
-      this.router.navigate(['mobile']);
-    } else {
-      this.router.navigate(['desktop']);
-    }
-  }
-
-  // private async newsBanner(): Promise<void> {
-  //
-  //   this.news$
-  //     .pipe(takeUntil(this.toDestroy$))
-  //     .subscribe((visible) => {
-  //       console.log('### visible ', visible);
-  //       this.isNewsVisible = visible; // --> disabled NEWS banner
-  //     });
-  // }
-
-  public async closeNews(): Promise<void> {
-
-    console.log('### CLOSE ', this.isNewsVisible);
-    const news = {visibility: false};
-    this.store.dispatch(new NewsVisibility(news));
-  }
-
-
 }
+

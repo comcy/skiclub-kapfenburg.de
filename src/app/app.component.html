@@ -1,47 +1,5 @@
-<div id="news-modal" *ngIf="(news$ | async)">
-
-  <div id="news-close">
-    <div (click)="closeNews()">
-      <b>X</b>
-    </div>
-  </div>
-
-  <div id="news-logo">
-
-    <img width="130" alt="Logo" src="../../../../assets/img/logo.jpg" />
-
-  </div>
-
-  <div id="news-text">
-
-    <h1>Neuigkeiten</h1>
-    <br>
-    <h2>Ob wir in dieser Saison die geplanten Ausfahrten durchführen können, ist bisher noch unklar. Unser geplantes
-      Programm findet ihr hier als Download:</h2>
-    <h2> <a class="download" href="{{ oneDriveLink }}">Programm 21/22</a></h2>
-    <br>
-    <p>Sobald wir nähere Informationen haben werden wir euch auf unserer Website und auf unseren Social-Media
-      Kanälen darüber informieren.</p>
-    <p>Bei Fragen wendet Euch an uns.</p>
-    <p>Wir sind außerdem über die folgenden verlinkten Kanäle erreichbar:</p>
-    <br>
-    <ul>
-      <li>
-        <a href="https://www.facebook.com/SkiclubKapfenburg/">Facebook</a>
-      </li>
-      <li>
-        <a
-          href="https://www.instagram.com/skiclub_kapfenburg/?fbclid=IwAR1atVIs-9EePcpOpQrNrwYMJq0JHagNxaoRE_GVnSxnShayMTPo5lHW5KQ">Instagram</a>
-      </li>
-      <li>
-        <a
-          href="https://l.facebook.com/l.php?u=https%3A%2F%2Fapi.whatsapp.com%2Fsend%3Fphone%3D4915751765444%26fbclid%3DIwAR3Lg_pHLnf0by46-JdcnD82iXeqiEBu6sFlgPigX1MJ5qHP9Gr9zerIc1Q&h=AT0p5kQuuohReLgJw3WsP9uSdyHk8Y0suIIjEcfAaYuvqTAG2vfrNYUiENVe9LI3XxvJVLaULiYhMLCj9jMrEAuEgneQif-4c0VLqKuhx4-IUaQZM0HN8WGh6tUltpEkt5akSJDjklXMy_P3rE9B9M0cxoUZa-CkrLw">WhatsApp</a>
-      </li>
-      <li>
-        <a href="https://t.me/skiclub_kapfenburg">Telegram</a>
-      </li>
-    </ul>
-  </div>
-
+<div *ngIf="(newsVisibility$ | async) && !(isMobileResolution$ | async)">
+    <app-news-banner></app-news-banner>
 </div>
 
+<router-outlet></router-outlet>
