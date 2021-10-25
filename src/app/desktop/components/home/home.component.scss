@@ -1,0 +1,172 @@
+@use "../../../../assets/styles/mixins";
+@import "../../../../assets/styles/variables";
+
+:host {
+  flex: 1;
+  text-align: center;
+  background-color: blue;
+}
+
+.lock {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+#home {
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+#home h1 {
+  margin: 240px auto 0 auto;
+  font-size: 110px;
+}
+
+#home h2 {
+  margin: 0 auto 0 auto;
+  font-size: 25px;
+}
+
+#home img {
+  width: 32px;
+  margin-top: 150px;
+  opacity: 0.7;
+  @include mixins.transition;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+#skischule {
+  h4 {
+    font-size: 25px;
+  }
+
+  p {
+    width: 700px;
+    margin: 0 auto 0 auto;
+  }
+}
+
+#ausfahrten {
+  background-color: $primarySectionBgColor;
+
+  h4 {
+    font-size: 25px;
+  }
+
+  p {
+    width: 700px;
+    margin: 0 auto 0 auto;
+  }
+}
+
+#gymnastik {
+  h4 {
+    font-size: 25px;
+  }
+
+  p {
+    width: 700px;
+    margin: 0 auto 0 auto;
+  }
+}
+
+#image-one {
+  background: url("/assets/img/header/2.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+#image-two {
+  background: url("/assets/img/header/2.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+//#news-modal {
+//  padding: 40px;
+//  margin: 90px 90px 90px 90px;
+//  background-color: #fff;
+//  height: 75%;
+//  width: 85%;
+//  z-index: 1000;
+//  position: fixed;
+//  box-shadow: 0 9px 20px rgba($color: #000000, $alpha: 0.2);
+//  border-radius: 20px;
+//}
+//
+//#news-logo {
+//  margin: 10px 0 0 10px;
+//  float: left;
+//}
+//
+//#news-logo img {
+//  align-content: center;
+//  width: 600px !important;
+//}
+//
+//#news-text {
+//  margin: 45px 45px 0 0;
+//  padding-bottom: 180px;
+//
+//  &p {
+//    margin-bottom: 20px;
+//  }
+//}
+//
+//#news-text ul li {
+//  margin-top: 12px;
+//}
+//
+//#news-close {
+//  float: right;
+//  margin: 0px 10px 0px 0px;
+//
+//  div {
+//    font-family: Arial, sans-serif;
+//    font-size: 28px;
+//    cursor: pointer;
+//    color: $textColor;
+//
+//    &:hover {
+//      color: $subtextColor;
+//      opacity: 0.8;
+//      @include mixins.transition;
+//    }
+//  }
+//}
+
+.download {
+  color: $donwloadLinkColorNews;
+
+  &:hover {
+    opacity: 0.8;
+    @include mixins.transition;
+  }
+}
+
+.download-link {
+
+  margin: 0 auto 0 auto;
+  background-color: $donwloadLinkColorBackground;
+  width: 320px;
+  height: 80px;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 0.9;
+    @include mixins.transition;
+  }
+
+  p {
+    padding: 20px 10px 10px 10px;
+    color: $textColor;
+    font-size: 32px;
+  }
+
+}
