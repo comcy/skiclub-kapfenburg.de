@@ -24,11 +24,12 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { MobileResolution } from './state/app.actions';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NewsBannerComponent } from './modals/news-banner/news-banner.component';
 
 
 export function initializeApp(store: Store) {
   return (): void => {
-    console.log('### WIDTH ', window.innerWidth);
+    console.log('### WIDTH >>>', window.innerWidth);
     if (window.innerWidth < 768) {
       store.dispatch(new MobileResolution({ isMobileResolution: true }));
     }
@@ -37,7 +38,7 @@ export function initializeApp(store: Store) {
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, NewsBannerComponent],
   imports: [
     CommonModule,
     BrowserModule,

@@ -38,29 +38,10 @@ const appRoutes: Routes = [
 @NgModule({
   imports: [
     RouterModule,
-    RouterModule.forRoot(appRoutes, {scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'})
+    RouterModule.forRoot(appRoutes, {useHash: true, scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'})
   ],
   exports: [
     RouterModule
   ]
 })
-export class AppRoutingModule {
-
-  @Select(AppState.getMobileResolutionStatus) isMobileResolution$;
-
-  isMobileResolution = false;
-
-  public constructor(private router: Router) {
-
-    // this.isMobileResolution$.subscribe((isMobile: boolean) => {
-    //   // this.isMobileResolution = isMobile;
-    //   console.log('### CALL ', isMobile);
-    //   if (isMobile) {
-    //     console.log('### MOBILE ', isMobile);
-    //     router.resetConfig(mobileRoutes);
-    //   }
-    // });
-
-  }
-
-}
+export class AppRoutingModule { }
