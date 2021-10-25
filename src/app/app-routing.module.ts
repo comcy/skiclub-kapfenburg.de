@@ -1,51 +1,66 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AppComponent } from './app.component';
-import { DatenschutzComponent } from './components/datenschutz/datenschutz.component';
-import { HomeComponent } from './components/home/home.component';
-import { ImpressumComponent } from './components/impressum/impressum.component';
+/*
+ * Copyright:
+ *
+ * Skiclub Kapfenburg e.V.
+ * http://www.skiclub-kapfenburg.de
+ *
+ * This source code file is part of skiclub-kapfenburg.de.
+ *
+ * Copyright (c) 2019 - 2021 Christian Silfang (comcy) - All Rights Reserved.
+ *
+ *
+ * Created on 21. October 2021
+ *
+ */
 
-const routes: Routes = [
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule, Router } from '@angular/router';
+import { Select } from '@ngxs/store';
+import { AppComponent } from './app.component';
+import { AppState } from './state/app.state';
+
+const appRoutes: Routes = [
   {
     path: '',
     component: AppComponent,
-    children: [
-      {
-        path: '',
-        component: HomeComponent,
-        children: [
-          {
-            path: 'skischule',
-            component: HomeComponent
-          },
-          {
-            path: 'ausfahrten',
-            component: HomeComponent
-          },
-          {
-            path: 'gymnastik',
-            component: HomeComponent
-          },
-        ]
-      },
-      {
-        path: 'impressum',
-        component: ImpressumComponent
-      },
-      {
-        path: 'datenschutz',
-        component: DatenschutzComponent
-      },
-      {
-        path: 'home',
-        component: HomeComponent
-      },
-    ]
+    pathMatch: 'full'
+  },
+  {
+    path: 'desktop',
+    loadChildren: () => import('./desktop/desktop.module').then((m) => m.DesktopModule)
+  },
+  {
+    path: 'mobile',
+    loadChildren: () => import('./mobile/mobile.module').then((m) => m.MobileModule)
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true, scrollPositionRestoration: 'enabled' })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule,
+    RouterModule.forRoot(appRoutes, {scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'})
+  ],
+  exports: [
+    RouterModule
+  ]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+
+  @Select(AppState.getMobileResolutionStatus) isMobileResolution$;
+
+  isMobileResolution = false;
+
+  public constructor(private router: Router) {
+
+    // this.isMobileResolution$.subscribe((isMobile: boolean) => {
+    //   // this.isMobileResolution = isMobile;
+    //   console.log('### CALL ', isMobile);
+    //   if (isMobile) {
+    //     console.log('### MOBILE ', isMobile);
+    //     router.resetConfig(mobileRoutes);
+    //   }
+    // });
+
+  }
+
+}

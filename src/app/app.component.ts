@@ -1,54 +1,88 @@
-import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngxs/store';
-import { Images } from './state/app.actions';
+/*
+ * Copyright:
+ *
+ * Skiclub Kapfenburg e.V.
+ * http://www.skiclub-kapfenburg.de
+ *
+ * This source code file is part of skiclub-kapfenburg.de.
+ *
+ * Copyright (c) 2019 - 2021 Christian Silfang (comcy) - All Rights Reserved.
+ *
+ *
+ * Created on 21. October 2021
+ *
+ */
+
+import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Select, Store } from '@ngxs/store';
+import { MobileResolution, NewsVisibility } from './state/app.actions';
+import { Router } from '@angular/router';
+import { AppState } from './state/app.state';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
-  headerImgPath = '/assets/img/header/';
-  contentImgPath = '/assets/img/content/';
+  @Select(AppState.getNewsVisibilityStatus) news$;
 
-  headerImages = ["01.jpeg", "02.jpg", "03.jpg", "04.jpeg", "05.jpg", "06.jpg", "07.jpg"];
-  contentImages = ["01.jpeg", "02.jpeg", "03.jpeg", "04.jpeg", "05.jpg", "06.jpg", "07.jpg", "08.jpg", "09.jpg", "10.jpg"];
+  protected toDestroy$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private store: Store) { }
+  isNewsVisible = true;
+  oneDriveLink = 'https://1drv.ms/b/s!AlpybhuWN2nhgeNuHja8yp2t5yNwQw';
 
+  constructor(private store: Store, private router: Router) {
+  }
 
   async ngOnInit(): Promise<void> {
+    await this.checkResolution();
+    // await this.newsBanner();
+  }
+  //
+  // ngOnChanges(): void {
+  //   this.news$
+  //     .pipe(takeUntil(this.toDestroy$))
+  //     .subscribe((visible) => {
+  //       console.log('### visible ch ', visible);
+  //       this.isNewsVisible = visible; // --> disabled NEWS banner
+  //     });
+  // }
 
-    await this.loadImages();
-
+  ngOnDestroy(): void {
+    this.toDestroy$.next(true);
+    this.toDestroy$.complete();
   }
 
-  private async loadImages(): Promise<boolean> {
-
-    const images = {
-      headerImage: this.headerImgPath + this.getHeaderImage(),
-      firstContentImage: this.contentImgPath + this.getContentImage(),
-      secondContentImage: this.contentImgPath + this.getContentImage(),
-
+  private async checkResolution(): Promise<void> {
+    console.log('### WIDTH ', window.innerWidth);
+    if (window.innerWidth < 768) {
+      this.store.dispatch(new MobileResolution({isMobileResolution: true}));
+      this.router.navigate(['mobile']);
+    } else {
+      this.router.navigate(['desktop']);
     }
-    
-    this.store.dispatch(new Images(images));
-
-    return true;
   }
 
-  private getHeaderImage(): string {
-    return this.getRandomElement(this.headerImages);
+  // private async newsBanner(): Promise<void> {
+  //
+  //   this.news$
+  //     .pipe(takeUntil(this.toDestroy$))
+  //     .subscribe((visible) => {
+  //       console.log('### visible ', visible);
+  //       this.isNewsVisible = visible; // --> disabled NEWS banner
+  //     });
+  // }
+
+  public async closeNews(): Promise<void> {
+
+    console.log('### CLOSE ', this.isNewsVisible);
+    const news = {visibility: false};
+    this.store.dispatch(new NewsVisibility(news));
   }
 
-  private getContentImage() {
-    return this.getRandomElement(this.contentImages);
-  }
-
-  private getRandomElement(elements: string[]): string {
-    const random = Math.floor(Math.random() * elements.length);
-    return elements[random];
-  }
 
 }
