@@ -39,14 +39,14 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     let routePath = 'desktop';
     this.isMobileResolution$
-      //   // .pipe(takeUntil(this.toDestroy$))
+      .pipe(takeUntil(this.toDestroy$))
       .subscribe((mobile: boolean) => {
         if (mobile) {
           routePath = 'mobile';
         }
 
         this.router.navigate([routePath]);
-    });
+      });
   }
 
   ngOnDestroy(): void {
@@ -54,5 +54,9 @@ export class AppComponent implements OnInit {
     this.toDestroy$.complete();
   }
 
+}
+
+function takeUntil(toDestroy$: Subject<boolean>): import("rxjs").OperatorFunction<boolean, unknown> {
+  throw new Error('Function not implemented.');
 }
 
