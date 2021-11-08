@@ -1,0 +1,7 @@
+@use "../../../../assets/styles/mixins";
+@import "../../../../assets/styles/variables";
+
+:host {
+  flex: 1;
+  text-align: center;
+}

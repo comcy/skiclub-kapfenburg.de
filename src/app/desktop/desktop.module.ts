@@ -19,11 +19,10 @@ import { HomeComponent } from './components/home/home.component';
 import { DatenschutzComponent } from './components/datenschutz/datenschutz.component';
 import { ImpressumComponent } from './components/impressum/impressum.component';
 import { NewsComponent } from './components/news/news.component';
-import { HeaderComponent } from './components/home/header/header.component';
-import { FooterComponent } from './components/home/footer/footer.component';
 import { DesktopRoutingModule } from './desktop-routing.module';
 import { NgxsModule } from '@ngxs/store';
 import { AppState } from '../state/app.state';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -32,21 +31,18 @@ import { AppState } from '../state/app.state';
     DatenschutzComponent,
     ImpressumComponent,
     NewsComponent,
-    HeaderComponent,
-    FooterComponent,
   ],
   imports: [
     CommonModule,
     DesktopRoutingModule,
     NgxsModule.forFeature([AppState]),
+    SharedModule
   ],
   exports: [
     HomeComponent,
     DatenschutzComponent,
     ImpressumComponent,
     NewsComponent,
-    HeaderComponent,
-    FooterComponent,
   ]
 })
 export class DesktopModule { }
