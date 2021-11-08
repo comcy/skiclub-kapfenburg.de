@@ -19,6 +19,7 @@ import { MobileResolution } from './state/app.actions';
 import { Router } from '@angular/router';
 import { AppState } from './state/app.state';
 import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -53,10 +54,5 @@ export class AppComponent implements OnInit {
     this.toDestroy$.next(true);
     this.toDestroy$.complete();
   }
-
-}
-
-function takeUntil(toDestroy$: Subject<boolean>): import("rxjs").OperatorFunction<boolean, unknown> {
-  throw new Error('Function not implemented.');
 }
 
