@@ -1,21 +1,9 @@
 /*
- * Copyright:
- *
- * Skiclub Kapfenburg e.V.
- * http://www.skiclub-kapfenburg.de
- *
- * This source code file is part of skiclub-kapfenburg.de.
- *
- * Copyright (c) 2019 - 2021 Christian Silfang (comcy) - All Rights Reserved.
- *  
- *
- * Created on 21. October 2021
- *
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
  */
 
 
-
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getYear } from 'date-fns'
 
@@ -25,6 +13,8 @@ import { getYear } from 'date-fns'
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
+
+  @Input() baseRoute = '';
 
   constructor(
     private router: Router,
@@ -40,11 +30,13 @@ export class FooterComponent implements OnInit {
 
 
   routerDatenschutz() {
-    this.router.navigate(['../datenschutz'], { relativeTo: this.route })
+    console.log(' >>> BR ', this.baseRoute);
+    this.router.navigate([this.baseRoute, 'datenschutz'])
   };
 
   routerImpressum() {
-    this.router.navigate(['../impressum'], { relativeTo: this.route })
+    console.log(' >>> BR ', this.baseRoute);
+    this.router.navigate([this.baseRoute, 'impressum'])
 
   };
 

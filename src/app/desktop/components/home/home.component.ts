@@ -1,17 +1,7 @@
 /*
- * Copyright:
- *
- * Carl Zeiss Industrielle Messtechnik GmbH
- * http://www.zeiss.com/imt
- *
- * This source code file is part of <<project>>.
- *
- * Copyright (c) 2019 - 2021 Carl Zeiss Industrielle Messtechnik GmbH - All Rights Reserved.
- * ZEISS, ZEISS.com are trademarks of Carl Zeiss AG
- *
- * Created on 21. October 2021
- *
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
  */
+
 
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -30,6 +20,8 @@ export class HomeComponent implements OnInit {
   //@Select(AppState.getNewsVisibilityStatus) news$;
 
   // isNewsVisible: boolean;
+
+  baseRoute: string = 'desktop';
 
   title = 'Skiclub Kapfenburg e.V.';
   subtitle = 'Herzlich Willkomen';
