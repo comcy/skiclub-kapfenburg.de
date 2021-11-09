@@ -16,6 +16,7 @@
 
 
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { getYear } from 'date-fns'
 
 @Component({
@@ -25,13 +26,26 @@ import { getYear } from 'date-fns'
 })
 export class FooterComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
   }
 
-    getYear(): string {
-      return getYear(new Date()).toString();
-    }    
+  getYear(): string {
+    return getYear(new Date()).toString();
+  }
+
+
+  routerDatenschutz() {
+    this.router.navigate(['../datenschutz'], { relativeTo: this.route })
+  };
+
+  routerImpressum() {
+    this.router.navigate(['../impressum'], { relativeTo: this.route })
+
+  };
 
 }
