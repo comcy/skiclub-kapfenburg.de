@@ -1,17 +1,7 @@
 /*
- * Copyright:
- *
- * Skiclub Kapfenburg e.V.
- * http://www.skiclub-kapfenburg.de
- *
- * This source code file is part of skiclub-kapfenburg.de.
- *
- * Copyright (c) 2019 - 2021 Christian Silfang (comcy) - All Rights Reserved.
- *  
- *
- * Created on 08. November 2021
- *
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
  */
+
 
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
