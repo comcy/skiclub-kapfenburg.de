@@ -29,7 +29,6 @@ import { NewsBannerComponent } from './modals/news-banner/news-banner.component'
 
 export function initializeApp(store: Store) {
   return (): void => {
-    console.log('### WIDTH >>>', window.innerWidth);
     if (window.innerWidth < 768) {
       store.dispatch(new MobileResolution({ isMobileResolution: true }));
     }

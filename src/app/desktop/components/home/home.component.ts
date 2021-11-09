@@ -27,7 +27,7 @@ import { AppState } from 'src/app/state/app.state';
 export class HomeComponent implements OnInit {
 
   @Select(AppState.getImages) images$;
-  // @Select(AppState.getNewsVisibilityStatus) news$;
+  //@Select(AppState.getNewsVisibilityStatus) news$;
 
   // isNewsVisible: boolean;
 

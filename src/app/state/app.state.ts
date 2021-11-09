@@ -26,7 +26,7 @@ const defaults: AppStateModel = {
         secondContentImage: ''
     },
     news: {
-        visibility: true
+        visibility: false
     },
     resolution: {
         isMobileResolution: false
