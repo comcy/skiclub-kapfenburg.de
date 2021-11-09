@@ -3,7 +3,7 @@
  */
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
+  @Input() baseRoute = '';
 
   constructor(private router: Router) { }
 
@@ -23,15 +25,15 @@ export class HeaderComponent implements OnInit {
   };
 
   routerSki() { 
-    this.router.navigateByUrl('skischule')
+    this.router.navigateByUrl('#skischule');
   };
   
   routerFahrt() {
-    this.router.navigateByUrl('ausfahrten')
+    this.router.navigateByUrl('#ausfahrten')
    };
   
   routerGym() {
-    this.router.navigateByUrl('gymnastik')
+    this.router.navigateByUrl('#gymnastik')
    };
 
 }

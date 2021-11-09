@@ -15,6 +15,7 @@ import { MobileResolution } from './state/app.actions';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NewsBannerComponent } from './modals/news-banner/news-banner.component';
+import { SharedModule } from './shared/shared.module';
 
 
 export function initializeApp(store: Store) {
@@ -34,7 +35,8 @@ export function initializeApp(store: Store) {
     NgxsModule.forRoot([AppState]),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    SharedModule
   ],
   providers: [
     {

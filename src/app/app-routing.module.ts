@@ -4,16 +4,24 @@
 
 
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, Router } from '@angular/router';
-import { Select } from '@ngxs/store';
+import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { AppState } from './state/app.state';
+import { DatenschutzComponent } from './components/datenschutz/datenschutz.component';
+import { ImpressumComponent } from './components/impressum/impressum.component';
 
 const appRoutes: Routes = [
   {
     path: '',
     component: AppComponent,
     pathMatch: 'full'
+  },
+  { 
+    path: 'impressum',
+    component: ImpressumComponent
+  },
+  {
+    path: 'datenschutz',
+    component: DatenschutzComponent
   },
   {
     path: 'desktop',
