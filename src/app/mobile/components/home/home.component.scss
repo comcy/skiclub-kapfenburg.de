@@ -3,4 +3,11 @@
 
 :host {
   flex: 1;
+  text-align: start;
+}
+
+#mobile-content {
+  margin: 80px 0 80px 10px;
+  overflow-wrap: break-word;
+
 }

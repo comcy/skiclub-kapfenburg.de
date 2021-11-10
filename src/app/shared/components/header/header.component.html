@@ -9,13 +9,9 @@
 
     </div>
 
-    <nav id="main-nav">
+    <nav id="main-nav" *ngIf="baseRoute === 'desktop'">
         <ul>
-            <li><a href="#" (click)="routerHome()">Skiclub Kapfenburg e.V.</a></li>
-            <li><a href="#skischule" (click)="routerSki()">Skischule</a></li>
-            <li><a href="#ausfahrten" (click)="routerFahrt()">Ausfahrten</a></li>
-            <li><a href="#gymnastik" (click)="routerGym()">Gymnastik</a></li>
+            <li *ngFor="let n of navItems"><a href="{{n.route}}" (click)="routeTo(n.route)">{{n.name}}</a></li>
         </ul>
     </nav>
-
 </header>
