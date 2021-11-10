@@ -2,11 +2,11 @@
  * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
  */
 
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
-import { Images, MobileResolution, NewsVisibility } from 'src/app/state/app.actions';
+import { DESKTOP_BASE_ROUTE, SKISCHULE_ROUTE_SEGMENT } from 'src/app/route-segments';
+import { Images } from 'src/app/state/app.actions';
 import { AppState } from 'src/app/state/app.state';
 
 @Component({
@@ -17,11 +17,8 @@ import { AppState } from 'src/app/state/app.state';
 export class HomeComponent implements OnInit {
 
   @Select(AppState.getImages) images$;
-  //@Select(AppState.getNewsVisibilityStatus) news$;
 
-  // isNewsVisible: boolean;
-
-  baseRoute: string = 'desktop';
+  hrefSkischuleRouteSegment = SKISCHULE_ROUTE_SEGMENT; 
 
   title = 'Skiclub Kapfenburg e.V.';
   subtitle = 'Herzlich Willkomen';
@@ -31,7 +28,6 @@ export class HomeComponent implements OnInit {
 
   headerImages = ['01.jpeg', '02.jpg', '03.jpg', '04.jpeg', '05.jpg', '06.jpg', '07.jpg'];
   contentImages = ['01.jpeg', '02.jpeg', '03.jpeg', '04.jpeg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg', '10.jpg'];
-
 
   oneDriveLink = 'https://1drv.ms/b/s!AlpybhuWN2nhgeNuHja8yp2t5yNwQw';
 
