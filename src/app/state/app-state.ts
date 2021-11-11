@@ -1,6 +1,12 @@
+/*
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+ */
+
+
 export interface AppStateModel {
     images: AppImagesState;
-    news: NewsState
+    news: NewsState,
+    resolution: MobileResolutionState
 }
 
 export interface AppImagesState {
@@ -11,4 +17,8 @@ export interface AppImagesState {
 
 export interface NewsState {
     visibility: boolean;
+}
+
+export interface MobileResolutionState {
+    isMobileResolution: boolean;
 }

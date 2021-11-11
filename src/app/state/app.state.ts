@@ -1,6 +1,11 @@
+/*
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+ */
+
+
 import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { AppStateModel, NewsState } from './app-state';
-import { Images, NewsVisibility } from './app.actions';
+import { AppStateModel, MobileResolutionState, NewsState } from './app-state';
+import { Images, MobileResolution, NewsVisibility } from './app.actions';
 import { Injectable } from '@angular/core';
 
 const defaults: AppStateModel = {
@@ -11,7 +16,10 @@ const defaults: AppStateModel = {
         secondContentImage: ''
     },
     news: {
-        visibility: true
+        visibility: false
+    },
+    resolution: {
+        isMobileResolution: false
     }
 };
 
@@ -34,6 +42,11 @@ export class AppState {
         return state.news.visibility;
     }
 
+    @Selector()
+    static getMobileResolutionStatus(state: AppStateModel) {
+        return state.resolution.isMobileResolution;
+    }
+
     //// Actions
 
     @Action(Images)
@@ -46,12 +59,16 @@ export class AppState {
     @Action(NewsVisibility)
     setNewsVisibility(
         { patchState }: StateContext<AppStateModel>,
-        { visibility }: NewsState) {
-        patchState({
-            news: {
-                visibility
-            }
-        });
+        { news }: NewsVisibility) {
+        patchState({ news });
+
+    }
+
+    @Action(MobileResolution)
+    setMobileResolution(
+        { patchState }: StateContext<AppStateModel>,
+        { resolution }: MobileResolution) {
+        patchState({ resolution });
     }
 
 }
