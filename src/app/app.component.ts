@@ -1,6 +1,16 @@
+/*
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+ */
+
+
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngxs/store';
-import { Images } from './state/app.actions';
+import { Select } from '@ngxs/store';
+import { Router } from '@angular/router';
+import { AppState } from './state/app.state';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { NavigationItem } from './shared/components/header/navigation-item';
+import { AUSFAHRTEN_ROUTE_SEGMENT, DESKTOP_BASE_ROUTE, GYMNASTIK_ROUTE_SEGMENT, HOME_ROUTE_SEGMENT, MOBILE_BASE_ROUTE, SKISCHULE_ROUTE_SEGMENT } from './route-segments';
 
 @Component({
   selector: 'app-root',
@@ -9,46 +19,43 @@ import { Images } from './state/app.actions';
 })
 export class AppComponent implements OnInit {
 
-  headerImgPath = '/assets/img/header/';
-  contentImgPath = '/assets/img/content/';
+  @Select(AppState.getNewsVisibilityStatus) newsVisibility$: Observable<boolean>;
+  @Select(AppState.getMobileResolutionStatus) isMobileResolution$: Observable<boolean>;
 
-  headerImages = ["01.jpeg", "02.jpg", "03.jpg", "04.jpeg", "05.jpg", "06.jpg", "07.jpg"];
-  contentImages = ["01.jpeg", "02.jpeg", "03.jpeg", "04.jpeg", "05.jpg", "06.jpg", "07.jpg", "08.jpg", "09.jpg", "10.jpg"];
+  baseRoute: string = '';
+  navItems: NavigationItem[] = [];
 
-  constructor(private store: Store) { }
+  private desktopNavItems: NavigationItem[] = [
+    { name: 'Skischule', route: SKISCHULE_ROUTE_SEGMENT },
+    { name: 'Ausfahrten', route: AUSFAHRTEN_ROUTE_SEGMENT },
+    { name: 'Gymnastik', route: GYMNASTIK_ROUTE_SEGMENT }
+  ];
 
+  private mobileNavItems: NavigationItem[] = [];
 
-  async ngOnInit(): Promise<void> {
+  protected toDestroy$: Subject<boolean> = new Subject<boolean>();
 
-    await this.loadImages();
+  constructor(private router: Router) { }
 
+  ngOnInit(): void {
+    let routePath = DESKTOP_BASE_ROUTE;
+    this.navItems = this.desktopNavItems;
+    this.baseRoute = DESKTOP_BASE_ROUTE
+    this.isMobileResolution$
+      .pipe(takeUntil(this.toDestroy$))
+      .subscribe((mobile: boolean) => {
+        if (mobile) {
+          routePath = MOBILE_BASE_ROUTE;
+          this.navItems = this.mobileNavItems;
+          this.baseRoute = MOBILE_BASE_ROUTE;
+        }
+        this.router.navigate([routePath]);
+      });
   }
 
-  private async loadImages(): Promise<boolean> {
-
-    const images = {
-      headerImage: this.headerImgPath + this.getHeaderImage(),
-      firstContentImage: this.contentImgPath + this.getContentImage(),
-      secondContentImage: this.contentImgPath + this.getContentImage(),
-
-    }
-    
-    this.store.dispatch(new Images(images));
-
-    return true;
+  ngOnDestroy(): void {
+    this.toDestroy$.next(true);
+    this.toDestroy$.complete();
   }
-
-  private getHeaderImage(): string {
-    return this.getRandomElement(this.headerImages);
-  }
-
-  private getContentImage() {
-    return this.getRandomElement(this.contentImages);
-  }
-
-  private getRandomElement(elements: string[]): string {
-    const random = Math.floor(Math.random() * elements.length);
-    return elements[random];
-  }
-
 }
+

@@ -1,51 +1,46 @@
+/*
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+ */
+
+
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { DatenschutzComponent } from './components/datenschutz/datenschutz.component';
-import { HomeComponent } from './components/home/home.component';
 import { ImpressumComponent } from './components/impressum/impressum.component';
+import { DESKTOP_BASE_ROUTE, MOBILE_BASE_ROUTE } from './route-segments';
 
-const routes: Routes = [
+const appRoutes: Routes = [
   {
     path: '',
     component: AppComponent,
-    children: [
-      {
-        path: '',
-        component: HomeComponent,
-        children: [
-          {
-            path: 'skischule',
-            component: HomeComponent
-          },
-          {
-            path: 'ausfahrten',
-            component: HomeComponent
-          },
-          {
-            path: 'gymnastik',
-            component: HomeComponent
-          },
-        ]
-      },
-      {
-        path: 'impressum',
-        component: ImpressumComponent
-      },
-      {
-        path: 'datenschutz',
-        component: DatenschutzComponent
-      },
-      {
-        path: 'home',
-        component: HomeComponent
-      },
-    ]
+    pathMatch: 'full'
+  },
+  { 
+    path: 'impressum',
+    component: ImpressumComponent
+  },
+  {
+    path: 'datenschutz',
+    component: DatenschutzComponent
+  },
+  {
+    path: DESKTOP_BASE_ROUTE,
+    loadChildren: () => import('./desktop/desktop.module').then((m) => m.DesktopModule)
+  },
+  {
+    path: MOBILE_BASE_ROUTE,
+    loadChildren: () => import('./mobile/mobile.module').then((m) => m.MobileModule)
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true, scrollPositionRestoration: 'enabled' })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule,
+    RouterModule.forRoot(appRoutes, {useHash: true, scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'})
+  ],
+  exports: [
+    RouterModule
+  ]
 })
 export class AppRoutingModule { }

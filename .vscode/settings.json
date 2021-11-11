@@ -1,23 +1,11 @@
 {
     "psi-header.variables": [
-		[
-            "project", "skiclub-kapfenburg.de"
+        [
+            "copyright", "Copyright (c) <<filecreated('YYYY')>> Christian Silfang (comcy) - All Rights Reserved.",
         ],
         [
-            
-            "owner", "Skiclub Kapfenburg e.V.",
-        ],
-        [
-
-            "website", "http://www.skiclub-kapfenburg.de",
-        ],
-        [
-
-            "copyright", "Copyright (c) <<yeartoyear(2019,now)>> Christian Silfang (comcy) - All Rights Reserved.",
-        ],
-        [
-
-            "copyrightAdditional", " "
+            "copyrightAdditional",
+            " "
         ]
 	],
 }
