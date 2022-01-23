@@ -5,12 +5,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
-import { Card } from 'src/app/shared/components/card/card.interface';
 import {
-  Images,
-  MobileResolution,
-  NewsVisibility,
-} from 'src/app/state/app.actions';
+  DESKTOP_BASE_ROUTE,
+  SKISCHULE_ROUTE_SEGMENT,
+} from 'src/app/route-segments';
+import { Images } from 'src/app/state/app.actions';
 import { AppState } from 'src/app/state/app.state';
 
 @Component({
@@ -20,11 +19,8 @@ import { AppState } from 'src/app/state/app.state';
 })
 export class HomeComponent implements OnInit {
   @Select(AppState.getImages) images$;
-  //@Select(AppState.getNewsVisibilityStatus) news$;
 
-  // isNewsVisible: boolean;
-
-  baseRoute: string = 'desktop';
+  hrefSkischuleRouteSegment = SKISCHULE_ROUTE_SEGMENT;
 
   title = 'Skiclub Kapfenburg e.V.';
   subtitle = 'Herzlich Willkomen';

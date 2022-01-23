@@ -30,12 +30,10 @@ export class FooterComponent implements OnInit {
 
 
   routerDatenschutz() {
-    console.log(' >>> BR ', this.baseRoute);
     this.router.navigate([this.baseRoute, 'datenschutz'])
   };
 
   routerImpressum() {
-    console.log(' >>> BR ', this.baseRoute);
     this.router.navigate([this.baseRoute, 'impressum'])
 
   };
