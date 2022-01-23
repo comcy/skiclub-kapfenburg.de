@@ -9,6 +9,7 @@ import {
   DESKTOP_BASE_ROUTE,
   SKISCHULE_ROUTE_SEGMENT,
 } from 'src/app/route-segments';
+import { Card } from 'src/app/shared/components/card/card.interface';
 import { Images } from 'src/app/state/app.actions';
 import { AppState } from 'src/app/state/app.state';
 

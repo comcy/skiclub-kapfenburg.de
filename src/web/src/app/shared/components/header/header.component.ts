@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavigationItem } from './navigation-item';
+import { NavigationItem } from './header.interfaces';
 
 @Component({
   selector: 'app-header',
