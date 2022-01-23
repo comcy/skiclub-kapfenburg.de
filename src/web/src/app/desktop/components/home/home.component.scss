@@ -1,0 +1,139 @@
+@use "../../../../assets/styles/mixins";
+@import "../../../../assets/styles/variables";
+
+:host {
+  flex: 1;
+  text-align: center;
+}
+
+.lock {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+#home {
+  h1 {
+    margin: 240px auto 0 auto;
+    font-size: 110px;
+  }
+
+  h2 {
+    margin: 0 auto 0 auto;
+    font-size: 25px;
+  }
+
+  img {
+    width: 32px;
+    margin-top: 150px;
+    opacity: 0.7;
+    @include mixins.transition;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+#news {
+  padding-top: 4%;
+
+  .news-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 33em);
+    grid-auto-rows: auto;
+    grid-gap: 1.5rem;
+    align-items: stretch;
+    padding: 32px 0 32px 32px;
+  }
+
+  // .card {
+  //   display: block;
+  //   border: 2px solid #e7e7e7;
+  //   border-radius: 4px;
+  //   padding: 0.5rem;
+  //   height: 300px;
+  // }
+
+  // .card:hover {
+  //   box-shadow: 5px 2px 2px rgb(180, 180, 180);
+  //   background-color: #f7f7f7;
+  // }
+
+  h4 {
+    font-size: 25px;
+  }
+
+  p {
+    width: 600px;
+    margin: 0 auto 0 auto;
+  }
+}
+
+#skischule {
+  h4 {
+    font-size: 25px;
+  }
+
+  p {
+    width: 600px;
+    margin: 0 auto 0 auto;
+  }
+}
+
+#ausfahrten {
+  background-color: $primarySectionBgColor;
+
+  h4 {
+    font-size: 25px;
+  }
+
+  p {
+    width: 600px;
+    margin: 0 auto 0 auto;
+  }
+}
+
+#gymnastik {
+  h4 {
+    font-size: 25px;
+  }
+
+  p {
+    width: 600px;
+    margin: 0 auto 0 auto;
+  }
+}
+
+.fixed-image-bg {
+  background-position: center center !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+
+.download {
+  color: $donwloadLinkColorNews;
+
+  &:hover {
+    opacity: 0.8;
+    @include mixins.transition;
+  }
+}
+
+.download-link {
+  margin: 0 auto 0 auto;
+  background-color: $donwloadLinkColorBackground;
+  width: 320px;
+  height: 80px;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 0.9;
+    @include mixins.transition;
+  }
+
+  p {
+    padding: 20px 10px 10px 10px;
+    color: $textColor;
+    font-size: 32px;
+  }
+}
