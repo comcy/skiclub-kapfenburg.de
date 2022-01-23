@@ -8,15 +8,16 @@ import { Router } from '@angular/router';
 import { AppState } from './state/app.state';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NavigationItem } from './shared/components/header/navigation-item';
 import {
   AUSFAHRTEN_ROUTE_SEGMENT,
   DESKTOP_BASE_ROUTE,
   GYMNASTIK_ROUTE_SEGMENT,
   HOME_ROUTE_SEGMENT,
   MOBILE_BASE_ROUTE,
+  NEWS_ROUTE_SEGMENT,
   SKISCHULE_ROUTE_SEGMENT,
 } from './route-segments';
+import { NavigationItem } from './shared/components/header/header.interfaces';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +34,8 @@ export class AppComponent implements OnInit {
   navItems: NavigationItem[] = [];
 
   private desktopNavItems: NavigationItem[] = [
+    { name: 'Skiclub Kapfenburg e.V.', route: HOME_ROUTE_SEGMENT },
+    { name: 'News', route: NEWS_ROUTE_SEGMENT },
     { name: 'Skischule', route: SKISCHULE_ROUTE_SEGMENT },
     { name: 'Ausfahrten', route: AUSFAHRTEN_ROUTE_SEGMENT },
     { name: 'Gymnastik', route: GYMNASTIK_ROUTE_SEGMENT },
