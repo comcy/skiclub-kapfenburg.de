@@ -3,4 +3,30 @@
 
 :host {
   flex: 1;
+  text-align: start;
+}
+
+#mobile-content {
+  margin: 80px 0 80px 10px;
+  overflow-wrap: break-word;
+  max-height: 100%;
+}
+
+.download-link {
+  margin: 0 auto 0 auto;
+  background-color: $donwloadLinkColorBackgroundAlt;
+  width: 320px;
+  height: 80px;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 0.9;
+    @include mixins.transition;
+  }
+
+  p {
+    padding: 20px 10px 10px 10px;
+    color: $textColor;
+    font-size: 32px;
+  }
 }

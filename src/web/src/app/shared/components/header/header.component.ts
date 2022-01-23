@@ -4,6 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavigationItem } from './navigation-item';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,7 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   @Input() baseRoute = '';
+  @Input() navItems: NavigationItem[] = [];
 
   constructor(private router: Router) {}
 
@@ -21,19 +23,7 @@ export class HeaderComponent implements OnInit {
     this.router.navigateByUrl('');
   }
 
-  routerNews() {
-    this.router.navigateByUrl('#news');
-  }
-
-  routerSki() {
-    this.router.navigateByUrl('#skischule');
-  }
-
-  routerFahrt() {
-    this.router.navigateByUrl('#ausfahrten');
-  }
-
-  routerGym() {
-    this.router.navigateByUrl('#gymnastik');
+  routeTo(routeLink: string) {
+    this.router.navigateByUrl(routeLink);
   }
 }
