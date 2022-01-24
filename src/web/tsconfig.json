@@ -11,19 +11,11 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "lib": ["es2018", "dom"],
     "paths": {
-      "shared": [
-        "dist/shared/shared",
-        "dist/shared"
-      ],
-      "shared-lib": [
-        "dist/shared-lib/shared-lib",
-        "dist/shared-lib"
-      ]
+      "shared": ["dist/shared/shared", "dist/shared"],
+      "@components/*": ["projects/shared-lib/src/lib/components"],
+      "@shared-lib/*": ["projects/shared-lib/src/lib/"]
     }
   }
 }
