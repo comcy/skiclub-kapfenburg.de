@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Card } from './card.interface';
+import { Component, Input } from '@angular/core';
+import { ImageCard, NewsCard } from '@components/*';
 
 @Component({
   selector: 'shared-lib-card',
@@ -7,7 +7,7 @@ import { Card } from './card.interface';
   styleUrls: ['./card.component.scss'],
 })
 export class CardComponent {
-  @Input() card: Card = null;
+  @Input() card: NewsCard | ImageCard = null;
 
   constructor() {
     console.log('>>> ', this.card);
