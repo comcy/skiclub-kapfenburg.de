@@ -1,6 +1,14 @@
-export interface Card {
+interface Card {
+  active: boolean;
+}
+
+export interface NewsCard extends Card {
   title: string;
   text: string;
-  image: string;
-  active: boolean;
+  date: Date;
+  image?: string;
+}
+
+export interface ImageCard extends Card {
+  image?: string;
 }

@@ -1,7 +1,6 @@
 /*
- * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.
  */
-
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -11,25 +10,16 @@ import { ImpressumComponent } from '../components/impressum/impressum.component'
 import { DesktopRoutingModule } from './desktop-routing.module';
 import { NgxsModule } from '@ngxs/store';
 import { AppState } from '../state/app.state';
-import { SharedModule } from '../shared/shared.module';
-
+import { SharedLibModule } from 'projects/shared-lib/src/lib/shared-lib.module';
 
 @NgModule({
-  declarations: [
-    HomeComponent,
-    DatenschutzComponent,
-    ImpressumComponent
-  ],
+  declarations: [HomeComponent, DatenschutzComponent, ImpressumComponent],
   imports: [
     CommonModule,
     DesktopRoutingModule,
     NgxsModule.forFeature([AppState]),
-    SharedModule
+    SharedLibModule,
   ],
-  exports: [
-    HomeComponent,
-    DatenschutzComponent,
-    ImpressumComponent
-  ]
+  exports: [HomeComponent, DatenschutzComponent, ImpressumComponent],
 })
-export class DesktopModule { }
+export class DesktopModule {}
