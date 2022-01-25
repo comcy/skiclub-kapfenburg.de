@@ -11,6 +11,6 @@ import { CardComponent } from './components/card/card.component';
 @NgModule({
   declarations: [HeaderComponent, FooterComponent, CardComponent],
   imports: [CommonModule],
-  exports: [HeaderComponent, FooterComponent],
+  exports: [HeaderComponent, FooterComponent, CardComponent],
 })
 export class SharedModule {}
