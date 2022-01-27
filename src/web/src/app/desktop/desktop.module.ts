@@ -10,7 +10,7 @@ import { ImpressumComponent } from '../components/impressum/impressum.component'
 import { DesktopRoutingModule } from './desktop-routing.module';
 import { NgxsModule } from '@ngxs/store';
 import { AppState } from '../state/app.state';
-import { SharedLibModule } from 'projects/shared-lib/src/lib/shared-lib.module';
+import { SharedLibModule } from '@shared-lib/*';
 
 @NgModule({
   declarations: [HomeComponent, DatenschutzComponent, ImpressumComponent],

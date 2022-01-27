@@ -20,58 +20,10 @@
 </section>
 
 <section id="news" class="fixed-image-bg">
-  <div class="news-cards" *ngFor="let card of newsCards">
-    <shared-lib-card [card]="card"> </shared-lib-card>
-
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
-    <div class="card">
-      <h4><b>John Doe</b></h4>
-      <p>Architect & Engineer</p>
-    </div>
+  <div class="news-cards">
+    <ng-container *ngFor="let card of cards">
+      <shared-lib-card [card]="card" *ngIf="card.active"> </shared-lib-card>
+    </ng-container>
   </div>
 </section>
 

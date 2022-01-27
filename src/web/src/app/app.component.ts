@@ -17,7 +17,7 @@ import {
   NEWS_ROUTE_SEGMENT,
   SKISCHULE_ROUTE_SEGMENT,
 } from './route-segments';
-import { NavigationItem } from './shared/components/header/header.interfaces';
+import { NavigationItem } from '@shared-lib/*';
 
 @Component({
   selector: 'app-root',
@@ -34,8 +34,8 @@ export class AppComponent implements OnInit {
   navItems: NavigationItem[] = [];
 
   private desktopNavItems: NavigationItem[] = [
-    { name: 'Skiclub Kapfenburg e.V.', route: HOME_ROUTE_SEGMENT },
-    { name: 'News', route: NEWS_ROUTE_SEGMENT },
+    // { name: 'Skiclub Kapfenburg e.V.', route: HOME_ROUTE_SEGMENT },
+    // { name: 'News', route: NEWS_ROUTE_SEGMENT },
     { name: 'Skischule', route: SKISCHULE_ROUTE_SEGMENT },
     { name: 'Ausfahrten', route: AUSFAHRTEN_ROUTE_SEGMENT },
     { name: 'Gymnastik', route: GYMNASTIK_ROUTE_SEGMENT },
