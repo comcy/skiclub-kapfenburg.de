@@ -1,29 +1,24 @@
 @use "../../styles/mixins";
 
-// .card {
-//     display: block;
-//     border: 2px solid #e7e7e7;
-//     border-radius: 4px;
-//     padding: 0.5rem;
-//     height: 300px;
-
-//     &:hover {
-//         opacity: 0.8;
-//         @include mixins.transition;
-//     }
-// }
-
 .card {
     display: block;
     border: 2px solid #e7e7e7;
     border-radius: 4px;
     padding: 0.5rem;
     height: 300px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    @include mixins.transition;
 
     &:hover {
         opacity: 0.8;
-        @include mixins.transition;
-        box-shadow: 5px 2px 2px rgb(180, 180, 180);
-        background-color: #f7f7f7;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     }
+
+    // img {
+    //     width: 100%;
+    // }
+}
+
+.text-container {
+    padding: 2px 16px;
 }

@@ -4,12 +4,12 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Card, CardType } from '@shared-lib/*';
 import { Select, Store } from '@ngxs/store';
 import {
   DESKTOP_BASE_ROUTE,
   SKISCHULE_ROUTE_SEGMENT,
 } from 'src/app/route-segments';
-import { Card } from 'src/app/shared/components/card/card.interface';
 import { Images } from 'src/app/state/app.actions';
 import { AppState } from 'src/app/state/app.state';
 
@@ -57,12 +57,34 @@ export class HomeComponent implements OnInit {
   contentImgOne = '';
   contentImgTwo = '';
 
-  newsCards: Card[] = [
+  cards: Card[] = [
     {
-      title: 'Max Mustermann',
-      text: '',
-      image: '',
+      title: 'Ausfahrt 1',
+      text: 'Gibts ned',
       active: true,
+      image: './01.jpeg',
+      type: CardType.News,
+    },
+    {
+      title: 'Ausfahrt 2',
+      text: 'Gibts ned oder',
+      active: true,
+      image: './01.jpeg',
+      type: CardType.News,
+    },
+    {
+      title: 'Ausfahrt 3',
+      text: 'Gibts ned',
+      active: false,
+      image: './01.jpeg',
+      type: CardType.News,
+    },
+    {
+      title: 'Ausfahrt 4',
+      text: 'Gibts ned',
+      active: true,
+      image: './01.jpeg',
+      type: CardType.News,
     },
   ];
 

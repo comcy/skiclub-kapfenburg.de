@@ -1,7 +1,6 @@
 /*
- * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.
  */
-
 
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
@@ -15,8 +14,7 @@ import { MobileResolution } from './state/app.actions';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NewsBannerComponent } from './modals/news-banner/news-banner.component';
-import { SharedModule } from './shared/shared.module';
-
+import { SharedLibModule } from '@shared-lib/*';
 
 export function initializeApp(store: Store) {
   return (): void => {
@@ -25,7 +23,6 @@ export function initializeApp(store: Store) {
     }
   };
 }
-
 
 @NgModule({
   declarations: [AppComponent, NewsBannerComponent],
@@ -36,20 +33,18 @@ export function initializeApp(store: Store) {
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot(),
     AppRoutingModule,
-    SharedModule,
-    RouterModule
+    RouterModule,
+    SharedLibModule,
   ],
   providers: [
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       deps: [Store],
-      multi: true
+      multi: true,
     },
   ],
-  exports: [
-    RouterModule
-  ],
-  bootstrap: [AppComponent]
+  exports: [RouterModule],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

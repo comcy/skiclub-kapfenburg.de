@@ -1,14 +1,13 @@
-interface Card {
+export interface Card {
   active: boolean;
+  title?: string;
+  text?: string;
+  date?: string;
+  image?: string;
+  type: CardType;
 }
 
-export interface NewsCard extends Card {
-  title: string;
-  text: string;
-  date: Date;
-  image?: string;
-}
-
-export interface ImageCard extends Card {
-  image?: string;
+export enum CardType {
+  'Image',
+  'News',
 }

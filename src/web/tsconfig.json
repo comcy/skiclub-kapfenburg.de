@@ -13,9 +13,7 @@
     "module": "es2020",
     "lib": ["es2018", "dom"],
     "paths": {
-      "shared": ["dist/shared/shared", "dist/shared"],
-      "@components/*": ["projects/shared-lib/src/lib/components"],
-      "@shared-lib/*": ["projects/shared-lib/src/lib/"]
+      "@shared-lib/*": ["projects/shared-lib/src/public-api"]
     }
   }
 }

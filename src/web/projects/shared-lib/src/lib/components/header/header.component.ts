@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { NavigationItem } from './header.interfaces';
 
 @Component({
-  selector: 'app-header',
+  selector: 'shared-lib-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
@@ -17,7 +17,9 @@ export class HeaderComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log('hey');
+  }
 
   routerHome() {
     this.router.navigateByUrl('');

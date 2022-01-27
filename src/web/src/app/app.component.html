@@ -2,8 +2,11 @@
   <app-news-banner></app-news-banner>
 </div>
 
-<app-header [navItems]="navItems" [baseRoute]="baseRoute"></app-header>
+<shared-lib-header
+  [navItems]="navItems"
+  [baseRoute]="baseRoute"
+></shared-lib-header>
 
 <router-outlet></router-outlet>
 
-<app-footer></app-footer>
+<shared-lib-footer></shared-lib-footer>
