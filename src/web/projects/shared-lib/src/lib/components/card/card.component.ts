@@ -9,7 +9,13 @@ import { Card } from './card.interface';
 export class CardComponent {
   @Input() card?: Card = null;
 
+  assetPath = 'assets/img';
+
   constructor() {
     console.log('>>> ', this.card);
+  }
+
+  getImage(img: string): string {
+    return `${this.assetPath}/${img}`;
   }
 }
