@@ -17,6 +17,7 @@ speed-measure-plugin*.json
 
 # angular
 .angular/
+src/web/.angular
 src/web/dist/
 
 # IDEs and editors
