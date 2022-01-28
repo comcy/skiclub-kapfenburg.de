@@ -4,6 +4,7 @@ export interface Card {
   text?: string;
   date?: string;
   image?: string;
+  imageUrl?: string;
   type: CardType;
 }
 
