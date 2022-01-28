@@ -1,12 +1,25 @@
-<div class="card">
+<!-- <div class="card">
   <div class="img-container">
     <img src="{{ getImage(card.image) }}" alt="card-imgae" />
   </div>
 
-  <!-- <div class="text-container">
+  <div class="text-container">
     <h4>
       <b>{{ card.title }}</b>
     </h4>
     <p>{{ card.text }}</p>
-  </div> -->
-</div>
+  </div>
+</div> -->
+
+<figure class="image-block">
+  <h1>{{ card.date }}</h1>
+  <h2>{{ card.title }}</h2>
+  <img src="{{ getImage(card) }}" alt="" />
+  <figcaption>
+    <h3>Mehr Informationen</h3>
+    <p>
+      {{ card.text }}
+    </p>
+    <button>More Info</button>
+  </figcaption>
+</figure>

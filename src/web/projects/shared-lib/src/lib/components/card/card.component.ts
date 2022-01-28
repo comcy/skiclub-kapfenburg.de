@@ -15,7 +15,10 @@ export class CardComponent {
     console.log('>>> ', this.card);
   }
 
-  getImage(img: string): string {
-    return `${this.assetPath}/${img}`;
+  getImage(card: Card): string {
+    if (card.image) {
+      return `${this.assetPath}/${card.image}`;
+    }
+    return card.imageUrl;
   }
 }
