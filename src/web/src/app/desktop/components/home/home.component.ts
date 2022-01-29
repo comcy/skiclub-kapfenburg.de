@@ -80,6 +80,7 @@ export class HomeComponent implements OnInit {
       active: false,
       image: 'header/05.jpg',
       type: CardType.News,
+      date: '10. Januar 2022',
     },
     {
       title: 'Ausfahrt 4',
@@ -89,6 +90,7 @@ export class HomeComponent implements OnInit {
       imageUrl:
         'https://images.pexels.com/photos/1680140/pexels-photo-1680140.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260',
       type: CardType.News,
+      date: '10. Januar 2022',
     },
     {
       title: 'Ausfahrt 4',
