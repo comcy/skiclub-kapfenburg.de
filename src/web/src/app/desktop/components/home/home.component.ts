@@ -131,6 +131,10 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  public routerTermine(): void {
+    this.router.navigateByUrl('news');
+  }
+
   private async loadImages(): Promise<boolean> {
     const images = {
       headerImage: this.headerImgPath + this.getHeaderImage(),
@@ -179,8 +183,4 @@ export class HomeComponent implements OnInit {
   // public routerSki(): void {
   //   this.router.navigateByUrl('skischule');
   // }
-
-  public routerNews(): void {
-    this.router.navigateByUrl('news');
-  }
 }
