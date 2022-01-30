@@ -1,4 +1,4 @@
-// @use "../../styles/mixins";
+@import "../../styles/variables";
 
 // .card {
 //     display: block;
@@ -76,7 +76,8 @@ figure h2 {
     left: 20px;
     margin: 0;
     padding: 0;
-    color: black;
+    color: $titleOutlineColor;
+    text-shadow: 0 0 5px $titleColor;
     font-size: 50px;
     font-weight: 100;
     line-height: 1;

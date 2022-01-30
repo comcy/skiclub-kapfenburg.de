@@ -1,5 +1,5 @@
 @use "../../../../assets/styles/mixins";
-@import "../../../../assets/styles/variables";
+@import "../../../../../projects/shared-lib/src/lib/styles/variables";
 
 :host {
   flex: 1;
@@ -15,6 +15,7 @@
   h1 {
     margin: 240px auto 0 auto;
     font-size: 110px;
+    text-shadow: 0 0 5px $titleOutlineColor;
   }
 
   h2 {
