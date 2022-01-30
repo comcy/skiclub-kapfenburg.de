@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NewsBannerComponent } from './modals/news-banner/news-banner.component';
 import { SharedLibModule } from '@shared-lib/*';
+import { SharedModule } from './shared/shared.module';
 
 export function initializeApp(store: Store) {
   return (): void => {
@@ -35,6 +36,7 @@ export function initializeApp(store: Store) {
     AppRoutingModule,
     RouterModule,
     SharedLibModule,
+    SharedModule,
   ],
   providers: [
     {

@@ -21,15 +21,18 @@ import { AppState } from 'src/app/state/app.state';
 export class HomeComponent implements OnInit {
   @Select(AppState.getImages) images$;
 
-  hrefSkischuleRouteSegment = SKISCHULE_ROUTE_SEGMENT;
-
-  title = 'Skiclub Kapfenburg e.V.';
-  subtitle = 'Herzlich Willkomen';
-
-  headerImgPath = '/assets/img/header/';
-  contentImgPath = '/assets/img/content/';
-
-  headerImages = [
+  public hrefSkischuleRouteSegment = SKISCHULE_ROUTE_SEGMENT;
+  public title = 'Skiclub Kapfenburg e.V.';
+  public downloadTitle = 'Programm 21/22';
+  public subtitle = 'Herzlich Willkomen';
+  public headerImgPath = '/assets/img/header/';
+  public contentImgPath = '/assets/img/content/';
+  public oneDriveLink = 'https://1drv.ms/b/s!AlpybhuWN2nhgeNuHja8yp2t5yNwQw';
+  public headerImg = '';
+  public contentImgOne = '';
+  public contentImgTwo = '';
+  public contentImgThree = '';
+  public headerImages = [
     '01.jpeg',
     '02.jpg',
     '03.jpg',
@@ -38,7 +41,7 @@ export class HomeComponent implements OnInit {
     '06.jpg',
     '07.jpg',
   ];
-  contentImages = [
+  public contentImages = [
     '01.jpeg',
     '02.jpeg',
     '03.jpeg',
@@ -51,13 +54,7 @@ export class HomeComponent implements OnInit {
     '10.jpg',
   ];
 
-  oneDriveLink = 'https://1drv.ms/b/s!AlpybhuWN2nhgeNuHja8yp2t5yNwQw';
-
-  headerImg = '';
-  contentImgOne = '';
-  contentImgTwo = '';
-
-  cards: Card[] = [
+  public cards: Card[] = [
     {
       title: 'Ausfahrt 1',
       text: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.<br> Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.<br> Aenean ultricies mi vitae est. Mauris placerat eleifend leo.',
@@ -68,7 +65,7 @@ export class HomeComponent implements OnInit {
     },
     {
       title: 'Ausfahrt 2',
-      text: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.<br> Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.<br> Aenean ultricies mi vitae est. Mauris placerat eleifend leo.',
+      text: 'Pellentesque ggggggggggggggggggggggggggggg habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.<br> Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.<br> Aenean ultricies mi vitae est. Mauris placerat eleifend leo.',
       active: true,
       image: 'header/03.jpg',
       type: CardType.News,
@@ -97,7 +94,7 @@ export class HomeComponent implements OnInit {
       text: 'Gibts ned',
       active: true,
       image: './01.jpeg',
-      type: CardType.News,
+      type: CardType.Image,
     },
     {
       title: 'Ausfahrt 4',
@@ -128,11 +125,12 @@ export class HomeComponent implements OnInit {
       this.headerImg = images.headerImage;
       this.contentImgOne = images.firstContentImage;
       this.contentImgTwo = images.secondContentImage;
+      this.contentImgThree = images.thirdContentImage;
     });
   }
 
   public routerTermine(): void {
-    this.router.navigateByUrl('news');
+    this.router.navigateByUrl('termine');
   }
 
   private async loadImages(): Promise<boolean> {
@@ -140,6 +138,7 @@ export class HomeComponent implements OnInit {
       headerImage: this.headerImgPath + this.getHeaderImage(),
       firstContentImage: this.contentImgPath + this.getContentImage(),
       secondContentImage: this.contentImgPath + this.getContentImage(),
+      thirdContentImage: this.contentImgPath + this.getContentImage(),
     };
 
     this.store.dispatch(new Images(images));
@@ -159,28 +158,4 @@ export class HomeComponent implements OnInit {
     const random = Math.floor(Math.random() * elements.length);
     return elements[random];
   }
-
-  //
-  // ngOnInit(): void {
-  //
-  //   this.news$.subscribe((visible) => {
-  //     this.isNewsVisible = false; // visible; --> disabled NEWS banner
-  //   });
-  //
-  //   this.images$.subscribe((images) => {
-  //     this.headerImg = images.headerImage;
-  //     this.contentImgOne = images.firstContentImage;
-  //     this.contentImgTwo = images.secondContentImage;
-  //   });
-  //
-  // }
-
-  // public closeNews(): void {
-  //   const news = { visibility: false };
-  //   this.store.dispatch(new NewsVisibility(news));
-  // }
-
-  // public routerSki(): void {
-  //   this.router.navigateByUrl('skischule');
-  // }
 }

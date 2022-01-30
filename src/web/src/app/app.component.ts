@@ -42,7 +42,6 @@ export class AppComponent implements OnInit {
   ];
 
   private mobileNavItems: NavigationItem[] = [];
-
   private toDestroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private router: Router) {}
