@@ -10,7 +10,7 @@
 
   <div class="download-link">
     <a href="{{ oneDriveLink }}">
-      <p>Programm 21/22</p>
+      <p>{{ downloadTitle }}</p>
     </a>
   </div>
 
@@ -19,10 +19,10 @@
   </a>
 </section>
 
-<section id="news" class="fixed-image-bg">
+<section id="termine" class="fixed-image-bg">
   <h3>Termine</h3>
   <hr />
-  <div class="news-cards">
+  <div class="termin-cards">
     <ng-container *ngFor="let card of cards">
       <shared-lib-card [card]="card" *ngIf="card.active"> </shared-lib-card>
     </ng-container>
@@ -73,9 +73,9 @@
 </section>
 
 <section
-  id="image-one"
+  id="image-three"
   class="fixed-image-bg"
-  [style.background]="'url(' + contentImgOne + ')'"
+  [style.background]="'url(' + contentImgThree + ')'"
 ></section>
 
 <section id="ausfahrten">

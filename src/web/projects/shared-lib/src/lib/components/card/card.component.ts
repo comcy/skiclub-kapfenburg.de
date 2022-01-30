@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { CardType } from '.';
 import { Card } from './card.interface';
 
 @Component({
@@ -9,16 +10,23 @@ import { Card } from './card.interface';
 export class CardComponent {
   @Input() card?: Card = null;
 
-  assetPath = 'assets/img';
+  public assetPath = 'assets/img';
+  public cardType = CardType;
 
   constructor() {
     console.log('>>> ', this.card);
   }
 
-  getImage(card: Card): string {
+  public getImage(card: Card): string {
     if (card.image) {
       return `${this.assetPath}/${card.image}`;
     }
     return card.imageUrl;
+  }
+
+  public isNewsCardType(cardType: CardType): boolean {
+    if (cardType === CardType.News) {
+      return true;
+    }
   }
 }

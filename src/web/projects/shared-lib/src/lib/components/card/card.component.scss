@@ -1,50 +1,5 @@
 @import "../../styles/variables";
 
-// .card {
-//     display: block;
-//     position: relative;
-//     border: 2px solid #e7e7e7;
-//     border-radius: 4px;
-//     padding: 0.5rem;
-//     height: 360px;
-//     width: 460px;
-//     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-//     @include mixins.transition;
-
-//     &:hover {
-//         opacity: 0.8;
-//         box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-//     }
-// }
-// .img-container {
-//     img {
-//         display: flex;
-//         margin-left: auto;
-//         margin-right: auto;
-//         width: 50%;
-//         border-radius: 19px;
-//     }
-// }
-
-// .text-container {
-//     background-color: grey;
-//     position: absolute;
-//     padding: 20px;
-//     bottom: 0;
-//     left: 0;
-//     width: 100%;
-
-//     h4 {
-//         font-size: 24px;
-//         text-align: left;
-//     }
-
-//     p {
-//         font-size: 18;
-//         text-align: left;
-//     }
-// }
-
 figure {
     position: relative;
     display: flex;
@@ -110,7 +65,8 @@ figure figcaption {
     position: absolute;
     bottom: -33%;
     left: 0;
-    width: 100%;
+    // width: 100%;
+    max-width: 320px;
     margin: 0;
     padding: 30px;
     background-color: rgba(0, 0, 0, 0.85);
@@ -122,7 +78,7 @@ figure figcaption {
 
 h3 {
     display: block;
-    font-size: 1.17em;
+    font-size: 1.8em;
     margin-block-start: 1em;
     margin-block-end: 1em;
     margin-inline-start: 0px;
