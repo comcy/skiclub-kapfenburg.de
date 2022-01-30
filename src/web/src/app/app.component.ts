@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
 
   private desktopNavItems: NavigationItem[] = [
     // { name: 'Skiclub Kapfenburg e.V.', route: HOME_ROUTE_SEGMENT },
-    // { name: 'News', route: NEWS_ROUTE_SEGMENT },
+    { name: 'Termine', route: NEWS_ROUTE_SEGMENT },
     { name: 'Skischule', route: SKISCHULE_ROUTE_SEGMENT },
     { name: 'Ausfahrten', route: AUSFAHRTEN_ROUTE_SEGMENT },
     { name: 'Gymnastik', route: GYMNASTIK_ROUTE_SEGMENT },
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
 
   private mobileNavItems: NavigationItem[] = [];
 
-  protected toDestroy$: Subject<boolean> = new Subject<boolean>();
+  private toDestroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private router: Router) {}
 
