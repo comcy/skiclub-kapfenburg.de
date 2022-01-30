@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
       title: 'Ausfahrt 1',
       text: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.<br> Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.<br> Aenean ultricies mi vitae est. Mauris placerat eleifend leo.',
       active: true,
-      image: 'logo.png',
+      image: '06.jpg',
       type: CardType.News,
       date: '1. Januar 2022',
     },
