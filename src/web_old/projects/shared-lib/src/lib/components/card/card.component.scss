@@ -1,0 +1,115 @@
+@import "../../styles/variables";
+
+figure {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 375px;
+    height: 750px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow: hidden;
+}
+
+figure:hover {
+    box-shadow: 0 14px 28px rgb(0 0 0 / 25%), 0 10px 10px rgb(0 0 0 / 22%);
+}
+
+figure:hover img {
+    transform: scale(1.25);
+}
+
+figure:hover figcaption {
+    bottom: 0;
+}
+
+figure h2 {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    margin: 0;
+    padding: 0;
+    color: $titleOutlineColor;
+    text-shadow: 0 0 5px $titleColor;
+    font-size: 50px;
+    font-weight: 100;
+    line-height: 1;
+}
+
+figure img {
+    height: 100%;
+    transition: 0.25s;
+}
+
+img {
+    border-style: none;
+}
+
+figure figcaption {
+    position: absolute;
+    bottom: -33%;
+    left: 0;
+    width: 100%;
+    margin: 8;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 0 20px rgb(0 0 0 / 40%);
+    color: white;
+    line-height: 1;
+    transition: 0.25s;
+}
+
+figure figcaption {
+    position: absolute;
+    bottom: -33%;
+    left: 0;
+    // width: 100%;
+    max-width: 320px;
+    margin: 0;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 0 20px rgb(0 0 0 / 40%);
+    color: white;
+    line-height: 1;
+    transition: 0.25s;
+}
+
+h3 {
+    display: block;
+    font-size: 1.8em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+figure figcaption p {
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+p {
+    text-align: left;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+figure figcaption button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0 0;
+    padding: 10px 30px;
+    background-color: #1abc9c;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+}
