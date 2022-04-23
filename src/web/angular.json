@@ -106,23 +106,23 @@
         }
       }
     },
-    "shared": {
+    "shared-lib": {
       "projectType": "library",
-      "root": "projects/shared",
-      "sourceRoot": "projects/shared/src",
+      "root": "projects/shared-lib",
+      "sourceRoot": "projects/shared-lib/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/shared/ng-package.json"
+            "project": "projects/shared-lib/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/shared/tsconfig.lib.prod.json"
+              "tsConfig": "projects/shared-lib/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/shared/tsconfig.lib.json"
+              "tsConfig": "projects/shared-lib/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -130,9 +130,9 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/shared/src/test.ts",
-            "tsConfig": "projects/shared/tsconfig.spec.json",
-            "karmaConfig": "projects/shared/karma.conf.js"
+            "main": "projects/shared-lib/src/test.ts",
+            "tsConfig": "projects/shared-lib/tsconfig.spec.json",
+            "karmaConfig": "projects/shared-lib/karma.conf.js"
           }
         }
       }

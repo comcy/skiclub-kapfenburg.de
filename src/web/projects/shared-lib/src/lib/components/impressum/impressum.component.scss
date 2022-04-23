@@ -1,0 +1,16 @@
+:host {
+    flex: 1;
+    text-align: start;
+    align-items: stretch;
+}
+
+#impressum {
+    margin: 80px 0 80px 10px;
+    overflow-y: hidden;
+    overflow-wrap: break-word;
+
+
+    li {
+        list-style: none;
+    }
+}
