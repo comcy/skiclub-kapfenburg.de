@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationItem } from './header.interfaces';
 
 @Component({
@@ -12,18 +12,21 @@ import { NavigationItem } from './header.interfaces';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  @Input() baseRoute = '';
   @Input() navItems: NavigationItem[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    console.log('>>>> ', this.navItems);
+
+  }
 
   routerHome() {
     this.router.navigateByUrl('');
   }
 
   routeTo(routeLink: string) {
-    this.router.navigateByUrl(routeLink);
+    this.router.navigate([routeLink], { relativeTo: this.activatedRoute});
   }
 }

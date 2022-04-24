@@ -9,7 +9,7 @@
 
     </div>
 
-    <nav id="main-nav" *ngIf="baseRoute === 'desktop'">
+    <nav id="main-nav">
         <ul>
             <li *ngFor="let n of navItems"><a href="{{n.route}}" (click)="routeTo(n.route)">{{n.name}}</a></li>
         </ul>
