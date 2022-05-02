@@ -1,8 +1,19 @@
 :host {
-    flex: 1;
+    overflow: hidden;
 }
 
 .content {
+    margin-top: 96px;
+    margin-left: 16px;
+    min-height: calc(100% - 86px);
+
+    overflow-y: auto;
+
     display: grid;
-    columns: auto, 2;
+    grid-template-columns: 3fr 1fr;
+
+}
+
+.page {
+
 }
