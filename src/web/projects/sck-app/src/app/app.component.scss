@@ -1,19 +1,23 @@
 :host {
-    overflow: hidden;
+    // overflow: hidden;
 }
 
 .content {
     margin-top: 96px;
     margin-left: 16px;
-    min-height: calc(100% - 86px);
-
+    min-height: calc(100% - 166px);
     overflow-y: auto;
 
     display: grid;
     grid-template-columns: 3fr 1fr;
 
+    flex-grow: 1;
+    overflow: auto;
+
+    background-color: green;
+
 }
 
-.page {
-
+.news {
+    background-color: red;
 }
