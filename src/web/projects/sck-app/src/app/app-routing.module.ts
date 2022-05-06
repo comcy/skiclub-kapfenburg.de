@@ -12,16 +12,14 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     pathMatch: 'full',
-    children: [
-      {
-        path: COURSES_ROUTE,
-        component: CoursesComponent
-      },
-      {
-        path: TRIPS_ROUTE,
-        component: TripsComponent
-      }
-    ]
+  },
+  {
+    path: COURSES_ROUTE,
+    component: CoursesComponent
+  },
+  {
+    path: TRIPS_ROUTE,
+    component: TripsComponent
   },
   {
     path: IMPRESSUM_ROUTE,
