@@ -4,7 +4,7 @@
 
 .content {
     margin-top: 96px;
-    margin-left: 16px;
+    // margin-left: 16px;
     min-height: calc(100% - 166px);
     overflow-y: auto;
 
@@ -14,10 +14,16 @@
     flex-grow: 1;
     overflow: auto;
 
-    background-color: green;
+    &__news {
+        padding: 4px;
+        margin: 8px;
+        background-color: blue;
+    }
 
+    &__page {
+        padding: 4px;
+        margin: 8px;
+        background-color: red;
+    }
 }
 
-.news {
-    background-color: red;
-}
