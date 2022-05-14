@@ -9,7 +9,7 @@ import { COURSES_ROUTE, GYM_ROUTE_SEGMENT, TRIPS_ROUTE } from './route-segments'
 })
 export class AppComponent {
   public title = 'Skiclub Kapfenburg e.V.';
-  
+
   public navItems: NavigationItem[] = [
     { name: 'Skischule', route: COURSES_ROUTE },
     { name: 'Ausfahrten', route: TRIPS_ROUTE },

@@ -1,29 +1,29 @@
-:host {
-    // overflow: hidden;
+:host {;
+  overflow: auto;
 }
+
 
 .content {
-    margin-top: 96px;
-    // margin-left: 16px;
-    min-height: calc(100% - 166px);
-    overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 66px;
+  min-height: calc(100% - 136px);
+  overflow-y: auto;
+  overflow: auto;
 
-    display: grid;
-    grid-template-columns: 3fr 1fr;
+  &__page {
+    padding: 4px;
+    margin: 8px;
+    background-color: red;
+    flex: 3;
+  }
 
-    flex-grow: 1;
-    overflow: auto;
-
-    &__news {
-        padding: 4px;
-        margin: 8px;
-        background-color: blue;
-    }
-
-    &__page {
-        padding: 4px;
-        margin: 8px;
-        background-color: red;
-    }
+  &__news {
+    padding: 4px;
+    margin: 8px;
+    background-color: blue;
+    flex: 1;
+  }
 }
-
