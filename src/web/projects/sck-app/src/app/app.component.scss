@@ -1,4 +1,6 @@
-:host {;
+@import "../../../shared-lib/src/lib/styles/variables";
+
+:host {
   overflow: auto;
 }
 
@@ -16,14 +18,12 @@
   &__page {
     padding: 4px;
     margin: 8px;
-    background-color: red;
     flex: 3;
   }
 
   &__news {
     padding: 4px;
     margin: 8px;
-    background-color: blue;
     flex: 1;
   }
 }
