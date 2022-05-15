@@ -9,6 +9,8 @@ import { HeaderComponent } from './header';
 import { FooterComponent } from './footer';
 import { DatenschutzComponent } from './datenschutz';
 import { ImpressumComponent } from './impressum';
+import { NewsBannerComponent } from './news-banner/news-banner.component';
+import { NewsCardComponent } from './news-card/news-card.component';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { ImpressumComponent } from './impressum';
     HeaderComponent,
     FooterComponent,
     DatenschutzComponent,
-    ImpressumComponent
+    ImpressumComponent,
+    NewsBannerComponent,
+    NewsCardComponent
   ],
   imports: [
     CommonModule
@@ -25,7 +29,9 @@ import { ImpressumComponent } from './impressum';
     HeaderComponent,
     FooterComponent,
     DatenschutzComponent,
-    ImpressumComponent
+    ImpressumComponent,
+    NewsBannerComponent,
+    NewsCardComponent
   ]
 })
 export class ComponentsModule { }
