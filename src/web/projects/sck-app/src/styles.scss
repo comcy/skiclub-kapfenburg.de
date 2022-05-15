@@ -1,12 +1,13 @@
 @use "../../shared-lib/src/lib/styles/mixins";
 @import "../../shared-lib/src/lib/styles/variables";
 
+
 html,
 body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
 }
 
 h1,
@@ -32,6 +33,7 @@ h3 {
 h4,
 p {
     font-family: "Roboto", serif;
+    color: $textColor;
 }
 
 hr {
