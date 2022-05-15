@@ -1,0 +1,22 @@
+@use "../../styles/mixins";
+@import "../../styles/variables";
+
+:host {
+  flex: 1;
+}
+
+.copyright-container {
+  p {
+    display: flex;
+    flex: end;
+    justify-content: flex-end;
+    font-size: 12px;
+    color: $subtextColor;
+    padding-top: 20px;
+    padding-right: 30px;
+  }
+
+  a {
+    color: $footerTextColor;
+  }
+}
