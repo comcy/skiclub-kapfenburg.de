@@ -5,7 +5,6 @@
   height: 100%;
 }
 
-
 .content {
   display: flex;
   flex-direction: row;
@@ -17,14 +16,20 @@
 
   &__page {
     padding: 8px;
-    flex: 3;
+    flex: 7;
   }
 
   &__news {
-    flex: 3;
+    flex: 4;
     border-left: 2px solid;
     border-color: $pageBgColor;
     overflow-y: auto;
-    height: calc(100% - 136px);
+    height: calc(100% - 120px);
   }
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
