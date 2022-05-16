@@ -17,6 +17,7 @@
   &__page {
     padding: 8px;
     flex: 7;
+    overflow-y: auto;
   }
 
   &__news {
@@ -32,4 +33,10 @@
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+@media screen and (max-width: 670px) {
+  .content {
+    margin-top: 136px !important;
+  }
 }
