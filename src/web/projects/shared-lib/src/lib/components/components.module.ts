@@ -1,7 +1,6 @@
 /*
- * @copyright Copyright (c) 2022 Christian Silfang (comcy) - All Rights Reserved.  
+ * @copyright Copyright (c) 2022 Christian Silfang (comcy) - All Rights Reserved.
  */
-
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -11,7 +10,7 @@ import { DatenschutzComponent } from './datenschutz';
 import { ImpressumComponent } from './impressum';
 import { NewsBannerComponent } from './news-banner/news-banner.component';
 import { NewsCardComponent } from './news-card/news-card.component';
-
+import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.component';
 
 @NgModule({
   declarations: [
@@ -20,18 +19,18 @@ import { NewsCardComponent } from './news-card/news-card.component';
     DatenschutzComponent,
     ImpressumComponent,
     NewsBannerComponent,
-    NewsCardComponent
+    NewsCardComponent,
+    ComcyCopyrightComponent,
   ],
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   exports: [
     HeaderComponent,
     FooterComponent,
     DatenschutzComponent,
     ImpressumComponent,
     NewsBannerComponent,
-    NewsCardComponent
-  ]
+    NewsCardComponent,
+    ComcyCopyrightComponent,
+  ],
 })
-export class ComponentsModule { }
+export class ComponentsModule {}
