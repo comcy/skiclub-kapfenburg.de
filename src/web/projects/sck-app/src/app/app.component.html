@@ -1,6 +1,7 @@
 <div class="header">
-     <shared-lib-header [navItems]="navItems"></shared-lib-header>
+    <app-site-navigation [navItems]="navItems"></app-site-navigation>
 </div>
+
 
 <div class="content">
 
@@ -11,14 +12,22 @@
     </div>
 
 
-    <div class="content__news">
-
-        <lib-news-banner></lib-news-banner>
-
-    </div>
-
 </div>
 
 <div class="footer">
-    <shared-lib-footer></shared-lib-footer>
+
+    <mat-drawer-container class="example-container">
+        <mat-drawer mode="side" opened="true">Drawer content</mat-drawer>
+        <mat-drawer-content>Main content</mat-drawer-content>
+    </mat-drawer-container>
+
+
+    <mat-toolbar>
+        <span>Datenschutz</span>
+        <span class="spacer"></span>
+        <span>Impressum</span>
+        <span class="spacer"></span>
+    </mat-toolbar>
+
+    <!-- <shared-lib-footer></shared-lib-footer> -->
 </div>

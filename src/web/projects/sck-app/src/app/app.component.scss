@@ -1,4 +1,4 @@
-@import "../../../shared-lib/src/lib/styles/variables";
+// @import "../../../shared-lib/src/lib/styles/variables";
 
 :host {
   overflow: auto;
@@ -11,20 +11,44 @@
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
-  height: 100%;
-  margin-top: 66px;
-  min-height: calc(100% - 136px);
 
   &__page {
     padding: 8px;
     flex: 3;
   }
+}
 
-  &__news {
-    flex: 3;
-    border-left: 2px solid;
-    border-color: $pageBgColor;
-    overflow-y: auto;
-    height: calc(100% - 136px);
-  }
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+
+.example-container {
+  position: absolute;
+  top: 60px;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+}
+
+.example-sidenav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  background: rgba(255, 0, 0, 0.5);
+}
+
+.spacer {
+  flex: 1 1 auto;
 }
