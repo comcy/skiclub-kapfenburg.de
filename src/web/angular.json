@@ -99,6 +99,7 @@
               "projects/sck-app/src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
               "projects/sck-app/src/styles.scss"
             ],
             "scripts": []

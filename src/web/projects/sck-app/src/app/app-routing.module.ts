@@ -4,22 +4,29 @@ import { DatenschutzComponent } from 'projects/shared-lib/src/lib/components/dat
 import { ImpressumComponent } from 'projects/shared-lib/src/lib/components/impressum';
 import { CoursesComponent } from './courses/courses.component';
 import { HomeComponent } from './home/home.component';
-import { COURSES_ROUTE, DSGVO_ROUTE, IMPRESSUM_ROUTE, TRIPS_ROUTE } from './route-segments';
+import {
+  COURSES_ROUTE,
+  DSGVO_ROUTE,
+  EMPTY_ROUTE,
+  HOME_ROUTE,
+  IMPRESSUM_ROUTE,
+  TRIPS_ROUTE,
+} from './route-segments';
 import { TripsComponent } from './trips/trips.component';
 
 const routes: Routes = [
   {
-    path: 'home',
+    path: HOME_ROUTE,
     component: HomeComponent,
     pathMatch: 'full',
   },
   {
     path: COURSES_ROUTE,
-    component: CoursesComponent
+    component: CoursesComponent,
   },
   {
     path: TRIPS_ROUTE,
-    component: TripsComponent
+    component: TripsComponent,
   },
   {
     path: IMPRESSUM_ROUTE,
@@ -30,14 +37,14 @@ const routes: Routes = [
     component: DatenschutzComponent,
   },
   {
-    path: '',
+    path: EMPTY_ROUTE,
     pathMatch: 'full',
-    redirectTo: 'home'
-  }
+    redirectTo: HOME_ROUTE,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
