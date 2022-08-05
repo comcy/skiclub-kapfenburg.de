@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { RegisterDialogComponent } from 'projects/shared-lib/src/lib/components/dialogs';
 import { Tile } from 'projects/shared-lib/src/lib/models';
 
 @Component({
@@ -7,7 +9,15 @@ import { Tile } from 'projects/shared-lib/src/lib/models';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  constructor() {}
+  constructor(public dialog: MatDialog) {}
+
+  openDialog() {
+    const dialogRef = this.dialog.open(RegisterDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
 
   tiles: Tile[] = [
     {

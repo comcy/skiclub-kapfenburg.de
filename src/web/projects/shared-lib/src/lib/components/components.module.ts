@@ -11,6 +11,9 @@ import { ImpressumComponent } from './impressum';
 import { NewsBannerComponent } from './news-banner/news-banner.component';
 import { NewsCardComponent } from './news-card/news-card.component';
 import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.component';
+import { RegisterDialogComponent } from './dialogs/register-dialog/register-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -21,8 +24,9 @@ import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.compo
     NewsBannerComponent,
     NewsCardComponent,
     ComcyCopyrightComponent,
+    RegisterDialogComponent,
   ],
-  imports: [CommonModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule],
   exports: [
     HeaderComponent,
     FooterComponent,
@@ -31,6 +35,7 @@ import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.compo
     NewsBannerComponent,
     NewsCardComponent,
     ComcyCopyrightComponent,
+    RegisterDialogComponent,
   ],
 })
 export class ComponentsModule {}
