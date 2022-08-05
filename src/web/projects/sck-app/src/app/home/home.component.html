@@ -18,8 +18,8 @@
           <p>{{t.text}}</p>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-button>{{t.actionOne}}</button>
-          <button mat-button>{{t.actionTwo}}</button>
+          <button mat-button (click)="openDialog()">{{t.actionOne}} </button>
+          <button mat-button (click)="openDialog()">{{t.actionTwo}} </button>
         </mat-card-actions>
       </mat-card>
     </ng-container>
