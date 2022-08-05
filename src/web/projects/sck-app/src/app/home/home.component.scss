@@ -1,5 +1,27 @@
-.fixed-background {
-    background-position: center center !important;    
-    background-size: cover !important;    
-    background-attachment: fixed !important;    
+:host {
+  flex: 1;
+  overflow: scroll;
+  height: 100%;
+}
+
+.content-container {
+  padding: 32px 32px 64px 32px;
+
+  .grid {
+    display: flex;
+    flex-flow: wrap;
+    flex-grow: 1;
+    justify-content: space-between;
+    gap: 64px;
+  }
+}
+
+.example-card {
+  max-width: 360px;
+  margin-bottom: 24px;
+}
+
+.example-card-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
 }

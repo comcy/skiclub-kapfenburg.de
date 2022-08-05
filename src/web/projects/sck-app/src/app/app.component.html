@@ -1,33 +1,19 @@
-<div class="header">
-    <app-site-navigation [navItems]="navItems"></app-site-navigation>
-</div>
-
-
 <div class="content">
-
-    <div class="content__page">
-
-        <router-outlet></router-outlet>
-
-    </div>
-
-
+  <app-site-navigation [navItems]="navItems"></app-site-navigation>
 </div>
+
 
 <div class="footer">
-
-    <mat-drawer-container class="example-container">
-        <mat-drawer mode="side" opened="true">Drawer content</mat-drawer>
-        <mat-drawer-content>Main content</mat-drawer-content>
-    </mat-drawer-container>
-
-
-    <mat-toolbar>
-        <span>Datenschutz</span>
-        <span class="spacer"></span>
-        <span>Impressum</span>
-        <span class="spacer"></span>
-    </mat-toolbar>
-
-    <!-- <shared-lib-footer></shared-lib-footer> -->
+  <mat-toolbar>
+    <div>
+      <a mat-button [routerLink]="'/impressum'"> Impressum </a>
+      <a mat-button [routerLink]="'/datenschutz'"> Datenschutz </a>
+    </div>
+    <span class="spacer"></span>
+    <mat-icon>mail</mat-icon>
+    <span class="spacer"></span>
+    <div>
+      <lib-comcy-copyright></lib-comcy-copyright>
+    </div>
+  </mat-toolbar>
 </div>
