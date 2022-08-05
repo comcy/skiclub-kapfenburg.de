@@ -1,0 +1,14 @@
+<div class="example-container">
+
+    <form [formGroup]="tripRegisterForm">
+
+        <div *ngFor="let field of tripRegisterFormElements">
+            <mat-form-field appearance="standard">
+                <mat-label>{{field.label}}</mat-label>
+                <input matInput placeholder="field.placeholder ? field.placeholder : ''" [formControlName]="field.id" />
+            </mat-form-field>
+        </div>
+
+    </form>
+
+</div>

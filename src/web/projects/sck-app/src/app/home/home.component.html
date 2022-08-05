@@ -1,25 +1,23 @@
 <mat-toolbar> Aktuelles </mat-toolbar>
 
 <div class="content-container">
-  <div class="grid">
+  <div class="cards-grid">
     <ng-container *ngFor="let t of tiles">
-      <mat-card class="example-card">
+      <mat-card class="card">
         <mat-card-header>
-          <div mat-card-avatar class="example-header-image"></div>
+          <div mat-card-avatar class="card-header-image"></div>
           <mat-card-title>{{t.title}}</mat-card-title>
           <mat-card-subtitle>{{t.subTitle}}</mat-card-subtitle>
         </mat-card-header>
-        <img
-          mat-card-image
-          src="{{t.image}}"
-          alt="{{t.imageDescription}}"
-        />
+        <img mat-card-image src="{{t.image}}" alt="{{t.imageDescription}}" />
         <mat-card-content>
           <p>{{t.text}}</p>
         </mat-card-content>
-        <mat-card-actions>
-          <button mat-button (click)="openDialog()">{{t.actionOne}} </button>
+        <mat-card-actions class="actions">
           <button mat-button (click)="openDialog()">{{t.actionTwo}} </button>
+          <button mat-button (click)="openDialog()">
+            <mat-icon>share</mat-icon>
+          </button>
         </mat-card-actions>
       </mat-card>
     </ng-container>
