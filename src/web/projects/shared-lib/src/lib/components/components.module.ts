@@ -14,6 +14,10 @@ import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.compo
 import { RegisterDialogComponent } from './dialogs/register-dialog/register-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { TripRegistrationFormComponent } from './forms/trip-registration-form/trip-registration-form.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -25,8 +29,16 @@ import { MatButtonModule } from '@angular/material/button';
     NewsCardComponent,
     ComcyCopyrightComponent,
     RegisterDialogComponent,
+    TripRegistrationFormComponent,
   ],
-  imports: [CommonModule, MatDialogModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
   exports: [
     HeaderComponent,
     FooterComponent,
@@ -36,6 +48,7 @@ import { MatButtonModule } from '@angular/material/button';
     NewsCardComponent,
     ComcyCopyrightComponent,
     RegisterDialogComponent,
+    TripRegistrationFormComponent,
   ],
 })
 export class ComponentsModule {}

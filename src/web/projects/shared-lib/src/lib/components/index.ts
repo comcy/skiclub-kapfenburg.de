@@ -7,4 +7,5 @@ export * from './header';
 export * from './datenschutz';
 export * from './impressum';
 export * from './dialogs';
-export * from './components.module'
+export * from './forms';
+export * from './components.module';

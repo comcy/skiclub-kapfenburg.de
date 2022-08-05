@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
   openDialog() {
     const dialogRef = this.dialog.open(RegisterDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       console.log(`Dialog result: ${result}`);
     });
   }
@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
       subTitle: 'Tagesausfahrt',
       image: '../../../../assets/img/cards/skiboers.jpg',
       imageDescription: 'sample',
-      text: 'Test text',
+      text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
       actionOne: 'Teilen',
       actionTwo: 'Anmelden',
     },
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
       subTitle: 'Tagesausfahrt',
       image: '../../../../assets/img/cards/skiboers.jpg',
       imageDescription: 'sample',
-      text: 'Test text',
+      text: 'orem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
       actionOne: 'Teilen',
       actionTwo: 'Anmelden',
     },
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
       subTitle: 'Tagesausfahrt',
       image: '../../../../assets/img/cards/skiboers.jpg',
       imageDescription: 'sample',
-      text: 'Test text',
+      text: 'orem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.orem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
       actionOne: 'Teilen',
       actionTwo: 'Anmelden',
     },
@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit {
       subTitle: 'Tagesausfahrt',
       image: '../../../../assets/img/cards/skiboers.jpg',
       imageDescription: 'sample',
-      text: 'Test text',
+      text: 'orem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
       actionOne: 'Teilen',
       actionTwo: 'Anmelden',
     },
@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit {
       subTitle: 'Tagesausfahrt',
       image: '../../../../assets/img/cards/skiboers.jpg',
       imageDescription: 'sample',
-      text: 'Test text',
+      text: 'orem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
       actionOne: 'Teilen',
       actionTwo: 'Anmelden',
     },

@@ -7,21 +7,26 @@
 .content-container {
   padding: 32px 32px 64px 32px;
 
-  .grid {
+  .cards-grid {
     display: flex;
     flex-flow: wrap;
-    flex-grow: 1;
+    column-gap: 64px;
+  }
+
+  .card {
+    max-width: 360px;
+    margin-bottom: 24px;
+  }
+  
+  .card-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+  }
+
+  .actions {
+    display: flex;
     justify-content: space-between;
-    gap: 64px;
   }
 }
 
-.example-card {
-  max-width: 360px;
-  margin-bottom: 24px;
-}
 
-.example-card-header-image {
-  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-  background-size: cover;
-}
