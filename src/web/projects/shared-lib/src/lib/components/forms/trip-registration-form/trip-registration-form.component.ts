@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  Validators,
+} from '@angular/forms';
+import { id } from 'date-fns/locale';
 import { TripRegisterFormElements } from './trip-register-form.interfaces';
 
 @Component({
@@ -12,53 +16,92 @@ export class TripRegistrationFormComponent implements OnInit {
     {
       id: 'firstName',
       label: 'Vorname',
-      validationMessage: 'Name is required',
+      validation: [{ type: 'required', message: 'is required' }],
+      cols: 1,
     },
     {
       id: 'lastName',
       label: 'Nachname',
-      validationMessage: 'Name is required',
+      validation: [{ type: 'required', message: 'is required' }],
+      cols: 1,
     },
     {
       id: 'email',
       label: 'E-Mail',
-      validationMessage: 'Name is required',
+      validation: [
+        { type: 'required', message: 'is required' },
+        { type: 'email', message: 'E-Mail is required' },
+      ],
+      fullWidth: true,
+      cols: 2,
     },
     {
       id: 'phone',
       label: 'Telefon',
-      validationMessage: 'Name is required',
+      validation: [{ type: 'required', message: 'is required' }],
+      fullWidth: true,
+      cols: 2,
     },
     {
       id: 'amount',
       label: 'Anzahl der Personen',
-      validationMessage: 'Name is required',
+      validation: [{ type: 'required', message: 'is required' }],
+      cols: 1,
     },
     {
       id: 'additionalText',
       label: 'Zusatz',
-      validationMessage: 'Name is required',
+      validation: [{ type: 'required', message: 'is required' }],
+      area: true,
+      fullWidth: true,
+      cols: 2,
     },
   ];
 
-  public tripRegisterForm: FormGroup = new FormGroup({
-    firstName: new FormControl({ value: null }),
-    lastName: new FormControl({ value: null }),
-    email: new FormControl({ value: null }),
-    phone: new FormControl({ value: null }),
-    amount: new FormControl({ value: null }),
-    additionalText: new FormControl({ value: null }),
+  public haltList = ['Westhausen', 'Lauchheim', 'Hülen', 'Ebnat'];
+
+  public tripRegisterForm = this.formBuilder.group({
+    firstName: [null, Validators.required],
+    lastName: [null, Validators.required],
+    email: [null, [Validators.required, Validators.email]],
+    phone: [null, [Validators.required]],
+    amount: [null, [Validators.required]],
+    additionalText: [null, [Validators.required]],
+    halts: [null, [Validators.required]],
   });
 
-  constructor() {}
+  // public tripRegisterForm: FormGroup = new FormGroup({
+  //   firstName: new FormControl({ value: 'Hans' }),
+  //   lastName: new FormControl({ value: '' }),
+  //   email: new FormControl({ value: '' }),
+  //   phone: new FormControl({ value: '' }),
+  //   amount: new FormControl({ value: '' }),
+  //   additionalText: new FormControl({ value: '' }),
+  //   halts: new FormControl({value: ''})
+  // });
+
+  constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {}
 
-  // getErrorMessage() {
-  //   if (this.tripRegisterForm?.get('email').hasError('required')) {
-  //     return 'You must enter a value';
-  //   }
+  public hasError(field: string): boolean {
 
-  //   return this.email.hasError('email') ? 'Not a valid email' : '';
-  // }
+    // TODO Generalize error messages
+    const foundField = this.tripRegisterFormElements.find(f => {return field === f.id})?.validation;
+
+    const emailError = this.tripRegisterForm
+      .get(field)
+      ?.hasError('email') as boolean;
+
+      const requiredError = this.tripRegisterForm
+      .get(field)?.value;
+
+    return emailError && requiredError;
+  }
+
+  public submit(): void {
+    if (this.tripRegisterForm.valid) {
+      const values = this.tripRegisterForm.getRawValue();
+    }
+  }
 }

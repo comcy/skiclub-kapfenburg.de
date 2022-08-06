@@ -8,6 +8,14 @@ export interface TripRegisterForm {
 export interface TripRegisterFormElements {
   id: string;
   label: string;
-  validationMessage?: string;
+  validation: FormFieldValidation[];
   placehiolder?: string;
+  fullWidth?: boolean;
+  area?: boolean;
+  cols?: number
+}
+
+export interface FormFieldValidation {
+  type: string;
+  message: string;
 }
