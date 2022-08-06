@@ -1,0 +1,21 @@
+    <form [formGroup]="tripRegisterForm">
+
+        <div *ngFor="let field of tripRegisterFormElements">
+
+          <ng-container *ngIf="!field.area">
+            <mat-form-field appearance="fill" [ngClass]="field.fullWidth ? 'full-width' : 'row'">
+              <mat-label>{{field.label}}</mat-label>
+              <input matInput placeholder="field.placeholder ? field.placeholder : ''" [formControlName]="field.id" />
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngIf="field.area">
+            <mat-form-field appearance="fill" [ngClass]="field.fullWidth ? 'full-width' : 'row'">
+              <mat-label>{{field.label}}</mat-label>
+              <textarea matInput rows="8"  placeholder="field.placeholder ? field.placeholder : ''" [formControlName]="field.id" ></textarea>
+            </mat-form-field>
+          </ng-container>
+
+        </div>
+
+    </form>
