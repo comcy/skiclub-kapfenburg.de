@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
+import {
+  ComponentsModule,
+  TripRegistrationFormServiceInterface,
+} from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoursesComponent } from './courses/courses.component';
@@ -22,7 +25,11 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MAT_DIALOG_DEFAULT_OPTIONS,
+} from '@angular/material/dialog';
+import { TripRegistrationFormService } from './services/business/trip-registration-form.service';
 
 @NgModule({
   declarations: [
@@ -51,9 +58,18 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatInputModule,
     MatGridListModule,
     MatCardModule,
-    MatDialogModule
+    MatDialogModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: TripRegistrationFormServiceInterface,
+      useClass: TripRegistrationFormService,
+    },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: { maxWidth: '90vw', hasBackdrop: true },
+    },
+  ],
   exports: [],
   bootstrap: [AppComponent],
 })

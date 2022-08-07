@@ -1,10 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  Validators,
-} from '@angular/forms';
-import { id } from 'date-fns/locale';
-import { TripRegisterFormElements } from './trip-register-form.interfaces';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TripRegistrationFormServiceInterface } from './trip-registration-form-service.interface';
+import { TripRegisterFormElements } from './trip-registration-form.interfaces';
 
 @Component({
   selector: 'lib-trip-registration-form',
@@ -12,6 +9,8 @@ import { TripRegisterFormElements } from './trip-register-form.interfaces';
   styleUrls: ['./trip-registration-form.component.scss'],
 })
 export class TripRegistrationFormComponent implements OnInit {
+  @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   public tripRegisterFormElements: TripRegisterFormElements[] = [
     {
       id: 'firstName',
@@ -58,16 +57,16 @@ export class TripRegistrationFormComponent implements OnInit {
     },
   ];
 
-  public haltList = ['Westhausen', 'Lauchheim', 'Hülen', 'Ebnat'];
+  public boardingList = ['Westhausen', 'Lauchheim', 'Hülen', 'Ebnat'];
 
-  public tripRegisterForm = this.formBuilder.group({
+  public tripRegisterForm: FormGroup = this.formBuilder.group({
     firstName: [null, Validators.required],
     lastName: [null, Validators.required],
     email: [null, [Validators.required, Validators.email]],
     phone: [null, [Validators.required]],
     amount: [null, [Validators.required]],
     additionalText: [null, [Validators.required]],
-    halts: [null, [Validators.required]],
+    boardings: [null, [Validators.required]],
   });
 
   // public tripRegisterForm: FormGroup = new FormGroup({
@@ -77,31 +76,42 @@ export class TripRegistrationFormComponent implements OnInit {
   //   phone: new FormControl({ value: '' }),
   //   amount: new FormControl({ value: '' }),
   //   additionalText: new FormControl({ value: '' }),
-  //   halts: new FormControl({value: ''})
+  //   halts: new FormControl({ value: '' }),
   // });
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private tripRegistrationFormService: TripRegistrationFormServiceInterface
+  ) {}
 
   ngOnInit(): void {}
 
   public hasError(field: string): boolean {
-
     // TODO Generalize error messages
-    const foundField = this.tripRegisterFormElements.find(f => {return field === f.id})?.validation;
+    // const foundField = this.tripRegisterFormElements.find((f) => {
+    //   return field === f.id;
+    // })?.validation;
 
     const emailError = this.tripRegisterForm
       .get(field)
       ?.hasError('email') as boolean;
 
-      const requiredError = this.tripRegisterForm
-      .get(field)?.value;
+    const requiredError = this.tripRegisterForm.get(field)?.value;
 
     return emailError && requiredError;
+  }
+
+  public isSubmitDisabled(): boolean {
+    if (this.tripRegisterForm.valid) {
+      return false;
+    }
+    return true;
   }
 
   public submit(): void {
     if (this.tripRegisterForm.valid) {
       const values = this.tripRegisterForm.getRawValue();
+      this.onSubmit.emit(true);
     }
   }
 }

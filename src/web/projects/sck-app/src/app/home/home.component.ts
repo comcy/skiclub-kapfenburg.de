@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { RegisterDialogComponent } from 'projects/shared-lib/src/lib/components/dialogs';
+import { TripRegisterDialogComponent } from 'projects/shared-lib/src/lib/components/dialogs';
+import { TripRegistrationFormServiceInterface } from 'projects/shared-lib/src/lib/components/forms';
 import { Tile } from 'projects/shared-lib/src/lib/models';
 
 @Component({
@@ -9,16 +10,6 @@ import { Tile } from 'projects/shared-lib/src/lib/models';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  constructor(public dialog: MatDialog) {}
-
-  openDialog() {
-    const dialogRef = this.dialog.open(RegisterDialogComponent);
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
-    });
-  }
-
   tiles: Tile[] = [
     {
       title: '15.01.2023 - Lermoos',
@@ -69,5 +60,20 @@ export class HomeComponent implements OnInit {
 
   cards: any[] = [1, 2, 3, 4, 5, 6, 7];
 
+  constructor(public dialog: MatDialog) {}
+
   ngOnInit(): void {}
+
+  public openRegisterDialog(tile: Tile) {
+    const dialogRef = this.dialog.open(TripRegisterDialogComponent, {
+      data: { tile },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // TODO: Add a snackbar
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  public openShareDialog() {}
 }
