@@ -34,9 +34,9 @@ steps:
     serverUrl: '$(FTP_SERVER)'
     username: '$(FTP_USER)'
     password: '$(FTP_USER_PW)'
-    rootDirectory: '$(FTP_DIST_PATH)'
+    rootDirectory: '${{ variables.FTP_DIST_PATH }}'
     filePatterns: '**'
-    remoteDirectory: '$(FTP_DIST_PATH)'
+    remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
     clean: false
     cleanContents: false
     preservePaths: false
