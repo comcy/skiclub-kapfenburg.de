@@ -10,7 +10,8 @@ import { Tile } from 'projects/shared-lib/src/lib/models';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  tiles: Tile[] = [
+  public title: string = 'Aktuelles';
+  public tiles: Tile[] = [
     {
       title: '15.01.2023 - Lermoos',
       subTitle: 'Tagesausfahrt',
