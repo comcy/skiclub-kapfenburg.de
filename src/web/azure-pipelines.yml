@@ -58,8 +58,8 @@ steps:
 
 # Copy sshpass and scp
 - script: |
-    sshpass -p "'$(FTP_USER_PW)'" scp -r ${{ variables.FTP_DIST_USER }}@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} ${{ variables.PROJECT_DIST_PATH }}
-  displayName: 'Install sshpass'  
+    sshpass -p "'$(FTP_USER_PW)'" scp -r $(SSH_USER)@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} ${{ variables.PROJECT_DIST_PATH }}
+  displayName: 'Exec sshpass and scp'  
 
 # Copy files over SSH
 # Copy files or build artifacts to a remote machine over SSH
