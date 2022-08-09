@@ -7,10 +7,9 @@ trigger:
   batch: true
   branches:
     include: 
-    - '*'
+    - '*'   
 
 variables:
-- System.debug: True
 - name: PROJECT_PATH
   value: 'src/web/'
 - name: PROJECT_DIST_PATH
