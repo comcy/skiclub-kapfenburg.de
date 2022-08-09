@@ -13,7 +13,7 @@ variables:
 - name: PROJECT_PATH
   value: 'src/web/'
 - name: PROJECT_DIST_PATH
-  value: 'src/web/dist/sck-app'
+  value: 'src/web/dist/sck-app/'
 - name: FTP_DIST_PATH
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     value: '$(FTP_DIR_DIST)'
@@ -54,6 +54,11 @@ steps:
 # INSTALL sshpass
 - script: |
     sudo apt-get install -y sshpass
+  displayName: 'Install sshpass'  
+
+# Copy sshpass and scp
+- script: |
+    sshpass -p "'$(FTP_USER_PW)'" scp -r ${{ variables.FTP_DIST_USER }}@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} ${{ variables.PROJECT_DIST_PATH }}
   displayName: 'Install sshpass'  
 
 # Copy files over SSH
