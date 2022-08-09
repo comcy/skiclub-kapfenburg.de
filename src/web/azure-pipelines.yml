@@ -65,7 +65,7 @@ steps:
 - script: |
     cd ${{ variables.PROJECT_DIST_PATH}}
     ls -al
-    sshpass -p $(SSH_PASSWORD) yes | scp -r $(SSH_USER)@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} .
+    sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r $(SSH_USER)@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} .
   displayName: 'Login to ${FTP_SERVER} and do secured copy'  
 # Copy files over SSH
 # Copy files or build artifacts to a remote machine over SSH
