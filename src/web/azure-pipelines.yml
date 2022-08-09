@@ -58,7 +58,7 @@ steps:
 
 # Copy sshpass and scp
 - script: |
-    sshpass -p "'$(FTP_USER_PW)'" scp -r ${{ variables.FTP_DIST_USER }}@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} ${{ variables.PROJECT_DIST_PATH }}
+    sshpass -p "'$(SSH_PASSWORD)'" scp -r ${{ variables.SSH_USER }}@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} ${{ variables.PROJECT_DIST_PATH }}
   displayName: 'Install sshpass'  
 
 # Copy files over SSH
