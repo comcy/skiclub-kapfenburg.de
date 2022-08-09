@@ -53,8 +53,8 @@ steps:
 
 # INSTALL sshpass
 - script: |
-    apt-get install -y sshpass
-  displayName: 'DEBUG'  
+    sudo apt-get install -y sshpass
+  displayName: 'Install sshpass'  
 
 # Copy files over SSH
 # Copy files or build artifacts to a remote machine over SSH
