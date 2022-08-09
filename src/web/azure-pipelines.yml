@@ -36,6 +36,7 @@ steps:
     versionSpec: '16.x'
   displayName: 'Install Node.js'
 
+# BUILD
 - script: |
     cd ${{ variables.PROJECT_PATH}}
     npm install -g @angular/cli
@@ -43,6 +44,7 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
+# DEBUG
 - script: |
     echo ${{ variables.PROJECT_DIST_PATH }}
     echo ${{ variables.FTP_DIST_PATH }}
@@ -50,16 +52,34 @@ steps:
     echo $(FTP_USER_PW)
   displayName: 'DEBUG'  
 
-- task: FtpUpload@2
-  inputs:
-    credentialsOption: 'inputs'
-    serverUrl: '$(FTP_SERVER)'
-    username: '${{ variables.FTP_DIST_USER }}'
-    password: '$(FTP_USER_PW)'
-    rootDirectory: '${{ variables.PROJECT_DIST_PATH }}'
-    filePatterns: '**'
-    remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
-    clean: false
-    cleanContents: false
-    preservePaths: false
-    trustSSL: false
+# INSTALL sshpass
+- script: |
+    apt-get install -y sshpass
+  displayName: 'DEBUG'  
+
+# Copy files over SSH
+# Copy files or build artifacts to a remote machine over SSH
+# - task: CopyFilesOverSSH@0
+#   inputs:
+#     sshEndpoint: 
+#     sourceFolder: ${{ variables.PROJECT_DIST_PATH }}
+#     contents: '**' 
+#     targetFolder: ${{ variables.FTP_DIST_PATH }}
+#     cleanTargetFolder: true # Optional
+#     overwrite: true # Optional
+#     failOnEmptySource: true # Optional
+#     #flattenFolders: false # Optional
+
+# - task: FtpUpload@2
+#   inputs:
+#     credentialsOption: 'inputs'
+#     serverUrl: '$(FTP_SERVER)'
+#     username: '${{ variables.FTP_DIST_USER }}'
+#     password: '$(FTP_USER_PW)'
+#     rootDirectory: '${{ variables.PROJECT_DIST_PATH }}'
+#     filePatterns: '**'
+#     remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
+#     clean: false
+#     cleanContents: false
+#     preservePaths: false
+#     trustSSL: false
