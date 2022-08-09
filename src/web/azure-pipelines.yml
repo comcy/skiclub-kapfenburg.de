@@ -19,6 +19,12 @@ variables:
     value: '$(FTP_DIR_DIST)'
   ${{ else }}:
     value: '$(FTP_DIR_DIST_STAGE)'
+- name: FTP_DIST_USER
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    value: '$(FTP_USER)'
+  ${{ else }}:
+    value: '$(FTP_USER_STAGE)'
+
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -40,7 +46,7 @@ steps:
   inputs:
     credentialsOption: 'inputs'
     serverUrl: '$(FTP_SERVER)'
-    username: '$(FTP_USER)'
+    username: '${{ variables.FTP_DIST_USER }}'
     password: '$(FTP_USER_PW)'
     rootDirectory: '${{ variables.PROJECT_DIST_PATH }}'
     filePatterns: '**'
