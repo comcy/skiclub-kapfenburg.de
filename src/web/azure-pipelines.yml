@@ -12,19 +12,15 @@ trigger:
 variables:
 - name: PROJECT_PATH
   value: 'src/web/'
+
 - name: PROJECT_DIST_PATH
   value: 'src/web/dist/sck-app/'
-- name: FTP_DIST_PATH
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/master') }}:
-    value: '$(FTP_DIR_DIST)'
-  ${{ else }}:
-    value: '$(FTP_DIR_DIST_STAGE)'
-- name: FTP_DIST_USER
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/master') }}:
-    value: '$(FTP_USER)'
-  ${{ else }}:
-    value: '$(FTP_USER_STAGE)'
 
+- name: SERVER_DIST_PATH
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    value: '$(SERVER_DIST_PATH_BASE)'
+  ${{ else }}:
+    value: '$(SERVER_DIST_PATH_STAGE)'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -43,53 +39,15 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-# DEBUG
-- script: |
-    echo ${{ variables.PROJECT_DIST_PATH }}
-    echo ${{ variables.FTP_DIST_PATH }}
-    echo ${{ variables.FTP_DIST_USER }}
-    echo $(FTP_USER_PW)
-  displayName: 'DEBUG'  
-
 # INSTALL sshpass
 - script: |
     sudo apt-get install -y sshpass
   displayName: 'Install sshpass'  
 
-# Add known_hosts
-# - script: |
-#     ssh-keyscan -H ${FTP_SERVER} >> ~/.ssh/known_hosts
-#   displayName: 'Add ${FTP_SERVER} to ~/.ssh/known_hosts'  
-
 # Copy sshpass and scp
 - script: |
     cd ${{ variables.PROJECT_DIST_PATH}}
     ls -al
-    sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }}
-  displayName: 'Login to ${FTP_SERVER} and do secured copy'  
-# Copy files over SSH
-# Copy files or build artifacts to a remote machine over SSH
-# - task: CopyFilesOverSSH@0
-#   inputs:
-#     sshEndpoint: 
-#     sourceFolder: ${{ variables.PROJECT_DIST_PATH }}
-#     contents: '**' 
-#     targetFolder: ${{ variables.FTP_DIST_PATH }}
-#     cleanTargetFolder: true # Optional
-#     overwrite: true # Optional
-#     failOnEmptySource: true # Optional
-#     #flattenFolders: false # Optional
+    sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.FTP_DIST_PATH }}
+  displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'  
 
-# - task: FtpUpload@2
-#   inputs:
-#     credentialsOption: 'inputs'
-#     serverUrl: '$(FTP_SERVER)'
-#     username: '${{ variables.FTP_DIST_USER }}'
-#     password: '$(FTP_USER_PW)'
-#     rootDirectory: '${{ variables.PROJECT_DIST_PATH }}'
-#     filePatterns: '**'
-#     remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
-#     clean: false
-#     cleanContents: false
-#     preservePaths: false
-#     trustSSL: false
