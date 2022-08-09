@@ -42,6 +42,13 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
+- script: |
+    echo ${{ variables.PROJECT_DIST_PATH }}
+    echo ${{ variables.FTP_DIST_PATH }}
+    echo ${{ variables.FTP_DIST_USER }}
+    echo $(FTP_USER_PW)
+  displayName: 'DEBUG'  
+
 - task: FtpUpload@2
   inputs:
     credentialsOption: 'inputs'
