@@ -10,6 +10,10 @@ trigger:
     - '*'
 
 variables:
+- name: PROJECT_PATH
+  value: 'src/web/'
+- name: PROJECT_DIST_PATH
+  value: 'src/web/dist/sck-app'
 - name: FTP_DIST_PATH
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     value: '$(FTP_DIR_DIST)'
@@ -26,9 +30,10 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    cd ${{ variables.PROJECT_PATH}}
     npm install -g @angular/cli
     npm install
-    ng build --prod
+    npm run build
   displayName: 'npm install and build'
 
 - task: FtpUpload@2
@@ -37,7 +42,7 @@ steps:
     serverUrl: '$(FTP_SERVER)'
     username: '$(FTP_USER)'
     password: '$(FTP_USER_PW)'
-    rootDirectory: '${{ variables.FTP_DIST_PATH }}'
+    rootDirectory: '${{ variables.PROJECT_DIST_PATH }}'
     filePatterns: '**'
     remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
     clean: false
