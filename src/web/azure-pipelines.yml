@@ -58,8 +58,10 @@ steps:
 
 # Copy sshpass and scp
 - script: |
-    sshpass -p "$(SSH_PASSWORD)" scp -r $(SSH_USER)@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} ${{ variables.PROJECT_DIST_PATH }}
-  displayName: 'Exec sshpass and scp'  
+    cd ${{ variables.PROJECT_DIST_PATH}}
+    ls -al
+    sshpass -p $(SSH_PASSWORD) scp -r $(SSH_USER)@$(FTP_SERVER):${{ variables.FTP_DIST_PATH }} .
+  displayName: 'sshpass && scp'  
 # Copy files over SSH
 # Copy files or build artifacts to a remote machine over SSH
 # - task: CopyFilesOverSSH@0
