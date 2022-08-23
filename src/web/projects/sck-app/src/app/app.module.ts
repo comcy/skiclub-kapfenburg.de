@@ -30,6 +30,7 @@ import {
   MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material/dialog';
 import { TripRegistrationFormService } from './services/business/trip-registration-form.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { TripRegistrationFormService } from './services/business/trip-registrati
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     ComponentsModule,
     BrowserAnimationsModule,
