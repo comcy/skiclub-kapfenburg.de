@@ -36,12 +36,14 @@ export class TripRegistrationFormService extends TripRegistrationFormServiceInte
 
     // const res = fetch(request);
 
+    console.log('>>> --- ', tripRegisterForm);
+
     const res = await fetch(url, {
       // redirect: "follow",
       method: "POST",
       body: JSON.stringify(tripRegisterForm),
       headers: {
-        "Content-Type": "text/plain;charset=utf-8",
+        "Content-Type": "text/plain"
       },
     });
 
