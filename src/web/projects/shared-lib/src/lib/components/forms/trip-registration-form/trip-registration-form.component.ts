@@ -62,11 +62,11 @@ export class TripRegistrationFormComponent implements OnInit {
   public tripRegisterForm: FormGroup = this.formBuilder.group({
     firstName: [null, Validators.required],
     lastName: [null, Validators.required],
-    email: [null, [Validators.required, Validators.email]],
-    phone: [null, [Validators.required]],
-    amount: [null, [Validators.required]],
-    additionalText: [null, [Validators.required]],
-    boardings: [null, [Validators.required]],
+    // email: [null, [Validators.required, Validators.email]],
+    // phone: [null, [Validators.required]],
+    // amount: [null, [Validators.required]],
+    // additionalText: [null, [Validators.required]],
+    // boardings: [null, [Validators.required]],
   });
 
   // public tripRegisterForm: FormGroup = new FormGroup({
@@ -112,6 +112,7 @@ export class TripRegistrationFormComponent implements OnInit {
     if (this.tripRegisterForm.valid) {
       const values = this.tripRegisterForm.getRawValue();
       this.onSubmit.emit(true);
+      this.tripRegistrationFormService.sendForm(values);
     }
   }
 }
