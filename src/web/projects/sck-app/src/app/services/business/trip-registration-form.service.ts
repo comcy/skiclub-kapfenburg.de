@@ -22,7 +22,7 @@ export class TripRegistrationFormService extends TripRegistrationFormServiceInte
 
   public async sendForm(tripRegisterForm: FormGroup): Promise<boolean> {
     const url =
-      'https://script.google.com/macros/s/AKfycbz8msx1jgMo2BKnl_0QvQr-miR8l8NAtAeIf5DzjlpLYMx4onsmv7sgE7iPB8o-wkaFdQ/exec';
+      'https://script.google.com/macros/s/AKfycbxlCykkXPGF-4SfF7W2rnx9GywydEQYZtTzYzcBMA8A9T63zfR3yLGkQBK0D9BWrDWNcA/exec';
 
     // const request = new Request(url, {
     //   method: 'GET',
@@ -36,18 +36,27 @@ export class TripRegistrationFormService extends TripRegistrationFormServiceInte
 
     // const res = fetch(request);
 
+    console.log('>>> --- ', JSON.stringify(tripRegisterForm));
+
     console.log('>>> --- ', tripRegisterForm);
 
     const res = await fetch(url, {
-      // redirect: "follow",
-      method: "POST",
-      body: JSON.stringify(tripRegisterForm),
-      headers: {
-        "Content-Type": "text/plain"
-      },
-    });
+      redirect: 'follow',
+      method: 'POST',
+      // mode: 'no-cors',
+      body: JSON.stringify({ vname: 'goood', nnane: 'baaaad' }),
+      // headers: {
+      //   'Content-Type': 'text/plain',
+      // },
+    })
+      .then((response) => {
+        console.log('success ::: ', response);
+      })
+      .catch((err) => {
+        console.log('error ::: ', err);
+      });
 
-    console.log(res);
+    console.log('>>>>> ', res);
 
     return Promise.resolve(true);
   }
