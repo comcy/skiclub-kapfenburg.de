@@ -110,9 +110,8 @@ export class TripRegistrationFormComponent implements OnInit {
 
   public submit(): void {
     if (this.tripRegisterForm.valid) {
-      const values = this.tripRegisterForm.getRawValue();
       this.onSubmit.emit(true);
-      this.tripRegistrationFormService.sendForm(values);
+      this.tripRegistrationFormService.sendForm(this.tripRegisterForm);
     }
   }
 }

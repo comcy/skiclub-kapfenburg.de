@@ -7,10 +7,14 @@ import { TripRegistrationFormServiceInterface } from 'projects/shared-lib/src/li
 function setDefaultHeaders(): HeadersInit {
   return {
     // Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    // Accept: 'application/json',
   };
 }
+
+const SHEET_API_URL =
+  'https://script.google.com/macros/s/AKfycbzhxiXUCV-iV6GjtyzDQHm5PA6n7l0gpxZPeC4ueTyGTax_EoQVaQeOwjhIXzRk4JoMww/exec';
+// 'https://sheetdb.io/api/v1/fdry4un53ccze';
 
 @Injectable({
   providedIn: 'root',
@@ -20,34 +24,18 @@ export class TripRegistrationFormService extends TripRegistrationFormServiceInte
     super();
   }
 
-  public async sendForm(tripRegisterForm: FormGroup): Promise<boolean> {
-    const url =
-      'https://script.google.com/macros/s/AKfycbxlCykkXPGF-4SfF7W2rnx9GywydEQYZtTzYzcBMA8A9T63zfR3yLGkQBK0D9BWrDWNcA/exec';
+  public requestFormData!: FormData;
 
-    // const request = new Request(url, {
-    //   method: 'GET',
-    //   body: '{"firstName": "bar", "lastName": "bar"}',
-    // });
+  public async sendForm(tripRegisterForm: FormGroup): Promise<void> {
+    console.log('form group ::: ', tripRegisterForm);
+    var formData: any = new FormData();
+    formData.append('firstName', tripRegisterForm.get('firstName')?.value);
+    formData.append('lastName', tripRegisterForm.get('lastName')?.value);
 
-    // // const url = request.url;
-    // const method = request.method;
-    // const credentials = request.credentials;
-    // const bodyUsed = request.bodyUsed;
-
-    // const res = fetch(request);
-
-    console.log('>>> --- ', JSON.stringify(tripRegisterForm));
-
-    console.log('>>> --- ', tripRegisterForm);
-
-    const res = await fetch(url, {
-      redirect: 'follow',
+    console.log('formdata ::: ', formData);
+    const res = await fetch(SHEET_API_URL, {
       method: 'POST',
-      // mode: 'no-cors',
-      body: JSON.stringify({ vname: 'goood', nnane: 'baaaad' }),
-      // headers: {
-      //   'Content-Type': 'text/plain',
-      // },
+      body: formData,
     })
       .then((response) => {
         console.log('success ::: ', response);
@@ -58,6 +46,22 @@ export class TripRegistrationFormService extends TripRegistrationFormServiceInte
 
     console.log('>>>>> ', res);
 
-    return Promise.resolve(true);
+    // return Promise.resolve(true);
+  }
+
+  sendForm2(tripRegisterForm: FormGroup) {
+    console.log('form group ::: ', tripRegisterForm);
+    var formData: any = new FormData();
+    if (tripRegisterForm) {
+      formData.append('firstName', tripRegisterForm.get('firstName')?.value);
+      formData.append('lastName', tripRegisterForm.get('lastName')?.value);
+
+      console.log('formdata ::: ', formData);
+
+      this.http.post(SHEET_API_URL, formData).subscribe({
+        next: (response) => console.log(response),
+        error: (error) => console.log(error),
+      });
+    }
   }
 }
