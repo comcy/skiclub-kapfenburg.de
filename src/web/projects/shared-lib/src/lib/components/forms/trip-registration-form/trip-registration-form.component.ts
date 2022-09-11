@@ -111,7 +111,9 @@ export class TripRegistrationFormComponent implements OnInit {
   public submit(): void {
     if (this.tripRegisterForm.valid) {
       this.onSubmit.emit(true);
-      this.tripRegistrationFormService.sendForm(this.tripRegisterForm);
+      this.tripRegistrationFormService.sendFormToSheetsIo(
+        this.tripRegisterForm
+      );
     }
   }
 }
