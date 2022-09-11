@@ -5,6 +5,6 @@ import { FormGroup } from '@angular/forms';
   providedIn: 'root',
 })
 export abstract class TripRegistrationFormServiceInterface {
-  public abstract sendForm2(tripRegisterForm: any): void;
-  public abstract sendForm(tripRegisterForm: any): Promise<void>;
+  public abstract sendFormToSheetsIo(tripRegisterForm: any): void;
+  public abstract sendFormToGoogleSheet(tripRegisterForm: any): Promise<void>;
 }
