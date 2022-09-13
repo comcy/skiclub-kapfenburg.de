@@ -14,10 +14,14 @@
           <p>{{t.text}}</p>
         </mat-card-content>
         <mat-card-actions class="actions">
-          <button mat-button (click)="openRegisterDialog(t)">{{t.actionTwo}} </button>
-          <button mat-button (click)="openShareDialog()">
-            <mat-icon>share</mat-icon>
-          </button>
+          <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
+            <button *ngSwitchCase="tileActionsEnum.Register" mat-button (click)="openRegisterDialog(t)">{{ registerLabel
+              }}
+            </button>
+            <button *ngSwitchCase="tileActionsEnum.Share" mat-button (click)="openShareDialog()">
+              <mat-icon>share</mat-icon>
+            </button>
+          </ng-container>
         </mat-card-actions>
       </mat-card>
     </ng-container>
