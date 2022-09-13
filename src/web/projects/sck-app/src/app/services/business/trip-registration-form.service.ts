@@ -1,21 +1,12 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { BoundAttribute } from '@angular/compiler/src/render3/r3_ast';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TripRegistrationFormServiceInterface } from 'projects/shared-lib/src/lib/components/forms';
 
-function setDefaultHeaders(): HeadersInit {
-  return {
-    // Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/x-www-form-urlencoded',
-    // Accept: 'application/json',
-  };
-}
-
 export const SHEET_API_URL =
-  'https://script.google.com/macros/s/AKfycbypcAH77zSIP7REyw2I2mnRUjIdutLquedGuGdlUzPMoIdBAwPBhHCMVq7dkkLpLJQf2w/exec';
-// 'https://sheetdb.io/api/v1/fdry4un53ccze'; // Sheet1
-// 'https://sheetdb.io/api/v1/hf90pdiqf0sw4';
+  // 'https://script.google.com/macros/s/AKfycbypcAH77zSIP7REyw2I2mnRUjIdutLquedGuGdlUzPMoIdBAwPBhHCMVq7dkkLpLJQf2w/exec';
+  // 'https://sheetdb.io/api/v1/fdry4un53ccze'; // Sheet1
+  'https://sheetdb.io/api/v1/hf90pdiqf0sw4';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +28,11 @@ export class TripRegistrationFormService extends TripRegistrationFormServiceInte
     var formData: any = new FormData();
     formData.append('firstName', tripRegisterForm.get('firstName')?.value);
     formData.append('lastName', tripRegisterForm.get('lastName')?.value);
+    formData.append('email', tripRegisterForm.get('email')?.value);
+    formData.append('phone', tripRegisterForm.get('phone')?.value);
+    formData.append('amount', tripRegisterForm.get('amount')?.value);
+
+    console.log('FORM DATA ', formData);
 
     await fetch(SHEET_API_URL, {
       redirect: 'follow',
@@ -55,24 +51,10 @@ export class TripRegistrationFormService extends TripRegistrationFormServiceInte
    *
    * @param tripRegisterForm
    */
-  sendFormToSheetsIo(tripRegisterForm: FormGroup) {
-    var formData: any = new FormData();
-    if (tripRegisterForm) {
-      formData.append('firstName', tripRegisterForm.get('firstName')?.value);
-      formData.append('lastName', tripRegisterForm.get('lastName')?.value);
-
-      console.log('formdata ::: ', formData);
-
-      this.http.post(SHEET_API_URL, formData);
-      // .subscribe(
-      // (res: any) => {
-      //   console.log('### POST STATUS ### ', res);
-      // }
-      // {
-      //   next: (response) => console.log(response),
-      //   error: (error) => console.log(error),
-      // }
-      // );
-    }
+  sendFormToSheetsIo(formData: FormData) {
+    this.http.post(SHEET_API_URL, formData).subscribe({
+      next: (response) => console.log(response),
+      error: (error) => console.log(error),
+    });
   }
 }

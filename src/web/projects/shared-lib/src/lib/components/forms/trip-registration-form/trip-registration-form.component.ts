@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TRIP_REGISTER_FORM_ELEMENTS } from './trip-register-form-fields';
 import { TripRegistrationFormServiceInterface } from './trip-registration-form-service.interface';
 import { TripRegisterFormElements } from './trip-registration-form.interfaces';
 
@@ -11,73 +12,17 @@ import { TripRegisterFormElements } from './trip-registration-form.interfaces';
 export class TripRegistrationFormComponent implements OnInit {
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public tripRegisterFormElements: TripRegisterFormElements[] = [
-    {
-      id: 'firstName',
-      label: 'Vorname',
-      validation: [{ type: 'required', message: 'is required' }],
-      cols: 1,
-    },
-    {
-      id: 'lastName',
-      label: 'Nachname',
-      validation: [{ type: 'required', message: 'is required' }],
-      cols: 1,
-    },
-    {
-      id: 'email',
-      label: 'E-Mail',
-      validation: [
-        { type: 'required', message: 'is required' },
-        { type: 'email', message: 'E-Mail is required' },
-      ],
-      fullWidth: true,
-      cols: 2,
-    },
-    {
-      id: 'phone',
-      label: 'Telefon',
-      validation: [{ type: 'required', message: 'is required' }],
-      fullWidth: true,
-      cols: 2,
-    },
-    {
-      id: 'amount',
-      label: 'Anzahl der Personen',
-      validation: [{ type: 'required', message: 'is required' }],
-      cols: 1,
-    },
-    {
-      id: 'additionalText',
-      label: 'Zusatz',
-      validation: [{ type: 'required', message: 'is required' }],
-      area: true,
-      fullWidth: true,
-      cols: 2,
-    },
-  ];
-
   public boardingList = ['Westhausen', 'Lauchheim', 'Hülen', 'Ebnat'];
 
   public tripRegisterForm: FormGroup = this.formBuilder.group({
     firstName: [null, Validators.required],
     lastName: [null, Validators.required],
-    // email: [null, [Validators.required, Validators.email]],
-    // phone: [null, [Validators.required]],
-    // amount: [null, [Validators.required]],
-    // additionalText: [null, [Validators.required]],
-    // boardings: [null, [Validators.required]],
+    email: [null, [Validators.required, Validators.email]],
+    phone: [null, [Validators.required]],
+    amount: [null, [Validators.required]],
+    additionalText: [null, [Validators.required]],
+    boardings: [null, [Validators.required]],
   });
-
-  // public tripRegisterForm: FormGroup = new FormGroup({
-  //   firstName: new FormControl({ value: 'Hans' }),
-  //   lastName: new FormControl({ value: '' }),
-  //   email: new FormControl({ value: '' }),
-  //   phone: new FormControl({ value: '' }),
-  //   amount: new FormControl({ value: '' }),
-  //   additionalText: new FormControl({ value: '' }),
-  //   halts: new FormControl({ value: '' }),
-  // });
 
   constructor(
     private formBuilder: FormBuilder,
@@ -110,10 +55,17 @@ export class TripRegistrationFormComponent implements OnInit {
 
   public submit(): void {
     if (this.tripRegisterForm.valid) {
-      this.onSubmit.emit(true);
-      this.tripRegistrationFormService.sendFormToSheetsIo(
-        this.tripRegisterForm
-      );
+      let formData: any = new FormData();
+      for (let field of TRIP_REGISTER_FORM_ELEMENTS) {
+        console.log('FIELD >>> ', field);
+        formData.append('field.id', this.tripRegisterForm.get(field.id)?.value);
+      }
+      if (formData) {
+        this.onSubmit.emit(true);
+        this.tripRegistrationFormService.sendFormToSheetsIo(formData);
+      } else {
+        console.error('No data provided');
+      }
     }
   }
 }
