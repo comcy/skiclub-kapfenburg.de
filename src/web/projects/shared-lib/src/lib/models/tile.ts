@@ -8,6 +8,7 @@ export interface Tile {
   text: string;
   actions?: TileActions[];
   avatar?: string;
+  visible?: boolean;
 }
 
 export enum TileActions {
