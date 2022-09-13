@@ -3,7 +3,7 @@
 <div class="content-container">
   <div class="cards-grid">
     <ng-container *ngFor="let t of tiles">
-      <mat-card class="card">
+      <mat-card *ngIf="t.visible" class="card">
         <mat-card-header>
           <div *ngIf="t.avatar" mat-card-avatar class="card-header-image">
             <img mat-card-avatar src="{{t.avatar}}" />
