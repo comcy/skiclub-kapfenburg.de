@@ -20,7 +20,8 @@ export class HomeComponent implements OnInit {
       image: '../../../../assets/img/cards/skiboers.jpg',
       imageDescription: 'sample',
       text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      actions: [TileActions.Share, TileActions.Register],
+      actions: [TileActions.Register],
+      avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     },
     {
       title: '15.01.2023 - Lermoos',

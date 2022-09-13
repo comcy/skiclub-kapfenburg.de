@@ -7,6 +7,7 @@ export interface Tile {
   imageDescription: string;
   text: string;
   actions?: TileActions[];
+  avatar?: string;
 }
 
 export enum TileActions {
