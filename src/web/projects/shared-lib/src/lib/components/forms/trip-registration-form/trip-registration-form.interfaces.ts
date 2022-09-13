@@ -12,10 +12,15 @@ export interface TripRegisterFormElements {
   placehiolder?: string;
   fullWidth?: boolean;
   area?: boolean;
-  cols?: number
+  cols?: number;
 }
 
 export interface FormFieldValidation {
   type: string;
   message: string;
+}
+
+export interface TripDetails {
+  destination: string;
+  date: string;
 }

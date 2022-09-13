@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 import { TRIP_REGISTER_FORM_ELEMENTS } from './trip-register-form-fields';
 import { TripRegistrationFormServiceInterface } from './trip-registration-form-service.interface';
-import { TripRegisterFormElements } from './trip-registration-form.interfaces';
+import { TripDetails } from './trip-registration-form.interfaces';
 
 @Component({
   selector: 'lib-trip-registration-form',
@@ -10,6 +11,8 @@ import { TripRegisterFormElements } from './trip-registration-form.interfaces';
   styleUrls: ['./trip-registration-form.component.scss'],
 })
 export class TripRegistrationFormComponent implements OnInit {
+  @Input() public additionalData$!: BehaviorSubject<TripDetails>;
+  @Input() public additionalData!: TripDetails;
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public boardingList = ['Westhausen', 'Lauchheim', 'Hülen', 'Ebnat'];
@@ -55,10 +58,15 @@ export class TripRegistrationFormComponent implements OnInit {
 
   public submit(): void {
     if (this.tripRegisterForm.valid) {
-      let formData: any = new FormData();
+      const formData: FormData = new FormData();
+      // Add form group data to form data
       for (let field of TRIP_REGISTER_FORM_ELEMENTS) {
-        console.log('FIELD >>> ', field);
-        formData.append('field.id', this.tripRegisterForm.get(field.id)?.value);
+        formData.append(field.id, this.tripRegisterForm.get(field.id)?.value);
+      }
+
+      // Add trip destination and trip date to form data
+      for (let key of ['destination', 'date']) {
+        formData.append(key, this.additionalData[key as keyof TripDetails]);
       }
       if (formData) {
         this.onSubmit.emit(true);
