@@ -6,5 +6,4 @@ import { FormGroup } from '@angular/forms';
 })
 export abstract class TripRegistrationFormServiceInterface {
   public abstract sendFormToSheetsIo(formData: FormData): void;
-  public abstract sendFormToGoogleSheet(tripRegisterForm: any): Promise<void>;
 }
