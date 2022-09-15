@@ -19,8 +19,3 @@ export interface FormFieldValidation {
   type: string;
   message: string;
 }
-
-export interface TripDetails {
-  destination: string;
-  date: string;
-}

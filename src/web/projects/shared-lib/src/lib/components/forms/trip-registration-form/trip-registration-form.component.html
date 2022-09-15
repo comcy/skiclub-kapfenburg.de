@@ -1,6 +1,16 @@
 <div class="content-container">
 
   <form class="form" [formGroup]="tripRegisterForm" (submit)="submit()">
+
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Ausfahrt</mat-label>
+      <mat-select formControlName="trip">
+        <mat-option *ngFor="let trip of additionalData" [value]="trip">{{ trip.destination }} - {{ trip.date }}
+        </mat-option>
+      </mat-select>
+
+
+    </mat-form-field>
     <table class="full-width" cellspacing="0">
       <tr>
         <td>
@@ -47,8 +57,8 @@
         <td>
           <mat-form-field class="full-width" appearance="fill">
             <mat-label>Zustieg</mat-label>
-            <mat-select formControlName="boardings">
-              <mat-option *ngFor="let boarding of boardingList" [value]="boarding">{{boarding}}</mat-option>
+            <mat-select formControlName="boarding">
+              <mat-option *ngFor="let boarding of boardingList" [value]="boarding">{{ boarding }}</mat-option>
             </mat-select>
 
 
