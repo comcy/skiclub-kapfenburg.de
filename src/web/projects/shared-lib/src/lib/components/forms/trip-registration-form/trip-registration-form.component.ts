@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { Trip } from '../../../models/trip';
 import { TRIP_REGISTER_FORM_ELEMENTS } from './trip-register-form-fields';
 import { TripRegistrationFormServiceInterface } from './trip-registration-form-service.interface';
-import { TripDetails } from './trip-registration-form.interfaces';
 
 @Component({
   selector: 'lib-trip-registration-form',
@@ -11,28 +11,39 @@ import { TripDetails } from './trip-registration-form.interfaces';
   styleUrls: ['./trip-registration-form.component.scss'],
 })
 export class TripRegistrationFormComponent implements OnInit {
-  @Input() public additionalData$!: BehaviorSubject<TripDetails>;
-  @Input() public additionalData!: TripDetails;
+  @Input() public additionalData$!: BehaviorSubject<Trip[]>;
+  @Input() public additionalData!: Trip[];
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public boardingList = ['Westhausen', 'Lauchheim', 'Hülen', 'Ebnat'];
 
+  public tripView!: string;
+
   public tripRegisterForm: FormGroup = this.formBuilder.group({
+    trip: [null, [Validators.required]],
     firstName: [null, Validators.required],
     lastName: [null, Validators.required],
     email: [null, [Validators.required, Validators.email]],
     phone: [null, [Validators.required]],
     amount: [null, [Validators.required]],
     additionalText: [null, [Validators.required]],
-    boardings: [null, [Validators.required]],
+    boarding: [null, [Validators.required]],
   });
 
   constructor(
     private formBuilder: FormBuilder,
     private tripRegistrationFormService: TripRegistrationFormServiceInterface
-  ) {}
+  ) {
+    // this.additionalData[0] = { destination: '', date: '' };
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.additionalData.length === 1) {
+      this.tripRegisterForm.patchValue({ trip: this.additionalData[0] });
+    }
+
+    // this.tripView = `${this.additionalData[0].destination} - ${this.additionalData[0].date}`;
+  }
 
   public hasError(field: string): boolean {
     // TODO Generalize error messages
@@ -61,13 +72,14 @@ export class TripRegistrationFormComponent implements OnInit {
       const formData: FormData = new FormData();
       // Add form group data to form data
       for (let field of TRIP_REGISTER_FORM_ELEMENTS) {
+        if (field.id === 'trip') {
+          const tripValue = this.tripRegisterForm.get(field.id)?.value;
+          formData.append('destination', tripValue.destination);
+          formData.append('date', tripValue.date);
+        }
         formData.append(field.id, this.tripRegisterForm.get(field.id)?.value);
       }
 
-      // Add trip destination and trip date to form data
-      for (let key of ['destination', 'date']) {
-        formData.append(key, this.additionalData[key as keyof TripDetails]);
-      }
       if (formData) {
         this.onSubmit.emit(true);
         this.tripRegistrationFormService.sendFormToSheetsIo(formData);

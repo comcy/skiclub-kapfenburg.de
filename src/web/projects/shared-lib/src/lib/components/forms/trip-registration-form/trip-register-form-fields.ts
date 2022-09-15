@@ -2,6 +2,13 @@ import { TripRegisterFormElements } from './trip-registration-form.interfaces';
 
 export const TRIP_REGISTER_FORM_ELEMENTS: TripRegisterFormElements[] = [
   {
+    id: 'trip',
+    label: 'Ausfahrt',
+    validation: [{ type: 'required', message: 'is required' }],
+    fullWidth: true,
+    cols: 2,
+  },
+  {
     id: 'firstName',
     label: 'Vorname',
     validation: [{ type: 'required', message: 'is required' }],
@@ -45,7 +52,7 @@ export const TRIP_REGISTER_FORM_ELEMENTS: TripRegisterFormElements[] = [
     cols: 2,
   },
   {
-    id: 'boardings',
+    id: 'boarding',
     label: 'Zustieg',
     validation: [{ type: 'required', message: 'is required' }],
     fullWidth: true,
