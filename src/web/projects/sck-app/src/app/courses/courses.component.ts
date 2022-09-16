@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-courses',
@@ -19,5 +19,12 @@ export class CoursesComponent implements OnInit {
     }
 
     return this.email.hasError('email') ? 'Not a valid email' : '';
+  }
+
+  public onCourseRegistrationFormSubmit(success: boolean): void {
+    console.log('SUCCESS >>>> ', success);
+    if (success) {
+      console.log('SUCCESS clicked >>>> ', success);
+    }
   }
 }

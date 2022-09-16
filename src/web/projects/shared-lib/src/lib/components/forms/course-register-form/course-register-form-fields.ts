@@ -1,9 +1,9 @@
 import { BaseFormElements } from '../base/base.interfaces';
 
-export const TRIP_REGISTER_FORM_ELEMENTS: BaseFormElements[] = [
+export const COURSE_REGISTER_FORM_ELEMENTS: BaseFormElements[] = [
   {
-    id: 'trip',
-    label: 'Ausfahrt',
+    id: 'sportType',
+    label: 'Sportart',
     validation: [{ type: 'required', message: 'is required' }],
     fullWidth: true,
     cols: 2,
@@ -38,8 +38,8 @@ export const TRIP_REGISTER_FORM_ELEMENTS: BaseFormElements[] = [
     cols: 2,
   },
   {
-    id: 'amount',
-    label: 'Anzahl der Personen',
+    id: 'age',
+    label: 'Alter',
     validation: [{ type: 'required', message: 'is required' }],
     cols: 1,
   },
@@ -52,8 +52,8 @@ export const TRIP_REGISTER_FORM_ELEMENTS: BaseFormElements[] = [
     cols: 2,
   },
   {
-    id: 'boarding',
-    label: 'Zustieg',
+    id: 'level',
+    label: 'Könnerstufe',
     validation: [{ type: 'required', message: 'is required' }],
     fullWidth: true,
     cols: 2,
