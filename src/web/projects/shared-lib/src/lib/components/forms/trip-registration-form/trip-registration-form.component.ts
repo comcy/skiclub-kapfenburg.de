@@ -33,16 +33,12 @@ export class TripRegistrationFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private tripRegistrationFormService: TripRegistrationFormServiceInterface
-  ) {
-    // this.additionalData[0] = { destination: '', date: '' };
-  }
+  ) {}
 
   ngOnInit(): void {
     if (this.additionalData.length === 1) {
       this.tripRegisterForm.patchValue({ trip: this.additionalData[0] });
     }
-
-    // this.tripView = `${this.additionalData[0].destination} - ${this.additionalData[0].date}`;
   }
 
   public hasError(field: string): boolean {

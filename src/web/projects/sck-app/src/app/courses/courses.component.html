@@ -1,7 +1,15 @@
-<mat-toolbar class="page-header" id="content"> Ski- und Snowboardschule </mat-toolbar>
+<mat-toolbar>Ski- und Snowboardschule</mat-toolbar>
 
 <mat-tab-group>
+
+  <mat-tab label="Anmeldung">
+
+    <lib-course-register-form (onSubmit)="onCourseRegistrationFormSubmit($event)"></lib-course-register-form>
+
+  </mat-tab>
+
   <mat-tab label="Information">
+
     <div class="info-page">
       <h3>Vereinstätigkeit</h3>
       <p>
@@ -36,24 +44,6 @@
         informiert.
       </p>
     </div>
-  </mat-tab>
-  <mat-tab label="Anmeldung">
-    <div class="info-page">
-      <h3>Anmeldung</h3>
-      <p>This feature is in preparation</p>
 
-      <div class="example-container">
-        <mat-form-field appearance="fill">
-          <mat-label>Enter your email</mat-label>
-          <input
-            matInput
-            placeholder="pat@example.com"
-            [formControl]="email"
-            required
-          />
-          <mat-error *ngIf="email.invalid">{{ getErrorMessage() }}</mat-error>
-        </mat-form-field>
-      </div>
-    </div>
   </mat-tab>
 </mat-tab-group>

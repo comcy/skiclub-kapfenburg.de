@@ -21,6 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { TripRegisterDialogComponent } from './dialogs/trip-register-dialog/trip-register-dialog.component';
+import { CourseRegisterFormComponent } from './forms/course-register-form/course-register-form.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { TripRegisterDialogComponent } from './dialogs/trip-register-dialog/trip
     RegisterDialogComponent,
     TripRegistrationFormComponent,
     TripRegisterDialogComponent,
+    CourseRegisterFormComponent,
   ],
   imports: [
     CommonModule,
@@ -56,6 +58,7 @@ import { TripRegisterDialogComponent } from './dialogs/trip-register-dialog/trip
     RegisterDialogComponent,
     TripRegistrationFormComponent,
     TripRegisterDialogComponent,
+    CourseRegisterFormComponent,
   ],
 })
 export class ComponentsModule {}
