@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BaseRegistrationFormServiceInterface } from '../base/base.interfaces';
 import { COURSE_REGISTER_FORM_ELEMENTS } from './course-register-form-fields';
+import { CourseRegistrationFormServiceInterface } from './course-register-form.interfaces';
 
 @Component({
   selector: 'lib-course-register-form',
@@ -27,7 +27,7 @@ export class CourseRegisterFormComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private courseRegistrationFormService: BaseRegistrationFormServiceInterface
+    private courseRegistrationFormService: CourseRegistrationFormServiceInterface
   ) {}
 
   ngOnInit(): void {}

@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../../models/trip';
-import { BaseRegistrationFormServiceInterface } from '../base/base.interfaces';
 import { TRIP_REGISTER_FORM_ELEMENTS } from './trip-register-form-fields';
+import { TripRegistrationFormServiceInterface } from './trip-registration-form.interfaces';
 
 @Component({
   selector: 'lib-trip-registration-form',
@@ -16,7 +16,7 @@ export class TripRegistrationFormComponent implements OnInit {
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public boardingList = ['Westhausen', 'Lauchheim', 'Hülen', 'Ebnat'];
-
+  public isSending: boolean = false;
   public tripView!: string;
 
   public tripRegisterForm: FormGroup = this.formBuilder.group({
@@ -32,7 +32,7 @@ export class TripRegistrationFormComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private tripRegistrationFormService: BaseRegistrationFormServiceInterface
+    private tripRegistrationFormService: TripRegistrationFormServiceInterface
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +64,7 @@ export class TripRegistrationFormComponent implements OnInit {
   }
 
   public submit(): void {
+    this.isSending = true
     if (this.tripRegisterForm.valid) {
       const formData: FormData = new FormData();
       // Add form group data to form data
@@ -79,6 +80,7 @@ export class TripRegistrationFormComponent implements OnInit {
       if (formData) {
         this.onSubmit.emit(true);
         this.tripRegistrationFormService.sendFormToSheetsIo(formData);
+        this.isSending = false;
       } else {
         console.error('No data provided');
       }

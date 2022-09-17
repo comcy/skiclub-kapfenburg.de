@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {
-  BaseRegistrationFormServiceInterface,
   ComponentsModule,
+  CourseRegistrationFormServiceInterface,
+  TripRegistrationFormServiceInterface,
 } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,6 +32,7 @@ import {
 } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
 import { CourseRegistrationFormService, TripRegistrationFormService } from './services';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -61,14 +63,15 @@ import { CourseRegistrationFormService, TripRegistrationFormService } from './se
     MatGridListModule,
     MatCardModule,
     MatDialogModule,
+    MatSnackBarModule
   ],
   providers: [
     {
-      provide: BaseRegistrationFormServiceInterface,
+      provide: TripRegistrationFormServiceInterface,
       useClass: TripRegistrationFormService,
     },
     {
-      provide: BaseRegistrationFormServiceInterface,
+      provide: CourseRegistrationFormServiceInterface,
       useClass: CourseRegistrationFormService,
     },
     {
