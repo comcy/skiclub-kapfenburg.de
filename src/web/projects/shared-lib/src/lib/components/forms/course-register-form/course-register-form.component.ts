@@ -6,7 +6,7 @@ import { CourseRegistrationFormServiceInterface } from './course-registration-fo
 @Component({
   selector: 'lib-course-register-form',
   templateUrl: './course-register-form.component.html',
-  styleUrls: ['./course-register-form.component.css'],
+  styleUrls: ['./course-register-form.component.scss'],
 })
 export class CourseRegisterFormComponent implements OnInit {
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
