@@ -22,6 +22,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { TripRegisterDialogComponent } from './dialogs/trip-register-dialog/trip-register-dialog.component';
 import { CourseRegisterFormComponent } from './forms/course-register-form/course-register-form.component';
+import { MatToolbar, MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { CourseRegisterFormComponent } from './forms/course-register-form/course
     MatInputModule,
     MatGridListModule,
     MatSelectModule,
+    MatToolbarModule,
   ],
   exports: [
     HeaderComponent,

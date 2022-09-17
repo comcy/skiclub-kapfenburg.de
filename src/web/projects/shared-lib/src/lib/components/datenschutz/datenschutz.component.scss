@@ -6,7 +6,6 @@
 
 #datenschutz {
     display: block;
-    margin: 80px 0 80px 10px;
     overflow-wrap: break-word;
 
     li {
@@ -18,4 +17,8 @@
         padding-top: 6%;
         margin-bottom: 4px;
     }
+}
+
+.content {
+    margin: 16px 0 80px 16px;
 }
