@@ -1,5 +1,12 @@
+@use '@angular/material' as mat;
+
+.shadow {
+  @include mat.elevation(4);
+}
+
 .sidenav-container {
   height: 100%;
+
 }
 
 .sidenav {

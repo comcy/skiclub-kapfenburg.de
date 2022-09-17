@@ -1,47 +1,27 @@
-<mat-toolbar color="primary" id="main">
+<mat-toolbar color="primary" id="main" class="shadow">
   <span class="header-title" [routerLink]="'/home'">Skiclub Kapfenburg e.V.</span>
 
   <span class="spacer"></span>
 
-  <button
-    *ngIf="isHandset$ | async"
-    type="button"
-    aria-label="Toggle sidenav"
-    mat-icon-button
-    (click)="drawer.toggle()"
-  >
+  <button *ngIf="isHandset$ | async" type="button" aria-label="Toggle sidenav" mat-icon-button
+    (click)="drawer.toggle()">
     <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
   </button>
 
   <div *ngIf="!(isHandset$ | async)">
-    <a
-      *ngFor="let n of navItems"
-      mat-button
-      href="{{ n.route }}"
-      (click)="routeTo(n.route)"
-    >
+    <a *ngFor="let n of navItems" mat-button href="{{ n.route }}" (click)="routeTo(n.route)">
       {{ n.name }}
     </a>
   </div>
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
-    #drawer
-    class="sidenav"
-    fixedInViewport
-    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="false"
-  >
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list *ngFor="let n of navItems">
-      <a
-        mat-list-item
-        (click)="drawer.close()"
-        [routerLink]="[n.route]"
-        routerLinkActive="list-item-active"
-        >{{ n.name }}
+      <a mat-list-item (click)="drawer.close()" [routerLink]="[n.route]" routerLinkActive="list-item-active">{{ n.name
+        }}
       </a>
     </mat-nav-list>
   </mat-sidenav>
