@@ -1,3 +1,5 @@
+import { Injectable } from '@angular/core';
+
 export interface BaseFormElements {
   id: string;
   label: string;
@@ -11,4 +13,10 @@ export interface BaseFormElements {
 export interface BaseFormFieldValidation {
   type: string;
   message: string;
+}
+
+
+@Injectable()
+export abstract class BaseRegistrationFormServiceInterface {
+  public abstract sendFormToSheetsIo(formData: FormData): void;
 }
