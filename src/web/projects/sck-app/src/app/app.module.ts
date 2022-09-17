@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {
+  BaseRegistrationFormServiceInterface,
   ComponentsModule,
-  TripRegistrationFormServiceInterface,
 } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,8 +29,8 @@ import {
   MatDialogModule,
   MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material/dialog';
-import { TripRegistrationFormService } from './services/business/trip-registration-form.service';
 import { HttpClientModule } from '@angular/common/http';
+import { CourseRegistrationFormService, TripRegistrationFormService } from './services';
 
 @NgModule({
   declarations: [
@@ -64,8 +64,12 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   providers: [
     {
-      provide: TripRegistrationFormServiceInterface,
+      provide: BaseRegistrationFormServiceInterface,
       useClass: TripRegistrationFormService,
+    },
+    {
+      provide: BaseRegistrationFormServiceInterface,
+      useClass: CourseRegistrationFormService,
     },
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,

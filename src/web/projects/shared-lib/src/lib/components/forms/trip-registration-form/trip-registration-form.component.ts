@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../../models/trip';
+import { BaseRegistrationFormServiceInterface } from '../base/base.interfaces';
 import { TRIP_REGISTER_FORM_ELEMENTS } from './trip-register-form-fields';
-import { TripRegistrationFormServiceInterface } from './trip-registration-form-service.interface';
 
 @Component({
   selector: 'lib-trip-registration-form',
@@ -32,7 +32,7 @@ export class TripRegistrationFormComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private tripRegistrationFormService: TripRegistrationFormServiceInterface
+    private tripRegistrationFormService: BaseRegistrationFormServiceInterface
   ) {}
 
   ngOnInit(): void {
