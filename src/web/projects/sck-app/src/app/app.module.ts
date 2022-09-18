@@ -7,11 +7,11 @@ import {
 } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CoursesComponent } from './courses/courses.component';
-import { TripsComponent } from './trips/trips.component';
-import { HomeComponent } from './home/home.component';
-import { GymComponent } from './gym/gym.component';
-import { SiteNavigationComponent } from './site-navigation/site-navigation.component';
+import { CoursesComponent } from './components/courses/courses.component';
+import { TripsComponent } from './components/trips/trips.component';
+import { HomeComponent } from './components/home/home.component';
+import { GymComponent } from './components/gym/gym.component';
+import { SiteNavigationComponent } from './components/site-navigation/site-navigation.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -31,7 +31,10 @@ import {
   MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
-import { CourseRegistrationFormService, TripRegistrationFormService } from './services';
+import {
+  CourseRegistrationFormService,
+  TripRegistrationFormService,
+} from './services';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
@@ -63,7 +66,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatGridListModule,
     MatCardModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   providers: [
     {
