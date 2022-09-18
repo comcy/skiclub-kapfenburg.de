@@ -39,17 +39,17 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-# # INSTALL sshpass
-# - script: |
-#     sudo apt-get install -y sshpass
-#   displayName: 'Install sshpass' 
+# INSTALL sshpass
+- script: |
+    sudo apt-get install -y sshpass
+  displayName: 'Install sshpass' 
 
-# # Copy sshpass and scp
-# - script: |
-#     cd ${{ variables.PROJECT_DIST_PATH}}
-#     ls -al
-#     sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.FTP_DIST_PATH }}
-#   displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'  
+# Copy sshpass and scp
+- script: |
+    cd ${{ variables.PROJECT_DIST_PATH}}
+    ls -al
+    sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.SERVER_DIST_PATH }}
+  displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'  
 
 # - task: FtpUpload@2
 #   inputs:
@@ -65,16 +65,16 @@ steps:
 #     preservePaths: false
 #     trustSSL: true
 
-- task: FtpUpload@2
-  inputs:
-    credentialsOption: 'inputs'
-    serverUrl: 'ftps://$(SERVER_ADDRESS)'
-    username: '$(FTP_USER)'
-    password: '$(FTP_USER_PW)'
-    rootDirectory: '${{ variables.FTP_DIST_PATH }}'
-    filePatterns: '**'
-    remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
-    clean: false
-    cleanContents: false
-    preservePaths: false
-    trustSSL: false
+# - task: FtpUpload@2
+#   inputs:
+#     credentialsOption: 'inputs'
+#     serverUrl: 'ftps://$(SERVER_ADDRESS)'
+#     username: '$(FTP_USER)'
+#     password: '$(FTP_USER_PW)'
+#     rootDirectory: '${{ variables.FTP_DIST_PATH }}'
+#     filePatterns: '**'
+#     remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
+#     clean: false
+#     cleanContents: false
+#     preservePaths: false
+#     trustSSL: false
