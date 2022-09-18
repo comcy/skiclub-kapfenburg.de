@@ -68,7 +68,7 @@ steps:
 - task: FtpUpload@2
   inputs:
     credentialsOption: 'inputs'
-    serverUrl: 'ftps://$(FTP_SERVER)'
+    serverUrl: 'ftps://$(SERVER_ADDRESS)'
     username: '$(FTP_USER)'
     password: '$(FTP_USER_PW)'
     rootDirectory: '${{ variables.FTP_DIST_PATH }}'
