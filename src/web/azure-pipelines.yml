@@ -39,15 +39,28 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-# INSTALL sshpass
-- script: |
-    sudo apt-get install -y sshpass
-  displayName: 'Install sshpass'  
+# # INSTALL sshpass
+# - script: |
+#     sudo apt-get install -y sshpass
+#   displayName: 'Install sshpass' 
 
-# Copy sshpass and scp
-- script: |
-    cd ${{ variables.PROJECT_DIST_PATH}}
-    ls -al
-    sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.FTP_DIST_PATH }}
-  displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'  
+# # Copy sshpass and scp
+# - script: |
+#     cd ${{ variables.PROJECT_DIST_PATH}}
+#     ls -al
+#     sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.FTP_DIST_PATH }}
+#   displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'  
 
+- task: FtpUpload@2
+  inputs:
+    credentialsOption: 'inputs'
+    serverUrl: '$(SERVER_ADDRESS)'
+    username: '$(SSH_USER)'
+    password: '$(SSH_PASSWORD)'
+    rootDirectory: '${{ variables.PROJECT_DIST_PATH}}'
+    filePatterns: '**'
+    remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
+    clean: true
+    cleanContents: true
+    preservePaths: false
+    trustSSL: true
