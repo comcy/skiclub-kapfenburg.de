@@ -17,10 +17,13 @@
     max-width: 360px;
     margin-bottom: 24px;
   }
-  
+
   .card-header-image {
     // background-image: url('../../assets/img/comcy_bit.png');
     background-size: cover;
+  }
+  .card-date {
+    color: #3f51b5;
   }
 
   .actions {

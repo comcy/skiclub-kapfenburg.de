@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lib-register-dialog',
@@ -9,12 +8,14 @@ import { Observable } from 'rxjs';
 })
 export class RegisterDialogComponent implements OnInit {
   @Input() title?: string;
+  @Input() share?: boolean;
   @Input() registerForm?: boolean;
 
   constructor(private dialogRef: MatDialogRef<RegisterDialogComponent>) {}
 
   ngOnInit(): void {
     this.registerForm = false;
+    this.share = false;
   }
 
   public close() {

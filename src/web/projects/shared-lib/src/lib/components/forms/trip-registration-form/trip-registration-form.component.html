@@ -4,7 +4,7 @@
       <mat-label>Ausfahrt</mat-label>
       <mat-select formControlName="trip">
         <mat-option *ngFor="let trip of additionalData" [value]="trip"
-          >{{ trip.destination }} - {{ trip.date }}
+          >{{ trip.date }} - {{ trip.destination }}
         </mat-option>
       </mat-select>
     </mat-form-field>

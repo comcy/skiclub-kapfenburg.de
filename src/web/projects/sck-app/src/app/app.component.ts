@@ -16,4 +16,8 @@ export class AppComponent {
     { name: 'Gymnastik', route: GYM_ROUTE },
   ];
 
+  constructor() {
+
+  }
+
 }

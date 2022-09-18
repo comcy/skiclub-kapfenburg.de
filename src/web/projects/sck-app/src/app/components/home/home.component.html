@@ -8,7 +8,8 @@
           <div *ngIf="t.avatar" mat-card-avatar class="card-header-image">
             <img mat-card-avatar src="{{t.avatar}}" />
           </div>
-          <mat-card-title>{{t.title}}</mat-card-title>
+          <mat-card-title class="card-date">{{t.date}}</mat-card-title>
+          <mat-card-title style="white-space:pre-wrap" [innerHTML]="t.title"></mat-card-title>
           <mat-card-subtitle>{{t.subTitle}}</mat-card-subtitle>
         </mat-card-header>
         <img mat-card-image src="{{t.image}}" alt="{{t.imageDescription}}" />
@@ -20,7 +21,7 @@
             <button *ngSwitchCase="tileActionsEnum.Register" mat-button (click)="openRegisterDialog(t)">{{ registerLabel
               }}
             </button>
-            <button *ngSwitchCase="tileActionsEnum.Share" mat-button (click)="openShareDialog()">
+            <button *ngSwitchCase="tileActionsEnum.Share" mat-button (click)="openShareDialog(t)">
               <mat-icon>share</mat-icon>
             </button>
           </ng-container>
