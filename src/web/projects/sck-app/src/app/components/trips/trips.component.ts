@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Tile, TileActions } from 'projects/shared-lib/src/lib/models';
 import { Trip } from 'projects/shared-lib/src/lib/models/trip';
+import { TRIP_DATA } from '../../trip-data';
 
 @Component({
   selector: 'app-trips',
@@ -7,24 +9,17 @@ import { Trip } from 'projects/shared-lib/src/lib/models/trip';
   styleUrls: ['./trips.component.scss'],
 })
 export class TripsComponent implements OnInit {
-  public trips: Trip[] = [
-    {
-      destination: 'Lermoos',
-      date: '15.01.2023',
-    },
-    {
-      destination: 'B',
-      date: '12.02.2023',
-    },
-    {
-      destination: 'C',
-      date: '12.04.2024',
-    },
-  ];
+  public tripData: Tile[] = TRIP_DATA;
+  public trips: Trip[] = [];
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    for (let t of this.tripData) {
+      if (t.actions?.includes(TileActions.Register))
+        this.trips.push({ destination: t.title, date: t.date });
+    }
+  }
 
   public onTripRegistrationFormSubmit(success: boolean): void {
     console.log('SUCCESS >>>> ', success);

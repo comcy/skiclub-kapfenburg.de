@@ -24,6 +24,7 @@ import { TripRegisterDialogComponent } from './dialogs/trip-register-dialog/trip
 import { CourseRegisterFormComponent } from './forms/course-register-form/course-register-form.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { ShareDialogComponent } from './dialogs/share-dialog/share-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     TripRegistrationFormComponent,
     TripRegisterDialogComponent,
     CourseRegisterFormComponent,
+    ShareDialogComponent,
   ],
   imports: [
     CommonModule,
