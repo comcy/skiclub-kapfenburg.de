@@ -54,7 +54,7 @@ steps:
 - task: FtpUpload@2
   inputs:
     credentialsOption: 'inputs'
-    serverUrl: '$(SERVER_ADDRESS)'
+    serverUrl: 'ftps://$(SERVER_ADDRESS)'
     username: '$(SSH_USER)'
     password: '$(SSH_PASSWORD)'
     rootDirectory: '${{ variables.PROJECT_DIST_PATH}}'
