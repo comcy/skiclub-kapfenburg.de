@@ -59,7 +59,7 @@ steps:
     password: '$(SSH_PASSWORD)'
     rootDirectory: '${{ variables.PROJECT_DIST_PATH}}'
     filePatterns: '**'
-    remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
+    remoteDirectory: '${{ variables.SERVER_DIST_PATH }}'
     clean: true
     cleanContents: true
     preservePaths: false
