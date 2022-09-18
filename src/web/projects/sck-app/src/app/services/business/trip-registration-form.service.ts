@@ -8,16 +8,16 @@ const SHEET_API_URL =
   'https://sheetdb.io/api/v1/hf90pdiqf0sw4';
 
 @Injectable()
-export class TripRegistrationFormService implements TripRegistrationFormServiceInterface {
-  constructor(private http: HttpClient) {
-  }
+export class TripRegistrationFormService
+  implements TripRegistrationFormServiceInterface
+{
+  constructor(private http: HttpClient) {}
 
   /**
    *
    * @param tripRegisterForm
    */
   sendFormToSheetsIo(formData: FormData) {
-    console.log('>>> https://sheetdb.io/api/v1/hf90pdiqf0sw4')
     this.http.post(SHEET_API_URL, formData).subscribe({
       next: (response) => console.log(response),
       error: (error) => console.log(error),

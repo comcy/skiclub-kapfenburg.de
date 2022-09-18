@@ -16,17 +16,13 @@ export class HeaderComponent implements OnInit {
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
 
-  ngOnInit(): void {
-
-    console.log('>>>> ', this.navItems);
-
-  }
+  ngOnInit(): void {}
 
   routerHome() {
     this.router.navigateByUrl('');
   }
 
   routeTo(routeLink: string) {
-    this.router.navigate([routeLink], { relativeTo: this.activatedRoute});
+    this.router.navigate([routeLink], { relativeTo: this.activatedRoute });
   }
 }
