@@ -64,4 +64,3 @@ steps:
     cleanContents: true
     preservePaths: false
     trustSSL: true
-appendCommitMessageToRunName:
