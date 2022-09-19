@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build sck-app --prod --base-href /",
+    "build": "ng build sck-app --prod --base-href stage/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
