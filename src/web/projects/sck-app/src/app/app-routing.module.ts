@@ -49,10 +49,15 @@ const routes: Routes = [
     pathMatch: 'full',
     redirectTo: HOME_ROUTE,
   },
+  {
+    path: '**',
+    pathMatch: 'full',
+    redirectTo: HOME_ROUTE,
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {useHash: true})],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
