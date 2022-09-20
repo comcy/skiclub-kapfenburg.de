@@ -9,7 +9,7 @@
   </button>
 
   <div *ngIf="!(isHandset$ | async)">
-    <a *ngFor="let n of navItems" mat-button href="{{ n.route }}" (click)="routeTo(n.route)">
+    <a *ngFor="let n of navItems" mat-button (click)="routeTo(n.route)">
       {{ n.name }}
     </a>
   </div>
