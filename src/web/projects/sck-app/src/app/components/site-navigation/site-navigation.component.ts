@@ -26,9 +26,6 @@ export class SiteNavigationComponent {
 
   @Input() navItems: NavigationItem[] = [];
 
-  ngOnInit(): void {
-    console.log('>>>> ', this.navItems);
-  }
 
   routerHome() {
     this.router.navigateByUrl('');
