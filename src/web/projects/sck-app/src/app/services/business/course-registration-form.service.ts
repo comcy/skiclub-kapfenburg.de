@@ -12,9 +12,9 @@ const SHEET_API_URL =
 export class CourseRegistrationFormService
   implements CourseRegistrationFormServiceInterface
 {
-  private successMessage: string =
+  private readonly successMessage: string =
     'Ihre Anghaben wurden übertragen. Bitte kontaktieren Sie uns telefonisch falls Sie in den nächsten 3 Tagen keine Bestätighung per Mail erhalten haben.';
-  private errorMessage: string =
+  private readonly errorMessage: string =
     'Beim Versand Ihrer Angaben ist ein Fehler aufgetreten. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal. Falls die Propbleme weiterhin bestehen nehmen Sie bitte telefonisch Kontakt mit uns auf.';
   private snackAction: string = 'Ok';
 

@@ -58,12 +58,9 @@ export class CourseRegisterFormComponent implements OnInit {
     if (this.courseRegisterForm.valid) {
       const formData: FormData = new FormData();
       // Add form group data to form data
+      const timestamp = Date.now()
+      formData.append('timestamp', new Date(timestamp).toLocaleString());
       for (let field of COURSE_REGISTER_FORM_ELEMENTS) {
-        if (field.id === 'trip') {
-          const tripValue = this.courseRegisterForm.get(field.id)?.value;
-          formData.append('destination', tripValue.destination);
-          formData.append('date', tripValue.date);
-        }
         formData.append(field.id, this.courseRegisterForm.get(field.id)?.value);
       }
 

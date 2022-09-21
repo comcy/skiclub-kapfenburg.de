@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TripRegistrationFormServiceInterface } from 'projects/shared-lib/src/lib/components/forms';
 
 const SHEET_API_URL =
@@ -11,7 +12,15 @@ const SHEET_API_URL =
 export class TripRegistrationFormService
   implements TripRegistrationFormServiceInterface
 {
-  constructor(private http: HttpClient) {}
+
+  private readonly successMessage: string =
+    'Ihre Anghaben wurden übertragen. Bitte kontaktieren Sie uns telefonisch falls Sie in den nächsten 3 Tagen keine Bestätighung per Mail erhalten haben.';
+  private readonly errorMessage: string =
+    'Beim Versand Ihrer Angaben ist ein Fehler aufgetreten. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal. Falls die Propbleme weiterhin bestehen nehmen Sie bitte telefonisch Kontakt mit uns auf.';
+  private snackAction: string = 'Ok';
+
+
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
   /**
    *
@@ -19,8 +28,14 @@ export class TripRegistrationFormService
    */
   sendFormToSheetsIo(formData: FormData) {
     this.http.post(SHEET_API_URL, formData).subscribe({
-      next: (response) => console.log(response),
-      error: (error) => console.log(error),
+      next: (response) => {
+        console.log(response);
+        this.snackBar.open(this.successMessage, this.snackAction);
+      },
+      error: (error) => {
+        console.log(error);
+        this.snackBar.open(this.errorMessage, this.snackAction);
+      },
     });
   }
 }
