@@ -68,6 +68,8 @@ export class TripRegistrationFormComponent implements OnInit {
     if (this.tripRegisterForm.valid) {
       const formData: FormData = new FormData();
       // Add form group data to form data
+      const timestamp = Date.now()
+      formData.append('timestamp', new Date(timestamp).toLocaleString());
       for (let field of TRIP_REGISTER_FORM_ELEMENTS) {
         if (field.id === 'trip') {
           const tripValue = this.tripRegisterForm.get(field.id)?.value;
