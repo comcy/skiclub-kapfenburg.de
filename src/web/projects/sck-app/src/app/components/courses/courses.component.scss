@@ -7,3 +7,18 @@
   padding: 32px;
   font-size: 12pt;
 }
+
+
+.price-overview {
+  padding: 16px;  
+}
+
+.price-table {
+  padding: 32px 128px 64px 128px; 
+}
+
+.price-values-table {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
