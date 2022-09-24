@@ -22,21 +22,21 @@ export interface PriceSplitByBySportType {
 }
 
 export enum PriceMapping {
-  Pass = 'pass',
-  BusAndPass = 'busAndPass',
-  Bus = 'bus',
-  CourseAtHome = 'courseAtHome',
-  CourseOnTravel = 'courseOnTravel',
+  Pass = 'Skipass',
+  BusAndPass = 'Bus und Skipass',
+  Bus = 'Bus',
+  CourseAtHome = 'Kurse im heimischen Gelände',
+  CourseOnTravel = 'Kurse bei den Ausfahrten',
 }
 
 export enum PriceClubMemberStatus {
-  Member = 'member',
-  All = 'all',
+  Member = 'Mitglieder',
+  All = 'Nichtmitglieder',
 }
 
 export enum PriceAgeGroup {
-  All = 'all',
-  Adult = 'adult',
-  Teenager = 'teenager',
-  Child = 'child',
+  All = 'Alle',
+  Adult = 'Erwachsene',
+  Teenager = 'Jugendliche',
+  Child = 'Kinder',
 }
