@@ -39,4 +39,24 @@
     </div>
 
   </mat-tab>
+
+  <mat-tab label="Preise">
+    <div class="info-page">
+
+      <div class="price-overview">
+
+        <h2>Busfahrt (ohne Skipass)</h2>
+
+        <div *ngFor="let g of busOnlyPrice.ageGroup" class="price-table__group labels__top">
+          <div *ngFor="let c of g.clubMemberStatus" class="price-table__group labels__sub">
+            <div>{{ c.value }}</div>
+          </div>
+        </div>
+
+        <h2>Busfahrt und Skipass</h2>
+
+      </div>
+    </div>
+
+  </mat-tab>
 </mat-tab-group>

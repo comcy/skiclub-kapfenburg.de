@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Tile, TileActions } from 'projects/shared-lib/src/lib/models';
+import { Price, Tile, TileActions } from 'projects/shared-lib/src/lib/models';
 import { Trip } from 'projects/shared-lib/src/lib/models/trip';
+import {
+  BUS_ONLY_PRICE_DATA,
+  COURSE_AT_HOME_PRICE_DATA,
+  COURSE_ON_TRAVEL_PRICE_DATA,
+} from '../../price-data';
 import { TRIP_DATA } from '../../trip-data';
 
 @Component({
@@ -11,6 +16,9 @@ import { TRIP_DATA } from '../../trip-data';
 export class TripsComponent implements OnInit {
   public tripData: Tile[] = TRIP_DATA;
   public trips: Trip[] = [];
+
+  public busOnlyPrice: Price = BUS_ONLY_PRICE_DATA;
+  public courseAtHomePrice: Price[] = COURSE_AT_HOME_PRICE_DATA;
 
   constructor() {}
 
