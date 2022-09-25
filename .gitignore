@@ -9,10 +9,16 @@
 
 # dependencies
 /node_modules
+node_modules
 
 # profiling files
 chrome-profiler-events*.json
 speed-measure-plugin*.json
+
+# angular
+.angular/
+src/web/.angular
+src/web/dist/
 
 # IDEs and editors
 /.idea
@@ -22,6 +28,7 @@ speed-measure-plugin*.json
 *.launch
 .settings/
 *.sublime-workspace
+.vscode/
 
 # IDE - VSCode
 .vscode/*
