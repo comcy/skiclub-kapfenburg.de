@@ -56,7 +56,6 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     visible: true,
   },
-
   {
     title: '15H-PARTYAUSFAHRT NACH LERMOOS, Ü18',
     date: '25. Februar 2023',
@@ -68,7 +67,6 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     visible: true,
   },
-
   {
     title: 'MONTAGSAUSFAHRT ANS FELLHORN',
     date: '06. März 2023',
