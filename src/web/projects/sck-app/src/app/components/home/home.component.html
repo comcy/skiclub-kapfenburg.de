@@ -1,0 +1,32 @@
+<mat-toolbar>{{title}}</mat-toolbar>
+
+<div class="content-container">
+  <div class="cards-grid">
+    <ng-container *ngFor="let t of tiles">
+      <mat-card *ngIf="t.visible" class="card">
+        <mat-card-header>
+          <div *ngIf="t.avatar" mat-card-avatar class="card-header-image">
+            <img mat-card-avatar src="{{t.avatar}}" />
+          </div>
+          <mat-card-title class="card-date">{{t.date}}</mat-card-title>
+          <mat-card-title style="white-space:pre-wrap" [innerHTML]="t.title"></mat-card-title>
+          <mat-card-subtitle>{{t.subTitle}}</mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image src="{{t.image}}" alt="{{t.imageDescription}}" />
+        <mat-card-content>
+          <p>{{t.text}}</p>
+        </mat-card-content>
+        <mat-card-actions class="actions">
+          <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
+            <button *ngSwitchCase="tileActionsEnum.Register" mat-button (click)="openRegisterDialog(t, boardings)">
+              {{ registerLabel }}
+            </button>
+            <button *ngSwitchCase="tileActionsEnum.Share" mat-button (click)="openShareDialog(t)">
+              <mat-icon>share</mat-icon>
+            </button>
+          </ng-container>
+        </mat-card-actions>
+      </mat-card>
+    </ng-container>
+  </div>
+</div>

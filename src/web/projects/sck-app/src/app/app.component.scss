@@ -1,0 +1,31 @@
+@use "@angular/material" as mat;
+// @import "../../../shared-lib/src/lib/styles/variables";
+
+:host {
+  overflow: auto;
+  height: 100%;
+}
+
+.mail-link {
+  a {
+    text-decoration: none !important;
+    color: black;
+  }
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 10;
+
+  @include mat.elevation(5);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.small-spacer {
+  padding: 8pt;
+}

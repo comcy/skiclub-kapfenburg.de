@@ -1,0 +1,107 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  batch: true
+  branches:
+    include: 
+    - '*'   
+
+variables:
+- name: PROJECT_PATH
+  value: 'src/web/'
+
+- name: PROJECT_ENV_PATH_API
+  value: 'projects/sck-app/src/environments/environment.api.ts'
+
+- name: PROJECT_ENV_PATH_PROD
+  value: 'projects/sck-app/src/environments/environment.prod.ts'
+
+
+- name: PROJECT_DIST_PATH
+  value: 'src/web/dist/sck-app/'
+
+- name: SERVER_DIST_PATH
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    value: '$(SERVER_DIST_PATH_BASE)'
+  ${{ else }}:
+    value: '$(SERVER_DIST_PATH_STAGE)'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Install Node.js'
+
+# ENV SUBSTITUTION
+- script: |
+    
+    cd ${{ variables.PROJECT_PATH}}
+    ls -al
+    echo "--------------------------------------------------------------"
+
+    export COURSE_SHEET_URL="$(COURSE_SHEET_URL)"
+    echo $COURSE_SHEET_URL
+
+    export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
+    echo $TRIP_SHEET_URL
+
+    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH_PROD }} >> ${{ variables.PROJECT_ENV_PATH_API}}
+
+    echo "--------------------------------------------------------------"
+    ls -al 
+    cat ${{ variables.PROJECT_ENV_PATH_API }}
+  displayName: 'environment substitution'
+
+# BUILD
+- script: |
+    cd ${{ variables.PROJECT_PATH}}
+    npm install -g @angular/cli
+    npm install
+    npm run build
+  displayName: 'npm install and build'
+
+# INSTALL sshpass
+- script: |
+    sudo apt-get install -y sshpass
+  displayName: 'Install sshpass' 
+
+# Copy sshpass and scp
+- script: |
+    cd ${{ variables.PROJECT_DIST_PATH}}
+    ls -al
+    sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.SERVER_DIST_PATH }}
+  displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'  
+
+# - task: FtpUpload@2
+#   inputs:
+#     credentialsOption: 'inputs'
+#     serverUrl: 'ftps://$(SERVER_ADDRESS)'
+#     username: '$(SSH_USER)'
+#     password: '$(SSH_PASSWORD)'
+#     rootDirectory: '${{ variables.PROJECT_DIST_PATH}}'
+#     filePatterns: '**'
+#     remoteDirectory: '${{ variables.SERVER_DIST_PATH }}'
+#     clean: true
+#     cleanContents: true
+#     preservePaths: false
+#     trustSSL: true
+
+# - task: FtpUpload@2
+#   inputs:
+#     credentialsOption: 'inputs'
+#     serverUrl: 'ftps://$(SERVER_ADDRESS)'
+#     username: '$(FTP_USER)'
+#     password: '$(FTP_USER_PW)'
+#     rootDirectory: '${{ variables.FTP_DIST_PATH }}'
+#     filePatterns: '**'
+#     remoteDirectory: '${{ variables.FTP_DIST_PATH }}'
+#     clean: false
+#     cleanContents: false
+#     preservePaths: false
+#     trustSSL: false
