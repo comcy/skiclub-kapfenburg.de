@@ -13,6 +13,9 @@ variables:
 - name: PROJECT_PATH
   value: 'src/web/'
 
+- name: PROJECT_ENV_PATH
+  value: 'projects/sck-app/src/environments/environment.prod.ts'
+
 - name: PROJECT_DIST_PATH
   value: 'src/web/dist/sck-app/'
 
@@ -30,6 +33,14 @@ steps:
   inputs:
     versionSpec: '16.x'
   displayName: 'Install Node.js'
+
+# ENV SUBSTITUTION
+- script: |
+    cd ${{ variables.PROJECT_PATH}}
+    export COURSE_SHEET_URL="$(COURSE_SHEET_URL)"
+    export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
+    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH}}
+    cat ${{ variables.PROJECT_ENV_PATH}}
 
 # BUILD
 - script: |
