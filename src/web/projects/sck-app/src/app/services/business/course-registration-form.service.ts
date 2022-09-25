@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { environment } from 'projects/sck-app/src/environments/environment.prod';
+import { environment } from 'projects/sck-app/src/environments/environment';
 import { CourseRegistrationFormServiceInterface } from 'projects/shared-lib/src/lib/components/forms';
 
 @Injectable()
