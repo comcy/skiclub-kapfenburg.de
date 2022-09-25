@@ -12,12 +12,13 @@ export class TripRegisterDialogComponent implements OnInit {
   @Output() public handleConfirmClicked: EventEmitter<boolean> =
     new EventEmitter<boolean>(false);
 
+  public dialogTitle!: string;
   public tripDetails$: BehaviorSubject<Trip> = new BehaviorSubject({
     destination: '',
     date: '',
   });
-  public dialogTitle!: string;
   public tripDetails!: Trip[];
+  public boardingList!: string[];
 
   constructor(
     private dialogRef: MatDialogRef<TripRegisterDialogComponent>,
@@ -29,7 +30,7 @@ export class TripRegisterDialogComponent implements OnInit {
     });
 
     this.dialogTitle = `${data.data.tile.title} - ${data.data.tile.date}`;
-
+    this.boardingList = data.data.boardingList;
     this.tripDetails = [
       {
         destination: data.data.tile.title,

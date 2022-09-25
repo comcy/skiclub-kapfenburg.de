@@ -2,6 +2,7 @@ import { SportType } from './sport-type';
 
 export interface Price {
   id: string;
+  label: PriceMapping;
   sportType?: PriceSplitByBySportType[];
   ageGroup?: PriceSplitByAgeGroup[];
 }
@@ -23,8 +24,8 @@ export interface PriceSplitByBySportType {
 
 export enum PriceMapping {
   Pass = 'Skipass',
-  BusAndPass = 'Bus und Skipass',
-  Bus = 'Bus',
+  BusAndPass = 'Busfahrt und Skipass',
+  Bus = 'Reine Busfahrt (ohne Skipass)',
   CourseAtHome = 'Kurse im heimischen Gelände',
   CourseOnTravel = 'Kurse bei den Ausfahrten',
 }

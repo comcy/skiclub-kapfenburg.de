@@ -18,8 +18,8 @@
         </mat-card-content>
         <mat-card-actions class="actions">
           <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
-            <button *ngSwitchCase="tileActionsEnum.Register" mat-button (click)="openRegisterDialog(t)">{{ registerLabel
-              }}
+            <button *ngSwitchCase="tileActionsEnum.Register" mat-button (click)="openRegisterDialog(t, boardings)">
+              {{ registerLabel }}
             </button>
             <button *ngSwitchCase="tileActionsEnum.Share" mat-button (click)="openShareDialog(t)">
               <mat-icon>share</mat-icon>

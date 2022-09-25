@@ -3,27 +3,41 @@
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Ausfahrt</mat-label>
       <mat-select formControlName="trip">
-        <mat-option *ngFor="let trip of additionalData" [value]="trip"
-          >{{ trip.date }} - {{ trip.destination }}
+        <mat-option *ngFor="let trip of additionalData" [value]="trip">{{ trip.date }} - {{ trip.destination }}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td>
-          <mat-form-field class="full-width" appearance="fill">
-            <mat-label>Vorname</mat-label>
-            <input matInput formControlName="firstName" />
-          </mat-form-field>
-        </td>
-        <td>
-          <mat-form-field class="full-width" appearance="fill">
-            <mat-label>Nachname</mat-label>
-            <input matInput formControlName="lastName" />
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
+
+    <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+      <table class="full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="full-width" appearance="fill">
+              <mat-label>Vorname</mat-label>
+              <input matInput formControlName="firstName" />
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="full-width" appearance="fill">
+              <mat-label>Nachname</mat-label>
+              <input matInput formControlName="lastName" />
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async)">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Vorname</mat-label>
+        <input matInput formControlName="firstName" />
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Nachname</mat-label>
+        <input matInput formControlName="lastName" />
+      </mat-form-field>
+    </div>
 
     <p>
       <mat-form-field class="full-width" appearance="fill">
@@ -40,28 +54,41 @@
       </mat-form-field>
     </p>
 
-    <table class="full-width" cellspacing="0">
-      <tr>
-        <td>
-          <mat-form-field class="full-width" appearance="fill">
-            <mat-label>Anzahl Personen</mat-label>
-            <input matInput formControlName="amount" value="1" />
-          </mat-form-field>
-        </td>
-        <td>
-          <mat-form-field class="full-width" appearance="fill">
-            <mat-label>Zustieg</mat-label>
-            <mat-select formControlName="boarding">
-              <mat-option
-                *ngFor="let boarding of boardingList"
-                [value]="boarding"
-                >{{ boarding }}</mat-option
-              >
-            </mat-select>
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
+    <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+      <table class="full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="full-width" appearance="fill">
+              <mat-label>Anzahl Personen</mat-label>
+              <input matInput formControlName="amount" value="1" />
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="full-width" appearance="fill">
+              <mat-label>Zustieg</mat-label>
+              <mat-select formControlName="boarding">
+                <mat-option *ngFor="let boarding of boardingList" [value]="boarding">{{ boarding }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async)">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Anzahl Personen</mat-label>
+        <input matInput formControlName="amount" value="1" />
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Zustieg</mat-label>
+        <mat-select formControlName="boarding">
+          <mat-option *ngFor="let boarding of boardingList" [value]="boarding">{{ boarding }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
     <p>
       <mat-form-field class="full-width" appearance="fill">
         <mat-label>Zusatzinformationen</mat-label>
@@ -72,12 +99,7 @@
       Bitte alle erfordelichen Felder (*) ausfüllen.
     </mat-error>
 
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="isSubmitDisabled()"
-    >
+    <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">
       Absenden
     </button>
     <mat-progress-spinner *ngIf="!isSending" class="example-margin" color="primary">

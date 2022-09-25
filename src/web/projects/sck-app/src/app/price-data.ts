@@ -11,6 +11,7 @@ import {
 export const BUS_ONLY_PRICE_DATA: Price = {
   // Nur Busfahrt
   id: PriceMapping.Bus,
+  label: PriceMapping.Bus,
   ageGroup: [
     {
       // Alle Altersgruppen
@@ -30,6 +31,7 @@ export const BUS_AND_PASS_PRICE_DATA: Price[] = [
   {
     // Busfahrt und Skipass
     id: PriceMapping.BusAndPass,
+    label: PriceMapping.BusAndPass,
     ageGroup: [
       {
         group: PriceAgeGroup.Adult,
@@ -84,6 +86,7 @@ export const COURSE_ON_TRAVEL_PRICE_DATA: Price[] = [
   // Kurspreise bei Ausfahrten
   {
     id: PriceMapping.CourseOnTravel,
+    label: PriceMapping.CourseOnTravel,
     ageGroup: [
       {
         // Alle
@@ -109,6 +112,7 @@ export const COURSE_AT_HOME_PRICE_DATA: Price[] = [
   // Kurspreise bei Ausfahrten
   {
     id: PriceMapping.CourseAtHome,
+    label: PriceMapping.CourseAtHome,
     sportType: [
       {
         // Snowboard
