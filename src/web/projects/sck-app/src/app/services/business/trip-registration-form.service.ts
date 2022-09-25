@@ -4,8 +4,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'projects/sck-app/src/environments/environment.prod';
 import { TripRegistrationFormServiceInterface } from 'projects/shared-lib/src/lib/components/forms';
 
-const SHEET_API_URL = 'https://sheetdb.io/api/v1/hf90pdiqf0sw4';
-
 @Injectable()
 export class TripRegistrationFormService
   implements TripRegistrationFormServiceInterface
@@ -35,3 +33,8 @@ export class TripRegistrationFormService
     });
   }
 }
+
+export const tripRegistrationServiceProvider =    {
+  provide: TripRegistrationFormServiceInterface,
+  useClass: TripRegistrationFormService,
+};

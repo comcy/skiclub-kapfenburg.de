@@ -33,7 +33,9 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import {
   CourseRegistrationFormService,
+  courseRegistrationServiceProvider,
   TripRegistrationFormService,
+  tripRegistrationServiceProvider,
 } from './services';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -69,14 +71,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatSnackBarModule,
   ],
   providers: [
-    {
-      provide: TripRegistrationFormServiceInterface,
-      useClass: TripRegistrationFormService,
-    },
-    {
-      provide: CourseRegistrationFormServiceInterface,
-      useClass: CourseRegistrationFormService,
-    },
+    tripRegistrationServiceProvider,
+    courseRegistrationServiceProvider,
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: { maxWidth: '90vw', hasBackdrop: true },

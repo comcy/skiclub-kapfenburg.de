@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  courseSheetUrl: '',
-  tripSheetUrl: '',
+  courseSheetUrl: 'https://sheetdb.io/api/v1/md2582mwb9jmk',
+  tripSheetUrl: 'https://sheetdb.io/api/v1/hf90pdiqf0sw4',
 };
 
 /*
