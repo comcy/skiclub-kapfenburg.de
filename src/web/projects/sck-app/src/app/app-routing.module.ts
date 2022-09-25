@@ -49,11 +49,11 @@ const routes: Routes = [
     pathMatch: 'full',
     redirectTo: HOME_ROUTE,
   },
-  {
-    path: '**',
-    pathMatch: 'full',
-    redirectTo: HOME_ROUTE,
-  },
+  // {
+  //   path: '**',
+  //   pathMatch: 'full',
+  //   redirectTo: HOME_ROUTE,
+  // },
 ];
 
 @NgModule({
