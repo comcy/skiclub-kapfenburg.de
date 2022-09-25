@@ -34,7 +34,7 @@ export class TripRegistrationFormService
   }
 }
 
-export const tripRegistrationServiceProvider =    {
+export const tripRegistrationServiceProvider = {
   provide: TripRegistrationFormServiceInterface,
   useClass: TripRegistrationFormService,
 };
