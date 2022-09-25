@@ -51,7 +51,7 @@
               ],
               "fileReplacements": [
                 {
-                  "replace": "projects/sck-app/src/environments/environment.ts",
+                  "replace": "projects/sck-app/src/environments/environment.api.ts",
                   "with": "projects/sck-app/src/environments/environment.prod.ts"
                 }
               ],
