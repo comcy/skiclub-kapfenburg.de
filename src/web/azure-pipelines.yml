@@ -39,10 +39,12 @@ steps:
     
     cd ${{ variables.PROJECT_PATH}}
     ls -al
+    echo "--------------------------------------------------------------"
     export COURSE_SHEET_URL="$(COURSE_SHEET_URL)"
     export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
     envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH }} > ${{ variables.PROJECT_ENV_PATH}}
-    ls -al
+    echo "--------------------------------------------------------------"
+    ls -al 
     cat ${{ variables.PROJECT_ENV_PATH }}
   displayName: 'environment substitution'
 
