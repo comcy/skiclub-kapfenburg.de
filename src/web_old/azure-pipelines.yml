@@ -14,7 +14,7 @@ variables:
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     value: '$(FTP_DIR_DIST)'
   ${{ else }}:
-    vlue '$(FTP_DIR_DIST_STAGE)'
+    value: '$(FTP_DIR_DIST_STAGE)'
 
 pool:
   vmImage: 'ubuntu-latest'
