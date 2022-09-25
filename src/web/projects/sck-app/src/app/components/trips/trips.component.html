@@ -4,7 +4,7 @@
 
   <mat-tab label="Anmeldung">
 
-    <lib-trip-registration-form (onSubmit)="onTripRegistrationFormSubmit($event)" [additionalData]="trips">
+    <lib-trip-registration-form [additionalData]="trips" [boardingList]="boardings">
     </lib-trip-registration-form>
 
   </mat-tab>
@@ -14,12 +14,11 @@
     <div class="info-page">
       <h3>Zustiegs- und Abfahrtszeiten</h3>
 
-      <p>
       <ul>
-        <li>Westhausen Turnhalle: 5:40 Uhr</li>
-        <li>Lauchheim Schule: 5:50 Uhr </li>
-        <li>Waldhausen Schlosserei Hermann: 6:00 Uhr</li>
-        <li>Ebnater Tennishalle: 6:10 Uhr</li>
+        <li>Westhausen Turnhalle - 5:40 Uhr</li>
+        <li>Lauchheim Schule - 5:50 Uhr </li>
+        <li>Hülen - 6:00 Uhr</li>
+        <li>Ebnater Tennishalle - 6:10 Uhr</li>
       </ul>
 
       <p>Rückkehr jeweils gegen 19 Uhr, wenn nicht anders angegeben</p>
@@ -45,18 +44,41 @@
 
       <div class="price-overview">
 
-        <h2>Busfahrt (ohne Skipass)</h2>
-
-        <div *ngFor="let g of busOnlyPrice.ageGroup" class="price-table__group labels__top">
-          <div *ngFor="let c of g.clubMemberStatus" class="price-table__group labels__sub">
+        <div class="labels__top">{{ busOnlyPrice.label }}</div>
+        <hr />
+        <div *ngFor="let g of busOnlyPrice.ageGroup" class="price-table__group">
+          <div *ngFor="let c of g.clubMemberStatus" class="price-table__values labels__values">
+            <div>Pauschale</div>
             <div>{{ c.value }}</div>
           </div>
         </div>
 
-        <h2>Busfahrt und Skipass</h2>
+      </div>
+
+      <div class="price-overview">
+
+        <div *ngFor="let p of busAndPassPrice" class="labels__top">
+          <div>{{ p.label }}</div>
+          <hr />
+          <div *ngFor="let g of p.ageGroup" class="price-table__group">
+            <div>{{ g.group }}</div>
+            <!-- <div *ngFor="let c of g.clubMemberStatus" class="price-table__group labels"> -->
+            <div *ngFor="let m of g.clubMemberStatus" class="price-table__values labels__values">
+              <div>{{m.clubMemberStatus}}</div>
+              <div>{{m.value}}</div>
+            </div>
+            <!-- </div> -->
+
+          </div>
+
+
+
+        </div>
 
       </div>
+
     </div>
+
 
   </mat-tab>
 </mat-tab-group>

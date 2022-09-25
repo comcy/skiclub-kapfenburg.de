@@ -49,7 +49,8 @@ export const TRIP_DATA: Tile[] = [
     title: 'TAGESAUSFAHRT NACH EHRWALD',
     date: '04. Februar 2023',
     subTitle: 'Tagesausfahrt',
-    image: 'https://cdn.pixabay.com/photo/2016/12/30/00/00/snow-park-1939642_960_720.jpg',
+    image:
+      'https://cdn.pixabay.com/photo/2016/12/30/00/00/snow-park-1939642_960_720.jpg',
     imageDescription: 'sample',
     text: 'Ein Skigebiet mit 27,5 km bestens präparierten und beschneiten Pisten. Außerdem beliebt bei Freeskiern und Boardern ist der Snowpark „Betterpark“.',
     actions: [TileActions.Register],
@@ -60,7 +61,8 @@ export const TRIP_DATA: Tile[] = [
     title: '15H-PARTYAUSFAHRT NACH LERMOOS, Ü18',
     date: '25. Februar 2023',
     subTitle: 'Tagesausfahrt',
-    image: 'https://cdn.pixabay.com/photo/2018/03/05/15/45/ski-3201017_960_720.jpg',
+    image:
+      'https://cdn.pixabay.com/photo/2018/03/05/15/45/ski-3201017_960_720.jpg',
     imageDescription: 'sample',
     text: 'Mit 40 Pistenkilometer bietet Lermoos sowohl für Skifahrer, als auch für Snowboarder ein vielfältiges Angebot inkl. Apres Ski, Rückfahrt 19:00 Uhr',
     actions: [TileActions.Register],
@@ -71,7 +73,8 @@ export const TRIP_DATA: Tile[] = [
     title: 'MONTAGSAUSFAHRT ANS FELLHORN',
     date: '06. März 2023',
     subTitle: 'Tagesausfahrt',
-    image: 'https://cdn.pixabay.com/photo/2014/12/31/02/59/skis-584600_960_720.jpg',
+    image:
+      'https://cdn.pixabay.com/photo/2014/12/31/02/59/skis-584600_960_720.jpg',
     imageDescription: 'sample',
     text: 'Inklusive Kaffee und Kuchen am Bus',
     actions: [TileActions.Register],
@@ -81,10 +84,18 @@ export const TRIP_DATA: Tile[] = [
     title: '2-TAGE „FREIE PISTENAUSFAHRT“ INS PITZTAL / HOCHZEIGER',
     date: '20. - 21. März 2023',
     subTitle: '2 Tage',
-    image: 'https://cdn.pixabay.com/photo/2012/12/21/07/20/skiing-71473_960_720.jpg',
+    image:
+      'https://cdn.pixabay.com/photo/2012/12/21/07/20/skiing-71473_960_720.jpg',
     imageDescription: 'sample',
     text: 'Eine Ausfahrt für Alle die unter der Woche Zeit haben und „freie Pisten“ lieben!',
     actions: [TileActions.Register],
     visible: true,
   },
+];
+
+export const BOARDING_LIST = [
+  'Westhausen Turnhalle (5:40 Uhr)',
+  'Lauchheim Schule (5:50 Uhr)',
+  'Hülen (6:00 Uhr)',
+  'Ebnater Tennishalle (6:10 Uhr)',
 ];

@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Price, Tile, TileActions } from 'projects/shared-lib/src/lib/models';
 import { Trip } from 'projects/shared-lib/src/lib/models/trip';
-import {
-  BUS_ONLY_PRICE_DATA,
-  COURSE_AT_HOME_PRICE_DATA,
-  COURSE_ON_TRAVEL_PRICE_DATA,
-} from '../../price-data';
-import { TRIP_DATA } from '../../trip-data';
+import { BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA } from '../../price-data';
+import { BOARDING_LIST, TRIP_DATA } from '../../trip-data';
 
 @Component({
   selector: 'app-trips',
@@ -18,7 +14,8 @@ export class TripsComponent implements OnInit {
   public trips: Trip[] = [];
 
   public busOnlyPrice: Price = BUS_ONLY_PRICE_DATA;
-  public courseAtHomePrice: Price[] = COURSE_AT_HOME_PRICE_DATA;
+  public busAndPassPrice: Price[] = BUS_AND_PASS_PRICE_DATA;
+  public boardings: string[] = BOARDING_LIST;
 
   constructor() {}
 
@@ -26,13 +23,6 @@ export class TripsComponent implements OnInit {
     for (let t of this.tripData) {
       if (t.actions?.includes(TileActions.Register))
         this.trips.push({ destination: t.title, date: t.date });
-    }
-  }
-
-  public onTripRegistrationFormSubmit(success: boolean): void {
-    console.log('SUCCESS >>>> ', success);
-    if (success) {
-      console.log('SUCCESS clicked >>>> ', success);
     }
   }
 }

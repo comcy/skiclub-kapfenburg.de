@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../../models/trip';
+import { BreakpointObserverService } from '../../../services';
 import { TRIP_REGISTER_FORM_ELEMENTS } from './trip-register-form-fields';
 import { TripRegistrationFormServiceInterface } from './trip-registration-form.interfaces';
 
@@ -13,9 +14,9 @@ import { TripRegistrationFormServiceInterface } from './trip-registration-form.i
 export class TripRegistrationFormComponent implements OnInit {
   @Input() public additionalData$!: BehaviorSubject<Trip[]>;
   @Input() public additionalData!: Trip[];
+  @Input() public boardingList!: string[];
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public boardingList = ['Westhausen', 'Lauchheim', 'Hülen', 'Ebnat'];
   public isSending: boolean = false;
   public tripView!: string;
 
@@ -32,7 +33,8 @@ export class TripRegistrationFormComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private tripRegistrationFormService: TripRegistrationFormServiceInterface
+    private tripRegistrationFormService: TripRegistrationFormServiceInterface,
+    public breakpointObserver: BreakpointObserverService
   ) {}
 
   ngOnInit(): void {
@@ -64,11 +66,11 @@ export class TripRegistrationFormComponent implements OnInit {
   }
 
   public submit(): void {
-    this.isSending = true
+    this.isSending = true;
     if (this.tripRegisterForm.valid) {
       const formData: FormData = new FormData();
       // Add form group data to form data
-      const timestamp = Date.now()
+      const timestamp = Date.now();
       formData.append('timestamp', new Date(timestamp).toLocaleString());
       for (let field of TRIP_REGISTER_FORM_ELEMENTS) {
         if (field.id === 'trip') {
