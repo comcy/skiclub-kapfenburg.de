@@ -42,7 +42,6 @@ steps:
 - script: |
     
     cd ${{ variables.PROJECT_PATH}}
-    ls -al
     echo "--------------------------------------------------------------"
 
     export COURSE_SHEET_URL="$(COURSE_SHEET_URL)"
@@ -51,10 +50,9 @@ steps:
     export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
     echo $TRIP_SHEET_URL
 
-    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH_PROD }} >> ${{ variables.PROJECT_ENV_PATH_API}}
+    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH_PROD }} > ${{ variables.PROJECT_ENV_PATH_API}}
 
     echo "--------------------------------------------------------------"
-    ls -al 
     cat ${{ variables.PROJECT_ENV_PATH_API }}
   displayName: 'environment substitution'
 
