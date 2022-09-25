@@ -47,7 +47,7 @@ steps:
     export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
     echo $TRIP_SHEET_URL
 
-    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH }} # > ${{ variables.PROJECT_ENV_PATH}}
+    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH }} >> ${{ variables.PROJECT_ENV_PATH}}
 
     echo "--------------------------------------------------------------"
     ls -al 
