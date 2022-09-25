@@ -13,8 +13,12 @@ variables:
 - name: PROJECT_PATH
   value: 'src/web/'
 
-- name: PROJECT_ENV_PATH
+- name: PROJECT_ENV_PATH_API
   value: 'projects/sck-app/src/environments/environment.api.ts'
+
+- name: PROJECT_ENV_PATH_PROD
+  value: 'projects/sck-app/src/environments/environment.prod.ts'
+
 
 - name: PROJECT_DIST_PATH
   value: 'src/web/dist/sck-app/'
@@ -47,11 +51,11 @@ steps:
     export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
     echo $TRIP_SHEET_URL
 
-    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH }} >> ${{ variables.PROJECT_ENV_PATH}}
+    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH_PROD }} >> ${{ variables.PROJECT_ENV_PATH_API}}
 
     echo "--------------------------------------------------------------"
     ls -al 
-    cat ${{ variables.PROJECT_ENV_PATH }}
+    cat ${{ variables.PROJECT_ENV_PATH_API }}
   displayName: 'environment substitution'
 
 # BUILD
