@@ -30,9 +30,7 @@
               "projects/sck-app/src/favicon.ico",
               "projects/sck-app/src/assets"
             ],
-            "styles": [
-              "projects/sck-app/src/styles.scss"
-            ],
+            "styles": ["projects/sck-app/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -64,6 +62,27 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "api": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/sck-app/src/environments/environment.api.ts",
+                  "with": "projects/sck-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
             }
           },
           "defaultConfiguration": "production"
