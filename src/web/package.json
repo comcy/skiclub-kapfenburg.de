@@ -4,8 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build sck-app --configuration=api",
-    "build:prod": "ng build sck-app --configuration=production",
+    "build": "ng build sck-app --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
