@@ -1,8 +1,5 @@
     echo "--------------------------------------------------------------"
 
-    ls -al
-
-
     export COURSE_SHEET_URL=$1
     echo $COURSE_SHEET_URL
 

@@ -40,23 +40,8 @@ steps:
 
 # ENV SUBSTITUTION
 - script: |
-
-
-    ls -al
     cd ${{ variables.PROJECT_PATH}}/scripts
     ./envsubst.sh "$(COURSE_SHEET_URL)" "$(TRIP_SHEET_URL)"
-
-
-    # export COURSE_SHEET_URL="$(COURSE_SHEET_URL)"
-    # echo $COURSE_SHEET_URL
-
-    # export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
-    # echo $TRIP_SHEET_URL
-
-    # envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH_PROD }} >> ${{ variables.PROJECT_ENV_PATH_API}}
-
-    # ls -al
-    # cat ${{ variables.PROJECT_ENV_PATH_API }}
   displayName: 'environment substitution'
 
 # BUILD
