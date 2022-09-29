@@ -7,8 +7,8 @@
     export TRIP_SHEET_URL=$2
     echo $TRIP_SHEET_URL
 
-    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < app-config.template.json >> app-config.prod.json
+    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ./projects/sck-app/src/environments/environment.template.ts > ./projects/sck-app/src/environments/environment.prod.ts
 
     echo "--------------------------------------------------------------"
 
-    cat app-config.template.json
+    cat ./projects/sck-app/src/environments/environment.prod.ts
