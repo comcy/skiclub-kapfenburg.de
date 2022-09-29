@@ -6,8 +6,8 @@
 trigger:
   batch: true
   branches:
-    include: 
-    - '*'   
+    include:
+    - '*'
 
 variables:
 - name: PROJECT_PATH
@@ -40,22 +40,23 @@ steps:
 
 # ENV SUBSTITUTION
 - script: |
-    
-    cd ${{ variables.PROJECT_PATH}}
+
+
     ls -al
-    echo "--------------------------------------------------------------"
+    cd ${{ variables.PROJECT_PATH}}/scripts
+    ./envsubst.sh "$(COURSE_SHEET_URL)" "$(TRIP_SHEET_URL)"
 
-    export COURSE_SHEET_URL="$(COURSE_SHEET_URL)"
-    echo $COURSE_SHEET_URL
 
-    export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
-    echo $TRIP_SHEET_URL
+    # export COURSE_SHEET_URL="$(COURSE_SHEET_URL)"
+    # echo $COURSE_SHEET_URL
 
-    envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH_PROD }} >> ${{ variables.PROJECT_ENV_PATH_API}}
+    # export TRIP_SHEET_URL="$(TRIP_SHEET_URL)"
+    # echo $TRIP_SHEET_URL
 
-    echo "--------------------------------------------------------------"
-    ls -al 
-    cat ${{ variables.PROJECT_ENV_PATH_API }}
+    # envsubst '${COURSE_SHEET_URL} ${TRIP_SHEET_URL}' < ${{ variables.PROJECT_ENV_PATH_PROD }} >> ${{ variables.PROJECT_ENV_PATH_API}}
+
+    # ls -al
+    # cat ${{ variables.PROJECT_ENV_PATH_API }}
   displayName: 'environment substitution'
 
 # BUILD
@@ -69,14 +70,14 @@ steps:
 # INSTALL sshpass
 - script: |
     sudo apt-get install -y sshpass
-  displayName: 'Install sshpass' 
+  displayName: 'Install sshpass'
 
 # Copy sshpass and scp
 - script: |
     cd ${{ variables.PROJECT_DIST_PATH}}
     ls -al
     sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.SERVER_DIST_PATH }}
-  displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'  
+  displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'
 
 # - task: FtpUpload@2
 #   inputs:
