@@ -49,7 +49,7 @@
               ],
               "fileReplacements": [
                 {
-                  "replace": "projects/sck-app/src/environments/environment.api.ts",
+                  "replace": "projects/sck-app/src/environments/environment.ts",
                   "with": "projects/sck-app/src/environments/environment.prod.ts"
                 }
               ],
