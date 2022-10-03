@@ -92,7 +92,7 @@
     <p>
       <mat-form-field class="full-width" appearance="fill">
         <mat-label>Zusatzinformationen</mat-label>
-        <textarea matInput formControlName="additionalText" rows="8"></textarea>
+        <textarea matInput formControlName="additionalText" rows="8" placeholder="Bei Auswahl von mehreren Personen bitte hier alle Namen einzeln aufzählen. Ansonsten: 0"></textarea>
       </mat-form-field>
     </p>
     <mat-error *ngIf="!tripRegisterForm.valid && tripRegisterForm.touched">
