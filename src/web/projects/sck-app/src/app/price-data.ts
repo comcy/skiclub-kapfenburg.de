@@ -44,7 +44,7 @@ export const BUS_AND_PASS_PRICE_DATA: Price[] = [
           {
             // Nichtmitgled / Alle
             clubMemberStatus: PriceClubMemberStatus.All,
-            value: '80 EURO',
+            value: '85 EURO',
           },
         ],
       },
@@ -59,7 +59,7 @@ export const BUS_AND_PASS_PRICE_DATA: Price[] = [
           {
             // Nichtmitgled / Alle
             clubMemberStatus: PriceClubMemberStatus.All,
-            value: '70 EURO',
+            value: '75 EURO',
           },
         ],
       },
