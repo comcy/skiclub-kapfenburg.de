@@ -6,8 +6,8 @@
 trigger:
   batch: true
   branches:
-    include: 
-    - '*'   
+    include:
+    - '*'
 
 variables:
 - name: PROJECT_PATH
@@ -40,6 +40,7 @@ steps:
 
 # ENV SUBSTITUTION
 - script: |
+<<<<<<< HEAD
     
     cd ${{ variables.PROJECT_PATH}}
     echo "--------------------------------------------------------------"
@@ -54,6 +55,10 @@ steps:
 
     echo "--------------------------------------------------------------"
     cat ${{ variables.PROJECT_ENV_PATH_API }}
+=======
+    cd ${{ variables.PROJECT_PATH}}/scripts
+    ./envsubst.sh "$(COURSE_SHEET_URL)" "$(TRIP_SHEET_URL)"
+>>>>>>> 6db69a067c7496584e5cf36d2b30f3b9a237ffb3
   displayName: 'environment substitution'
 
 # BUILD
@@ -67,14 +72,14 @@ steps:
 # INSTALL sshpass
 - script: |
     sudo apt-get install -y sshpass
-  displayName: 'Install sshpass' 
+  displayName: 'Install sshpass'
 
 # Copy sshpass and scp
 - script: |
     cd ${{ variables.PROJECT_DIST_PATH}}
     ls -al
     sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.SERVER_DIST_PATH }}
-  displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'  
+  displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'
 
 # - task: FtpUpload@2
 #   inputs:
