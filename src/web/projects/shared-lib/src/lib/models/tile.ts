@@ -9,6 +9,7 @@ export interface Tile {
   actions?: TileActions[];
   avatar?: string;
   visible?: boolean;
+  expiration: Date;
 }
 
 export enum TileActions {

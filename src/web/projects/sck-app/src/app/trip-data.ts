@@ -11,6 +11,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     visible: true,
+    expiration: new Date('2022-05-11')
   },
   {
     title: 'JUGEND- UND FAMILIEN-SKIFREIZEIT MIT LA-OELE',
@@ -22,6 +23,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Ziel ist das Oberallgäu mit Übernachtung im Jugendhaus „Elias“. Mit dem Hörnerskipass geht es in die Skigebiete Ofterschwang, Bolsterlang, Balderschwang und Grasgehren.',
     actions: [TileActions.Register],
     visible: true,
+    expiration: new Date('2022-12-27')
   },
   {
     title: 'SKI & SNOWBOARD KURSAUSFAHRT NACH JUNGHOLZ',
@@ -33,6 +35,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Für tolles Kursambiente sorgt das Snow Learnland und N‘Ice Bear Kinderland.',
     actions: [TileActions.Register],
     visible: true,
+    expiration: new Date('2023-01-15')
   },
   {
     title: 'LA-OELE 2-TAGES SKIAUSFAHRT',
@@ -44,6 +47,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Übernachtung im „Hotel Löwen“ in Feldkirch mit Halbpension, 2-Tages Skipass und Busfahrt ins Skigebiet „Vorarlberg - Sonnenkopf“',
     actions: [TileActions.Register],
     visible: true,
+    expiration: new Date('2023-01-21')
   },
   {
     title: 'TAGESAUSFAHRT NACH EHRWALD',
@@ -55,6 +59,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Ein Skigebiet mit 27,5 km bestens präparierten und beschneiten Pisten. Außerdem beliebt bei Freeskiern und Boardern ist der Snowpark „Betterpark“.',
     actions: [TileActions.Register],
     visible: true,
+    expiration: new Date('2023-02-04')
   },
   {
     title: '15H-PARTYAUSFAHRT NACH LERMOOS, Ü18',
@@ -66,6 +71,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Mit 40 Pistenkilometer bietet Lermoos sowohl für Skifahrer, als auch für Snowboarder ein vielfältiges Angebot inkl. Apres Ski, Rückfahrt 19:00 Uhr',
     actions: [TileActions.Register],
     visible: true,
+    expiration: new Date('2023-02-25')
   },
   {
     title: 'MONTAGSAUSFAHRT ANS FELLHORN',
@@ -77,6 +83,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Inklusive Kaffee und Kuchen am Bus',
     actions: [TileActions.Register],
     visible: true,
+    expiration: new Date('2023-03-06')
   },
   {
     title: '2-TAGE „FREIE PISTENAUSFAHRT“ INS PITZTAL / HOCHZEIGER',
@@ -88,6 +95,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Eine Ausfahrt für Alle die unter der Woche Zeit haben und „freie Pisten“ lieben!',
     actions: [TileActions.Register],
     visible: true,
+    expiration: new Date('2023-03-20')
   },
 ];
 

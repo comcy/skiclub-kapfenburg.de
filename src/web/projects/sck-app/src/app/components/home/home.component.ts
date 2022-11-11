@@ -16,12 +16,21 @@ export class HomeComponent implements OnInit {
   public title: string = 'Aktuelles';
   public tileActionsEnum: typeof TileActions = TileActions;
   public registerLabel: string = 'Anmelden';
-  public tiles: Tile[] = TRIP_DATA;
+  public tiles: Tile[] = [];
   public boardings: string[] = BOARDING_LIST;
+
+  private trips: Tile[] = TRIP_DATA;
 
   constructor(public dialog: MatDialog) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.trips.sort(
+      (a, b) => b.expiration.getTime() - a.expiration.getTime(),
+    );
+    this.tiles = this.trips;
+  }
+
+
 
   public openRegisterDialog(tile: Tile, boardingList: string[]) {
     let dialogConfig = new MatDialogConfig();
