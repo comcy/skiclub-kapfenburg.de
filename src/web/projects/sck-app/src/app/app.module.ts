@@ -36,6 +36,8 @@ import {
   tripRegistrationServiceProvider,
 } from './services';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CourseRegistrationComponent } from './components/courses/course-registration/course-registration.component';
+import { InformationComponent } from './components/courses/information/information.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     HomeComponent,
     SiteNavigationComponent,
     GymComponent,
+    CourseRegistrationComponent,
+    InformationComponent,
   ],
   imports: [
     BrowserModule,
