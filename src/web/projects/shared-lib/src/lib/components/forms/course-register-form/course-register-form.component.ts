@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BreakpointObserverService } from '../../../services';
 import { COURSE_REGISTER_FORM_ELEMENTS } from './course-register-form-fields';
 import { CourseRegistrationFormServiceInterface } from './course-register-form.interfaces';
 
@@ -27,7 +28,8 @@ export class CourseRegisterFormComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private courseRegistrationFormService: CourseRegistrationFormServiceInterface
+    private courseRegistrationFormService: CourseRegistrationFormServiceInterface,
+    public breakpointObserver: BreakpointObserverService
   ) {}
 
   ngOnInit(): void {}
@@ -58,7 +60,7 @@ export class CourseRegisterFormComponent implements OnInit {
     if (this.courseRegisterForm.valid) {
       const formData: FormData = new FormData();
       // Add form group data to form data
-      const timestamp = Date.now()
+      const timestamp = Date.now();
       formData.append('timestamp', new Date(timestamp).toLocaleString());
       for (let field of COURSE_REGISTER_FORM_ELEMENTS) {
         formData.append(field.id, this.courseRegisterForm.get(field.id)?.value);

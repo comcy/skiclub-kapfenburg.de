@@ -1,62 +1,64 @@
 .content {
-  padding-bottom: 48px;
+  padding-bottom: 72px;
+
+  .labels {
+
+    &__top {
+      font-size: 22px;
+    }
+
+    &__sub {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    &__values {
+      font-size: 16px;
+      font-weight: normal;
+    }
+
+  }
+  
 }
 
-.info-page {
-
+.tab-content {
   h3 {
     font-size: 16pt;
   }
 
-  // padding: 32px;
   font-size: 12pt;
-}
 
-.price-overview {
-  padding: 32px;
-  margin-top: 32px;  
-  background-color: rgb(236, 236, 236) ;
-}
+  padding-left: 32px;
+  padding-right: 32px;
+  padding-top: 32px;
 
-.labels {
+  .price-overview {
+    padding: 32px;
+    background-color: rgb(236, 236, 236);
 
-  &__top {
-    font-size: 22px;
-  }
-  
-  &__sub {
-    font-size: 18px;
-    font-weight: 500;
+    hr {
+      width: 100%;
+    }
   }
 
-  &__values{
-    font-size: 16px;
-    font-weight: normal;
-  }  
+  .price-table {
+    padding: 16px 16px 16px 16px;
 
-}
+    &__type {
+      padding-top: 32px;
+    }
 
+    &__group {
+      padding-top: 16px;
+    }
 
-.price-table {
-  padding: 16px 16px 16px 16px; 
+    &__values {
+      padding: 16px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
 
-  &__type {
-    padding-top: 32px;
   }
-  
-  &__group {  
-    padding-top: 16px;
-  }
 
-  &__values {
-    padding:16px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  
-}
-
-hr {
-  width: 100%;
 }

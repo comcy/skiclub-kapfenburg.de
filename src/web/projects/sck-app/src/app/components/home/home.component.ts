@@ -4,8 +4,13 @@ import {
   ShareDialogComponent,
   TripRegisterDialogComponent,
 } from 'projects/shared-lib/src/lib/components/dialogs';
-import { Tile, TileActions } from 'projects/shared-lib/src/lib/models';
+import {
+  Tile,
+  TileActions,
+  TileBehavior,
+} from 'projects/shared-lib/src/lib/models';
 import { BOARDING_LIST, TRIP_DATA } from '@data';
+import { PROGRAMM_DOWNLOAD_LINK } from 'projects/data/downloads';
 
 @Component({
   selector: 'app-home',
@@ -15,9 +20,11 @@ import { BOARDING_LIST, TRIP_DATA } from '@data';
 export class HomeComponent implements OnInit {
   public title: string = 'Aktuelles';
   public tileActionsEnum: typeof TileActions = TileActions;
+  public tileBehaviorEnum: typeof TileBehavior = TileBehavior;
   public registerLabel: string = 'Anmelden';
   public tiles: Tile[] = [];
   public boardings: string[] = BOARDING_LIST;
+  public programmDonwloadLink = PROGRAMM_DOWNLOAD_LINK;
 
   private trips: Tile[] = TRIP_DATA;
 

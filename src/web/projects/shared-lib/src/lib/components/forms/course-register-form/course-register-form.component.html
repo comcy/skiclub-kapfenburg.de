@@ -8,28 +8,40 @@
                 <mat-option *ngFor="let type of sportTypeList" [value]="type">{{ type }}
                 </mat-option>
             </mat-select>
-
-
         </mat-form-field>
-        <table class="full-width" cellspacing="0">
-            <tr>
-                <td>
-                    <mat-form-field class="full-width" appearance="fill">
-                        <mat-label>Vorname</mat-label>
-                        <input matInput formControlName="firstName">
-                    </mat-form-field>
-                </td>
-                <td>
-                    <mat-form-field class="full-width" appearance="fill">
-                        <mat-label>Nachname</mat-label>
-                        <input matInput formControlName="lastName">
-                    </mat-form-field>
-                </td>
-            </tr>
-        </table>
+
+        <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+            <table class="full-width" cellspacing="0">
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Vorname</mat-label>
+                            <input matInput formControlName="firstName" />
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Nachname</mat-label>
+                            <input matInput formControlName="lastName" />
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async)">
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Vorname</mat-label>
+                <input matInput formControlName="firstName" />
+            </mat-form-field>
+
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Nachname</mat-label>
+                <input matInput formControlName="lastName" />
+            </mat-form-field>
+        </div>
 
         <p>
-
             <mat-form-field class="full-width" appearance="fill">
                 <mat-label>E-Mail</mat-label>
                 <input matInput formControlName="email">
@@ -46,27 +58,43 @@
 
         </p>
 
-        <table class="full-width" cellspacing="0">
-            <tr>
-                <td>
-                    <mat-form-field class="full-width" appearance="fill">
-                        <mat-label>Alter</mat-label>
-                        <input matInput formControlName="age" value="1">
-                    </mat-form-field>
-                </td>
-                <td>
-                    <mat-form-field class="full-width" appearance="fill">
-                        <mat-label>Könnerstufe</mat-label>
-                        <mat-select formControlName="level">
-                            <mat-option *ngFor="let level of levelList" [value]="level">{{ level }}
-                            </mat-option>
-                        </mat-select>
+        <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+            <table class="full-width" cellspacing="0">
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Alter</mat-label>
+                            <input matInput formControlName="age" value="1">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Könnerstufe</mat-label>
+                            <mat-select formControlName="level">
+                                <mat-option *ngFor="let level of levelList" [value]="level">{{ level }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
+        <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async)">
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Alter</mat-label>
+                <input matInput formControlName="age" value="1">
+            </mat-form-field>
 
-                    </mat-form-field>
-                </td>
-            </tr>
-        </table>
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Könnerstufe</mat-label>
+                <mat-select formControlName="level">
+                    <mat-option *ngFor="let level of levelList" [value]="level">{{ level }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
         <p>
             <mat-form-field class="full-width" appearance="fill">
                 <mat-label>Zusatzinformationen</mat-label>
