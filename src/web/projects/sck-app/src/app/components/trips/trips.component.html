@@ -1,18 +1,25 @@
 <mat-toolbar>Ausfahrten</mat-toolbar>
 
 <div class="content">
-  <mat-tab-group>
+
+  <mat-tab-group class="tab-group">
 
     <mat-tab label="Anmeldung">
 
-      <lib-trip-registration-form [additionalData]="trips" [boardingList]="boardings">
-      </lib-trip-registration-form>
+      <div class="tab-content">
+
+        <lib-trip-registration-form [additionalData]="trips" [boardingList]="boardings">
+        </lib-trip-registration-form>
+
+      </div>
 
     </mat-tab>
 
     <mat-tab label="Informationen">
 
-      <div class="info-page">
+      <div class="tab-content">
+
+
         <h3>Zustiegs- und Abfahrtszeiten</h3>
 
         <ul>
@@ -24,24 +31,28 @@
 
         <p>Rückkehr jeweils gegen 19 Uhr, wenn nicht anders angegeben</p>
       </div>
+
     </mat-tab>
 
     <mat-tab label="Downloads">
 
-      <div class="info-page">
-        <h3>Einverständniserklärung</h3>
-        <p>Einverständniserklärung</p>
-      </div>
+      <div class="tab-content">
 
-      <div class="info-page">
-        <h3>Programm 2022 / 2023</h3>
-        <p>Download</p>
+        <div>
+          <h3>Einverständniserklärung</h3>
+          <p>Einverständniserklärung</p>
+        </div>
+
+        <div>
+          <h3>Programm 2022 / 2023</h3>
+          <p>Download</p>
+        </div>
       </div>
 
     </mat-tab>
 
     <mat-tab label="Preise">
-      <div class="info-page">
+      <div class="tab-content">
 
         <div class="price-overview">
 

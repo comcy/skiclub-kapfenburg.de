@@ -1,20 +1,26 @@
-import { Tile, TileActions } from 'projects/shared-lib/src/lib/models';
+import {
+  Tile,
+  TileActions,
+  TileBehavior,
+} from 'projects/shared-lib/src/lib/models';
 
 export const TRIP_DATA: Tile[] = [
   {
     order: 0,
-    title: 'Flyer',
-    date: 'Programm 2022 / 2023',
+    behavior: TileBehavior.Click,
+    title: 'SCK-Programm',
+    date: '',
     subTitle: 'Saison 2022 / 2023',
-    image: '../../../../assets/img/cards/skiboers.jpg',
+    image: '../../../../assets/img/cards/flyer_cover.png',
     imageDescription: 'sample',
-    text: '9:30 Uhr bis 11:30 Uhr Annahme // 13:00 Uhr bis 14:30 Uhr Verkauf // 14:30 Uhr bis 15:00 Uhr Abholung',
+    text: '',
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2023-12-31'),
   },
   {
     order: 1,
+    behavior: TileBehavior.View,
     title: 'Skibörse',
     date: '05. November 2022',
     subTitle: 'Altes Schulhaus Hülen',
@@ -27,6 +33,7 @@ export const TRIP_DATA: Tile[] = [
   },
   {
     order: 2,
+    behavior: TileBehavior.View,
     title: 'JUGEND- UND FAMILIEN-SKIFREIZEIT MIT LA-OELE',
     date: '27. -30. Dezember 2022',
     subTitle: '4 Tage',
@@ -39,6 +46,7 @@ export const TRIP_DATA: Tile[] = [
   },
   {
     order: 2,
+    behavior: TileBehavior.View,
     title: 'SKI & SNOWBOARD KURSAUSFAHRT NACH JUNGHOLZ',
     date: '15. Januar 2023',
     subTitle: 'Tagesausfahrt',
@@ -51,6 +59,7 @@ export const TRIP_DATA: Tile[] = [
   },
   {
     order: 2,
+    behavior: TileBehavior.View,
     title: 'LA-OELE 2-TAGES SKIAUSFAHRT',
     date: '21. - 22. Januar 2023',
     subTitle: '2 Tage',
@@ -63,6 +72,7 @@ export const TRIP_DATA: Tile[] = [
   },
   {
     order: 2,
+    behavior: TileBehavior.View,
     title: 'TAGESAUSFAHRT NACH EHRWALD',
     date: '04. Februar 2023',
     subTitle: 'Tagesausfahrt',
@@ -75,6 +85,7 @@ export const TRIP_DATA: Tile[] = [
   },
   {
     order: 2,
+    behavior: TileBehavior.View,
     title: '15H-PARTYAUSFAHRT NACH LERMOOS, Ü18',
     date: '25. Februar 2023',
     subTitle: 'Tagesausfahrt',
@@ -87,6 +98,7 @@ export const TRIP_DATA: Tile[] = [
   },
   {
     order: 2,
+    behavior: TileBehavior.View,
     title: 'MONTAGSAUSFAHRT ANS FELLHORN',
     date: '06. März 2023',
     subTitle: 'Tagesausfahrt',
@@ -99,6 +111,7 @@ export const TRIP_DATA: Tile[] = [
   },
   {
     order: 2,
+    behavior: TileBehavior.View,
     title: '2-TAGE „FREIE PISTENAUSFAHRT“ INS PITZTAL / HOCHZEIGER',
     date: '20. - 21. März 2023',
     subTitle: '2 Tage',

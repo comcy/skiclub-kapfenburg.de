@@ -11,10 +11,15 @@ export interface Tile {
   visible?: boolean;
   expired?: boolean;
   expiration: Date;
+  behavior: TileBehavior;
 }
 
 export enum TileActions {
   Share = 'share',
   Register = 'register',
-  Download = 'download',
+}
+
+export enum TileBehavior {
+  View = 'view',
+  Click = 'click',
 }
