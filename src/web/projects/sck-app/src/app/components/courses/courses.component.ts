@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Price } from 'projects/shared-lib/src/lib/models';
-import {
-  COURSE_AT_HOME_PRICE_DATA,
-  COURSE_ON_TRAVEL_PRICE_DATA,
-} from '../../price-data';
+import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
 
 @Component({
   selector: 'app-courses',

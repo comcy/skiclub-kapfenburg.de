@@ -32,9 +32,7 @@ import {
 } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
 import {
-  CourseRegistrationFormService,
   courseRegistrationServiceProvider,
-  TripRegistrationFormService,
   tripRegistrationServiceProvider,
 } from './services';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -73,10 +71,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   providers: [
     tripRegistrationServiceProvider,
     courseRegistrationServiceProvider,
-    {
-      provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: { maxWidth: '90vw', hasBackdrop: true },
-    },
+    // {
+    //   provide: MAT_DIALOG_DEFAULT_OPTIONS,
+    //   useValue: { maxWidth: '90vw', hasBackdrop: true },
+    // },
   ],
   exports: [],
   bootstrap: [AppComponent],
