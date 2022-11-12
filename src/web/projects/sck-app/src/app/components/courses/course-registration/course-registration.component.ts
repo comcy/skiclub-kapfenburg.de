@@ -1,40 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Price } from 'projects/shared-lib/src/lib/models';
 import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
+import { Price } from 'projects/shared-lib/src/public-api';
 
 @Component({
-  selector: 'app-courses',
-  templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.scss'],
+  selector: 'app-course-registration',
+  templateUrl: './course-registration.component.html',
+  styleUrls: ['./course-registration.component.scss'],
 })
-export class CoursesComponent implements OnInit {
-  public courseAtTravelPrice: Price[] = COURSE_ON_TRAVEL_PRICE_DATA;
-  public courseAtHomePrice: Price[] = COURSE_AT_HOME_PRICE_DATA;
-
-  public navLinks = [
-    {
-      label: 'Anmeldung',
-      link: './resgistration',
-      index: 0,
-    },
-    {
-      label: 'Information',
-      link: './information',
-      index: 1,
-    },
-    {
-      label: 'Preise',
-      link: './prices',
-      index: 2,
-    },
-  ];
-
+export class CourseRegistrationComponent implements OnInit {
   constructor() {}
 
-  ngOnInit(): void {}
+  public courseAtTravelPrice: Price[] = COURSE_ON_TRAVEL_PRICE_DATA;
+  public courseAtHomePrice: Price[] = COURSE_AT_HOME_PRICE_DATA;
+  public email = new FormControl('', [Validators.required, Validators.email]);
 
-  email = new FormControl('', [Validators.required, Validators.email]);
+  ngOnInit(): void {}
 
   getErrorMessage() {
     if (this.email.hasError('required')) {

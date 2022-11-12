@@ -2,13 +2,31 @@
 <div class="content">
 
 
-  <mat-tab-group>
 
+  <nav mat-tab-nav-bar>
+    <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.link" routerLinkActive #rla="routerLinkActive"
+      [active]="rla.isActive">
+
+    </a>
+  </nav>
+
+  <nav mat-tab-nav-bar>
+    <div class="tab-content">
+
+      <app-course-registration></app-course-registration>
+      <!-- <lib-course-register-form (onSubmit)="onCourseRegistrationFormSubmit($event)"></lib-course-register-form> -->
+
+    </div>
+
+  </nav>
+
+  <mat-tab-group>
     <mat-tab label="Anmeldung">
 
       <div class="tab-content">
 
-        <lib-course-register-form (onSubmit)="onCourseRegistrationFormSubmit($event)"></lib-course-register-form>
+        <app-course-registration></app-course-registration>
+        <!-- <lib-course-register-form (onSubmit)="onCourseRegistrationFormSubmit($event)"></lib-course-register-form> -->
 
       </div>
 
@@ -18,30 +36,8 @@
 
       <div class="tab-content">
 
+        <app-information></app-information>
 
-        <div class="info-page">
-          <h3>Vereinstätigkeit</h3>
-          <p>
-            Der Skiclub Kapfenburg e.V. hat sich der Föderung des Wintersports
-            verschrieben.<br />
-            Hierzu haben wir für Sie verschiedene Aktivitäten im Angebot.<br />
-          </p>
-          <p>
-            Neben unseren zahlreichen sportlichen Angeboten gehört auch unsere
-            alljährliche Skibörse zu unserem Pflichtprogramm.
-          </p>
-        </div>
-
-        <div class="info-page">
-          <h3>Kursangebot</h3>
-          <p>
-            Die Ski – bzw. Snowboardkurse für Erwachsene und Kinder werden in allen
-            Könnerstufen im heimischen Gelände beim Skilift Kapfenburg durchgeführt.
-            <br />
-            Teilnehmer werden bei entspechender Schneelage von den Skilehrern
-            informiert.
-          </p>
-        </div>
       </div>
 
     </mat-tab>
