@@ -1,84 +1,81 @@
 <mat-toolbar>Ausfahrten</mat-toolbar>
 
-<mat-tab-group>
+<div class="content">
+  <mat-tab-group>
 
-  <mat-tab label="Anmeldung">
+    <mat-tab label="Anmeldung">
 
-    <lib-trip-registration-form [additionalData]="trips" [boardingList]="boardings">
-    </lib-trip-registration-form>
+      <lib-trip-registration-form [additionalData]="trips" [boardingList]="boardings">
+      </lib-trip-registration-form>
 
-  </mat-tab>
+    </mat-tab>
 
-  <mat-tab label="Informationen">
+    <mat-tab label="Informationen">
 
-    <div class="info-page">
-      <h3>Zustiegs- und Abfahrtszeiten</h3>
+      <div class="info-page">
+        <h3>Zustiegs- und Abfahrtszeiten</h3>
 
-      <ul>
-        <li>Westhausen Turnhalle - 5:40 Uhr</li>
-        <li>Lauchheim Schule - 5:50 Uhr </li>
-        <li>Hülen - 6:00 Uhr</li>
-        <li>Ebnater Tennishalle - 6:10 Uhr</li>
-      </ul>
+        <ul>
+          <li>Westhausen Turnhalle - 5:40 Uhr</li>
+          <li>Lauchheim Schule - 5:50 Uhr </li>
+          <li>Hülen - 6:00 Uhr</li>
+          <li>Ebnater Tennishalle - 6:10 Uhr</li>
+        </ul>
 
-      <p>Rückkehr jeweils gegen 19 Uhr, wenn nicht anders angegeben</p>
-    </div>
-  </mat-tab>
+        <p>Rückkehr jeweils gegen 19 Uhr, wenn nicht anders angegeben</p>
+      </div>
+    </mat-tab>
 
-  <mat-tab label="Downloads">
+    <mat-tab label="Downloads">
 
-    <div class="info-page">
-      <h3>Einverständniserklärung</h3>
-      <p>Einverständniserklärung</p>
-    </div>
-
-    <div class="info-page">
-      <h3>Programm 2022 / 2023</h3>
-      <p>Download</p>
-    </div>
-
-  </mat-tab>
-
-  <mat-tab label="Preise">
-    <div class="info-page">
-
-      <div class="price-overview">
-
-        <div class="labels__top">{{ busOnlyPrice.label }}</div>
-        <hr />
-        <div *ngFor="let g of busOnlyPrice.ageGroup" class="price-table__group">
-          <div *ngFor="let c of g.clubMemberStatus" class="price-table__values labels__values">
-            <div>Pauschale</div>
-            <div>{{ c.value }}</div>
-          </div>
-        </div>
-
+      <div class="info-page">
+        <h3>Einverständniserklärung</h3>
+        <p>Einverständniserklärung</p>
       </div>
 
-      <div class="price-overview">
+      <div class="info-page">
+        <h3>Programm 2022 / 2023</h3>
+        <p>Download</p>
+      </div>
 
-        <div *ngFor="let p of busAndPassPrice" class="labels__top">
-          <div>{{ p.label }}</div>
+    </mat-tab>
+
+    <mat-tab label="Preise">
+      <div class="info-page">
+
+        <div class="price-overview">
+
+          <div class="labels__top">{{ busOnlyPrice.label }}</div>
           <hr />
-          <div *ngFor="let g of p.ageGroup" class="price-table__group">
-            <div>{{ g.group }}</div>
-            <!-- <div *ngFor="let c of g.clubMemberStatus" class="price-table__group labels"> -->
-            <div *ngFor="let m of g.clubMemberStatus" class="price-table__values labels__values">
-              <div>{{m.clubMemberStatus}}</div>
-              <div>{{m.value}}</div>
+          <div *ngFor="let g of busOnlyPrice.ageGroup" class="price-table__group">
+            <div *ngFor="let c of g.clubMemberStatus" class="price-table__values labels__values">
+              <div>Pauschale</div>
+              <div>{{ c.value }}</div>
             </div>
-            <!-- </div> -->
-
           </div>
 
+        </div>
 
+        <div class="price-overview">
+
+          <div *ngFor="let p of busAndPassPrice" class="labels__top">
+            <div>{{ p.label }}</div>
+            <hr />
+            <div *ngFor="let g of p.ageGroup" class="price-table__group">
+              <div>{{ g.group }}</div>
+              <div *ngFor="let m of g.clubMemberStatus" class="price-table__values labels__values">
+                <div>{{m.clubMemberStatus}}</div>
+                <div>{{m.value}}</div>
+              </div>
+            </div>
+
+          </div>
 
         </div>
 
       </div>
 
-    </div>
 
-
-  </mat-tab>
-</mat-tab-group>
+    </mat-tab>
+  </mat-tab-group>
+</div>

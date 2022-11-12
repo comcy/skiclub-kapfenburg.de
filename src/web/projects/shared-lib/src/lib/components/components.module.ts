@@ -25,6 +25,7 @@ import { CourseRegisterFormComponent } from './forms/course-register-form/course
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { ShareDialogComponent } from './dialogs/share-dialog/share-dialog.component';
+import { InfoTileComponent } from './info-tile/info-tile.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ShareDialogComponent } from './dialogs/share-dialog/share-dialog.compon
     TripRegisterDialogComponent,
     CourseRegisterFormComponent,
     ShareDialogComponent,
+    InfoTileComponent,
   ],
   imports: [
     CommonModule,

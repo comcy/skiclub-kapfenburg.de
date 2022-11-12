@@ -20,7 +20,8 @@
       "shared-lib": [
         "dist/shared-lib/shared-lib",
         "dist/shared-lib"
-      ]
+      ],
+      "@data": ["projects/data"]
     },
     "target": "es2017",
     "module": "es2020",
