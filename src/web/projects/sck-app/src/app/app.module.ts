@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {
-  ComponentsModule,
-} from 'projects/shared-lib/src/lib/components';
+import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoursesComponent } from './components/courses/courses.component';
@@ -75,10 +73,10 @@ import { BaseComponentsModule } from '@base-components';
   providers: [
     tripRegistrationServiceProvider,
     courseRegistrationServiceProvider,
-    // {
-    //   provide: MAT_DIALOG_DEFAULT_OPTIONS,
-    //   useValue: { maxWidth: '90vw', hasBackdrop: true },
-    // },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: { maxWidth: '90vw', hasBackdrop: true },
+    },
   ],
   exports: [],
   bootstrap: [AppComponent],
