@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'lib-courses-information',
+  selector: 'app-courses-information',
   templateUrl: './courses-information.component.html',
-  styleUrls: ['./courses-information.component.scss'],
+  styleUrls: ['./courses-information.component.scss']
 })
 export class CoursesInformationComponent implements OnInit {
-  constructor() {}
 
-  ngOnInit(): void {}
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
 }

@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2022 Christian Silfang (comcy) - All Rights Reserved.
  */
 
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header';
 import { FooterComponent } from './footer';
@@ -26,6 +26,7 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
 import { ComcyCopyrightComponent, TabNavigationComponent } from './base';
 
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
     HeaderComponent,
     FooterComponent,

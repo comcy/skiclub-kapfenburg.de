@@ -14,28 +14,25 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   MatDialogModule,
   MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CoursesComponent } from './components/courses/courses.component';
 import { TripsComponent } from './components/trips/trips.component';
 import { HomeComponent } from './components/home/home.component';
 import { GymComponent } from './components/gym/gym.component';
 import { SiteNavigationComponent } from './components/site-navigation/site-navigation.component';
 import { tripRegistrationServiceProvider } from '@core-services/trips';
 import { courseRegistrationServiceProvider } from '@core-services/courses';
-import { CoursesModule } from '@components/courses';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CoursesComponent,
     TripsComponent,
     HomeComponent,
     SiteNavigationComponent,
@@ -62,7 +59,6 @@ import { CoursesModule } from '@components/courses';
     MatCardModule,
     MatDialogModule,
     MatSnackBarModule,
-    CoursesModule,
   ],
   providers: [
     tripRegistrationServiceProvider,
@@ -72,7 +68,6 @@ import { CoursesModule } from '@components/courses';
       useValue: { maxWidth: '90vw', hasBackdrop: true },
     },
   ],
-  exports: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

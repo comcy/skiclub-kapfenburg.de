@@ -8,7 +8,7 @@ import {
 import { DatenschutzComponent } from 'projects/shared-lib/src/lib/components/datenschutz';
 import { ImpressumComponent } from 'projects/shared-lib/src/lib/components/impressum';
 import {
-  CoursesComponent,
+
   GymComponent,
   HomeComponent,
   TripsComponent,
@@ -31,27 +31,32 @@ const routes: Routes = [
   },
   {
     path: COURSES_ROUTE,
-    component: CoursesComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: 'registration',
-        pathMatch: 'full',
-      },
-      {
-        path: 'registration',
-        component: CoursesRegistrationComponent,
-      },
-      {
-        path: 'information',
-        component: CoursesInformationComponent,
-      },
-      {
-        path: 'prices',
-        component: CoursesPricesComponent,
-      },
-    ],
+    loadChildren: () =>
+      import('./courses/courses.module').then((m) => m.CoursesModule)
   },
+  // {
+  //   path: COURSES_ROUTE,
+  //   component: CoursesComponent,
+  //   children: [
+  //     {
+  //       path: '',
+  //       redirectTo: 'registration',
+  //       pathMatch: 'full',
+  //     },
+  //     {
+  //       path: 'registration',
+  //       component: CoursesRegistrationComponent,
+  //     },
+  //     {
+  //       path: 'information',
+  //       component: CoursesInformationComponent,
+  //     },
+  //     {
+  //       path: 'prices',
+  //       component: CoursesPricesComponent,
+  //     },
+  //   ],
+  // },
   {
     path: TRIPS_ROUTE,
     component: TripsComponent,

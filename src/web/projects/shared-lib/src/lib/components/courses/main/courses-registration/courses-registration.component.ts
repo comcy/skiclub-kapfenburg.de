@@ -4,7 +4,7 @@ import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
 import { Price } from '@domain-models';
 
 @Component({
-  selector: 'app-courses-registration',
+  selector: 'lib-courses-registration',
   templateUrl: './courses-registration.component.html',
   styleUrls: ['./courses-registration.component.scss'],
 })
