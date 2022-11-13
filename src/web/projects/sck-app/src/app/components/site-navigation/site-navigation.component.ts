@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationItem } from 'projects/shared-lib/src/public-api';
-import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
+import { BreakpointObserverService } from 'projects/shared-lib/src/lib/core-services';
 
 @Component({
   selector: 'app-site-navigation',

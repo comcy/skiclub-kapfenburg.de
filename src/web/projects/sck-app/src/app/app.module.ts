@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {
   ComponentsModule,
-  CourseRegistrationFormServiceInterface,
-  TripRegistrationFormServiceInterface,
 } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -38,6 +36,7 @@ import {
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CourseRegistrationComponent } from './components/courses/course-registration/course-registration.component';
 import { InformationComponent } from './components/courses/information/information.component';
+import { BaseComponentsModule } from '@base-components';
 
 @NgModule({
   declarations: [
@@ -56,6 +55,7 @@ import { InformationComponent } from './components/courses/information/informati
     AppRoutingModule,
     ComponentsModule,
     BrowserAnimationsModule,
+    BaseComponentsModule,
     LayoutModule,
     ReactiveFormsModule,
     MatToolbarModule,
