@@ -1,0 +1,27 @@
+.content {
+  padding-bottom: 72px;
+
+  .labels {
+    &__top {
+      font-size: 22px;
+    }
+
+    &__sub {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    &__values {
+      font-size: 16px;
+      font-weight: normal;
+    }
+  }
+}
+
+.tab-content {
+  font-size: 12pt;
+
+  padding-left: 32px;
+  padding-right: 32px;
+  padding-top: 32px;
+}

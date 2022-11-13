@@ -8,7 +8,7 @@ import {
   Tile,
   TileActions,
   TileBehavior,
-} from 'projects/shared-lib/src/lib/models';
+} from 'projects/shared-lib/src/lib/domain-models';
 import { BOARDING_LIST, TRIP_DATA } from '@data';
 import { PROGRAMM_DOWNLOAD_LINK } from 'projects/data/downloads';
 

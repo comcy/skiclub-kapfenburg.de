@@ -2,7 +2,7 @@ import {
   Tile,
   TileActions,
   TileBehavior,
-} from 'projects/shared-lib/src/lib/models';
+} from 'projects/shared-lib/src/lib/domain-models';
 
 export const TRIP_DATA: Tile[] = [
   {

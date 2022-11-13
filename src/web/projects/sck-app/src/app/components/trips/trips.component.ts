@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Price, Tile, TileActions } from 'projects/shared-lib/src/lib/models';
-import { Trip } from 'projects/shared-lib/src/lib/models/trip';
+import {
+  Price,
+  Tile,
+  TileActions,
+} from 'projects/shared-lib/src/lib/domain-models';
+import { Trip } from 'projects/shared-lib/src/lib/domain-models/trip';
 import {
   BUS_AND_PASS_PRICE_DATA,
   BUS_ONLY_PRICE_DATA,

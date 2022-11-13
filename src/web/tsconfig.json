@@ -21,7 +21,15 @@
         "dist/shared-lib/shared-lib",
         "dist/shared-lib"
       ],
-      "@data": ["projects/data"]
+      "@data": ["projects/data"],
+      "@domain-models": ["projects/shared-lib/src/lib/domain-models"],
+      "@components/base": ["projects/shared-lib/src/lib/components/base"],
+      "@components/courses": ["projects/shared-lib/src/lib/components/courses"],
+      "@components/trips": ["projects/shared-lib/src/lib/components/trips"],
+      "@core-services": ["projects/shared-lib/src/lib/core-services"],
+      "@core-services/courses": ["projects/shared-lib/src/lib/core-services/courses"],
+      "@core-services/trips": ["projects/shared-lib/src/lib/core-services/trips"],
+      "@provider-services": ["projects/shared-lib/src/lib/provider-services"],
     },
     "target": "es2017",
     "module": "es2020",

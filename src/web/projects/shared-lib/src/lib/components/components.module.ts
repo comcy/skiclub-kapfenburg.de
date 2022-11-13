@@ -10,22 +10,20 @@ import { DatenschutzComponent } from './datenschutz';
 import { ImpressumComponent } from './impressum';
 import { NewsBannerComponent } from './news-banner/news-banner.component';
 import { NewsCardComponent } from './news-card/news-card.component';
-import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.component';
 import { RegisterDialogComponent } from './dialogs/register-dialog/register-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { TripRegistrationFormComponent } from './forms/trip-registration-form/trip-registration-form.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { TripRegisterDialogComponent } from './dialogs/trip-register-dialog/trip-register-dialog.component';
-import { CourseRegisterFormComponent } from './forms/course-register-form/course-register-form.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ShareDialogComponent } from './dialogs/share-dialog/share-dialog.component';
 import { InfoTileComponent } from './info-tile/info-tile.component';
+import { ComcyCopyrightComponent, TabNavigationComponent } from './base';
 
 @NgModule({
   declarations: [
@@ -35,13 +33,12 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     ImpressumComponent,
     NewsBannerComponent,
     NewsCardComponent,
-    ComcyCopyrightComponent,
     RegisterDialogComponent,
-    TripRegistrationFormComponent,
     TripRegisterDialogComponent,
-    CourseRegisterFormComponent,
     ShareDialogComponent,
     InfoTileComponent,
+    ComcyCopyrightComponent,
+    TabNavigationComponent,
   ],
   imports: [
     CommonModule,
@@ -53,7 +50,7 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     MatGridListModule,
     MatSelectModule,
     MatToolbarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   exports: [
     HeaderComponent,
@@ -62,11 +59,10 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     ImpressumComponent,
     NewsBannerComponent,
     NewsCardComponent,
-    ComcyCopyrightComponent,
     RegisterDialogComponent,
-    TripRegistrationFormComponent,
     TripRegisterDialogComponent,
-    CourseRegisterFormComponent,
+    ComcyCopyrightComponent,
+    TabNavigationComponent,
   ],
 })
 export class ComponentsModule {}

@@ -6,7 +6,7 @@ import {
   PriceClubMemberStatus,
   PriceMapping,
   SportType,
-} from 'projects/shared-lib/src/lib/models';
+} from 'projects/shared-lib/src/lib/domain-models';
 
 export const BUS_ONLY_PRICE_DATA: Price = {
   // Nur Busfahrt

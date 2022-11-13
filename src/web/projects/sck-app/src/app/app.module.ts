@@ -1,17 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {
-  ComponentsModule,
-  CourseRegistrationFormServiceInterface,
-  TripRegistrationFormServiceInterface,
-} from 'projects/shared-lib/src/lib/components';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { CoursesComponent } from './components/courses/courses.component';
-import { TripsComponent } from './components/trips/trips.component';
-import { HomeComponent } from './components/home/home.component';
-import { GymComponent } from './components/gym/gym.component';
-import { SiteNavigationComponent } from './components/site-navigation/site-navigation.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -31,13 +19,18 @@ import {
   MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  courseRegistrationServiceProvider,
-  tripRegistrationServiceProvider,
-} from './services';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { CourseRegistrationComponent } from './components/courses/course-registration/course-registration.component';
-import { InformationComponent } from './components/courses/information/information.component';
+import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { CoursesComponent } from './components/courses/courses.component';
+import { TripsComponent } from './components/trips/trips.component';
+import { HomeComponent } from './components/home/home.component';
+import { GymComponent } from './components/gym/gym.component';
+import { SiteNavigationComponent } from './components/site-navigation/site-navigation.component';
+import { tripRegistrationServiceProvider } from '@core-services/trips';
+import { courseRegistrationServiceProvider } from '@core-services/courses';
+import { CoursesModule } from '@components/courses';
 
 @NgModule({
   declarations: [
@@ -47,8 +40,6 @@ import { InformationComponent } from './components/courses/information/informati
     HomeComponent,
     SiteNavigationComponent,
     GymComponent,
-    CourseRegistrationComponent,
-    InformationComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,14 +62,15 @@ import { InformationComponent } from './components/courses/information/informati
     MatCardModule,
     MatDialogModule,
     MatSnackBarModule,
+    CoursesModule,
   ],
   providers: [
     tripRegistrationServiceProvider,
     courseRegistrationServiceProvider,
-    // {
-    //   provide: MAT_DIALOG_DEFAULT_OPTIONS,
-    //   useValue: { maxWidth: '90vw', hasBackdrop: true },
-    // },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: { maxWidth: '90vw', hasBackdrop: true },
+    },
   ],
   exports: [],
   bootstrap: [AppComponent],

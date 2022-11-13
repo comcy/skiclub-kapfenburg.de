@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
-import { Trip } from '../../../models/trip';
+import { Trip } from '../../../domain-models/trip';
 
 @Component({
   selector: 'lib-trip-register-dialog',
