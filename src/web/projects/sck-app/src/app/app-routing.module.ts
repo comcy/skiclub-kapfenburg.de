@@ -10,6 +10,7 @@ import {
   TripsComponent,
 } from './components';
 import { InformationComponent } from './components/courses/information/information.component';
+import { PricesComponent } from './components/courses/prices/prices.component';
 import {
   COURSES_ROUTE,
   DSGVO_ROUTE,
@@ -32,16 +33,20 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'register',
+        redirectTo: 'resgistration',
         pathMatch: 'full',
       },
       {
-        path: 'register',
+        path: 'resgistration',
         component: CourseRegisterFormComponent,
       },
       {
         path: 'information',
         component: InformationComponent,
+      },
+      {
+        path: 'prices',
+        component: PricesComponent,
       },
     ],
   },

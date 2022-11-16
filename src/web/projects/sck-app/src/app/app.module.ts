@@ -32,6 +32,8 @@ import { CourseRegistrationComponent } from './components/courses/course-registr
 import { InformationComponent } from './components/courses/information/information.component';
 import { tripRegistrationServiceProvider } from './services/business/trip-registration-form.service';
 import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
+import { PricesComponent } from './components/courses/prices/prices.component';
+import { CoursesFeatureModule } from '@courses-lib';
 
 @NgModule({
   declarations: [
@@ -43,6 +45,7 @@ import { courseRegistrationServiceProvider } from './services/business/course-re
     GymComponent,
     CourseRegistrationComponent,
     InformationComponent,
+    PricesComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +68,7 @@ import { courseRegistrationServiceProvider } from './services/business/course-re
     MatCardModule,
     MatDialogModule,
     MatSnackBarModule,
+    CoursesFeatureModule,
   ],
   providers: [
     tripRegistrationServiceProvider,
