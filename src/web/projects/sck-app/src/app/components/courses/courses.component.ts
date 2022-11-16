@@ -16,17 +16,14 @@ export class CoursesComponent implements OnInit {
     {
       label: 'Anmeldung',
       link: './resgistration',
-      index: 0,
     },
     {
       label: 'Information',
       link: './information',
-      index: 1,
     },
     {
       label: 'Preise',
       link: './prices',
-      index: 2,
     },
   ];
 

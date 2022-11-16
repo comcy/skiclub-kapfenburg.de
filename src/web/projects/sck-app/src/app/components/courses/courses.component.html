@@ -9,76 +9,10 @@
       #rla="routerLinkActive"
       [active]="rla.isActive"
     >
-    {{ link.label}}
+      {{ link.label }}
     </a>
   </nav>
-
-  <nav mat-tab-nav-bar>
-    <div class="tab-content">
-      <app-course-registration></app-course-registration>
-      <!-- <lib-course-register-form (onSubmit)="onCourseRegistrationFormSubmit($event)"></lib-course-register-form> -->
-    </div>
-  </nav>
-
-  <mat-tab-group>
-    <mat-tab label="Anmeldung">
-      <div class="tab-content">
-        <app-course-registration></app-course-registration>
-        <!-- <lib-course-register-form (onSubmit)="onCourseRegistrationFormSubmit($event)"></lib-course-register-form> -->
-      </div>
-    </mat-tab>
-
-    <mat-tab label="Information">
-      <div class="tab-content">
-        <app-information></app-information>
-      </div>
-    </mat-tab>
-
-    <mat-tab label="Preise">
-      <div class="tab-content">
-        <div class="price-overview">
-          <h2>Kurspreise im heimischen Gelände (Skihang bei der Kapfenburg)</h2>
-
-          <div *ngFor="let p of courseAtHomePrice" class="price-table">
-            <div
-              *ngFor="let s of p.sportType"
-              class="price-table__type labels__top"
-            >
-              <div>{{ s.type }}</div>
-              <hr />
-              <div
-                *ngFor="let g of s.ageGroup"
-                class="price-table__group labels__sub"
-              >
-                <div>{{ g.group }}</div>
-                <div
-                  *ngFor="let m of g.clubMemberStatus"
-                  class="price-table__values labels__values"
-                >
-                  <div>{{ m.clubMemberStatus }}</div>
-                  <div>{{ m.value }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="price-overview">
-          <h2>Kurspreise bei unseren Ausfahrten</h2>
-
-          <div *ngFor="let p of courseAtTravelPrice" class="price-table">
-            <div *ngFor="let g of p.ageGroup">
-              <div
-                *ngFor="let m of g.clubMemberStatus"
-                class="price-table__values labels"
-              >
-                <div>{{ m.clubMemberStatus }}</div>
-                <div>{{ m.value }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+  <div class="tab-content">
+    <router-outlet></router-outlet>
+  </div>
 </div>

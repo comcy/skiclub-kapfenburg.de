@@ -2,7 +2,6 @@
   padding-bottom: 72px;
 
   .labels {
-
     &__top {
       font-size: 22px;
     }
@@ -16,9 +15,7 @@
       font-size: 16px;
       font-weight: normal;
     }
-
   }
-  
 }
 
 .tab-content {
@@ -32,34 +29,32 @@
   padding-right: 32px;
   padding-top: 32px;
 
-  .price-overview {
-    padding: 32px;
-    background-color: rgb(236, 236, 236);
+  // .price-overview {
+  //   padding: 32px;
+  //   background-color: rgb(236, 236, 236);
 
-    hr {
-      width: 100%;
-    }
-  }
+  //   hr {
+  //     width: 100%;
+  //   }
+  // }
 
-  .price-table {
-    padding: 16px 16px 16px 16px;
+  // .price-table {
+  //   padding: 16px 16px 16px 16px;
 
-    &__type {
-      padding-top: 32px;
-    }
+  //   &__type {
+  //     padding-top: 32px;
+  //   }
 
-    &__group {
-      padding-top: 16px;
-    }
+  //   &__group {
+  //     padding-top: 16px;
+  //   }
 
-    &__values {
-      padding: 16px;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-    }
+  //   &__values {
+  //     padding: 16px;
+  //     display: flex;
+  //     flex-direction: row;
+  //     justify-content: space-between;
+  //   }
 
-  }
-
+  // }
 }
-

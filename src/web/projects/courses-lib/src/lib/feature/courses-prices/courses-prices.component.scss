@@ -1,0 +1,27 @@
+.price-overview {
+  padding: 32px;
+  background-color: rgb(236, 236, 236);
+
+  hr {
+    width: 100%;
+  }
+}
+
+.price-table {
+  padding: 16px 16px 16px 16px;
+
+  &__type {
+    padding-top: 32px;
+  }
+
+  &__group {
+    padding-top: 16px;
+  }
+
+  &__values {
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
