@@ -29,26 +29,8 @@ const routes: Routes = [
   },
   {
     path: COURSES_ROUTE,
-    component: CoursesComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: 'resgistration',
-        pathMatch: 'full',
-      },
-      {
-        path: 'resgistration',
-        component: CourseRegisterFormComponent,
-      },
-      {
-        path: 'information',
-        component: InformationComponent,
-      },
-      {
-        path: 'prices',
-        component: PricesComponent,
-      },
-    ],
+    loadChildren: () =>
+      import('./courses/courses.module').then((m) => m.CoursesModule),
   },
   {
     path: TRIPS_ROUTE,

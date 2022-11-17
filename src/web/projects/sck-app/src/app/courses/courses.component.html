@@ -1,0 +1,18 @@
+<mat-toolbar>Ski- und Snowboardschule</mat-toolbar>
+<div class="content">
+  <nav mat-tab-nav-bar>
+    <a
+      mat-tab-link
+      *ngFor="let link of navLinks"
+      [routerLink]="link.link"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [active]="rla.isActive"
+    >
+      {{ link.label }}
+    </a>
+  </nav>
+  <div class="tab-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
