@@ -1,5 +1,5 @@
 export interface Tile {
-  order?: number;
+  order: number;
   title: string;
   date: string;
   subTitle: string;
@@ -9,9 +9,17 @@ export interface Tile {
   actions?: TileActions[];
   avatar?: string;
   visible?: boolean;
+  expired?: boolean;
+  expiration: Date;
+  behavior: TileBehavior;
 }
 
 export enum TileActions {
   Share = 'share',
   Register = 'register',
+}
+
+export enum TileBehavior {
+  View = 'view',
+  Click = 'click',
 }

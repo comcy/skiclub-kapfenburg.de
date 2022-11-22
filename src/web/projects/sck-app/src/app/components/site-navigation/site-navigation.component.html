@@ -21,8 +21,8 @@
     [mode]="(breakpointObserver.handsetBreakpoint$ | async) ? 'over' : 'side'" [opened]="false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list *ngFor="let n of navItems">
-      <a mat-list-item (click)="drawer.close()" [routerLink]="[n.route]" routerLinkActive="list-item-active">{{ n.name
-        }}
+      <a mat-list-item (click)="drawer.close()" [routerLink]="[n.route]" routerLinkActive="list-item-active">
+        {{ n.name }}
       </a>
     </mat-nav-list>
   </mat-sidenav>
