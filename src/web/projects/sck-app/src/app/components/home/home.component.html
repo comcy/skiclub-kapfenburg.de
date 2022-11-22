@@ -2,8 +2,13 @@
 
 <div class="content-container">
   <div class="cards-grid">
+
+
     <ng-container *ngFor="let t of tiles">
-      <mat-card *ngIf="t.visible" class="card">
+
+
+      <mat-card *ngIf="t.visible" class="card" [ngClass]="{ 'expired': t.expired }">
+
         <mat-card-header>
           <div *ngIf="t.avatar" mat-card-avatar class="card-header-image">
             <img mat-card-avatar src="{{t.avatar}}" />
@@ -12,7 +17,17 @@
           <mat-card-title style="white-space:pre-wrap" [innerHTML]="t.title"></mat-card-title>
           <mat-card-subtitle>{{t.subTitle}}</mat-card-subtitle>
         </mat-card-header>
-        <img mat-card-image src="{{t.image}}" alt="{{t.imageDescription}}" />
+
+        <ng-container *ngIf="t.behavior === tileBehaviorEnum.Click">
+          <a href="{{ programmDonwloadLink }}">
+            <img mat-card-image src="{{t.image}}" alt="{{t.imageDescription}}" />
+          </a>
+        </ng-container>
+
+        <ng-container *ngIf="t.behavior === tileBehaviorEnum.View">
+          <img mat-card-image src="{{t.image}}" alt="{{t.imageDescription}}" />
+        </ng-container>
+
         <mat-card-content>
           <p>{{t.text}}</p>
         </mat-card-content>
@@ -26,7 +41,10 @@
             </button>
           </ng-container>
         </mat-card-actions>
+
       </mat-card>
+
+
     </ng-container>
   </div>
 </div>

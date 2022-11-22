@@ -1,10 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {
-  ComponentsModule,
-  CourseRegistrationFormServiceInterface,
-  TripRegistrationFormServiceInterface,
-} from 'projects/shared-lib/src/lib/components';
+import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoursesComponent } from './components/courses/courses.component';
@@ -31,13 +27,13 @@ import {
   MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  CourseRegistrationFormService,
-  courseRegistrationServiceProvider,
-  TripRegistrationFormService,
-  tripRegistrationServiceProvider,
-} from './services';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CourseRegistrationComponent } from './components/courses/course-registration/course-registration.component';
+import { InformationComponent } from './components/courses/information/information.component';
+import { tripRegistrationServiceProvider } from './services/business/trip-registration-form.service';
+import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
+import { PricesComponent } from './components/courses/prices/prices.component';
+import { CoursesFeatureModule } from '@courses-lib';
 
 @NgModule({
   declarations: [
@@ -47,6 +43,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     HomeComponent,
     SiteNavigationComponent,
     GymComponent,
+    CourseRegistrationComponent,
+    InformationComponent,
+    PricesComponent,
   ],
   imports: [
     BrowserModule,
@@ -69,6 +68,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatCardModule,
     MatDialogModule,
     MatSnackBarModule,
+    CoursesFeatureModule,
   ],
   providers: [
     tripRegistrationServiceProvider,
