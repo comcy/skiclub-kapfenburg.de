@@ -17,37 +17,20 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "paths": {
-      "shared-lib": [
-        "dist/shared-lib/shared-lib",
-        "dist/shared-lib"
-      ],
-      "courses-lib": [
-        "dist/courses-lib/courses-lib",
-        "dist/courses-lib",
-      ],
+      "shared-lib": ["dist/shared-lib/shared-lib", "dist/shared-lib"],
+      "courses-lib": ["dist/courses-lib/courses-lib", "dist/courses-lib"],
       "@courses-lib": [
         "projects/courses-lib/src/lib",
         "projects/courses-lib/src/lib/domain",
-        "projects/courses-lib/src/lib/feature",
+        "projects/courses-lib/src/lib/feature"
       ],
-      "gym-lib": [
-        "dist/gym-lib/gym-lib",
-        "dist/gym-lib"
-      ],
-      "@data": [
-        "projects/data"
-      ],
-      "trips-lib": [
-        "dist/trips-lib/trips-lib",
-        "dist/trips-lib"
-      ]
+      "gym-lib": ["dist/gym-lib/gym-lib", "dist/gym-lib"],
+      "@data": ["projects/data"],
+      "trips-lib": ["dist/trips-lib/trips-lib", "dist/trips-lib"]
     },
     "target": "es2017",
     "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ]
+    "lib": ["es2020", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

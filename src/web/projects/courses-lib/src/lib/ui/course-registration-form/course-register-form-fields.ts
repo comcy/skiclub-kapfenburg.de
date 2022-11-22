@@ -1,4 +1,4 @@
-import { BaseFormElements } from '../base/base.interfaces';
+import { BaseFormElements } from 'projects/shared-lib/src/lib/components/forms';
 
 export const COURSE_REGISTER_FORM_ELEMENTS: BaseFormElements[] = [
   {
