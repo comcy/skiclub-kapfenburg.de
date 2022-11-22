@@ -6,7 +6,7 @@ import { Price } from '../../domain/models';
 @Component({
   selector: 'lib-courses-registration',
   templateUrl: './courses-registration.component.html',
-  styleUrls: ['./courses-registration.component.css'],
+  styleUrls: ['./courses-registration.component.scss'],
 })
 export class CoursesRegistrationComponent implements OnInit {
   constructor() {}

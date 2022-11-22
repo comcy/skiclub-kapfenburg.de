@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CourseRegistrationFormServiceInterface } from 'projects/shared-lib/src/lib/components/forms/course-register-form';
+import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
+import { COURSE_REGISTER_FORM_ELEMENTS } from './course-register-form-fields';
 
 @Component({
   selector: 'lib-course-registration-form',
   templateUrl: './course-registration-form.component.html',
-  styleUrls: ['./course-registration-form.component.css'],
+  styleUrls: ['./course-registration-form.component.scss'],
 })
 export class CourseRegistrationFormComponent implements OnInit {
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
