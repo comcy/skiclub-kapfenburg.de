@@ -25,7 +25,6 @@ const routes: Routes = [
   {
     path: HOME_ROUTE,
     component: HomeComponent,
-    pathMatch: 'full',
   },
   {
     path: COURSES_ROUTE,
