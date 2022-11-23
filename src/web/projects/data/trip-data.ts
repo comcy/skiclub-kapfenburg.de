@@ -43,6 +43,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Ziel ist das Oberallgäu mit Übernachtung im Jugendhaus „Elias“. Mit dem Hörnerskipass geht es in die Skigebiete Ofterschwang, Bolsterlang, Balderschwang und Grasgehren.',
     actions: [TileActions.Register],
     expiration: new Date('2022-12-27'),
+    canceled: true,
   },
   {
     order: 2,
