@@ -10,6 +10,7 @@ export interface Tile {
   avatar?: string;
   visible?: boolean;
   expired?: boolean;
+  canceled?: boolean;
   expiration: Date;
   behavior: TileBehavior;
 }

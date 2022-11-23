@@ -26,6 +26,7 @@
     // background-image: url('../../assets/img/comcy_bit.png');
     background-size: cover;
   }
+
   .card-date {
     color: #3f51b5;
   }
@@ -34,4 +35,45 @@
     display: flex;
     justify-content: space-between;
   }
+}
+
+.canceled-stamp {
+  transform: rotate(12deg);
+  color: rgba(236, 12, 12, 0.884);
+  font-size: 3rem;
+  font-weight: 700;
+  border: 0.25rem solid #555;
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  text-transform: uppercase;
+  border-radius: 2rem;
+  font-family: 'Courier';
+  -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+  -webkit-mask-size: 944px 604px;
+  mix-blend-mode: multiply;
+}
+
+.success-stamp {
+  transform: rotate(12deg);
+  color: rgb(12, 236, 68);
+  font-size: 3rem;
+  font-weight: 700;
+  border: 0.25rem solid rgb(110, 114, 110);
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  text-transform: uppercase;
+  border-radius: 3rem;
+  font-family: 'Courier';
+  -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+  -webkit-mask-size: 944px 604px;
+  mix-blend-mode: multiply;
+}
+
+.checkmark {
+  font-family: arial;
+  -ms-transform: scaleX(-1) rotate(-35deg);
+  /* IE 9 */
+  -webkit-transform: scaleX(-1) rotate(-35deg);
+  /* Chrome, Safari, Opera */
+  transform: scaleX(-1) rotate(-35deg);
 }
