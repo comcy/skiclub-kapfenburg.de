@@ -4,6 +4,18 @@ import {
   TileBehavior,
 } from 'projects/shared-lib/src/lib/models';
 
+export const BOARDING_LIST = [
+  'Westhausen Turnhalle (5:40 Uhr)',
+  'Lauchheim Schule (5:50 Uhr)',
+  'Hülen (6:00 Uhr)',
+  'Ebnater Tennishalle (6:10 Uhr)',
+];
+
+export const BOARDING_LIST_SHORT = [
+  'Schwabsberg Schule (5:00 Uhr)',
+  'Westhausen Turnhalle (5:15 Uhr)',
+];
+
 export const TRIP_DATA: Tile[] = [
   {
     order: 0,
@@ -17,6 +29,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2023-12-31'),
+    boardings: [],
   },
   {
     order: 1,
@@ -30,6 +43,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2022-05-11'),
+    boardings: [],
   },
   {
     order: 2,
@@ -44,6 +58,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     expiration: new Date('2022-12-27'),
     canceled: true,
+    boardings: BOARDING_LIST_SHORT,
   },
   {
     order: 2,
@@ -57,6 +72,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Für tolles Kursambiente sorgt das Snow Learnland und N‘Ice Bear Kinderland.',
     actions: [TileActions.Register],
     expiration: new Date('2023-01-15'),
+    boardings: BOARDING_LIST,
   },
   {
     order: 2,
@@ -70,6 +86,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Übernachtung im „Hotel Löwen“ in Feldkirch mit Halbpension, 2-Tages Skipass und Busfahrt ins Skigebiet „Vorarlberg - Sonnenkopf“',
     actions: [TileActions.Register],
     expiration: new Date('2023-01-21'),
+    boardings: BOARDING_LIST_SHORT,
   },
   {
     order: 2,
@@ -83,6 +100,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Ein Skigebiet mit 27,5 km bestens präparierten und beschneiten Pisten. Außerdem beliebt bei Freeskiern und Boardern ist der Snowpark „Betterpark“.',
     actions: [TileActions.Register],
     expiration: new Date('2023-02-04'),
+    boardings: BOARDING_LIST,
   },
   {
     order: 2,
@@ -96,6 +114,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Mit 40 Pistenkilometer bietet Lermoos sowohl für Skifahrer, als auch für Snowboarder ein vielfältiges Angebot inkl. Apres Ski, Rückfahrt 19:00 Uhr',
     actions: [TileActions.Register],
     expiration: new Date('2023-02-25'),
+    boardings: BOARDING_LIST,
   },
   {
     order: 2,
@@ -109,6 +128,7 @@ export const TRIP_DATA: Tile[] = [
     text: 'Inklusive Kaffee und Kuchen am Bus',
     actions: [TileActions.Register],
     expiration: new Date('2023-03-06'),
+    boardings: BOARDING_LIST,
   },
   {
     order: 2,
@@ -122,12 +142,6 @@ export const TRIP_DATA: Tile[] = [
     text: 'Eine Ausfahrt für Alle die unter der Woche Zeit haben und „freie Pisten“ lieben!',
     actions: [TileActions.Register],
     expiration: new Date('2023-03-20'),
+    boardings: BOARDING_LIST_SHORT,
   },
-];
-
-export const BOARDING_LIST = [
-  'Westhausen Turnhalle (5:40 Uhr)',
-  'Lauchheim Schule (5:50 Uhr)',
-  'Hülen (6:00 Uhr)',
-  'Ebnater Tennishalle (6:10 Uhr)',
 ];
