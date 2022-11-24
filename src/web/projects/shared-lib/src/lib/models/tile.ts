@@ -13,6 +13,7 @@ export interface Tile {
   canceled?: boolean;
   expiration: Date;
   behavior: TileBehavior;
+  boardings: string[];
 }
 
 export enum TileActions {
