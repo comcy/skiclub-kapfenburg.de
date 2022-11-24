@@ -48,7 +48,7 @@
             <button
               *ngSwitchCase="tileActionsEnum.Register"
               mat-button
-              (click)="openRegisterDialog(t, boardings)"
+              (click)="openRegisterDialog(t, t.boardings)"
             >
               {{ registerLabel }}
             </button>
