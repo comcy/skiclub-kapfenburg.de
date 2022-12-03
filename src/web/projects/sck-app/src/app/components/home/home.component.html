@@ -49,6 +49,7 @@
               *ngSwitchCase="tileActionsEnum.Register"
               mat-button
               (click)="openRegisterDialog(t, t.boardings)"
+              [disabled]="t.canceled"
             >
               {{ registerLabel }}
             </button>
