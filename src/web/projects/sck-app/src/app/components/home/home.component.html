@@ -32,7 +32,6 @@
 
         <ng-container *ngIf="t.behavior === tileBehaviorEnum.View">
           <span *ngIf="t.canceled" class="canceled-stamp">Abgesagt</span>
-          <!-- <span class="success-stamp checkmark">L</span> -->
           <img
             mat-card-image
             src="{{ t.image }}"
@@ -49,7 +48,7 @@
               *ngSwitchCase="tileActionsEnum.Register"
               mat-button
               (click)="openRegisterDialog(t, t.boardings)"
-              [disabled]="t.canceled"
+              [disabled]="t.canceled || t.expired"
             >
               {{ registerLabel }}
             </button>

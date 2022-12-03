@@ -23,7 +23,6 @@ export class HomeComponent implements OnInit {
   public tileBehaviorEnum: typeof TileBehavior = TileBehavior;
   public registerLabel: string = 'Anmelden';
   public tiles: Tile[] = [];
-  // public boardings: string[] = [];
   public programmDonwloadLink = PROGRAMM_DOWNLOAD_LINK;
 
   private trips: Tile[] = TRIP_DATA;
