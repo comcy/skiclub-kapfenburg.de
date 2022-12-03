@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CoursesComponent } from './components/courses/courses.component';
 import { TripsComponent } from './components/trips/trips.component';
 import { HomeComponent } from './components/home/home.component';
 import { SiteNavigationComponent } from './components/site-navigation/site-navigation.component';
@@ -27,24 +26,17 @@ import {
 } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { CourseRegistrationComponent } from './components/courses/course-registration/course-registration.component';
-import { InformationComponent } from './components/courses/information/information.component';
 import { tripRegistrationServiceProvider } from './services/business/trip-registration-form.service';
 import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
-import { PricesComponent } from './components/courses/prices/prices.component';
 import { CoursesFeatureModule } from '@courses-lib';
 import { GymFeatureModule } from '@gym-lib';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CoursesComponent,
     TripsComponent,
     HomeComponent,
     SiteNavigationComponent,
-    CourseRegistrationComponent,
-    InformationComponent,
-    PricesComponent,
   ],
   imports: [
     BrowserModule,
