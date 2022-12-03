@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { CoursesComponent } from './components/courses/courses.component';
 import { TripsComponent } from './components/trips/trips.component';
 import { HomeComponent } from './components/home/home.component';
-import { GymComponent } from './components/gym/gym.component';
 import { SiteNavigationComponent } from './components/site-navigation/site-navigation.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -34,6 +33,7 @@ import { tripRegistrationServiceProvider } from './services/business/trip-regist
 import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
 import { PricesComponent } from './components/courses/prices/prices.component';
 import { CoursesFeatureModule } from '@courses-lib';
+import { GymFeatureModule } from '@gym-lib';
 
 @NgModule({
   declarations: [
@@ -42,7 +42,6 @@ import { CoursesFeatureModule } from '@courses-lib';
     TripsComponent,
     HomeComponent,
     SiteNavigationComponent,
-    GymComponent,
     CourseRegistrationComponent,
     InformationComponent,
     PricesComponent,
@@ -69,6 +68,7 @@ import { CoursesFeatureModule } from '@courses-lib';
     MatDialogModule,
     MatSnackBarModule,
     CoursesFeatureModule,
+    GymFeatureModule
   ],
   providers: [
     tripRegistrationServiceProvider,
