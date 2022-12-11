@@ -25,8 +25,13 @@ export class TripsComponent implements OnInit {
 
   ngOnInit(): void {
     for (let t of this.tripData) {
-      if (t.actions?.includes(TileActions.Register))
-        this.trips.push({ destination: t.title, date: t.date });
+      if (t.actions?.includes(TileActions.Register)) {
+        this.trips.push({
+          destination: t.title,
+          date: t.date,
+          boarding: t.boardings,
+        });
+      }
     }
   }
 }
