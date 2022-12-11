@@ -14,11 +14,13 @@ import { TripRegistrationFormServiceInterface } from './trip-registration-form.i
 export class TripRegistrationFormComponent implements OnInit {
   @Input() public additionalData$!: BehaviorSubject<Trip[]>;
   @Input() public additionalData!: Trip[];
-  @Input() public boardingList!: string[];
+  // @Input() public boardingList!: string[];
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isSending: boolean = false;
   public tripView!: string;
+
+  public boardingList: string[] = [];
 
   public tripRegisterForm: FormGroup = this.formBuilder.group({
     trip: [null, [Validators.required]],
@@ -38,8 +40,11 @@ export class TripRegistrationFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.boardingList = this.additionalData[0].boarding;
     if (this.additionalData.length === 1) {
-      this.tripRegisterForm.patchValue({ trip: this.additionalData[0] });
+      this.tripRegisterForm.patchValue({
+        trip: this.additionalData[0],
+      });
     }
   }
 

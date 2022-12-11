@@ -16,6 +16,7 @@ export class TripRegisterDialogComponent implements OnInit {
   public tripDetails$: BehaviorSubject<Trip> = new BehaviorSubject({
     destination: '',
     date: '',
+    boarding: [''],
   });
   public tripDetails!: Trip[];
   public boardingList!: string[];
@@ -27,6 +28,7 @@ export class TripRegisterDialogComponent implements OnInit {
     this.tripDetails$.next({
       destination: data.data.tile.title,
       date: data.data.tile.date,
+      boarding: [],
     });
 
     this.dialogTitle = `${data.data.tile.title} - ${data.data.tile.date}`;
@@ -35,6 +37,7 @@ export class TripRegisterDialogComponent implements OnInit {
       {
         destination: data.data.tile.title,
         date: data.data.tile.date,
+        boarding: [],
       },
     ];
   }
