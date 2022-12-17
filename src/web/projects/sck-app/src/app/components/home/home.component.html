@@ -31,7 +31,16 @@
         </ng-container>
 
         <ng-container *ngIf="t.behavior === tileBehaviorEnum.View">
-          <span *ngIf="t.canceled" class="canceled-stamp">Abgesagt</span>
+          <span
+            *ngIf="t.status === tileStatusEnum.Canceled"
+            class="canceled-stamp"
+            >Abgesagt</span
+          >
+          <span
+            *ngIf="t.status === tileStatusEnum.BookedUp"
+            class="booked-up-stamp"
+            >Warteliste</span
+          >
           <img
             mat-card-image
             src="{{ t.image }}"
@@ -40,7 +49,7 @@
         </ng-container>
 
         <mat-card-content>
-          <p>{{ t.text }}</p>
+          <p [innerHTML]="this.markdown.render(t.text)"></p>
         </mat-card-content>
         <mat-card-actions class="actions">
           <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
@@ -48,7 +57,7 @@
               *ngSwitchCase="tileActionsEnum.Register"
               mat-button
               (click)="openRegisterDialog(t, t.boardings)"
-              [disabled]="t.canceled || t.expired"
+              [disabled]="t.status === tileStatusEnum.Canceled || t.expired"
             >
               {{ registerLabel }}
             </button>

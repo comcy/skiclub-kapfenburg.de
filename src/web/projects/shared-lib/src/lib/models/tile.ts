@@ -10,7 +10,7 @@ export interface Tile {
   avatar?: string;
   visible?: boolean;
   expired?: boolean;
-  canceled?: boolean;
+  status: TileStatus;
   expiration: Date;
   behavior: TileBehavior;
   boardings: string[];
@@ -24,4 +24,10 @@ export enum TileActions {
 export enum TileBehavior {
   View = 'view',
   Click = 'click',
+}
+
+export enum TileStatus {
+  Open = 'open',
+  Canceled = 'canceled',
+  BookedUp = 'bookedUp',
 }
