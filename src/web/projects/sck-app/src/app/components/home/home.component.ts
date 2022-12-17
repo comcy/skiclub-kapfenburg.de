@@ -8,9 +8,11 @@ import {
   Tile,
   TileActions,
   TileBehavior,
+  TileStatus,
 } from 'projects/shared-lib/src/lib/models';
 import { BOARDING_LIST, TRIP_DATA } from '@data';
 import { PROGRAMM_DOWNLOAD_LINK } from 'projects/data/downloads';
+import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
 
 @Component({
   selector: 'app-home',
@@ -19,6 +21,7 @@ import { PROGRAMM_DOWNLOAD_LINK } from 'projects/data/downloads';
 })
 export class HomeComponent implements OnInit {
   public title: string = 'Aktuelles';
+  public tileStatusEnum: typeof TileStatus = TileStatus;
   public tileActionsEnum: typeof TileActions = TileActions;
   public tileBehaviorEnum: typeof TileBehavior = TileBehavior;
   public registerLabel: string = 'Anmelden';
@@ -27,7 +30,10 @@ export class HomeComponent implements OnInit {
 
   private trips: Tile[] = TRIP_DATA;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog,
+    public markdown: MarkdownRenderService
+  ) {}
 
   ngOnInit(): void {
     this.trips.sort((a, b) => {

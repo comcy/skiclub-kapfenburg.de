@@ -2,6 +2,7 @@ import {
   Tile,
   TileActions,
   TileBehavior,
+  TileStatus,
 } from 'projects/shared-lib/src/lib/models';
 
 export const BOARDING_LIST = [
@@ -29,6 +30,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2023-12-31'),
+    status: TileStatus.Open,
     boardings: [],
   },
   {
@@ -43,6 +45,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2022-05-11'),
+    status: TileStatus.Open,
     boardings: [],
   },
   {
@@ -54,11 +57,11 @@ export const TRIP_DATA: Tile[] = [
     image:
       'https://cdn.pixabay.com/photo/2014/10/22/18/04/man-498473_960_720.jpg',
     imageDescription: 'sample',
-    text: 'Ziel ist das Oberallgäu mit Übernachtung im Jugendhaus „Elias“. Mit dem Hörnerskipass geht es in die Skigebiete Ofterschwang, Bolsterlang, Balderschwang und Grasgehren.',
+    text: 'Ziel **ist** das Oberallgäu mit Übernachtung im Jugendhaus „Elias“. Mit dem Hörnerskipass geht es in die Skigebiete Ofterschwang, Bolsterlang, Balderschwang und Grasgehren.',
     actions: [TileActions.Register],
     expiration: new Date('2022-12-27'),
-    canceled: true,
     boardings: BOARDING_LIST_SHORT,
+    status: TileStatus.Canceled,
   },
   {
     order: 2,
@@ -73,6 +76,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     expiration: new Date('2023-01-15'),
     boardings: BOARDING_LIST,
+    status: TileStatus.Open,
   },
   {
     order: 2,
@@ -87,6 +91,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     expiration: new Date('2023-01-21'),
     boardings: BOARDING_LIST_SHORT,
+    status: TileStatus.Open,
   },
   {
     order: 2,
@@ -101,6 +106,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     expiration: new Date('2023-02-04'),
     boardings: BOARDING_LIST,
+    status: TileStatus.Open,
   },
   {
     order: 2,
@@ -115,6 +121,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     expiration: new Date('2023-02-25'),
     boardings: BOARDING_LIST,
+    status: TileStatus.Open,
   },
   {
     order: 2,
@@ -129,6 +136,7 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     expiration: new Date('2023-03-06'),
     boardings: BOARDING_LIST,
+    status: TileStatus.Open,
   },
   {
     order: 2,
@@ -143,5 +151,6 @@ export const TRIP_DATA: Tile[] = [
     actions: [TileActions.Register],
     expiration: new Date('2023-03-20'),
     boardings: BOARDING_LIST_SHORT,
+    status: TileStatus.Open,
   },
 ];
