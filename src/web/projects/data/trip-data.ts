@@ -41,7 +41,7 @@ export const TRIP_DATA: Tile[] = [
     subTitle: 'Altes Schulhaus Hülen',
     image: '../../../../assets/img/cards/skiboers.jpg',
     imageDescription: 'sample',
-    text: '9:30 Uhr bis 11:30 Uhr Annahme // 13:00 Uhr bis 14:30 Uhr Verkauf // 14:30 Uhr bis 15:00 Uhr Abholung',
+    text: '##Zeiten \r - **9:30 Uhr bis 11:30 Uhr Annahme** \r - **13:00 Uhr bis 14:30 Uhr Verkauf** \r - **14:30 Uhr bis 15:00 Uhr Abholung**',
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2022-05-11'),
@@ -117,7 +117,7 @@ export const TRIP_DATA: Tile[] = [
     image:
       'https://cdn.pixabay.com/photo/2018/03/05/15/45/ski-3201017_960_720.jpg',
     imageDescription: 'sample',
-    text: 'Mit 40 Pistenkilometer bietet Lermoos sowohl für Skifahrer, als auch für Snowboarder ein vielfältiges Angebot inkl. Apres Ski, Rückfahrt 19:00 Uhr',
+    text: 'Mit 40 Pistenkilometer bietet Lermoos sowohl für Skifahrer, als auch für Snowboarder ein vielfältiges Angebot inkl. Apres Ski \r **Rückfahrt 19:00 Uhr**',
     actions: [TileActions.Register],
     expiration: new Date('2023-02-25'),
     boardings: BOARDING_LIST,

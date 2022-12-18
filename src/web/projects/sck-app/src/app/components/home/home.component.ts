@@ -10,7 +10,7 @@ import {
   TileBehavior,
   TileStatus,
 } from 'projects/shared-lib/src/lib/models';
-import { BOARDING_LIST, TRIP_DATA } from '@data';
+import { TRIP_DATA } from '@data';
 import { PROGRAMM_DOWNLOAD_LINK } from 'projects/data/downloads';
 import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
 
