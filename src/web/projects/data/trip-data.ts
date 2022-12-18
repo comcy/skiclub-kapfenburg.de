@@ -41,7 +41,7 @@ export const TRIP_DATA: Tile[] = [
     subTitle: 'Altes Schulhaus Hülen',
     image: '../../../../assets/img/cards/skiboers.jpg',
     imageDescription: 'sample',
-    text: '##Zeiten \r - **9:30 Uhr bis 11:30 Uhr Annahme** \r - **13:00 Uhr bis 14:30 Uhr Verkauf** \r - **14:30 Uhr bis 15:00 Uhr Abholung**',
+    text: 'Zeiten \r - 9:30 Uhr bis 11:30 Uhr _Annahme_ \r - 13:00 Uhr bis 14:30 Uhr _Verkauf_ \r - 14:30 Uhr bis 15:00 Uhr _Abholung_',
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2022-05-11'),
@@ -57,7 +57,7 @@ export const TRIP_DATA: Tile[] = [
     image:
       'https://cdn.pixabay.com/photo/2014/10/22/18/04/man-498473_960_720.jpg',
     imageDescription: 'sample',
-    text: 'Ziel **ist** das Oberallgäu mit Übernachtung im Jugendhaus „Elias“. Mit dem Hörnerskipass geht es in die Skigebiete Ofterschwang, Bolsterlang, Balderschwang und Grasgehren.',
+    text: 'Ziel ist das Oberallgäu mit Übernachtung im Jugendhaus „Elias“. Mit dem Hörnerskipass geht es in die Skigebiete Ofterschwang, Bolsterlang, Balderschwang und Grasgehren.',
     actions: [TileActions.Register],
     expiration: new Date('2022-12-27'),
     boardings: BOARDING_LIST_SHORT,
@@ -72,7 +72,7 @@ export const TRIP_DATA: Tile[] = [
     image:
       'https://cdn.pixabay.com/photo/2016/11/18/15/40/boy-1835416_960_720.jpg',
     imageDescription: 'sample',
-    text: 'Für tolles Kursambiente sorgt das Snow Learnland und N‘Ice Bear Kinderland.',
+    text: 'Für tolles Kursambiente sorgt das Snow Learnland und N`Ice Bear Kinderland.',
     actions: [TileActions.Register],
     expiration: new Date('2023-01-15'),
     boardings: BOARDING_LIST,
