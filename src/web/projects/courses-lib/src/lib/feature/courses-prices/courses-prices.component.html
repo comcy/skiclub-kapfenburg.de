@@ -1,18 +1,23 @@
-<div class="price-overview">
-  <h2>Kurspreise im heimischen Gelände (Skihang bei der Kapfenburg)</h2>
+<div class="content">
+  <div class="price-overview">
+    <h2>Kurspreise im heimischen Gelände (Skihang bei der Kapfenburg)</h2>
 
-  <div *ngFor="let p of courseAtHomePrice" class="price-table">
-    <div *ngFor="let s of p.sportType" class="price-table__type labels__top">
-      <div>{{ s.type }}</div>
-      <hr />
-      <div *ngFor="let g of s.ageGroup" class="price-table__group labels__sub">
-        <div>{{ g.group }}</div>
+    <div *ngFor="let p of courseAtHomePrice" class="price-table">
+      <div *ngFor="let s of p.sportType" class="price-table__type labels__top">
+        <div>{{ s.type }}</div>
+        <hr />
         <div
-          *ngFor="let m of g.clubMemberStatus"
-          class="price-table__values labels__values"
+          *ngFor="let g of s.ageGroup"
+          class="price-table__group labels__sub"
         >
-          <div>{{ m.clubMemberStatus }}</div>
-          <div>{{ m.value }}</div>
+          <div>{{ g.group }}</div>
+          <div
+            *ngFor="let m of g.clubMemberStatus"
+            class="price-table__values labels__values"
+          >
+            <div>{{ m.clubMemberStatus }}</div>
+            <div>{{ m.value }}</div>
+          </div>
         </div>
       </div>
     </div>

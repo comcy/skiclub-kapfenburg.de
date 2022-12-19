@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TripsComponent } from './components/trips/trips.component';
 import { HomeComponent } from './components/home/home.component';
 import { SiteNavigationComponent } from './components/site-navigation/site-navigation.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,14 +29,10 @@ import { tripRegistrationServiceProvider } from './services/business/trip-regist
 import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
 import { CoursesFeatureModule } from '@courses-lib';
 import { GymFeatureModule } from '@gym-lib';
+import { TripsFeatureModule } from '@trips-lib';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    TripsComponent,
-    HomeComponent,
-    SiteNavigationComponent,
-  ],
+  declarations: [AppComponent, HomeComponent, SiteNavigationComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -60,7 +55,8 @@ import { GymFeatureModule } from '@gym-lib';
     MatDialogModule,
     MatSnackBarModule,
     CoursesFeatureModule,
-    GymFeatureModule
+    GymFeatureModule,
+    TripsFeatureModule,
   ],
   providers: [
     tripRegistrationServiceProvider,

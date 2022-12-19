@@ -6,18 +6,17 @@ import { RegistrationComponent } from './components/tabs/registration/registrati
 import { CoursesComponent } from './courses.component';
 
 const routes: Routes = [
-
   {
     path: '',
     component: CoursesComponent,
     children: [
       {
         path: '',
-        redirectTo: 'resgistration',
+        redirectTo: 'registration',
         pathMatch: 'full',
       },
       {
-        path: 'resgistration',
+        path: 'registration',
         component: RegistrationComponent,
       },
       {
@@ -29,12 +28,11 @@ const routes: Routes = [
         component: PricesComponent,
       },
     ],
-  }
-
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class CoursesRoutingModule { }
+export class CoursesRoutingModule {}

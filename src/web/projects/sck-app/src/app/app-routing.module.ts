@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DatenschutzComponent } from 'projects/shared-lib/src/lib/components/datenschutz';
 import { ImpressumComponent } from 'projects/shared-lib/src/lib/components/impressum';
-import { HomeComponent, TripsComponent } from './components';
+import { HomeComponent } from './components';
 import {
   COURSES_ROUTE,
   DSGVO_ROUTE,
@@ -25,12 +25,12 @@ const routes: Routes = [
   },
   {
     path: GYM_ROUTE,
-    loadChildren: () =>
-      import('./gym/gym.module').then((m) => m.GymModule),
+    loadChildren: () => import('./gym/gym.module').then((m) => m.GymModule),
   },
   {
     path: TRIPS_ROUTE,
-    component: TripsComponent,
+    loadChildren: () =>
+      import('./trips/trips.module').then((m) => m.TripsModule),
   },
   {
     path: IMPRESSUM_ROUTE,

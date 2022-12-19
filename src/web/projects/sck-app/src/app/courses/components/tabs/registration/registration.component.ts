@@ -6,7 +6,6 @@ import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.scss']
 })
 export class RegistrationComponent implements OnInit {
   constructor() {}
@@ -31,5 +30,4 @@ export class RegistrationComponent implements OnInit {
       console.log('SUCCESS clicked >>>> ', success);
     }
   }
-
 }
