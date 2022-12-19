@@ -27,6 +27,10 @@
       "@gym-lib": [
         "projects/gym-lib/src/lib",
         "projects/gym-lib/src/lib/feature"
+      ],      
+      "@trips-lib": [
+        "projects/trips-lib/src/lib",
+        "projects/trips-lib/src/lib/feature"
       ],
       "gym-lib": ["dist/gym-lib/gym-lib", "dist/gym-lib"],
       "@data": ["projects/data"],
