@@ -1,0 +1,39 @@
+<div class="content">
+  <div class="price-overview">
+    <h2>Aktuelle Preisliste</h2>
+
+    <div class="price-table">{{ busOnlyPrice.label }}</div>
+
+    <hr />
+
+    <div
+      *ngFor="let g of busOnlyPrice.ageGroup"
+      class="price-table__type labels__top"
+    >
+      <div
+        *ngFor="let c of g.clubMemberStatus"
+        class="price-table__values labels__values"
+      >
+        <div>Pauschale</div>
+        <div>{{ c.value }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="price-overview">
+    <div *ngFor="let p of busAndPassPrice" class="labels__top">
+      <div>{{ p.label }}</div>
+      <hr />
+      <div *ngFor="let g of p.ageGroup" class="price-table__group">
+        <div>{{ g.group }}</div>
+        <div
+          *ngFor="let m of g.clubMemberStatus"
+          class="price-table__values labels__values"
+        >
+          <div>{{ m.clubMemberStatus }}</div>
+          <div>{{ m.value }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
