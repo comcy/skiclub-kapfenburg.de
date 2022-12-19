@@ -1,2 +1,2 @@
-export * from './view-models';
+export * from './models';
 export * from './core-services';
