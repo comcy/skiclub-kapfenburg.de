@@ -1,0 +1,12 @@
+<lib-register-dialog
+  *ngIf="tripDetails"
+  [title]="dialogTitle"
+  [registerForm]="true"
+>
+  <lib-trips-registration-form
+    registerForm
+    [additionalData]="tripDetails"
+    (onSubmit)="onTripRegistrationFormSubmit($event)"
+  >
+  </lib-trips-registration-form>
+</lib-register-dialog>
