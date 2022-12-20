@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'projects/sck-app/src/environments/environment';
-import { TripRegistrationFormServiceInterface } from 'projects/shared-lib/src/lib/components/forms';
+import { TripRegistrationFormServiceInterface } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trip-registration-form.interfaces';
 
 @Injectable()
 export class TripRegistrationFormService
