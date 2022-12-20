@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../domain/models';
-import { TRIP_REGISTER_FORM_ELEMENTS } from './trip-register-form-fields';
-import { TripRegistrationFormServiceInterface } from './trip-registration-form.interfaces';
+import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
+import { TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
 
 @Component({
   selector: 'lib-trips-registration-form',
@@ -77,7 +77,7 @@ export class TripsRegistrationFormComponent implements OnInit {
       // Add form group data to form data
       const timestamp = Date.now();
       formData.append('timestamp', new Date(timestamp).toLocaleString());
-      for (let field of TRIP_REGISTER_FORM_ELEMENTS) {
+      for (let field of TRIPS_REGISTER_FORM_ELEMENTS) {
         if (field.id === 'trip') {
           const tripValue = this.tripRegisterForm.get(field.id)?.value;
           formData.append('destination', tripValue.destination);

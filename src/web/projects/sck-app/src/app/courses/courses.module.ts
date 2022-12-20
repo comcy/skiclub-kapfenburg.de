@@ -6,17 +6,16 @@ import { PricesComponent } from './components/tabs/prices/prices.component';
 import { InformationComponent } from './components/tabs/information/information.component';
 import { CoursesComponent } from './courses.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { CoursesFeatureModule } from '@courses-lib';
+import { CoursesFeatureModule, CoursesUiModule } from '@courses-lib';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
-
 
 @NgModule({
   declarations: [
     RegistrationComponent,
     PricesComponent,
     InformationComponent,
-    CoursesComponent
+    CoursesComponent,
   ],
   imports: [
     CommonModule,
@@ -24,7 +23,8 @@ import { ComponentsModule } from 'projects/shared-lib/src/public-api';
     MatTabsModule,
     MatToolbarModule,
     CoursesFeatureModule,
-    ComponentsModule
-  ]
+    CoursesUiModule,
+    ComponentsModule,
+  ],
 })
-export class CoursesModule { }
+export class CoursesModule {}

@@ -14,16 +14,13 @@ import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.compo
 import { RegisterDialogComponent } from './dialogs/register-dialog/register-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { TripRegistrationFormComponent } from './forms/trip-registration-form/trip-registration-form.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
-import { TripRegisterDialogComponent } from './dialogs/trip-register-dialog/trip-register-dialog.component';
-import { CourseRegisterFormComponent } from './forms/course-register-form/course-register-form.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ShareDialogComponent } from './dialogs/share-dialog/share-dialog.component';
 import { InfoTileComponent } from './info-tile/info-tile.component';
 
@@ -37,9 +34,6 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     NewsCardComponent,
     ComcyCopyrightComponent,
     RegisterDialogComponent,
-    TripRegistrationFormComponent,
-    TripRegisterDialogComponent,
-    CourseRegisterFormComponent,
     ShareDialogComponent,
     InfoTileComponent,
   ],
@@ -53,7 +47,7 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     MatGridListModule,
     MatSelectModule,
     MatToolbarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   exports: [
     HeaderComponent,
@@ -64,9 +58,6 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     NewsCardComponent,
     ComcyCopyrightComponent,
     RegisterDialogComponent,
-    TripRegistrationFormComponent,
-    TripRegisterDialogComponent,
-    CourseRegisterFormComponent,
   ],
 })
 export class ComponentsModule {}
