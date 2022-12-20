@@ -14,7 +14,7 @@ import { Trip } from '../../domain/models';
 @Component({
   selector: 'lib-trips-registration',
   templateUrl: './trips-registration.component.html',
-  styleUrls: ['./trips-registration.component.css'],
+  styleUrls: ['./trips-registration.component.scss'],
 })
 export class TripsRegistrationComponent implements OnInit {
   @Input() public additionalData$!: BehaviorSubject<Trip[]>;
