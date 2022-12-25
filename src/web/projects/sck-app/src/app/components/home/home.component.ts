@@ -55,12 +55,12 @@ export class HomeComponent implements OnInit {
     this.tiles = this.trips;
   }
 
-  public openRegisterDialog(tile: Tile, boardingList: string[]) {
+  public openRegisterDialog(tile: Tile) {
     let dialogConfig = new MatDialogConfig();
 
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      data: { tile, boardingList },
+      tile
     };
 
     const dialogRef = this.dialog.open(

@@ -13,36 +13,38 @@ export class TripsRegisterDialogComponent implements OnInit {
     new EventEmitter<boolean>(false);
 
   public dialogTitle!: string;
-  public tripDetails$: BehaviorSubject<Trip> = new BehaviorSubject({
+  public tripDetails$: BehaviorSubject<Trip[]> = new BehaviorSubject([{
     destination: '',
     date: '',
     boarding: [''],
-  });
+  }]);
   public tripDetails!: Trip[];
   public boardingList!: string[];
 
   constructor(
     private dialogRef: MatDialogRef<TripsRegisterDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.tripDetails$.next({
-      destination: data.data.tile.title,
-      date: data.data.tile.date,
-      boarding: [],
-    });
+  ) { }
 
-    this.dialogTitle = `${data.data.tile.title} - ${data.data.tile.date}`;
-    this.boardingList = data.data.boardingList;
+  ngOnInit(): void {
+    const tile = this.data.tile
+
+    this.dialogTitle = `${tile.title} - ${tile.date}`;
+
+    this.tripDetails$.next([{
+      destination: tile.title,
+      date: tile.date,
+      boarding: tile.boardings,
+    }]);
+
     this.tripDetails = [
       {
-        destination: data.data.tile.title,
-        date: data.data.tile.date,
-        boarding: [],
+        destination: tile.title,
+        date: tile.date,
+        boarding: tile.boardings,
       },
     ];
   }
-
-  ngOnInit(): void {}
 
   public onTripRegistrationFormSubmit(success: boolean): void {
     if (success) {
