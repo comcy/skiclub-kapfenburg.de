@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, take } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
 import { TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
@@ -22,16 +22,7 @@ export class TripsRegistrationFormComponent implements OnInit {
 
   public boardingList: string[] = [];
 
-  public tripRegisterForm: FormGroup = this.formBuilder.group({
-    trip: [null, [Validators.required]],
-    firstName: [null, Validators.required],
-    lastName: [null, Validators.required],
-    email: [null, [Validators.required, Validators.email]],
-    phone: [null, [Validators.required]],
-    amount: [null, [Validators.required]],
-    additionalText: [null, [Validators.required]],
-    boarding: [null, [Validators.required]],
-  });
+  public tripRegisterForm: FormGroup = new FormGroup({});
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,12 +31,42 @@ export class TripsRegistrationFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.boardingList = this.additionalData[0].boarding;
+    this.tripRegisterForm = this.formBuilder.group({
+      trip: [null, [Validators.required]],
+      firstName: [{ value: '', disabled: true }, Validators.required],
+      lastName: [{ value: '', disabled: true }, Validators.required],
+      email: [
+        { value: '', disabled: true },
+        [Validators.required, Validators.email],
+      ],
+      phone: [{ value: '', disabled: true }, [Validators.required]],
+      amount: [{ value: '', disabled: true }, [Validators.required]],
+      additionalText: [{ value: '', disabled: true }, [Validators.required]],
+      boarding: [{ value: '', disabled: true }, [Validators.required]],
+    });
+
     if (this.additionalData.length === 1) {
+      // When seleced via tile
+      this.boardingList = this.additionalData[0].boarding;
       this.tripRegisterForm.patchValue({
         trip: this.additionalData[0],
       });
     }
+
+    this.tripRegisterForm.valueChanges
+      // .pipe(take(1))
+      .subscribe((formChanges) => {
+        console.log('STATUS CHANGES >>> ', formChanges);
+
+        if (formChanges.trip) {
+          console.log('STATUS CHANGES >>> ', formChanges.trip);
+          this.boardingList = formChanges.trip.boarding;
+          for (let field of TRIPS_REGISTER_FORM_ELEMENTS) {
+            console.log();
+            this.tripRegisterForm.controls[field.id as string].enable();
+          }
+        }
+      });
   }
 
   public hasError(field: string): boolean {

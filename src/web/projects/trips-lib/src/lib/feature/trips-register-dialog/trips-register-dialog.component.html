@@ -1,11 +1,11 @@
 <lib-register-dialog
-  *ngIf="tripDetails"
+  *ngIf="tripDetails$ | async as trips"
   [title]="dialogTitle"
   [registerForm]="true"
 >
   <lib-trips-registration-form
     registerForm
-    [additionalData]="tripDetails"
+    [additionalData]="trips"
     (onSubmit)="onTripRegistrationFormSubmit($event)"
   >
   </lib-trips-registration-form>
