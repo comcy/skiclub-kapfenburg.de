@@ -6,7 +6,7 @@ export const PROGRAMM_DOWNLOAD_LINK_SHORT =
   'https://1drv.ms/b/s!AlpybhuWN2nhgeg7YtsNP_zGVbajHQ?e=PlqvTX';
 
 const EINVERSTAENDNIS_U18_LINK =
-  'https://1drv.ms/b/s!AlpybhuWN2nhgehkNdgAeNHCcmp19A?e=Ceunb5';
+  'https://1drv.ms/b/s!AlpybhuWN2nhgehuhqZdmNmjn_77xw?e=nVR9fH';
 
 const EINVERSTAENDNIS_U16_LINK =
   'https://1drv.ms/b/s!AlpybhuWN2nhgehj5gkhO4WxZOJDxg?e=VJo765';
