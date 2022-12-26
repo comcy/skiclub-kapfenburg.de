@@ -80,7 +80,7 @@
           <td>
             <mat-form-field class="full-width" appearance="fill">
               <mat-label>Zustieg</mat-label>
-              <mat-select formControlName="boarding">
+              <mat-select formControlName="boarding" *ngIf="boardingList$ | async as boardingList">
                 <mat-option
                   *ngFor="let boarding of boardingList"
                   [value]="boarding"
@@ -101,7 +101,7 @@
 
       <mat-form-field class="full-width" appearance="fill">
         <mat-label>Zustieg</mat-label>
-        <mat-select formControlName="boarding">
+        <mat-select formControlName="boarding" *ngIf="boardingList$ | async as boardingList">
           <mat-option
             *ngFor="let boarding of boardingList"
             [value]="boarding"
