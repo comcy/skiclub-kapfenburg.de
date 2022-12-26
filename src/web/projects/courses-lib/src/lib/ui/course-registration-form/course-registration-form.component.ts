@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CourseRegistrationFormServiceInterface } from 'projects/shared-lib/src/lib/components/forms/course-register-form';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
-import { COURSE_REGISTER_FORM_ELEMENTS } from './course-register-form-fields';
+import { COURSE_REGISTRATION_FORM_ELEMENTS } from './course-registration-form-fields';
+import { CourseRegistrationFormServiceInterface } from './course-registration-form-service.interface';
 
 @Component({
   selector: 'lib-course-registration-form',
@@ -62,7 +62,7 @@ export class CourseRegistrationFormComponent implements OnInit {
       // Add form group data to form data
       const timestamp = Date.now();
       formData.append('timestamp', new Date(timestamp).toLocaleString());
-      for (let field of COURSE_REGISTER_FORM_ELEMENTS) {
+      for (let field of COURSE_REGISTRATION_FORM_ELEMENTS) {
         formData.append(field.id, this.courseRegisterForm.get(field.id)?.value);
       }
 

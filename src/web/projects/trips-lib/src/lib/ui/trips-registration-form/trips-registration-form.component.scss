@@ -1,0 +1,58 @@
+.content-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.form {
+  min-width: 150px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form {
+  display: block;
+}
+
+td {
+  padding-right: 8px;
+}
+
+.instruction-label {
+  display: flex;
+  align-items: center;
+  font-size: 13pt;
+  color: rgb(85, 85, 85);
+  padding-top: 12px;
+  padding-bottom: 24px;
+
+  .instruction-number {
+
+    &.disabled {
+      border: 2px solid  rgb(195, 195, 195);
+      color: rgb(195, 195, 195);
+    }
+
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    padding: 8px;
+    background: #fff;
+    border: 2px solid  rgb(85, 85, 85);
+    color: rgb(85, 85, 85);;
+    text-align: center;
+    font: 14px Arial, sans-serif;
+  }
+
+  .instruction-text {
+
+    &.disabled {
+      color: rgb(195, 195, 195);
+    }
+    padding-left: 16px;
+  }
+
+}

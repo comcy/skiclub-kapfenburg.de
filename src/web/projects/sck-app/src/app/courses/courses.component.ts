@@ -9,13 +9,10 @@ import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
   styleUrls: ['./courses.component.scss'],
 })
 export class CoursesComponent implements OnInit {
-  public courseAtTravelPrice: Price[] = COURSE_ON_TRAVEL_PRICE_DATA;
-  public courseAtHomePrice: Price[] = COURSE_AT_HOME_PRICE_DATA;
-
   public navLinks = [
     {
       label: 'Anmeldung',
-      link: './resgistration',
+      link: './registration',
     },
     {
       label: 'Information',

@@ -3,7 +3,7 @@
  */
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { GymInformation } from '../view-models';
+import { GymInformation } from '../models';
 
 @Injectable()
 export abstract class GymInformationCoreServiceInterface {

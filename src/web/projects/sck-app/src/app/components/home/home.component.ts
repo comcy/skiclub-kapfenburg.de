@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import {
-  ShareDialogComponent,
-  TripRegisterDialogComponent,
-} from 'projects/shared-lib/src/lib/components/dialogs';
+import { ShareDialogComponent } from 'projects/shared-lib/src/lib/components/dialogs';
 import {
   Tile,
   TileActions,
@@ -13,6 +10,7 @@ import {
 import { TRIP_DATA } from '@data';
 import { PROGRAMM_DOWNLOAD_LINK } from 'projects/data/downloads';
 import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
+import { TripsRegisterDialogComponent } from '@trips-lib';
 
 @Component({
   selector: 'app-home',
@@ -57,16 +55,16 @@ export class HomeComponent implements OnInit {
     this.tiles = this.trips;
   }
 
-  public openRegisterDialog(tile: Tile, boardingList: string[]) {
+  public openRegisterDialog(tile: Tile) {
     let dialogConfig = new MatDialogConfig();
 
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      data: { tile, boardingList },
+      tile
     };
 
     const dialogRef = this.dialog.open(
-      TripRegisterDialogComponent,
+      TripsRegisterDialogComponent,
       dialogConfig
     );
 
