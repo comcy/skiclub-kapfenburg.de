@@ -7,7 +7,9 @@ import { InformationComponent } from './components/tabs/information/information.
 import { PricesComponent } from './components/tabs/prices/prices.component';
 import { DownloadsComponent } from './components/tabs/downloads/downloads.component';
 import { TripsComponent } from './trips.component';
-
+import { TripsFeatureModule } from '@trips-lib';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -15,11 +17,14 @@ import { TripsComponent } from './trips.component';
     InformationComponent,
     PricesComponent,
     DownloadsComponent,
-    TripsComponent
+    TripsComponent,
   ],
   imports: [
     CommonModule,
-    TripsRoutingModule
-  ]
+    TripsRoutingModule,
+    MatTabsModule,
+    MatToolbarModule,
+    TripsFeatureModule,
+  ],
 })
-export class TripsModule { }
+export class TripsModule {}

@@ -1,0 +1,10 @@
+<div class="content">
+  <div>
+    <h3>Einverständniserklärungen</h3>
+    <ul>
+      <li *ngFor="let d of downloads">
+        <a href="{{ d.link }}">{{ d.name }}</a>
+      </li>
+    </ul>
+  </div>
+</div>

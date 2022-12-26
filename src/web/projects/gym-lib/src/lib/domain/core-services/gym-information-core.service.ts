@@ -14,7 +14,7 @@ import {
   tap,
 } from 'rxjs';
 import { GymInformationProviderServiceInterface } from '../../api/provider-services/gym-provider-service.interface';
-import { GymInformation } from '../view-models';
+import { GymInformation } from '../models';
 import { GymInformationCoreServiceInterface } from './gym-information-core-service.interface';
 
 @Injectable()

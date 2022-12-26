@@ -56,7 +56,7 @@
             <button
               *ngSwitchCase="tileActionsEnum.Register"
               mat-button
-              (click)="openRegisterDialog(t, t.boardings)"
+              (click)="openRegisterDialog(t)"
               [disabled]="t.status === tileStatusEnum.Canceled || t.expired"
             >
               {{ registerLabel }}
