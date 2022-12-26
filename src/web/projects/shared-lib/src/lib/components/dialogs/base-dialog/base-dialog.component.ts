@@ -2,16 +2,16 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'lib-register-dialog',
-  templateUrl: './register-dialog.component.html',
-  styleUrls: ['./register-dialog.component.scss'],
+  selector: 'lib-base-dialog',
+  templateUrl: './base-dialog.component.html',
+  styleUrls: ['./base-dialog.component.scss'],
 })
-export class RegisterDialogComponent implements OnInit {
+export class BaseDialogComponent implements OnInit {
   @Input() title?: string;
   @Input() share?: boolean;
   @Input() registerForm?: boolean;
 
-  constructor(private dialogRef: MatDialogRef<RegisterDialogComponent>) {}
+  constructor(private dialogRef: MatDialogRef<BaseDialogComponent>) {}
 
   ngOnInit(): void {
     this.registerForm = false;
