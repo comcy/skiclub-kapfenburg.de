@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
-import { BehaviorSubject, take } from 'rxjs';
+import { BehaviorSubject, Subject, Subscriber, Subscription, take, takeUntil } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
 import { TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
@@ -21,8 +21,14 @@ export class TripsRegistrationFormComponent implements OnInit {
   public tripView!: string;
 
   public boardingList: string[] = [];
+  public isTripChanged = true;
+
+  public hasPreselectedData = false;
+  public firstPartSelected = false;
 
   public tripRegisterForm: FormGroup = new FormGroup({});
+  public toDestroy$: Subject<void> = new Subject<void>();
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -46,27 +52,47 @@ export class TripsRegistrationFormComponent implements OnInit {
     });
 
     if (this.additionalData.length === 1) {
+      this.hasPreselectedData = true;
+
       // When seleced via tile
       this.boardingList = this.additionalData[0].boarding;
       this.tripRegisterForm.patchValue({
         trip: this.additionalData[0],
       });
+      this.enableFormFields();
+
     }
 
     this.tripRegisterForm.valueChanges
-      // .pipe(take(1))
+      .pipe(takeUntil(this.toDestroy$))
       .subscribe((formChanges) => {
-        console.log('STATUS CHANGES >>> ', formChanges);
 
-        if (formChanges.trip) {
+        console.log('STATUS CHANGES >>> ', formChanges);
+        console.log('TRIP CHANGE >>> ', formChanges.trip);
+        console.log('STATUS CHANGES STATUS >>> ', this.tripRegisterForm.controls['trip'].value === null);
+
+        if ( formChanges.trip && this.isTripChanged && !(this.tripRegisterForm.controls['trip'].value === null)) {
+
+          this.firstPartSelected = true;
+          this.isTripChanged = !this.isTripChanged
+
           console.log('STATUS CHANGES >>> ', formChanges.trip);
           this.boardingList = formChanges.trip.boarding;
-          for (let field of TRIPS_REGISTER_FORM_ELEMENTS) {
-            console.log();
-            this.tripRegisterForm.controls[field.id as string].enable();
-          }
+          this.enableFormFields();
         }
       });
+  }
+
+  ngOnDestroy() {
+    this.toDestroy$.next();
+    this.toDestroy$.complete();
+  }
+
+  private enableFormFields() {
+    for (let field of TRIPS_REGISTER_FORM_ELEMENTS) {
+      console.log();
+      this.tripRegisterForm.controls[field.id as string].enable();
+    }
   }
 
   public hasError(field: string): boolean {
