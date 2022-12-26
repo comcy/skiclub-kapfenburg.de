@@ -1,2 +1,1 @@
-export * from './register-dialog/register-dialog.component';
-export * from './share-dialog/share-dialog.component';
+export * from './base-dialog/base-dialog.component';

@@ -1,11 +1,17 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-// @import "~@angular/material/prebuilt-themes/purple-green.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css"; // light
+// @import "~@angular/material/prebuilt-themes/purple-green.css"; // dark
+// @import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; // light
 
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 // Snackbar overwrite
 .cdk-overlay-container {
-    z-index: 99; 
+  z-index: 99;
 }

@@ -11,7 +11,7 @@ import { ImpressumComponent } from './impressum';
 import { NewsBannerComponent } from './news-banner/news-banner.component';
 import { NewsCardComponent } from './news-card/news-card.component';
 import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.component';
-import { RegisterDialogComponent } from './dialogs/register-dialog/register-dialog.component';
+import { BaseDialogComponent } from './dialogs/base-dialog/base-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,7 +21,6 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ShareDialogComponent } from './dialogs/share-dialog/share-dialog.component';
 import { InfoTileComponent } from './info-tile/info-tile.component';
 
 @NgModule({
@@ -33,8 +32,7 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     NewsBannerComponent,
     NewsCardComponent,
     ComcyCopyrightComponent,
-    RegisterDialogComponent,
-    ShareDialogComponent,
+    BaseDialogComponent,
     InfoTileComponent,
   ],
   imports: [
@@ -57,7 +55,7 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     NewsBannerComponent,
     NewsCardComponent,
     ComcyCopyrightComponent,
-    RegisterDialogComponent,
+    BaseDialogComponent,
   ],
 })
 export class ComponentsModule {}

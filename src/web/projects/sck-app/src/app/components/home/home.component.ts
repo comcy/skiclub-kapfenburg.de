@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ShareDialogComponent } from 'projects/shared-lib/src/lib/components/dialogs';
 import {
   Tile,
   TileActions,
@@ -60,7 +59,7 @@ export class HomeComponent implements OnInit {
 
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      tile
+      tile,
     };
 
     const dialogRef = this.dialog.open(
@@ -71,19 +70,19 @@ export class HomeComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {});
   }
 
-  public openShareDialog(tile: Tile) {
-    let dialogConfig = new MatDialogConfig();
+  // public openShareDialog(tile: Tile) {
+  //   let dialogConfig = new MatDialogConfig();
 
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      data: { tile },
-    };
+  //   dialogConfig.autoFocus = true;
+  //   dialogConfig.data = {
+  //     data: { tile },
+  //   };
 
-    const dialogRef = this.dialog.open(ShareDialogComponent, dialogConfig);
+  //   const dialogRef = this.dialog.open(ShareDialogComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe((result) => {
-      // TODO: Add a snackbar
-      console.log(`Dialog result: ${result}`);
-    });
-  }
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     // TODO: Add a snackbar
+  //     console.log(`Dialog result: ${result}`);
+  //   });
+  // }
 }
