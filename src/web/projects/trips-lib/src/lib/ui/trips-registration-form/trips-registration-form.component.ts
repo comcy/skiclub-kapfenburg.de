@@ -14,17 +14,19 @@ import { TripRegistrationFormServiceInterface } from './trips-registration-form.
 export class TripsRegistrationFormComponent implements OnInit {
   @Input() public additionalData$!: BehaviorSubject<Trip[]>;
   @Input() public additionalData!: Trip[];
-  // @Input() public boardingList!: string[];
+
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isSending: boolean = false;
   public tripView!: string;
 
-  public boardingList: string[] = [];
+  public boardingList$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+
   public isTripChanged = true;
 
   public hasPreselectedData = false;
   public firstPartSelected = false;
+  public currentSelectedTrip = null;
 
   public tripRegisterForm: FormGroup = new FormGroup({});
   public toDestroy$: Subject<void> = new Subject<void>();
@@ -55,7 +57,7 @@ export class TripsRegistrationFormComponent implements OnInit {
       this.hasPreselectedData = true;
 
       // When seleced via tile
-      this.boardingList = this.additionalData[0].boarding;
+      this.updateBoardingList(this.additionalData[0]);
       this.tripRegisterForm.patchValue({
         trip: this.additionalData[0],
       });
@@ -67,17 +69,14 @@ export class TripsRegistrationFormComponent implements OnInit {
       .pipe(takeUntil(this.toDestroy$))
       .subscribe((formChanges) => {
 
-        console.log('STATUS CHANGES >>> ', formChanges);
-        console.log('TRIP CHANGE >>> ', formChanges.trip);
-        console.log('STATUS CHANGES STATUS >>> ', this.tripRegisterForm.controls['trip'].value === null);
+        this.updateBoardingList(formChanges.trip);
 
-        if ( formChanges.trip && this.isTripChanged && !(this.tripRegisterForm.controls['trip'].value === null)) {
+        if ( formChanges.trip && this.isTripChanged ) {
 
           this.firstPartSelected = true;
           this.isTripChanged = !this.isTripChanged
 
-          console.log('STATUS CHANGES >>> ', formChanges.trip);
-          this.boardingList = formChanges.trip.boarding;
+          this.updateBoardingList(formChanges.trip);
           this.enableFormFields();
         }
       });
@@ -90,9 +89,12 @@ export class TripsRegistrationFormComponent implements OnInit {
 
   private enableFormFields() {
     for (let field of TRIPS_REGISTER_FORM_ELEMENTS) {
-      console.log();
       this.tripRegisterForm.controls[field.id as string].enable();
     }
+  }
+
+  private updateBoardingList(trip: Trip) {
+    this.boardingList$.next(trip.boarding);
   }
 
   public hasError(field: string): boolean {
