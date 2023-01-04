@@ -66,13 +66,13 @@ export const TRIP_DATA: Tile[] = [
   {
     order: 2,
     behavior: TileBehavior.View,
-    title: 'SKI & SNOWBOARD KURSAUSFAHRT NACH JUNGHOLZ',
+    title: 'SKI & SNOWBOARD KURSAUSFAHRT NACH ~~JUNGHOLZ~~ BALDERSCHWANG',
     date: '14. Januar 2023',
     subTitle: 'Tagesausfahrt',
     image:
       'https://cdn.pixabay.com/photo/2016/11/18/15/40/boy-1835416_960_720.jpg',
     imageDescription: 'sample',
-    text: 'Für tolles Kursambiente sorgt das Snow Learnland und N`Ice Bear Kinderland.',
+    text: '**Update:** Aufgrund der aktuellen Schneelage und einem größeren Interesse an einem Skigebiet anstelle von Jungholz, für all jene die keinen Kurs machen möchten, haben wir uns entschieden das Skigebiet **Balderschwang** an diesem Tag anzufahren. \r \r ~~Für tolles Kursambiente sorgt das Snow Learnland und N`Ice Bear Kinderland.~~',
     actions: [TileActions.Register],
     expiration: new Date('2023-01-14'),
     boardings: BOARDING_LIST,
