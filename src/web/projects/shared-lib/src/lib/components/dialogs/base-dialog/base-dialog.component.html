@@ -1,5 +1,5 @@
 <button class="close-button" mat-button (click)="close()">X</button>
-<h2 mat-dialog-title *ngIf="title">{{ title }}</h2>
+<h2 mat-dialog-title *ngIf="title" [innerHTML]="this.markdown.render(title)"></h2>
 <mat-dialog-content class=" mat-typography">
 
   <ng-content select="[registerForm]"></ng-content>
