@@ -15,7 +15,7 @@
           <mat-card-title class="card-date">{{ t.date }}</mat-card-title>
           <mat-card-title
             style="white-space: pre-wrap"
-            [innerHTML]="t.title"
+            [innerHTML]="this.markdown.render(t.title)"
           ></mat-card-title>
           <mat-card-subtitle>{{ t.subTitle }}</mat-card-subtitle>
         </mat-card-header>
