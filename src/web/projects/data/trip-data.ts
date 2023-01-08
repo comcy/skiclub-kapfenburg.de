@@ -74,9 +74,9 @@ export const TRIP_DATA: Tile[] = [
     imageDescription: 'sample',
     text: 'Für tolles Kursambiente sorgt das Snow Learnland und N`Ice Bear Kinderland.',
     actions: [TileActions.Register],
-    expiration: new Date('2023-01-14'),
+    expiration: new Date('2023-01-09'),
     boardings: BOARDING_LIST,
-    status: TileStatus.Open,
+    status: TileStatus.Canceled,
   },
   {
     order: 2,
