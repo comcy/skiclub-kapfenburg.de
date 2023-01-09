@@ -72,7 +72,7 @@ export const TRIP_DATA: Tile[] = [
     image:
       'https://cdn.pixabay.com/photo/2016/11/18/15/40/boy-1835416_960_720.jpg',
     imageDescription: 'sample',
-    text: '**Update:** Aufgrund der aktuellen Schneelage und einem größeren Interesse an einem Skigebiet anstelle von Jungholz, für all jene die keinen Kurs machen möchten, haben wir uns entschieden das Skigebiet **Balderschwang** an diesem Tag anzufahren. \r \r ~~Für tolles Kursambiente sorgt das Snow Learnland und N`Ice Bear Kinderland.~~',
+    text: '**Update:** Aufgrund der aktuellen Schneelage müssen wir die Ausfahrt aktuell absagen.',
     actions: [TileActions.Register],
     expiration: new Date('2023-01-09'),
     boardings: BOARDING_LIST,
