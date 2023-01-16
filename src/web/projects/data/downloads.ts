@@ -11,9 +11,16 @@ const EINVERSTAENDNIS_U18_LINK =
 const EINVERSTAENDNIS_U16_LINK =
   'https://1drv.ms/b/s!AlpybhuWN2nhgehj5gkhO4WxZOJDxg?e=VJo765';
 
+const MITGLIEDSANTRAG =
+  'https://1drv.ms/b/s!AlpybhuWN2nhgekd-UEGGeE0uMzpBQ?e=Qaz5H1';
+
 export const TRIP_DOWNLOADS: DownloadItem[] = [
   {
     name: 'Download für Einverständniserklärung für Reiseteilnehmer unter 18 Jahren',
     link: EINVERSTAENDNIS_U18_LINK,
+  },
+  {
+    name: 'Mitgliedsantrag',
+    link: MITGLIEDSANTRAG,
   },
 ];
