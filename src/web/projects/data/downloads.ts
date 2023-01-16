@@ -11,7 +11,7 @@ const EINVERSTAENDNIS_U18_LINK =
 const EINVERSTAENDNIS_U16_LINK =
   'https://1drv.ms/b/s!AlpybhuWN2nhgehj5gkhO4WxZOJDxg?e=VJo765';
 
-const MITGLIEDSANTRAG =
+export const MITGLIEDSANTRAG =
   'https://1drv.ms/b/s!AlpybhuWN2nhgekd-UEGGeE0uMzpBQ?e=Qaz5H1';
 
 export const TRIP_DOWNLOADS: DownloadItem[] = [

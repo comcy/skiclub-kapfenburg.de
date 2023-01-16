@@ -64,7 +64,7 @@ export const TRIP_DATA: Tile[] = [
     status: TileStatus.Canceled,
   },
   {
-    order: 2,
+    order: 6,
     behavior: TileBehavior.View,
     title: 'SKI & SNOWBOARD KURSAUSFAHRT NACH ~~JUNGHOLZ~~ BALDERSCHWANG',
     date: '14. Januar 2023',
@@ -79,7 +79,7 @@ export const TRIP_DATA: Tile[] = [
     status: TileStatus.Canceled,
   },
   {
-    order: 2,
+    order: 4,
     behavior: TileBehavior.View,
     title: 'LA-OELE 2-TAGES SKIAUSFAHRT',
     date: '21. - 22. Januar 2023',
@@ -94,7 +94,7 @@ export const TRIP_DATA: Tile[] = [
     status: TileStatus.Open,
   },
   {
-    order: 2,
+    order: 5,
     behavior: TileBehavior.View,
     title: 'TAGESAUSFAHRT NACH EHRWALD',
     date: '04. Februar 2023',
@@ -109,7 +109,22 @@ export const TRIP_DATA: Tile[] = [
     status: TileStatus.Open,
   },
   {
-    order: 2,
+    order: 3,
+    behavior: TileBehavior.Click,
+    date: 'Werde Mitglied im Verein...',
+    title: 'Skiclub Kapfenburg e.V.',
+    subTitle: 'Mitgliedsantrag',
+    image:
+      'https://cdn.pixabay.com/photo/2014/10/22/18/04/man-498473_960_720.jpg',
+    imageDescription: 'sample',
+    text: 'Jahresbeiträge \r - Kinder 5 € \r - Erwachsene 25 € \r - Familien 40 €',
+    actions: [],
+    expiration: new Date('2030-12-31'),
+    boardings: [],
+    status: TileStatus.Open,
+  },
+  {
+    order: 6,
     behavior: TileBehavior.View,
     title: '15H-PARTYAUSFAHRT NACH LERMOOS, Ü18',
     date: '25. Februar 2023',

@@ -7,7 +7,10 @@ import {
   TileStatus,
 } from 'projects/shared-lib/src/lib/models';
 import { TRIP_DATA } from '@data';
-import { PROGRAMM_DOWNLOAD_LINK } from 'projects/data/downloads';
+import {
+  PROGRAMM_DOWNLOAD_LINK,
+  MITGLIEDSANTRAG,
+} from 'projects/data/downloads';
 import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
 import { TripsRegisterDialogComponent } from '@trips-lib';
 
@@ -23,7 +26,9 @@ export class HomeComponent implements OnInit {
   public tileBehaviorEnum: typeof TileBehavior = TileBehavior;
   public registerLabel: string = 'Anmelden';
   public tiles: Tile[] = [];
+
   public programmDonwloadLink = PROGRAMM_DOWNLOAD_LINK;
+  public mitgliedsAntrag = MITGLIEDSANTRAG;
 
   private trips: Tile[] = TRIP_DATA;
 
