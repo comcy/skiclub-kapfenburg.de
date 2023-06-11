@@ -19,7 +19,7 @@ export const BOARDING_LIST_SHORT = [
 
 export const TRIP_DATA: Tile[] = [
   {
-    order: 0,
+    order: 100,
     behavior: TileBehavior.Click,
     title: 'SCK-Programm',
     date: '',
