@@ -13,12 +13,14 @@ variables:
 - name: PROJECT_PATH
   value: 'src/web/'
 
-- name: PROJECT_ENV_PATH_API
-  value: 'projects/sck-app/src/environments/environment.api.ts'
+- name: APACHE_HTACCESS_SCK_APP 
+  value: 'src/web/projects/sck-app/src/.htaccess'
 
-- name: PROJECT_ENV_PATH_PROD
-  value: 'projects/sck-app/src/environments/environment.prod.ts'
+# - name: PROJECT_ENV_PATH_API
+#   value: 'projects/sck-app/src/environments/environment.api.ts'
 
+# - name: PROJECT_ENV_PATH_PROD
+#   value: 'projects/sck-app/src/environments/environment.prod.ts'
 
 - name: PROJECT_DIST_PATH
   value: 'src/web/dist/sck-app/'
@@ -52,6 +54,11 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
+# Copy .htaccess for Apache WebServer
+- script: |
+    cp ${{ variables.APACHE_HTACCESS_SCK_APP }} ${{ variables.PROJECT_DIST_PATH }}
+  displayName: 'Install sshpass'
+
 # INSTALL sshpass
 - script: |
     sudo apt-get install -y sshpass
@@ -60,7 +67,6 @@ steps:
 # Copy sshpass and scp
 - script: |
     cd ${{ variables.PROJECT_DIST_PATH}}
-    ls -al
     sshpass -p $(SSH_PASSWORD) scp -o StrictHostKeyChecking=no -r . $(SSH_USER)@$(SERVER_ADDRESS):${{ variables.SERVER_DIST_PATH }}
   displayName: 'Login to ${SERVER_ADDRESS} and start secured cp'
 
