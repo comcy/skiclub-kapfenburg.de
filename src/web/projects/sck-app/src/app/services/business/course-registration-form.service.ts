@@ -1,3 +1,11 @@
+/**
+ * @file This file contains the implementation of the CourseRegistrationFormService class.
+ * It is part of the course registration form feature of the SCK app.
+ *
+ * (c) 2021 comcy <comcy@github.com>
+ * License: MIT
+ */
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';

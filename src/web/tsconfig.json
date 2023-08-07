@@ -37,7 +37,7 @@
       "@data": ["projects/data"],
       "trips-lib": ["dist/trips-lib/trips-lib", "dist/trips-lib"]
     },
-    "target": "es2017",
+    "target": "ES2022",
     "module": "es2020",
     "lib": ["es2020", "dom"]
   },
