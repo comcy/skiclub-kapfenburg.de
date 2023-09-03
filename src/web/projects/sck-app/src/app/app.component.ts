@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavigationItem } from 'projects/shared-lib/src/lib/components';
+import { NavigationItem, NavigationItemTypes } from 'projects/shared-lib/src/lib/components';
 import {
   COURSES_ROUTE,
   GYM_ROUTE,
@@ -14,6 +14,7 @@ import {
 })
 export class AppComponent {
   public title = 'Skiclub Kapfenburg e.V.';
+  public routeTypes = NavigationItemTypes;
 
   public navItems: NavigationItem[] = [
     { name: 'Übersicht', route: HOME_ROUTE },
@@ -22,5 +23,10 @@ export class AppComponent {
     { name: 'Gymnastik', route: GYM_ROUTE },
   ];
 
-  constructor() {}
+  public highlightedNavItems: NavigationItem[] = [
+    { name: 'Programm', route: HOME_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
+    { name: 'Mitgliedsantrag', route: GYM_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
+  ];
+  
+  constructor() { }
 }

@@ -3,6 +3,14 @@
 
   <span class="spacer"></span>
 
+  <div  *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+    <a  *ngFor="let n of highlightedNavItems" mat-button (click)="routeTo(n.route)">
+      {{ n.name }}
+    </a>
+  </div>
+
+  <span class="spacer"></span>
+
   <button *ngIf="breakpointObserver.handsetBreakpoint$ | async" type="button" aria-label="Toggle sidenav"
     mat-icon-button (click)="drawer.toggle()">
     <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>

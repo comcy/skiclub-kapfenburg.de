@@ -3,7 +3,9 @@
 <div class="content-container">
   <div class="cards-grid">
     <ng-container *ngFor="let t of tiles">
+      
       <mat-card appearance="outlined" *ngIf="t.visible" class="card" [ngClass]="{ expired: t.expired }">
+
         <mat-card-header>
           <div *ngIf="t.avatar" mat-card-avatar class="card-header-image">
             <img mat-card-avatar src="{{ t.avatar }}" />
@@ -12,12 +14,6 @@
           <mat-card-title style="white-space: pre-wrap" [innerHTML]="this.markdown.render(t.title)"></mat-card-title>
           <mat-card-subtitle class="mat-card-content">{{ t.subTitle }}</mat-card-subtitle>
         </mat-card-header>
-
-        <!-- <ng-container mat-card-image *ngIf="t.behavior === tileBehaviorEnum.Click">
-          <a href="{{ programmDonwloadLink }}">
-            <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
-          </a>
-        </ng-container> -->
 
         <span *ngIf="t.status === tileStatusEnum.Canceled" class="canceled-stamp">Abgesagt</span>
         <span *ngIf="t.status === tileStatusEnum.BookedUp" class="booked-up-stamp">Warteliste</span>
@@ -28,18 +24,21 @@
         </mat-card-content>
         <mat-card-actions class="actions">
           <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
-            <button *ngSwitchCase="tileActionsEnum.Register" mat-button (click)="openRegisterDialog(t)"
+            <!-- <button *ngSwitchCase="tileActionsEnum.Register" mat-button (click)="openRegisterDialog(t)"
               [disabled]="t.status === tileStatusEnum.Canceled || t.expired">
               {{ registerLabel }}
-            </button>
+            </button> -->
 
-            <button *ngSwitchCase="tileActionsEnum.Download" mat-button (click)="openRegisterDialog(t)">
+            <button *ngSwitchCase="tileActionsEnum.Download" mat-button
+              (click)="openLink(programmDownloadLink)">
               Download
             </button>
 
           </ng-container>
         </mat-card-actions>
+
       </mat-card>
+      
     </ng-container>
   </div>
 </div>
