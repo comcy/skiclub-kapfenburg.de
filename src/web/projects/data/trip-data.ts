@@ -27,7 +27,7 @@ export const TRIP_DATA: Tile[] = [
     image: '../../../../assets/img/cards/flyer_cover.png',
     imageDescription: 'sample',
     text: '',
-    actions: [],
+    actions: [TileActions.Download],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2023-12-31'),
     status: TileStatus.Open,
