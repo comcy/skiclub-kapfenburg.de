@@ -3,11 +3,13 @@
 
   <span class="spacer"></span>
 
-  <div  *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
-    <a  *ngFor="let n of highlightedNavItems" mat-button (click)="routeTo(n.route)">
-      {{ n.name }}
-    </a>
-  </div>
+  <ng-container *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+    <div *ngFor="let n of highlightedNavItems" class="highlight-container">
+      <a mat-button (click)="routeTo(n.route)">
+        {{ n.name }}
+      </a>
+    </div>
+  </ng-container>
 
   <span class="spacer"></span>
 
@@ -16,7 +18,7 @@
     <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
   </button>
 
-  <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+  <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)" class="navitems-container">
     <a *ngFor="let n of navItems" mat-button (click)="routeTo(n.route)">
       {{ n.name }}
     </a>
@@ -28,10 +30,13 @@
     [attr.role]="(breakpointObserver.handsetBreakpoint$ | async) ? 'dialog' : 'navigation'"
     [mode]="(breakpointObserver.handsetBreakpoint$ | async) ? 'over' : 'side'" [opened]="false">
     <mat-toolbar>Menu</mat-toolbar>
-    <mat-nav-list *ngFor="let n of navItems">
+
+    <mat-nav-list *ngFor=" let n of navItems">
+
       <a mat-list-item (click)="drawer.close()" [routerLink]="[n.route]" routerLinkActive="list-item-active">
         {{ n.name }}
       </a>
+
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

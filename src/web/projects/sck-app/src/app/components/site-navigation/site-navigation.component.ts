@@ -9,14 +9,15 @@ import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services'
   styleUrls: ['./site-navigation.component.scss'],
 })
 export class SiteNavigationComponent {
+
+  @Input() navItems: NavigationItem[] = [];
+  @Input() highlightedNavItems?: NavigationItem[] = [];
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public breakpointObserver: BreakpointObserverService
-  ) {}
-
-  @Input() navItems: NavigationItem[] = [];
-  @Input() highlightedNavItems?: NavigationItem[] = [];
+  ) { }
 
   routerHome() {
     this.router.navigateByUrl('');
