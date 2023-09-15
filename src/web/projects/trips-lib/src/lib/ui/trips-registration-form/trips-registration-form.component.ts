@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
-import { BehaviorSubject, Subject, Subscriber, Subscription, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
 import { TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
