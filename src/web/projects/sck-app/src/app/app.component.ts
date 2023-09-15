@@ -24,7 +24,6 @@ export class AppComponent {
   ];
 
   public highlightedNavItems: NavigationItem[] = [
-    { name: 'Programm', route: HOME_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
     { name: 'Mitgliedsantrag', route: GYM_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
   ];
   
