@@ -12,19 +12,9 @@ import { CourseRegistrationFormServiceInterface } from './course-registration-fo
 export class CourseRegistrationFormComponent implements OnInit {
   @Output() onSubmit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  public courseRegisterForm: FormGroup = new FormGroup({});
   public sportTypeList = ['Ski Alpin', 'Snowboard'];
   public levelList = ['Anfänger', 'Könner', 'Fortgeschritten'];
-
-  public courseRegisterForm: FormGroup = this.formBuilder.group({
-    sportType: [null, [Validators.required]],
-    firstName: [null, Validators.required],
-    lastName: [null, Validators.required],
-    email: [null, [Validators.required, Validators.email]],
-    phone: [null, [Validators.required]],
-    age: [null, [Validators.required]],
-    additionalText: [null, [Validators.required]],
-    level: [null, [Validators.required]],
-  });
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,7 +22,19 @@ export class CourseRegistrationFormComponent implements OnInit {
     public breakpointObserver: BreakpointObserverService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.courseRegisterForm = this.formBuilder.group({
+      sportType: [null, [Validators.required]],
+      firstName: [null, Validators.required],
+      lastName: [null, Validators.required],
+      email: [null, [Validators.required, Validators.email]],
+      phone: [null, [Validators.required]],
+      age: [null, [Validators.required]],
+      additionalText: [null, [Validators.required]],
+      level: [null, [Validators.required]],
+    });
+  
+  }
 
   public hasError(field: string): boolean {
     // TODO Generalize error messages
