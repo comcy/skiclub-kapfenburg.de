@@ -19,6 +19,7 @@ export interface Tile {
 export enum TileActions {
   Share = 'share',
   Register = 'register',
+  Download = 'download',
 }
 
 export enum TileBehavior {
