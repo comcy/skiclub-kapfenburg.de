@@ -6,10 +6,10 @@ import {
   TileBehavior,
   TileStatus,
 } from 'projects/shared-lib/src/lib/models';
-import { TRIP_DATA } from '@data';
-import { PROGRAMM_DOWNLOAD_LINK } from 'projects/data/downloads';
+import { PROGRAMM_DOWNLOAD_LINK, PROGRAMM_DOWNLOAD_LINK_SHORT, TRIP_DATA } from '@data';
 import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
 import { TripsRegisterDialogComponent } from '@trips-lib';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -23,13 +23,13 @@ export class HomeComponent implements OnInit {
   public tileBehaviorEnum: typeof TileBehavior = TileBehavior;
   public registerLabel: string = 'Anmelden';
   public tiles: Tile[] = [];
-  public programmDonwloadLink = PROGRAMM_DOWNLOAD_LINK;
+  public programmDownloadLink = PROGRAMM_DOWNLOAD_LINK;
 
   private trips: Tile[] = TRIP_DATA;
 
   constructor(
     public dialog: MatDialog,
-    public markdown: MarkdownRenderService
+    public markdown: MarkdownRenderService,
   ) {}
 
   ngOnInit(): void {
@@ -70,19 +70,12 @@ export class HomeComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {});
   }
 
-  // public openShareDialog(tile: Tile) {
-  //   let dialogConfig = new MatDialogConfig();
-
-  //   dialogConfig.autoFocus = true;
-  //   dialogConfig.data = {
-  //     data: { tile },
-  //   };
-
-  //   const dialogRef = this.dialog.open(ShareDialogComponent, dialogConfig);
-
-  //   dialogRef.afterClosed().subscribe((result) => {
+  public openLink(link: string) {
+    window.open(link, "_blank");
+  }
+}
   //     // TODO: Add a snackbar
   //     console.log(`Dialog result: ${result}`);
   //   });
   // }
-}
+// }

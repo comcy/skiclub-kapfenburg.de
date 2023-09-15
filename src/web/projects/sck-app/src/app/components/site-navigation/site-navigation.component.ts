@@ -16,6 +16,7 @@ export class SiteNavigationComponent {
   ) {}
 
   @Input() navItems: NavigationItem[] = [];
+  @Input() highlightedNavItems?: NavigationItem[] = [];
 
   routerHome() {
     this.router.navigateByUrl('');

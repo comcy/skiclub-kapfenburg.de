@@ -33,11 +33,18 @@
         "projects/trips-lib/src/lib/feature",
         "projects/trips-lib/src/lib/domain",
       ],
-      "gym-lib": ["dist/gym-lib/gym-lib", "dist/gym-lib"],
+      "gym-lib": [
+        "dist/gym-lib/gym-lib",
+        "dist/gym-lib"
+      ],
+      "membership-lib": [
+        "dist/membership-lib/membership-lib",
+        "dist/membership-lib"
+      ],
       "@data": ["projects/data"],
       "trips-lib": ["dist/trips-lib/trips-lib", "dist/trips-lib"]
     },
-    "target": "es2017",
+    "target": "ES2022",
     "module": "es2020",
     "lib": ["es2020", "dom"]
   },

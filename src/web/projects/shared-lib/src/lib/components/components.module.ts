@@ -2,26 +2,27 @@
  * @copyright Copyright (c) 2022 Christian Silfang (comcy) - All Rights Reserved.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from './header';
-import { FooterComponent } from './footer';
-import { DatenschutzComponent } from './datenschutz';
-import { ImpressumComponent } from './impressum';
-import { NewsBannerComponent } from './news-banner/news-banner.component';
-import { NewsCardComponent } from './news-card/news-card.component';
-import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.component';
-import { BaseDialogComponent } from './dialogs/base-dialog/base-dialog.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.component';
+import { DatenschutzComponent } from './datenschutz';
+import { BaseDialogComponent } from './dialogs/base-dialog/base-dialog.component';
+import { FooterComponent } from './footer';
+import { HeaderComponent } from './header';
+import { ImpressumComponent } from './impressum';
 import { InfoTileComponent } from './info-tile/info-tile.component';
+import { NewsBannerComponent } from './news-banner/news-banner.component';
+import { NewsCardComponent } from './news-card/news-card.component';
+import { TopBarComponent } from './top-bar/top-bar.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     ComcyCopyrightComponent,
     BaseDialogComponent,
     InfoTileComponent,
+    TopBarComponent,
   ],
   imports: [
     CommonModule,
@@ -56,6 +58,7 @@ import { InfoTileComponent } from './info-tile/info-tile.component';
     NewsCardComponent,
     ComcyCopyrightComponent,
     BaseDialogComponent,
+    TopBarComponent
   ],
 })
-export class ComponentsModule {}
+export class ComponentsModule { }
