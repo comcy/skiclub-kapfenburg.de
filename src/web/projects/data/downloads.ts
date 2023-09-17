@@ -2,7 +2,8 @@ import { DownloadItem } from 'projects/trips-lib/src/lib/domain/models';
 
 export const PROGRAMM_DOWNLOAD_LINK =
   'https://1drv.ms/b/s!AlpybhuWN2nhgeg84qHJtnqsYKL8gg?e=drhRrK';
-export const PROGRAMM_DOWNLOAD_LINK_SHORT =
+
+  export const PROGRAMM_DOWNLOAD_LINK_SHORT =
   'https://1drv.ms/b/s!AlpybhuWN2nhgeg7YtsNP_zGVbajHQ?e=PlqvTX';
 
 const EINVERSTAENDNIS_U18_LINK =
@@ -12,7 +13,7 @@ const EINVERSTAENDNIS_U16_LINK =
   'https://1drv.ms/b/s!AlpybhuWN2nhgehj5gkhO4WxZOJDxg?e=VJo765';
 
 const MITGLIEDSANTRAG =
-  'https://1drv.ms/b/s!AlpybhuWN2nhgekd-UEGGeE0uMzpBQ?e=Qaz5H1';
+  'https://1drv.ms/b/s!AlpybhuWN2nhge8cEZzZ36UQ89Ixaw?e=XsGgvZ';
 
 export const TRIP_DOWNLOADS: DownloadItem[] = [
   {
