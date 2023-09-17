@@ -1,3 +1,7 @@
+/*
+ * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.
+ */
+
 import { Component } from '@angular/core';
 import { NavigationItem, NavigationItemTypes } from 'projects/shared-lib/src/lib/components';
 import { COURSES_ROUTE, GYM_ROUTE, HOME_ROUTE, TRIPS_ROUTE } from './route-segments';
