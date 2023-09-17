@@ -11,8 +11,10 @@
     "prettier:fix": "prettier --config .prettierrc --check --fix",
   },
   "husky": {
-    "pre-commit": "lint-staged",
-    "pre-push": "npm run test" 
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test" 
+    }
   },
   "lint-staged": {
     "src/**/*.{ts,scss,html}": [
