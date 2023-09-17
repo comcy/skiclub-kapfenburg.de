@@ -6,14 +6,14 @@ export interface Tile {
   image: string;
   imageDescription: string;
   text: string;
-  actions?: TileActions[];
-  avatar?: string;
-  visible?: boolean;
-  expired?: boolean;
   status: TileStatus;
   expiration: Date;
   behavior: TileBehavior;
   boardings: string[];
+  actions?: TileActions[];
+    avatar?: string;
+  visible?: boolean;
+  expired?: boolean;
 }
 
 export enum TileActions {
