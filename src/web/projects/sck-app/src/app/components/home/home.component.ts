@@ -9,7 +9,6 @@ import {
 import { PROGRAMM_DOWNLOAD_LINK, PROGRAMM_DOWNLOAD_LINK_SHORT, TRIP_DATA } from '@data';
 import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
 import { TripsRegisterDialogComponent } from '@trips-lib';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',

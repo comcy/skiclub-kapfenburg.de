@@ -23,9 +23,9 @@ export class AppComponent {
     { name: 'Gymnastik', route: GYM_ROUTE },
   ];
 
-  public highlightedNavItems: NavigationItem[] = [
-    { name: 'Mitgliedsantrag', route: GYM_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
-  ];
+  // public highlightedNavItems: NavigationItem[] = [
+  //   { name: 'Mitgliedsantrag', route: GYM_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
+  // ];
   
   constructor() { }
 }
