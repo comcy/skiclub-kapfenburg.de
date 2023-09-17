@@ -28,7 +28,7 @@ export const TRIP_DATA: Tile[] = [
     {
         order: 100,
         behavior: TileBehavior.Click,
-        title: 'Mitgliedsabtrag',
+        title: 'Mitgliedsantrag',
         date: '',
         subTitle: '',
         image: 'https://cdn.pixabay.com/photo/2020/11/03/15/32/man-5710164_1280.jpg',
