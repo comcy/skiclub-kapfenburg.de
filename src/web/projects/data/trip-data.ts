@@ -25,7 +25,7 @@ export const TRIP_DATA: Tile[] = [
     date: '',
     subTitle: 'Saison 2022 / 2023',
     image: '../../../../assets/img/cards/flyer_cover.png',
-    imageDescription: 'sample',
+    imageDescription: 'SCK-Programm',
     text: '',
     actions: [TileActions.Download],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
