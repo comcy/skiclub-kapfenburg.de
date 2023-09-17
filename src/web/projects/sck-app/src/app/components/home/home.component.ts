@@ -70,11 +70,10 @@ export class HomeComponent implements OnInit {
   }
 
   public openLink(link: string) {
+    // TODO: Add a snackbar
     window.open(link, "_blank");
   }
+
+
 }
-  //     // TODO: Add a snackbar
-  //     console.log(`Dialog result: ${result}`);
-  //   });
-  // }
-// }
+
