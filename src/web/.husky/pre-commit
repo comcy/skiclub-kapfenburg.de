@@ -1,0 +1,4 @@
+# pre-commit
+cd src/web
+
+npm run prettier:fix

@@ -9,8 +9,14 @@
     "test": "ng test",
     "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
     "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
-    "prepare": "husky install",
+    "prepare": "cd ../.. && husky install src/web/.husky",
     "postinstall": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test" 
+    }
   },
   "lint-staged": {
     "projects/**/*.{ts,scss,html}": [
