@@ -9,8 +9,7 @@
     "test": "ng test",
     "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
     "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
-    "prepare": "cd ../.. && husky install src/web/.husky",
-    "postinstall": "husky install"
+    "prepare": "cd ../.. && husky install src/web/.husky"
   },
   "husky": {
     "hooks": {
