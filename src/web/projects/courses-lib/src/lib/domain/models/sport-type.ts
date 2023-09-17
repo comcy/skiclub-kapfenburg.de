@@ -1,4 +1,4 @@
 export enum SportType {
-  Alpin = 'Alpin',
-  Snowboard = 'Snowboard',
+    Alpin = 'Alpin',
+    Snowboard = 'Snowboard',
 }

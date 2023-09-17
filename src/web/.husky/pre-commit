@@ -1,4 +1,8 @@
-# pre-commit
+#!/bin/sh
 cd src/web
 
-npm run prettier:fix
+# . "$(dirname "$0")/_/husky.sh"
+npx lint-staged
+# npm run prettier:check
+# pre-commit
+
