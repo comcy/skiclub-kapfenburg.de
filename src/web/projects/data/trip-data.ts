@@ -40,7 +40,7 @@ export const TRIP_DATA: Tile[] = [
     date: '',
     subTitle: '',
     image: '../../../../assets/img/cards/flyer_cover.png',
-    imageDescription: 'sample',
+    imageDescription: 'Mitgliedsantrag',
     text: '',
     actions: [TileActions.Download],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
