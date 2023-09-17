@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
-    "prettier:fix": "prettier --config .prettierrc --check --fix",
+    "prettier:fix": "prettier --config .prettierrc --check --fix"
   },
   "husky": {
     "hooks": {
