@@ -13,8 +13,7 @@ export interface Tile {
   actions?: TileActions[];
     avatar?: string;
   visible?: boolean;
-  expired?: boolean;
-}
+  expired?: boolean;}
 
 export enum TileActions {
   Share = 'share',
