@@ -1,83 +1,89 @@
 :host {
-  flex: 1;
-  overflow: scroll;
-  height: 100%;
+    flex: 1;
+    overflow: scroll;
+    height: 100%;
 }
 
 .content-container {
-  padding: 32px 32px 64px 32px;
+    padding: 32px 32px 64px 32px;
 
-  .expired {
-    opacity: 0.5;
-  }
+    .expired {
+        opacity: 0.5;
+    }
 
-  .card {
-    max-width: 360px;
-    margin-bottom: 24px;
-  }
+    .card {
+        max-width: 360px;
+        margin-bottom: 24px;
+    }
 
-  .cards-grid {
-    display: flex;
-    flex-flow: wrap;
-    column-gap: 64px;
-  }
+    .cards-grid {
+        display: flex;
+        flex-flow: wrap;
+        column-gap: 64px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
 
-  .card-header-image {
-    // background-image: url('../../assets/img/comcy_bit.png');
-    background-size: cover;
-  }
+    .card-header-image {
+        // background-image: url('../../assets/img/comcy_bit.png');
+        background-size: cover;
+    }
 
-  .card-date {
-    color: #3f51b5;
-  }
+    .card-date {
+        color: #3f51b5;
+    }
 
-  .actions {
-    display: flex;
-    justify-content: space-between;
-  }
+    .actions {
+        display: flex;
+        justify-content: space-between;
+    }
 }
 
 .mat-mdc-card-content {
-  padding: 8px;
+    padding: 8px;
 }
 
 .canceled-stamp {
-  transform: rotate(10deg);
-  color: rgba(236, 12, 12, 0.884);
-  font-size: 3rem;
-  font-weight: 700;
-  border: 0.25rem solid #555;
-  display: inline-block;
-  padding: 0.95rem 2rem;
-  text-transform: uppercase;
-  border-radius: 2rem;
-  font-family: "Courier";
-  -webkit-mask-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png");
-  -webkit-mask-size: 944px 604px;
-  mix-blend-mode: multiply;
+    transform: rotate(10deg);
+    color: rgba(236, 12, 12, 0.884);
+    font-size: 3rem;
+    font-weight: 700;
+    border: 0.25rem solid #555;
+    display: inline-block;
+    padding: 0.95rem 2rem;
+    text-transform: uppercase;
+    border-radius: 2rem;
+    font-family: 'Courier';
+    -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+    mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+    -webkit-mask-size: 944px 604px;
+    mask-size: 944px 604px;
+    mix-blend-mode: multiply;
 }
 
 .booked-up-stamp {
-  transform: rotate(-6deg);
-  color: rgba(175, 177, 45, 0.884);
-  font-size: 3rem;
-  font-weight: 700;
-  border: 0.25rem solid #555;
-  display: inline-block;
-  padding: 0.95rem 2rem;
-  text-transform: uppercase;
-  border-radius: 2rem;
-  font-family: "Courier";
-  -webkit-mask-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png");
-  -webkit-mask-size: 944px 604px;
-  mix-blend-mode: multiply;
+    transform: rotate(-6deg);
+    color: rgba(175, 177, 45, 0.884);
+    font-size: 3rem;
+    font-weight: 700;
+    border: 0.25rem solid #555;
+    display: inline-block;
+    padding: 0.95rem 2rem;
+    text-transform: uppercase;
+    border-radius: 2rem;
+    font-family: 'Courier';
+    -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+    mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+    -webkit-mask-size: 944px 604px;
+    mask-size: 944px 604px;
+    mix-blend-mode: multiply;
 }
 
 .checkmark {
-  font-family: arial;
-  -ms-transform: scaleX(-1) rotate(-35deg);
-  /* IE 9 */
-  -webkit-transform: scaleX(-1) rotate(-35deg);
-  /* Chrome, Safari, Opera */
-  transform: scaleX(-1) rotate(-35deg);
+    font-family: arial;
+    -ms-transform: scaleX(-1) rotate(-35deg);
+    /* IE 9 */
+    -webkit-transform: scaleX(-1) rotate(-35deg);
+    /* Chrome, Safari, Opera */
+    transform: scaleX(-1) rotate(-35deg);
 }
