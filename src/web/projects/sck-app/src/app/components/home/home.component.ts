@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { PROGRAMM_DOWNLOAD_LINK, TRIP_DATA } from '@data';
+import { PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
 import { TripsRegisterDialogComponent } from '@trips-lib';
 import { Tile, TileActions, TileBehavior, TileStatus } from 'projects/shared-lib/src/lib/models';
 import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
     public programmDownloadLink = PROGRAMM_DOWNLOAD_LINK;
 
     private trips: Tile[] = TRIP_DATA;
+    private staticData: Tile[] = STATIC_DATA;
 
     constructor(
         public dialog: MatDialog,
@@ -27,25 +28,27 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.trips.sort((a, b) => {
+        const homeTiles: Tile[] = this.trips.concat(this.staticData);
+
+        homeTiles.sort((a, b) => {
             return a.order > b.order // Handle order
                 ? -1
                 : 1 && b.expiration.getTime() - a.expiration.getTime(); // Handle expiration
         });
 
         // then place expired events at the end
-        this.trips.sort((a, b) => {
+        homeTiles.sort((a, b) => {
             if (a.expiration.getTime() < new Date().getTime()) return 1;
             else if (b.expiration.getTime() > new Date().getTime()) return -1;
             else return a.expiration.valueOf() - b.expiration.valueOf();
         });
 
-        this.trips.map((t) => {
+        homeTiles.map((t) => {
             t.expired = t.expiration.getTime() < new Date().getTime() ? true : false;
             t.visible = t.visible === false ? false : true;
         });
 
-        this.tiles = this.trips;
+        this.tiles = homeTiles;
     }
 
     public openRegisterDialog(tile: Tile) {

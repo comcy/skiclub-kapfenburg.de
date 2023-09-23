@@ -17,8 +17,16 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "paths": {
+
+      "@shared/ui-common": [
+        "projects/shared-lib/src/lib/ui-common"
+      ],
+      "@data": ["projects/data"],
+
+
       "shared-lib": ["dist/shared-lib/shared-lib", "dist/shared-lib"],
       "courses-lib": ["dist/courses-lib/courses-lib", "dist/courses-lib"],
+
       "@courses-lib": [
         "projects/courses-lib/src/lib",
         "projects/courses-lib/src/lib/domain",
@@ -41,7 +49,7 @@
         "dist/membership-lib/membership-lib",
         "dist/membership-lib"
       ],
-      "@data": ["projects/data"],
+
       "trips-lib": ["dist/trips-lib/trips-lib", "dist/trips-lib"]
     },
     "target": "ES2022",
