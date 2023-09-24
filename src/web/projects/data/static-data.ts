@@ -27,7 +27,7 @@ export const STATIC_DATA: Tile[] = [
         imageDescription: 'Mitgliedsantrag',
         text: '',
         actions: [TileActions.Download],
-        downloadActionLink: 'https://1drv.ms/b/s!AlpybhuWN2nhge8cEZzZ36UQ89Ixaw?e=XsGgvZ',
+        downloadActionLink: 'https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA',
         avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
         expiration: new Date('2023-12-31'),
         status: TileStatus.Open,

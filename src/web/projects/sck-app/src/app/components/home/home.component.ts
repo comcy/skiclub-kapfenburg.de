@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
@@ -64,8 +68,9 @@ export class HomeComponent implements OnInit {
         dialogRef.afterClosed().subscribe(() => {});
     }
 
-    public openLink(link: string) {
-        // TODO: Add a snackbar
-        window.open(link, '_blank');
+    public openLink(link: string | undefined) {
+        if (link) {
+            window.open(link, '_blank');
+        }
     }
 }
