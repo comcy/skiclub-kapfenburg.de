@@ -4,6 +4,8 @@
         "es2021": true
     },
     "extends": [
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates",
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"
     ],
@@ -16,5 +18,45 @@
         "@typescript-eslint"
     ],
     "rules": {
-    }
+        "@angular-eslint/directive-selector": [
+            "error",
+            {
+                "type": "attribute",
+                "prefix": "app",
+                "style": "camelCase"
+            }
+        ],
+        "@angular-eslint/component-selector": [
+            "error",
+            {
+                "type": "element",
+                "prefix": "app",
+                "style": "kebab-case"
+            }
+        ]
+    },
+    "overrides": [
+            /**
+     * -----------------------------------------------------
+     * COMPONENT TEMPLATES
+     * -----------------------------------------------------
+     *
+     * If you use inline templates, make sure you read the notes on the configuration
+     * object after this one to understand how they relate to this configuration directly
+     * below.
+     */
+    {
+        "files": ["*.component.html"],
+        "extends": ["plugin:@angular-eslint/template/recommended"],
+        "rules": {
+          /**
+           * Any template/HTML related rules you wish to use/reconfigure over and above the
+           * recommended set provided by the @angular-eslint project would go here.
+           *
+           * There is an example below from ESLint core (note, this specific example is not
+           * necessarily recommended for all projects):
+           */
+        }
+      }
+    ]
 }

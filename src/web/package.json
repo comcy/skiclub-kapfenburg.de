@@ -9,7 +9,8 @@
     "test": "ng test",
     "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
     "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
-    "prepare": "cd ../.. && husky install src/web/.husky"
+    "prepare": "cd ../.. && husky install src/web/.husky",
+    "lint": "ng lint"
   },
   "husky": {
     "hooks": {
@@ -42,13 +43,18 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.1.8",
+    "@angular-eslint/builder": "16.2.0",
+    "@angular-eslint/eslint-plugin": "16.2.0",
+    "@angular-eslint/eslint-plugin-template": "16.2.0",
+    "@angular-eslint/schematics": "16.2.0",
+    "@angular-eslint/template-parser": "16.2.0",
     "@angular/cli": "~16.1.8",
     "@angular/compiler-cli": "^16.1.0",
     "@types/jasmine": "~4.3.0",
     "@types/node": "^12.11.1",
     "@types/showdown": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
+    "@typescript-eslint/eslint-plugin": "5.62.0",
+    "@typescript-eslint/parser": "5.62.0",
     "eslint": "^8.49.0",
     "husky": "^8.0.0",
     "jasmine-core": "~4.6.0",
