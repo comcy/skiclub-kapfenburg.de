@@ -1,23 +1,26 @@
 <div class="content">
-  <app-site-navigation [navItems]="navItems"></app-site-navigation>
+    <app-site-navigation [navItems]="navItems"></app-site-navigation>
 </div>
 
-
 <div class="footer">
-  <mat-toolbar>
-    <div>
-      <a mat-button [routerLink]="'/impressum'"> Impressum </a>
-      <a mat-button [routerLink]="'/datenschutz'"> Datenschutz </a>
-    </div>
-    <span class="spacer"></span>
-    <div class="mail-link">
-      <a href="mailto:webmaster@skiclub-kapfenburg.de">
-        <mat-icon>mail</mat-icon>
-      </a>
-    </div>
-    <span class="spacer"></span>
-    <div>
-      <lib-comcy-copyright [link]="'https://github.com/comcy/skiclub-kapfenburg.de'"></lib-comcy-copyright>
-    </div>
-  </mat-toolbar>
+    <mat-toolbar>
+        <div>
+            <a mat-button [routerLink]="'/impressum'"> Impressum </a>
+            <a mat-button [routerLink]="'/datenschutz'"> Datenschutz </a>
+        </div>
+
+        <span class="spacer"></span>
+
+        <div class="mail-link">
+            <a href="mailto:webmaster@skiclub-kapfenburg.de">
+                <mat-icon>mail</mat-icon>
+            </a>
+        </div>
+
+        <span class="spacer"></span>
+
+        <div>
+            <lib-comcy-copyright [link]="'https://github.com/comcy/skiclub-kapfenburg.de'"></lib-comcy-copyright>
+        </div>
+    </mat-toolbar>
 </div>
