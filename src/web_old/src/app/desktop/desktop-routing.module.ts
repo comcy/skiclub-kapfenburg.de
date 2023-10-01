@@ -1,7 +1,6 @@
-/*
- * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
  */
-
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -11,17 +10,12 @@ const desktopRoutes: Routes = [
   {
     path: '',
     component: HomeComponent,
-  }
+  },
 ];
-
 
 @NgModule({
   declarations: [],
-  imports: [
-    RouterModule.forChild(desktopRoutes)
-  ],
-  exports: [
-    RouterModule
-  ]
+  imports: [RouterModule.forChild(desktopRoutes)],
+  exports: [RouterModule],
 })
-export class DesktopRoutingModule { }
+export class DesktopRoutingModule {}

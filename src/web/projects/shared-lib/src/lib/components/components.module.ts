@@ -1,5 +1,5 @@
-/*
- * @copyright Copyright (c) 2022 Christian Silfang (comcy) - All Rights Reserved.
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
  */
 
 import { CommonModule } from '@angular/common';
@@ -25,40 +25,40 @@ import { NewsCardComponent } from './news-card/news-card.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
 
 @NgModule({
-  declarations: [
-    HeaderComponent,
-    FooterComponent,
-    DatenschutzComponent,
-    ImpressumComponent,
-    NewsBannerComponent,
-    NewsCardComponent,
-    ComcyCopyrightComponent,
-    BaseDialogComponent,
-    InfoTileComponent,
-    TopBarComponent,
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatGridListModule,
-    MatSelectModule,
-    MatToolbarModule,
-    MatProgressSpinnerModule,
-  ],
-  exports: [
-    HeaderComponent,
-    FooterComponent,
-    DatenschutzComponent,
-    ImpressumComponent,
-    NewsBannerComponent,
-    NewsCardComponent,
-    ComcyCopyrightComponent,
-    BaseDialogComponent,
-    TopBarComponent
-  ],
+    declarations: [
+        HeaderComponent,
+        FooterComponent,
+        DatenschutzComponent,
+        ImpressumComponent,
+        NewsBannerComponent,
+        NewsCardComponent,
+        ComcyCopyrightComponent,
+        BaseDialogComponent,
+        InfoTileComponent,
+        TopBarComponent,
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatGridListModule,
+        MatSelectModule,
+        MatToolbarModule,
+        MatProgressSpinnerModule,
+    ],
+    exports: [
+        HeaderComponent,
+        FooterComponent,
+        DatenschutzComponent,
+        ImpressumComponent,
+        NewsBannerComponent,
+        NewsCardComponent,
+        ComcyCopyrightComponent,
+        BaseDialogComponent,
+        TopBarComponent,
+    ],
 })
-export class ComponentsModule { }
+export class ComponentsModule {}

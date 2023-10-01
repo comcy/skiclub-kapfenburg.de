@@ -1,11 +1,12 @@
-/*
- * @copyright Copyright (c) 2022 Carl Zeiss Industrielle Messtechnik GmbH - All Rights Reserved. ZEISS, ZEISS.com are trademarks of Carl Zeiss AG
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
  */
+
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GymInformation } from '../../domain';
 
 @Injectable()
 export abstract class GymInformationProviderServiceInterface {
-  public abstract getGymOffers(): Observable<GymInformation[]>;
+    public abstract getGymOffers(): Observable<GymInformation[]>;
 }

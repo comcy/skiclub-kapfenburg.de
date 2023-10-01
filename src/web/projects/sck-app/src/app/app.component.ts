@@ -1,5 +1,5 @@
-/*
- * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
  */
 
 import { Component } from '@angular/core';
@@ -27,6 +27,4 @@ export class AppComponent {
     // public highlightedNavItems: NavigationItem[] = [
     //   { name: 'Mitgliedsantrag', route: GYM_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
     // ];
-
-    constructor() {}
 }

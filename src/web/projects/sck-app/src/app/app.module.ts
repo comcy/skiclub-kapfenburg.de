@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
@@ -19,10 +23,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
-import {
-  MatDialogModule,
-  MAT_DIALOG_DEFAULT_OPTIONS,
-} from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { tripRegistrationServiceProvider } from './services/business/trip-registration-form.service';
@@ -32,41 +33,41 @@ import { GymFeatureModule } from '@gym-lib';
 import { TripsFeatureModule } from '@trips-lib';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, SiteNavigationComponent],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    ComponentsModule,
-    BrowserAnimationsModule,
-    LayoutModule,
-    ReactiveFormsModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatSliderModule,
-    MatTabsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatGridListModule,
-    MatCardModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    CoursesFeatureModule,
-    GymFeatureModule,
-    TripsFeatureModule,
-  ],
-  providers: [
-    tripRegistrationServiceProvider,
-    courseRegistrationServiceProvider,
-    {
-      provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: { maxWidth: '90vw', hasBackdrop: true },
-    },
-  ],
-  exports: [],
-  bootstrap: [AppComponent],
+    declarations: [AppComponent, HomeComponent, SiteNavigationComponent],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        ComponentsModule,
+        BrowserAnimationsModule,
+        LayoutModule,
+        ReactiveFormsModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatListModule,
+        MatSliderModule,
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatGridListModule,
+        MatCardModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        CoursesFeatureModule,
+        GymFeatureModule,
+        TripsFeatureModule,
+    ],
+    providers: [
+        tripRegistrationServiceProvider,
+        courseRegistrationServiceProvider,
+        {
+            provide: MAT_DIALOG_DEFAULT_OPTIONS,
+            useValue: { maxWidth: '90vw', hasBackdrop: true },
+        },
+    ],
+    exports: [],
+    bootstrap: [AppComponent],
 })
 export class AppModule {}

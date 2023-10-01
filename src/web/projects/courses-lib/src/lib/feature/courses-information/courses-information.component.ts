@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'lib-courses-information',
-  templateUrl: './courses-information.component.html',
-  styleUrls: ['./courses-information.component.scss'],
+    selector: 'lib-courses-information',
+    templateUrl: './courses-information.component.html',
+    styleUrls: ['./courses-information.component.scss'],
 })
-export class CoursesInformationComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class CoursesInformationComponent {}

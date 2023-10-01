@@ -1,16 +1,20 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { TestBed } from '@angular/core/testing';
 
 import { MembershipLibService } from './membership-lib.service';
 
 describe('MembershipLibService', () => {
-  let service: MembershipLibService;
+    let service: MembershipLibService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(MembershipLibService);
-  });
+    beforeEach(() => {
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(MembershipLibService);
+    });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });

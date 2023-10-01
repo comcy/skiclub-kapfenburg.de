@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TripsDownloadsComponent } from './trips-downloads/trips-downloads.component';
@@ -9,20 +13,20 @@ import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { TripsRegisterDialogComponent } from './trips-register-dialog/trips-register-dialog.component';
 
 @NgModule({
-  declarations: [
-    TripsDownloadsComponent,
-    TripsPricesComponent,
-    TripsInformationComponent,
-    TripsRegistrationComponent,
-    TripsRegisterDialogComponent,
-  ],
-  imports: [CommonModule, TripsUiModule, ComponentsModule],
-  exports: [
-    TripsDownloadsComponent,
-    TripsInformationComponent,
-    TripsPricesComponent,
-    TripsRegistrationComponent,
-    TripsRegisterDialogComponent,
-  ],
+    declarations: [
+        TripsDownloadsComponent,
+        TripsPricesComponent,
+        TripsInformationComponent,
+        TripsRegistrationComponent,
+        TripsRegisterDialogComponent,
+    ],
+    imports: [CommonModule, TripsUiModule, ComponentsModule],
+    exports: [
+        TripsDownloadsComponent,
+        TripsInformationComponent,
+        TripsPricesComponent,
+        TripsRegistrationComponent,
+        TripsRegisterDialogComponent,
+    ],
 })
 export class TripsFeatureModule {}

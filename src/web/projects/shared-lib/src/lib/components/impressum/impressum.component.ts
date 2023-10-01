@@ -1,21 +1,12 @@
-/*
- * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-impressum',
-  templateUrl: './impressum.component.html',
-  styleUrls: ['./impressum.component.scss']
+    selector: 'app-impressum',
+    templateUrl: './impressum.component.html',
+    styleUrls: ['./impressum.component.scss'],
 })
-export class ImpressumComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-
-}
+export class ImpressumComponent {}

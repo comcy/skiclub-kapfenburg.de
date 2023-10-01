@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'lib-trips-information',
-  templateUrl: './trips-information.component.html',
-  styleUrls: ['./trips-information.component.scss'],
+    selector: 'lib-trips-information',
+    templateUrl: './trips-information.component.html',
+    styleUrls: ['./trips-information.component.scss'],
 })
-export class TripsInformationComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class TripsInformationComponent {}
