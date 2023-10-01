@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -12,19 +16,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
-  declarations: [
-    RegistrationComponent,
-    InformationComponent,
-    PricesComponent,
-    DownloadsComponent,
-    TripsComponent,
-  ],
-  imports: [
-    CommonModule,
-    TripsRoutingModule,
-    MatTabsModule,
-    MatToolbarModule,
-    TripsFeatureModule,
-  ],
+    declarations: [RegistrationComponent, InformationComponent, PricesComponent, DownloadsComponent, TripsComponent],
+    imports: [CommonModule, TripsRoutingModule, MatTabsModule, MatToolbarModule, TripsFeatureModule],
 })
 export class TripsModule {}

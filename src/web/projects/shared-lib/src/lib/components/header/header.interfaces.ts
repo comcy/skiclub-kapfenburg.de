@@ -1,5 +1,5 @@
-/*
- * @copyright Copyright (c) 2021 Christian Silfang (comcy) - All Rights Reserved.  
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
  */
 
 export enum NavigationItemTypes {
@@ -7,9 +7,8 @@ export enum NavigationItemTypes {
     ExternalRoute = 'external-routing',
 }
 
-
 export interface NavigationItem {
     name: string;
-    route: string
+    route: string;
     routeType?: NavigationItemTypes;
 }

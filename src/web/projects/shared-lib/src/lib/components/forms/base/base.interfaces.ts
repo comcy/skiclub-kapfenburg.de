@@ -1,16 +1,18 @@
-import { Injectable } from '@angular/core';
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
 
 export interface BaseFormElements {
-  id: string;
-  label: string;
-  validation: BaseFormFieldValidation[];
-  placehiolder?: string;
-  fullWidth?: boolean;
-  area?: boolean;
-  cols?: number;
+    id: string;
+    label: string;
+    validation: BaseFormFieldValidation[];
+    placehiolder?: string;
+    fullWidth?: boolean;
+    area?: boolean;
+    cols?: number;
 }
 
 export interface BaseFormFieldValidation {
-  type: string;
-  message: string;
+    type: string;
+    message: string;
 }

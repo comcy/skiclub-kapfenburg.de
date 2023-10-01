@@ -1,26 +1,32 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MarkdownRenderService } from '../../../services';
 
 @Component({
-  selector: 'lib-base-dialog',
-  templateUrl: './base-dialog.component.html',
-  styleUrls: ['./base-dialog.component.scss'],
+    selector: 'lib-base-dialog',
+    templateUrl: './base-dialog.component.html',
+    styleUrls: ['./base-dialog.component.scss'],
 })
 export class BaseDialogComponent implements OnInit {
-  @Input() title?: string;
-  @Input() share?: boolean;
-  @Input() registerForm?: boolean;
+    @Input() title?: string;
+    @Input() share?: boolean;
+    @Input() registerForm?: boolean;
 
-  constructor(private dialogRef: MatDialogRef<BaseDialogComponent>,
-    public markdown: MarkdownRenderService) {}
+    constructor(
+        private dialogRef: MatDialogRef<BaseDialogComponent>,
+        public markdown: MarkdownRenderService,
+    ) {}
 
-  ngOnInit(): void {
-    this.registerForm = false;
-    this.share = false;
-  }
+    ngOnInit(): void {
+        this.registerForm = false;
+        this.share = false;
+    }
 
-  public close() {
-    this.dialogRef.close();
-  }
+    public close() {
+        this.dialogRef.close();
+    }
 }

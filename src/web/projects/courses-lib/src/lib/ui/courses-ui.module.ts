@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -12,19 +16,19 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CourseRegistrationFormComponent } from './course-registration-form/course-registration-form.component';
 
 @NgModule({
-  declarations: [CourseRegistrationFormComponent],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatGridListModule,
-    MatSelectModule,
-    MatToolbarModule,
-    MatProgressSpinnerModule,
-  ],
-  exports: [CourseRegistrationFormComponent],
+    declarations: [CourseRegistrationFormComponent],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatGridListModule,
+        MatSelectModule,
+        MatToolbarModule,
+        MatProgressSpinnerModule,
+    ],
+    exports: [CourseRegistrationFormComponent],
 })
 export class CoursesUiModule {}

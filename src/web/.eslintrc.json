@@ -30,7 +30,7 @@
             "error",
             {
                 "type": "element",
-                "prefix": "app",
+                "prefix": ["app", "lib", "shared-lib"],
                 "style": "kebab-case"
             }
         ]

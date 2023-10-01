@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'lib-membership-lib',
-  template: ` <p>membership-lib works!</p> `,
-  styles: [],
+    selector: 'lib-membership-lib',
+    template: ` <p>membership-lib works!</p> `,
+    styles: [],
 })
-export class MembershipLibComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class MembershipLibComponent {}

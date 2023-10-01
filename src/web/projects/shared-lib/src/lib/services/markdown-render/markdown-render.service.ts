@@ -1,15 +1,17 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { Injectable } from '@angular/core';
 import * as showdown from 'showdown';
 
-const converter = new showdown.Converter( {strikethrough: true});
+const converter = new showdown.Converter({ strikethrough: true });
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class MarkdownRenderService {
-  constructor() {}
-
-  render(text: string): string {
-    return converter.makeHtml(text);
-  }
+    render(text: string): string {
+        return converter.makeHtml(text);
+    }
 }

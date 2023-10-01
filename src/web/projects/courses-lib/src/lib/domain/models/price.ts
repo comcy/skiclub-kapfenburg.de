@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { SportType } from './sport-type';
 
 export interface Price {

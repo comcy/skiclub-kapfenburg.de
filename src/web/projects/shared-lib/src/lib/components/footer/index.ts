@@ -1,5 +1,5 @@
-/*
- * @copyright Copyright (c) 2022 Christian Silfang (comcy) - All Rights Reserved.  
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-export * from './footer.component'
+export * from './footer.component';

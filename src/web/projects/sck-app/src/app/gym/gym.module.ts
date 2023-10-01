@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -8,7 +12,7 @@ import { GymFeatureModule } from '@gym-lib';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
-  declarations: [GymComponent, InformationComponent],
-  imports: [CommonModule, GymRoutingModule, MatToolbarModule, GymFeatureModule],
+    declarations: [GymComponent, InformationComponent],
+    imports: [CommonModule, GymRoutingModule, MatToolbarModule, GymFeatureModule],
 })
 export class GymModule {}

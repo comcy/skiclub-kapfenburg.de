@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2019 Christian Silfang
+ */
+
 import { Tile, TileActions, TileBehavior, TileStatus } from 'projects/shared-lib/src/lib/models';
 
 export const BOARDING_LIST = [
