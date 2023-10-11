@@ -43,12 +43,12 @@ export const BUS_AND_PASS_PRICE_DATA: Price[] = [
                     {
                         // Mitgled
                         clubMemberStatus: PriceClubMemberStatus.Member,
-                        value: '75 EURO',
+                        value: '80 EURO',
                     },
                     {
                         // Nichtmitgled / Alle
                         clubMemberStatus: PriceClubMemberStatus.All,
-                        value: '85 EURO',
+                        value: '90 EURO',
                     },
                 ],
             },
@@ -58,12 +58,12 @@ export const BUS_AND_PASS_PRICE_DATA: Price[] = [
                     {
                         // Mitgled
                         clubMemberStatus: PriceClubMemberStatus.Member,
-                        value: '65 EURO',
+                        value: '70 EURO',
                     },
                     {
                         // Nichtmitgled / Alle
                         clubMemberStatus: PriceClubMemberStatus.All,
-                        value: '75 EURO',
+                        value: '80 EURO',
                     },
                 ],
             },
@@ -73,12 +73,12 @@ export const BUS_AND_PASS_PRICE_DATA: Price[] = [
                     {
                         // Mitgled
                         clubMemberStatus: PriceClubMemberStatus.Member,
-                        value: '50 EURO',
+                        value: '55 EURO',
                     },
                     {
                         // Nichtmitgled / Alle
                         clubMemberStatus: PriceClubMemberStatus.All,
-                        value: '55 EURO',
+                        value: '60 EURO',
                     },
                 ],
             },
