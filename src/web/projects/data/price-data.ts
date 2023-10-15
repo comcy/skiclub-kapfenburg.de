@@ -76,7 +76,7 @@ export const BUS_AND_PASS_PRICE_DATA: Price[] = [
                         value: '55 EURO',
                     },
                     {
-                        // Nichtmitgled / Alle
+                        // Nichtmitglied / Alle
                         clubMemberStatus: PriceClubMemberStatus.All,
                         value: '60 EURO',
                     },
