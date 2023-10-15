@@ -18,7 +18,7 @@ export const TRIP_DATA: Tile[] = [
         order: 1,
         behavior: TileBehavior.View,
         title: 'Skibörse',
-        date: '05. November 2022',
+        date: '11. November 2022',
         subTitle: 'Altes Schulhaus Hülen',
         image: '../../../../assets/img/cards/skiboers.jpg',
         imageDescription: 'sample',
