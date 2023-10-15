@@ -25,7 +25,7 @@ export const TRIP_DATA: Tile[] = [
         text: 'Zeiten \r - 9:30 Uhr bis 11:30 Uhr _Annahme_ \r - 13:00 Uhr bis 14:30 Uhr _Verkauf_ \r - 14:30 Uhr bis 15:00 Uhr _Abholung_',
         actions: [],
         avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
-        expiration: new Date('2022-05-11'),
+        expiration: new Date('2023-11-12'),
         status: TileStatus.Open,
         boardings: [],
     },
