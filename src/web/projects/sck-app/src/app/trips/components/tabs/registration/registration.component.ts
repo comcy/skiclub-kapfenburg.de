@@ -4,7 +4,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { TRIP_DATA, BUS_ONLY_PRICE_DATA, BUS_AND_PASS_PRICE_DATA, BOARDING_LIST } from '@data';
-import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/models';
+import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/ui-common/models';
 
 @Component({
     selector: 'app-registration',
@@ -24,7 +24,7 @@ export class RegistrationComponent implements OnInit {
                 this.trips.push({
                     destination: t.title,
                     date: t.date,
-                    boarding: t.boardings,
+                    boarding: t.boardings as string[],
                 });
             }
         }

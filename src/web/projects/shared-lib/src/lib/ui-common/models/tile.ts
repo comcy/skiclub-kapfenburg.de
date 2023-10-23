@@ -9,11 +9,11 @@ export interface Tile {
     subTitle: string;
     image: string;
     imageDescription: string;
-    text: string;
+    description: string;
     status: TileStatus;
     expiration: Date;
     behavior: TileBehavior;
-    boardings: string[];
+    boardings?: string[];
     actions?: TileActions[];
     downloadActionLink?: string;
     avatar?: string;
