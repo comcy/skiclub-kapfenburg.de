@@ -4,3 +4,4 @@
 
 export * from './skiboerse.tile';
 export * from './partyausfahrt-sonnenkopf.tile';
+export * from './trainingstag-oberjoch.tile';
