@@ -14,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -45,6 +46,7 @@ import { TripsFeatureModule } from '@trips-lib';
         MatToolbarModule,
         MatIconModule,
         MatButtonModule,
+        MatTooltipModule,
         MatSidenavModule,
         MatListModule,
         MatSliderModule,

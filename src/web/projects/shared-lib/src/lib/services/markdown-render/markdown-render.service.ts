@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import * as showdown from 'showdown';
 
-const converter = new showdown.Converter({ strikethrough: true });
+const converter = new showdown.Converter({ strikethrough: true, noIntreEmphasis: true });
 
 @Injectable({
     providedIn: 'root',

@@ -27,11 +27,21 @@
                     <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
                         <button
                             *ngSwitchCase="tileActionsEnum.Download"
-                            mat-mini-fab
+                            mat-fab
                             color="primary"
                             (click)="openLink(t.downloadActionLink)"
+                            matTooltip="Öffnen"
                         >
                             <mat-icon>download</mat-icon>
+                        </button>
+                        <button
+                            *ngSwitchCase="tileActionsEnum.Register"
+                            mat-fab
+                            color="primary"
+                            (click)="openLink(t.downloadActionLink)"
+                            matTooltip="Anmelden"
+                        >
+                            <mat-icon>event_note</mat-icon>
                         </button>
                     </ng-container>
                 </mat-card-actions>
