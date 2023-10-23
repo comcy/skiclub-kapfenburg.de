@@ -21,16 +21,17 @@
                 <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
 
                 <mat-card-content class="mat-card-content">
-                    <p [innerHTML]="this.markdown.render(t.text)"></p>
+                    <p [innerHTML]="this.markdown.render(t.description)"></p>
                 </mat-card-content>
                 <mat-card-actions class="actions">
                     <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
                         <button
                             *ngSwitchCase="tileActionsEnum.Download"
-                            mat-button
+                            mat-mini-fab
+                            color="primary"
                             (click)="openLink(t.downloadActionLink)"
                         >
-                            Download
+                            <mat-icon>download</mat-icon>
                         </button>
                     </ng-container>
                 </mat-card-actions>

@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
 import { TripsRegisterDialogComponent } from '@trips-lib';
-import { Tile, TileActions, TileBehavior, TileStatus } from 'projects/shared-lib/src/lib/models';
+import { Tile, TileActions, TileBehavior, TileStatus } from 'projects/shared-lib/src/lib/ui-common/models';
 import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
 
 @Component({
@@ -15,16 +15,16 @@ import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
     styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-    public title: string = 'Aktuelles';
-    public tileStatusEnum: typeof TileStatus = TileStatus;
-    public tileActionsEnum: typeof TileActions = TileActions;
-    public tileBehaviorEnum: typeof TileBehavior = TileBehavior;
-    public registerLabel: string = 'Anmelden';
+    public title = 'Aktuelles';
+    public tileStatusEnum = TileStatus;
+    public tileActionsEnum = TileActions;
+    public tileBehaviorEnum = TileBehavior;
+    public registerLabel = 'Anmelden';
     public tiles: Tile[] = [];
     public programmDownloadLink = PROGRAMM_DOWNLOAD_LINK;
 
-    private trips: Tile[] = TRIP_DATA;
-    private staticData: Tile[] = STATIC_DATA;
+    private trips = TRIP_DATA;
+    private staticData = STATIC_DATA;
 
     constructor(
         public dialog: MatDialog,
@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
 
         const dialogRef = this.dialog.open(TripsRegisterDialogComponent, dialogConfig);
 
-        dialogRef.afterClosed().subscribe(() => {});
+        dialogRef.afterClosed().subscribe();
     }
 
     public openLink(link: string | undefined) {

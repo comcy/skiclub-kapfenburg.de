@@ -2,7 +2,8 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from 'projects/shared-lib/src/lib/models';
+import { Tile } from 'projects/shared-lib/src/lib/ui-common/models';
+import { PARTYAUSFAHRT_SONNENKOPF_TILE, SKIBOERSE_TILE } from './events';
 
 export const BOARDING_LIST = [
     'Westhausen Turnhalle (5:40 Uhr)',
@@ -13,29 +14,9 @@ export const BOARDING_LIST = [
 
 export const BOARDING_LIST_SHORT = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
-const skiboerseText =
-    'Ihr habt Zuhause ausgemistet, eure Kinder sind wieder gewachsen oder ihr möchtet einfach schauen, was es so gibt?' +
-    '\r\r\r Dann kommt vorbei und beginnt gemeinsam mit uns die neue Wintersaison. \r\r\r Unser erfahrenes Lehrteam wird für euch da sein und steht euch gern mit gutem Rat zur Seite.' +
-    '\r\r\r **Ort** \r\r  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Altes Schulhaus in Hülen ' +
-    '\r\r\r **Zeiten** \r - 9:30 Uhr bis 11:30 Uhr _Annahme_ \r - 13:00 Uhr bis 14:30 Uhr _Verkauf_ \r - 14:30 Uhr bis 15:00 Uhr _Abholung_';
-
 export const TRIP_DATA: Tile[] = [
-    {
-        order: 1,
-        behavior: TileBehavior.View,
-        title: 'Skibörse',
-        date: '11. November 2023',
-        subTitle: 'Altes Schulhaus Hülen',
-        image: '../../../../assets/img/cards/skiboers.jpg',
-        imageDescription: 'sample',
-        // text: 'Zeiten \r - 9:30 Uhr bis 11:30 Uhr _Annahme_ \r - 13:00 Uhr bis 14:30 Uhr _Verkauf_ \r - 14:30 Uhr bis 15:00 Uhr _Abholung_',
-        text: skiboerseText,
-        actions: [],
-        avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
-        expiration: new Date('2023-11-12'),
-        status: TileStatus.Open,
-        boardings: [],
-    },
+    SKIBOERSE_TILE,
+    PARTYAUSFAHRT_SONNENKOPF_TILE,
     // {
     //     order: 2,
     //     behavior: TileBehavior.View,
