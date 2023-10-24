@@ -14,32 +14,30 @@ Alpen“. Dort gibt es über 30km traumhafte Pisten auf fast 1600m Höhe. Für a
 sich im Funpark austoben möchten, bietet der „Easypark“ die perfekte Gelegenheit 
 dazu.
 
-**Kosten**
-
-Mtgl. Nicht-Mtgl.
-Bus + Liftkarte, Erwachsene: 75,00 € 85,00 €
-Bus + Liftkarte, Jugendl. bis 16 Jahre: 65,00 € 75,00 €
-Bus + Liftkarte, Kinder bis 6 Jahre: 50,00 € 55,00 €
- 
- Anfänger/Fortgeschrittenen Kurs: 35,00 € 40,00 €
- Schneeschuhe: 5,00 € 5,00 €
- Nur Busfahrt: 30,00 € 30,00 €
-
- | Month    | Savings |
- | -------- | ------- |
- | January  | $250    |
- | February | $80     |
- | March    | $420    |
-
- 
  **Abfahrtszeiten**
  - 05:15 Uhr Westhausen Turnhalle 
- - 05:25 Uhr Lauchheim Schule`;
+ - 05:25 Uhr Lauchheim Schule
+
+**Kosten**
+
+|        Bus + Liftkarte      |   Mitglieder |  Nicht-Mtglieder |
+|:----------------------------|-------------:|------------------:|
+|  Erwachsene                 |   75,00 €    |  85,00 €          |
+|  Jugendliche bis 16 Jahre   |   65,00 €    |  75,00 €          | 
+|  Kinder bis 6 Jahre         |   50,00 €    |  55,00 €          |
+|                             |              |                   |
+|                             |              |                   |
+|                             |              |                   |
+|  Kurse                      |   35,00 €    |  40,00 €          |
+|  Schneeschuhe               |   5,00 €     |  5,00 €           |
+|  Nur Busfahrt               |   30,00 €    |  30,00 €          |
+
+`;
 
 const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)'];
 
 export const TRAININGSTAG_OBERJOCH_TILE: Tile = {
-    order: 2,
+    order: 4,
     behavior: TileBehavior.View,
     title: 'TRAININGSTAG IN OBERJOCH',
     date: '13. Januar 2024',

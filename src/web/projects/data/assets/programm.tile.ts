@@ -5,7 +5,7 @@
 import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
 
 export const PROGRAM_TILE: Tile = {
-    order: 100,
+    order: 1,
     behavior: TileBehavior.Click,
     title: 'SCK-Programm',
     date: '',
@@ -13,7 +13,7 @@ export const PROGRAM_TILE: Tile = {
     image: '../../../../assets/img/cards/flyer_cover.png',
     imageDescription: 'SCK-Programm',
     description: '',
-    actions: [TileActions.Download],
+    actions: [TileActions.Download, TileActions.Share],
     downloadActionLink: 'https://1drv.ms/b/s!AlpybhuWN2nhgfAlOJOy4UCi6YEz8g?e=VHLxfJ',
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2024-12-31'),

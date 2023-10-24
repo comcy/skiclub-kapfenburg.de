@@ -11,18 +11,22 @@ Das Skigebiet Sonnenkopf liegt am Fuße des Arlbergs und gilt als sehr schneesic
 
 Nach einem erfolgreichen Schneetag lassen wir den Tag in der *„KELO-Bar“* ausklingen und stoßen dort miteinander auf die tolle Zeit an.
 
+**Abfahrtszeiten**
+- 05:00 Uhr Schwabsberg
+- 05:15 Uhr Westhausen Turnhalle
+
+**Rückfahrt**
+- 19:00 Uhr
+
 **Kosten**
 - Bus + Liftkarte + kl. Vesper: 89,00 €
 - Schneeschuhverleih: 5,00 €
-
-**Abfahrtszeiten**
-- 05:00 Uhr Schwabsberg
-- 05:15 Uhr Westhausen Turnhalle`;
+`;
 
 const BOARDING_LIST = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
 export const PARTYAUSFAHRT_SONNENKOPF_TILE: Tile = {
-    order: 2,
+    order: 3,
     behavior: TileBehavior.View,
     title: 'PARTYAUSFAHRT AN DEN SONNENKOPF',
     date: '28. Dezember 2023',
