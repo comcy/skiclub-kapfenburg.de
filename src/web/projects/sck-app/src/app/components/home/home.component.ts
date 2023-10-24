@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        const homeTiles: Tile[] = this.trips.concat(this.staticData);
+        const homeTiles: Tile[] = this.staticData.concat(this.trips);
 
         homeTiles.sort((a, b) => {
             return a.order > b.order // Handle order

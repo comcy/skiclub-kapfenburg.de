@@ -17,7 +17,7 @@ Unser erfahrenes Lehrteam wird für euch da sein und steht euch gern mit gutem R
 - 14:30 Uhr bis 15:00 Uhr Abholung`;
 
 export const SKIBOERSE_TILE: Tile = {
-    order: 1,
+    order: 2,
     behavior: TileBehavior.View,
     title: 'Skibörse',
     date: '11. November 2023',

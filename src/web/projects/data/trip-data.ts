@@ -3,7 +3,14 @@
  */
 
 import { Tile } from 'projects/shared-lib/src/lib/ui-common/models';
-import { PARTYAUSFAHRT_SONNENKOPF_TILE, SKIBOERSE_TILE, TRAININGSTAG_OBERJOCH_TILE } from './events';
+import {
+    PARTYAUSFAHRT_SONNENKOPF_TILE,
+    SKIBOERSE_TILE,
+    TRAININGSTAG_OBERJOCH_TILE,
+    TAGESAUSFAHRT_MELLAU_DAMUELS,
+    PARTYAUSFAHRT_LERMOOS,
+    TAGESAUSFAHRT_EHRWALD,
+} from './events';
 
 export const BOARDING_LIST = [
     'Westhausen Turnhalle (5:40 Uhr)',
@@ -18,6 +25,9 @@ export const TRIP_DATA: Tile[] = [
     SKIBOERSE_TILE,
     PARTYAUSFAHRT_SONNENKOPF_TILE,
     TRAININGSTAG_OBERJOCH_TILE,
+    TAGESAUSFAHRT_MELLAU_DAMUELS,
+    PARTYAUSFAHRT_LERMOOS,
+    TAGESAUSFAHRT_EHRWALD,
     // {
     //     order: 2,
     //     behavior: TileBehavior.View,
