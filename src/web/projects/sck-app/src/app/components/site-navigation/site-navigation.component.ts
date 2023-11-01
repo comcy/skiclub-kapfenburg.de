@@ -13,6 +13,7 @@ import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services'
     styleUrls: ['./site-navigation.component.scss'],
 })
 export class SiteNavigationComponent {
+    @Input() navTitle = '';
     @Input() navItems: NavigationItem[] = [];
     @Input() highlightedNavItems?: NavigationItem[] = [];
 

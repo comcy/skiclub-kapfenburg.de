@@ -1,5 +1,5 @@
 <mat-toolbar id="main" class="shadow" color="primary">
-    <span class="header-title" [routerLink]="'/home'">Skiclub Kapfenburg e.V.</span>
+    <span class="header-title" [routerLink]="'/home'">{{ navTitle }}</span>
 
     <span class="spacer"></span>
 
@@ -39,8 +39,6 @@
         [mode]="(breakpointObserver.handsetBreakpoint$ | async) ? 'over' : 'side'"
         [opened]="false"
     >
-        <mat-toolbar>Menu</mat-toolbar>
-
         <mat-nav-list *ngFor="let n of navItems">
             <a mat-list-item (click)="drawer.close()" [routerLink]="[n.route]" routerLinkActive="list-item-active">
                 {{ n.name }}
