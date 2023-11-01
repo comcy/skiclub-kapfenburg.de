@@ -68,6 +68,19 @@ export class HomeComponent implements OnInit {
         dialogRef.afterClosed().subscribe();
     }
 
+    public openDetailDialog(tile: Tile) {
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+            tile,
+        };
+
+        const dialogRef = this.dialog.open(TripsRegisterDialogComponent, dialogConfig);
+
+        dialogRef.afterClosed().subscribe();
+    }
+
     public openLink(link: string | undefined) {
         if (link) {
             window.open(link, '_blank');
