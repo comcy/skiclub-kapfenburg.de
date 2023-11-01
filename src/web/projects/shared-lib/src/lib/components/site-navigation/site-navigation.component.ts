@@ -4,10 +4,12 @@
 
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavigationItem } from 'projects/shared-lib/src/public-api';
+import { ANGULAR_MATERIAL_MODULES, ANGULAR_MODULES, NavigationItem } from 'projects/shared-lib/src/public-api';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
 
 @Component({
+    standalone: true,
+    imports: [ANGULAR_MODULES, ANGULAR_MATERIAL_MODULES],
     selector: 'app-site-navigation',
     templateUrl: './site-navigation.component.html',
     styleUrls: ['./site-navigation.component.scss'],

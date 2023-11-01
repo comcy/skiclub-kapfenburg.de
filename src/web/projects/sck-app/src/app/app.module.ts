@@ -8,7 +8,7 @@ import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { SiteNavigationComponent } from './components/site-navigation/site-navigation.component';
+import { SiteNavigationComponent } from '../../../shared-lib/src/lib/components/site-navigation/site-navigation.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -34,7 +34,7 @@ import { GymFeatureModule } from '@gym-lib';
 import { TripsFeatureModule } from '@trips-lib';
 
 @NgModule({
-    declarations: [AppComponent, HomeComponent, SiteNavigationComponent],
+    declarations: [AppComponent, HomeComponent],
     imports: [
         BrowserModule,
         HttpClientModule,
@@ -60,6 +60,7 @@ import { TripsFeatureModule } from '@trips-lib';
         CoursesFeatureModule,
         GymFeatureModule,
         TripsFeatureModule,
+        SiteNavigationComponent,
     ],
     providers: [
         tripRegistrationServiceProvider,
