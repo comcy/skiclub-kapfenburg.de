@@ -17,13 +17,14 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "paths": {
-
       "@shared/ui-common": [
         "projects/shared-lib/src/lib/ui-common"
       ],
+      "@shared/util-markdown": [
+        "projects/shared-lib/src/lib/util-markdown"
+      ],
+
       "@data": ["projects/data"],
-
-
       "shared-lib": ["dist/shared-lib/shared-lib", "dist/shared-lib"],
       "courses-lib": ["dist/courses-lib/courses-lib", "dist/courses-lib"],
 

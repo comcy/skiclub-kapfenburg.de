@@ -3,6 +3,7 @@
 
     <span class="spacer"></span>
 
+    <!-- Desktop view: Highlited items -->
     <ng-container *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false">
         <div *ngFor="let n of highlightedNavItems" class="highlight-container">
             <a mat-button (click)="routeTo(n.route)">
@@ -13,6 +14,14 @@
 
     <span class="spacer"></span>
 
+    <!-- Desktop view -->
+    <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false" class="navitems-container">
+        <a *ngFor="let n of navItems" mat-flat-button color="primary" (click)="routeTo(n.route)">
+            {{ n.name }}
+        </a>
+    </div>
+
+    <!-- Mobile View -->
     <button
         *ngIf="breakpointObserver.handsetBreakpoint$ | async"
         type="button"
@@ -22,14 +31,9 @@
     >
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
-
-    <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false" class="navitems-container">
-        <a *ngFor="let n of navItems" mat-button (click)="routeTo(n.route)">
-            {{ n.name }}
-        </a>
-    </div>
 </mat-toolbar>
 
+<!-- Mobile view: Side navigation container -->
 <mat-sidenav-container class="sidenav-container">
     <mat-sidenav
         #drawer

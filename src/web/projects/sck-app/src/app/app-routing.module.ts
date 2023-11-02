@@ -24,15 +24,15 @@ const routes: Routes = [
     },
     {
         path: COURSES_ROUTE,
-        loadChildren: () => import('./courses/courses.module').then((m) => m.CoursesModule),
+        loadChildren: () => import('./courses/courses-routing.module').then((m) => m.CoursesRoutingModule),
     },
     {
         path: GYM_ROUTE,
-        loadChildren: () => import('./gym/gym.module').then((m) => m.GymModule),
+        loadChildren: () => import('./gym/gym-routing.module').then((m) => m.GymRoutingModule),
     },
     {
         path: TRIPS_ROUTE,
-        loadChildren: () => import('./trips/trips.module').then((m) => m.TripsModule),
+        loadChildren: () => import('./trips/trips-routing.module').then((m) => m.TripsRoutingModule),
     },
     {
         path: IMPRESSUM_ROUTE,

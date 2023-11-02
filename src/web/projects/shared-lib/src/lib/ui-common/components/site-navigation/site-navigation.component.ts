@@ -5,7 +5,7 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ANGULAR_MATERIAL_MODULES, ANGULAR_MODULES, NavigationItem } from 'projects/shared-lib/src/public-api';
-import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
+import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 
 @Component({
     standalone: true,

@@ -5,9 +5,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
+import { MarkdownRenderService } from '@shared/util-markdown';
 import { TripsRegisterDialogComponent } from '@trips-lib';
 import { Tile, TileActions, TileBehavior, TileStatus } from 'projects/shared-lib/src/lib/ui-common/models';
-import { MarkdownRenderService } from 'projects/shared-lib/src/lib/services';
 
 @Component({
     selector: 'app-home',

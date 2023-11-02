@@ -2,13 +2,17 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TRIP_DATA, BUS_ONLY_PRICE_DATA, BUS_AND_PASS_PRICE_DATA, BOARDING_LIST } from '@data';
+import { TripsFeatureModule } from '@trips-lib';
 import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/ui-common/models';
 
 @Component({
+    standalone: true,
     selector: 'app-registration',
     templateUrl: './registration.component.html',
+    imports: [CommonModule, TripsFeatureModule],
 })
 export class RegistrationComponent implements OnInit {
     public tripData: Tile[] = TRIP_DATA;
