@@ -4,7 +4,7 @@
 
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BreakpointObserverService } from 'projects/shared-lib/src/lib/services';
+import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { COURSE_REGISTRATION_FORM_ELEMENTS } from './course-registration-form-fields';
 import { CourseRegistrationFormServiceInterface } from './course-registration-form-service.interface';
 

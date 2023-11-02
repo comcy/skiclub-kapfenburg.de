@@ -9,7 +9,7 @@
 }
 
 .sidenav {
-    padding-top: 60px;
+    padding-top: 70px;
     width: 200px;
 }
 
@@ -53,5 +53,8 @@ mat-sidenav-content {
 }
 
 .navitems-container {
+    display: flex;
+    flex-flow: row;
+    gap: 4px;
     padding: 0 16 0 16;
 }
