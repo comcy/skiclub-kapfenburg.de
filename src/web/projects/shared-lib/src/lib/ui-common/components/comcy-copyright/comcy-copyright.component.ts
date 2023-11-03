@@ -2,11 +2,14 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { getYear } from 'date-fns';
 
 @Component({
-    selector: 'lib-comcy-copyright',
+    standalone: true,
+    imports: [CommonModule],
+    selector: 'shared-lib-comcy-copyright',
     templateUrl: './comcy-copyright.component.html',
     styleUrls: ['./comcy-copyright.component.scss'],
 })

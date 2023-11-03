@@ -10,7 +10,7 @@ import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common
 @Component({
     standalone: true,
     imports: [ANGULAR_MODULES, ANGULAR_MATERIAL_MODULES],
-    selector: 'app-site-navigation',
+    selector: 'shared-lib-site-navigation',
     templateUrl: './site-navigation.component.html',
     styleUrls: ['./site-navigation.component.scss'],
 })

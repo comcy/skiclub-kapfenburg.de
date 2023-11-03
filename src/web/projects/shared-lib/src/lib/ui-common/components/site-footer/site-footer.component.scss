@@ -1,0 +1,32 @@
+@use '@angular/material' as mat;
+
+mat-toolbar.mat-primary {
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+    height: 90px;
+
+    @include mat.elevation(6);
+}
+
+.flex-container {
+    display: flex;
+    flex-flow: row;
+    gap: 8px;
+    padding: 0 16 0 16;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+ng-content {
+    display: flex;
+    flex-flow: row;
+    gap: 64px;
+    padding: 0 16 0 16;
+}
+
+.small-spacer {
+    padding: 8pt;
+}

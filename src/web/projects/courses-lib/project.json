@@ -1,0 +1,35 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "courses-lib",
+  "projectType": "library",
+  "sourceRoot": "projects/courses-lib/src",
+  "prefix": "lib",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "options": {
+        "project": "projects/courses-lib/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "projects/courses-lib/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "projects/courses-lib/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production",
+      "outputs": [
+        "{workspaceRoot}/dist/courses-lib"
+      ]
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "projects/courses-lib/src/test.ts",
+        "tsConfig": "projects/courses-lib/tsconfig.spec.json",
+        "karmaConfig": "projects/courses-lib/karma.conf.js"
+      }
+    }
+  }
+}

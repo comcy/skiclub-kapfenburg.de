@@ -1,5 +1,5 @@
 /**
- * @copyright Copyright (c) 2019 Christian Silfang
+ * @copyright Copyright (c) 2023 Christian Silfang
  */
 
 import { Component, Input } from '@angular/core';
