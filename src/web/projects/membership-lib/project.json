@@ -1,0 +1,35 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "membership-lib",
+  "projectType": "library",
+  "sourceRoot": "projects/membership-lib/src",
+  "prefix": "lib",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "options": {
+        "project": "projects/membership-lib/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "projects/membership-lib/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "projects/membership-lib/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production",
+      "outputs": [
+        "{workspaceRoot}/dist/membership-lib"
+      ]
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "projects/membership-lib/src/test.ts",
+        "tsConfig": "projects/membership-lib/tsconfig.spec.json",
+        "karmaConfig": "projects/membership-lib/karma.conf.js"
+      }
+    }
+  }
+}

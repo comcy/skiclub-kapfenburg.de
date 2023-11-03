@@ -13,7 +13,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ComcyCopyrightComponent } from './comcy-copyright/comcy-copyright.component';
 import { DatenschutzComponent } from './datenschutz';
 import { BaseDialogComponent } from './dialogs/base-dialog/base-dialog.component';
 import { FooterComponent } from './footer';
@@ -32,7 +31,6 @@ import { TopBarComponent } from './top-bar/top-bar.component';
         ImpressumComponent,
         NewsBannerComponent,
         NewsCardComponent,
-        ComcyCopyrightComponent,
         BaseDialogComponent,
         InfoTileComponent,
         TopBarComponent,
@@ -56,7 +54,6 @@ import { TopBarComponent } from './top-bar/top-bar.component';
         ImpressumComponent,
         NewsBannerComponent,
         NewsCardComponent,
-        ComcyCopyrightComponent,
         BaseDialogComponent,
         TopBarComponent,
     ],

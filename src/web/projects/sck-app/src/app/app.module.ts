@@ -31,7 +31,9 @@ import { courseRegistrationServiceProvider } from './services/business/course-re
 import { CoursesFeatureModule } from '@courses-lib';
 import { GymFeatureModule } from '@gym-lib';
 import { TripsFeatureModule } from '@trips-lib';
-import { SiteHeaderComponent, SiteNavigationComponent } from '@shared/ui-common';
+import { ComcyCopyrightComponent, SiteHeaderComponent, SiteNavigationComponent } from '@shared/ui-common';
+import { SiteFooterComponent } from 'projects/shared-lib/src/lib/ui-common/components/site-footer/site-footer.component';
+import { FacebookButtonComponent, MailButtonComponent } from 'projects/shared-lib/src/lib/ui-common/components/buttons';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent],
@@ -62,6 +64,10 @@ import { SiteHeaderComponent, SiteNavigationComponent } from '@shared/ui-common'
         TripsFeatureModule,
         SiteNavigationComponent,
         SiteHeaderComponent,
+        SiteFooterComponent,
+        ComcyCopyrightComponent,
+        FacebookButtonComponent,
+        MailButtonComponent,
     ],
     providers: [
         tripRegistrationServiceProvider,

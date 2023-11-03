@@ -1,0 +1,35 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "gym-lib",
+  "projectType": "library",
+  "sourceRoot": "projects/gym-lib/src",
+  "prefix": "lib",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "options": {
+        "project": "projects/gym-lib/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "projects/gym-lib/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "projects/gym-lib/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production",
+      "outputs": [
+        "{workspaceRoot}/dist/gym-lib"
+      ]
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "projects/gym-lib/src/test.ts",
+        "tsConfig": "projects/gym-lib/tsconfig.spec.json",
+        "karmaConfig": "projects/gym-lib/karma.conf.js"
+      }
+    }
+  }
+}
