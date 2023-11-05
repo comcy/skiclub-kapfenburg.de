@@ -8,12 +8,17 @@ import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
     standalone: true,
     imports: [CommonModule, SHARED_LIB_BUTTONS_NG_MAT_MODULES],
     templateUrl: './base-button.component.html',
-    styleUrls: ['./base-button.component.css'],
+    styleUrls: ['./base-button.component.scss'],
 })
 export class BaseButtonComponent {
     @Input() link: string | undefined;
     @Input() buttonName: string | undefined;
     @Input() color: MaterialColor | undefined;
+    @Input() tooltip: string;
+
+    constructor() {
+        this.tooltip = '';
+    }
 
     public openLink(): void {
         if (this.link) {

@@ -35,6 +35,7 @@ import { ComcyCopyrightComponent, SiteHeaderComponent, SiteNavigationComponent }
 import { SiteFooterComponent } from 'projects/shared-lib/src/lib/ui-common/components/site-footer/site-footer.component';
 import { FacebookButtonComponent, MailButtonComponent } from 'projects/shared-lib/src/lib/ui-common/components/buttons';
 import { SckLogoIconComponent } from 'projects/shared-lib/src/lib/ui-common/components/icons';
+import { BaseButtonComponent } from 'projects/shared-lib/src/lib/ui-common/components/buttons/base-button/base-button.component';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent],
@@ -67,9 +68,10 @@ import { SckLogoIconComponent } from 'projects/shared-lib/src/lib/ui-common/comp
         SiteHeaderComponent,
         SiteFooterComponent,
         ComcyCopyrightComponent,
-        FacebookButtonComponent,
         MailButtonComponent,
         SckLogoIconComponent,
+        BaseButtonComponent,
+        FacebookButtonComponent,
     ],
     providers: [
         tripRegistrationServiceProvider,
