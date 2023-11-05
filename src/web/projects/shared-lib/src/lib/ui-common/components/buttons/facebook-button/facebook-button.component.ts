@@ -7,12 +7,14 @@ import { BaseButtonComponent } from '../base-button/base-button.component';
     selector: 'shared-lib-facebook-button',
     standalone: true,
     imports: [CommonModule, BaseButtonComponent, SHARED_LIB_BUTTONS_NG_MAT_MODULES],
-    templateUrl: './facebook-button.component.html',
-    styleUrls: ['./facebook-button.component.scss'],
+    // template: '<shared-lib-base-button></shared-lib-base-button>', // DOES NOT WORK
+    // templateUrl: './facebook-button.component.html', // DOES NOT WORK
+    // styleUrls: ['./facebook-button.component.scss'], // DOES NOT WORK
+    templateUrl: '../base-button/base-button.component.html',
+    styleUrls: ['../base-button/base-button.component.scss'],
 })
 export class FacebookButtonComponent extends BaseButtonComponent {
     constructor() {
         super();
-        console.log('FACEBOOK');
     }
 }

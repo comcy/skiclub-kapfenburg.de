@@ -7,13 +7,15 @@
         <div center>
             <shared-lib-mail-button
                 [color]="'accent'"
-                [mailAdress]="contactMail"
+                [buttonName]="'mail'"
+                [link]="contactMail"
                 [tooltip]="contactMailTooltip"
             ></shared-lib-mail-button>
 
             <shared-lib-facebook-button
                 [color]="'accent'"
                 [buttonName]="'facebook'"
+                [tooltip]="'Facebook öffnen'"
                 [link]="'https://www.facebook.de'"
             ></shared-lib-facebook-button>
         </div>
