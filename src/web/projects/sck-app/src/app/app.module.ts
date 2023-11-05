@@ -34,6 +34,7 @@ import { TripsFeatureModule } from '@trips-lib';
 import { ComcyCopyrightComponent, SiteHeaderComponent, SiteNavigationComponent } from '@shared/ui-common';
 import { SiteFooterComponent } from 'projects/shared-lib/src/lib/ui-common/components/site-footer/site-footer.component';
 import { FacebookButtonComponent, MailButtonComponent } from 'projects/shared-lib/src/lib/ui-common/components/buttons';
+import { SckLogoIconComponent } from 'projects/shared-lib/src/lib/ui-common/components/icons';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent],
@@ -68,6 +69,7 @@ import { FacebookButtonComponent, MailButtonComponent } from 'projects/shared-li
         ComcyCopyrightComponent,
         FacebookButtonComponent,
         MailButtonComponent,
+        SckLogoIconComponent,
     ],
     providers: [
         tripRegistrationServiceProvider,

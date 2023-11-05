@@ -13,6 +13,7 @@ import { COURSES_ROUTE, DSGVO_ROUTE, GYM_ROUTE, HOME_ROUTE, IMPRESSUM_ROUTE, TRI
 })
 export class AppComponent {
     public title = 'Skiclub Kapfenburg e.V.';
+    public logoPath = 'assets/img/sck_logo.svg';
     public routeTypes = NavigationItemTypes;
     public footerColor = 'primary';
 
@@ -30,9 +31,4 @@ export class AppComponent {
         { name: 'Impressum', route: IMPRESSUM_ROUTE },
         { name: 'Datenschutz', route: DSGVO_ROUTE },
     ];
-
-    // TODO: Remove
-    // public highlightedNavItems: NavigationItem[] = [
-    //   { name: 'Mitgliedsantrag', route: GYM_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
-    // ];
 }

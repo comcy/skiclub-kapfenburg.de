@@ -35,16 +35,33 @@ mat-sidenav-content {
     padding-top: 56px;
 }
 
-.header-title {
-    cursor: pointer;
-
-    img {
-        color: white;
-    }
+.title-container {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    // padding-left: 96px;
+    // gap: 64px;
 }
 
 .logo {
     color: white;
+
+    width: 24px;
+    height: 24px;
+    transform: scale(9);
+    // padding: 420 32 32 32;
+}
+
+.header-title {
+    cursor: pointer;
+
+    // img {
+    //     color: white;
+    // }
+}
+
+.icon {
+    filter: invert(36%) sepia(10%) saturate(1316%) hue-rotate(153deg) brightness(91%) contrast(86%);
 }
 
 .highlight-container {

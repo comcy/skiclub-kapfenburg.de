@@ -1,5 +1,8 @@
 <mat-toolbar id="main" class="shadow" color="primary">
-    <span class="header-title" [routerLink]="'/home'">{{ navTitle }}</span>
+    <div class="title-container">
+        <!-- <shared-lib-sck-logo-icon class="logo"></shared-lib-sck-logo-icon> -->
+        <span class="header-title" [routerLink]="'/home'">{{ title }}</span>
+    </div>
 
     <span class="spacer"></span>
 

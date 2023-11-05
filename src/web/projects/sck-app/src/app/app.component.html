@@ -1,5 +1,5 @@
 <div id="content">
-    <shared-lib-site-navigation [navTitle]="title" [navItems]="navItems"></shared-lib-site-navigation>
+    <shared-lib-site-navigation [logo]="logoPath" [title]="title" [navItems]="navItems"></shared-lib-site-navigation>
 </div>
 
 <div id="footer">
@@ -10,7 +10,12 @@
                 [mailAdress]="contactMail"
                 [tooltip]="contactMailTooltip"
             ></shared-lib-mail-button>
-            <shared-lib-facebook-button></shared-lib-facebook-button>
+
+            <shared-lib-facebook-button
+                [color]="'accent'"
+                [buttonName]="'facebook'"
+                [link]="'https://www.facebook.de'"
+            ></shared-lib-facebook-button>
         </div>
 
         <div right>

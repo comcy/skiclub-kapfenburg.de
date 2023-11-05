@@ -3,6 +3,6 @@
  */
 
 import { Tile } from '@shared/ui-common';
-import { MEMBERSHIP_TILE, PROGRAM_TILE } from './assets';
+import { MEMBERSHIP_TILE, OVERVIEW_TILE, PROGRAM_TILE } from './assets';
 
-export const STATIC_DATA: Tile[] = [PROGRAM_TILE, MEMBERSHIP_TILE];
+export const STATIC_DATA: Tile[] = [PROGRAM_TILE, OVERVIEW_TILE, MEMBERSHIP_TILE];
