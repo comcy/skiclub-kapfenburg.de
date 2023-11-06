@@ -33,9 +33,14 @@ import { GymFeatureModule } from '@gym-lib';
 import { TripsFeatureModule } from '@trips-lib';
 import { ComcyCopyrightComponent, SiteHeaderComponent, SiteNavigationComponent } from '@shared/ui-common';
 import { SiteFooterComponent } from 'projects/shared-lib/src/lib/ui-common/components/site-footer/site-footer.component';
-import { FacebookButtonComponent, MailButtonComponent } from 'projects/shared-lib/src/lib/ui-common/components/buttons';
+import {
+    FacebookButtonComponent,
+    InstagramButtonComponent,
+    MailButtonComponent,
+} from 'projects/shared-lib/src/lib/ui-common/components/buttons';
 import { SckLogoIconComponent } from 'projects/shared-lib/src/lib/ui-common/components/icons';
 import { BaseButtonComponent } from 'projects/shared-lib/src/lib/ui-common/components/buttons/base-button/base-button.component';
+import { InstagramIconComponent } from 'projects/shared-lib/src/lib/ui-common/components/icons/instagram-icon';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent],
@@ -72,6 +77,9 @@ import { BaseButtonComponent } from 'projects/shared-lib/src/lib/ui-common/compo
         SckLogoIconComponent,
         BaseButtonComponent,
         FacebookButtonComponent,
+        InstagramButtonComponent,
+        InstagramIconComponent,
+        SckLogoIconComponent,
     ],
     providers: [
         tripRegistrationServiceProvider,

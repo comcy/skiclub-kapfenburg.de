@@ -17,13 +17,13 @@ import { DomSanitizer } from '@angular/platform-browser';
     styleUrls: ['./sck-logo-icon.component.scss'],
 })
 export class SckLogoIconComponent {
+    public iconName = 'sck-logo';
+    public iconPath = 'assets/img/burg.svg';
+
     constructor(
         private domSanitizer: DomSanitizer,
         private matIconRegistry: MatIconRegistry,
     ) {
-        this.matIconRegistry.addSvgIcon(
-            'sck-logo',
-            this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/burg.svg'),
-        );
+        this.matIconRegistry.addSvgIcon(this.iconName, this.domSanitizer.bypassSecurityTrustResourceUrl(this.iconPath));
     }
 }
