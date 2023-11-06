@@ -15,9 +15,11 @@ export class BaseButtonComponent {
     @Input() buttonName: string | undefined;
     @Input() color: MaterialColor | undefined;
     @Input() tooltip: string;
+    @Input() isSvgButton: boolean;
 
     constructor() {
         this.tooltip = '';
+        this.isSvgButton = false;
     }
 
     public openLink(): void {
