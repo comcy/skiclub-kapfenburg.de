@@ -4,7 +4,7 @@
 
 import { Component } from '@angular/core';
 import { NavigationItem, NavigationItemTypes } from 'projects/shared-lib/src/lib/components';
-import { COURSES_ROUTE, GYM_ROUTE, HOME_ROUTE, TRIPS_ROUTE } from './route-segments';
+import { COURSES_ROUTE, DSGVO_ROUTE, GYM_ROUTE, HOME_ROUTE, IMPRESSUM_ROUTE, TRIPS_ROUTE } from './route-segments';
 
 @Component({
     selector: 'app-root',
@@ -13,7 +13,12 @@ import { COURSES_ROUTE, GYM_ROUTE, HOME_ROUTE, TRIPS_ROUTE } from './route-segme
 })
 export class AppComponent {
     public title = 'Skiclub Kapfenburg e.V.';
+    public logoPath = 'assets/img/sck_logo.svg';
     public routeTypes = NavigationItemTypes;
+    public footerColor = 'primary';
+
+    public contactMail = 'webmaster@skiclub-kapfenburg.de';
+    public contactMailTooltip = 'Mail senden';
 
     public navItems: NavigationItem[] = [
         { name: 'Übersicht', route: HOME_ROUTE },
@@ -22,9 +27,8 @@ export class AppComponent {
         { name: 'Gymnastik', route: GYM_ROUTE },
     ];
 
-    // TODO: Remove
-
-    // public highlightedNavItems: NavigationItem[] = [
-    //   { name: 'Mitgliedsantrag', route: GYM_ROUTE, routeType: NavigationItemTypes.ExternalRoute },
-    // ];
+    public footerNavItems: NavigationItem[] = [
+        { name: 'Impressum', route: IMPRESSUM_ROUTE },
+        { name: 'Datenschutz', route: DSGVO_ROUTE },
+    ];
 }

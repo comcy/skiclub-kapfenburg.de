@@ -1,4 +1,4 @@
-<mat-toolbar>{{ title }}</mat-toolbar>
+<shared-lib-site-header [title]="title"></shared-lib-site-header>
 
 <div class="content-container">
     <div class="cards-grid">
@@ -21,17 +21,48 @@
                 <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
 
                 <mat-card-content class="mat-card-content">
-                    <p [innerHTML]="this.markdown.render(t.text)"></p>
+                    <p [innerHTML]="this.markdown.render(t.description)"></p>
                 </mat-card-content>
                 <mat-card-actions class="actions">
                     <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
                         <button
                             *ngSwitchCase="tileActionsEnum.Download"
-                            mat-button
+                            mat-fab
+                            extended
+                            class="card-button"
+                            color="primary"
                             (click)="openLink(t.downloadActionLink)"
+                            matTooltip="Öffnen"
                         >
-                            Download
+                            <mat-icon>download</mat-icon>
+                            Öffnen
                         </button>
+                        <button
+                            *ngSwitchCase="tileActionsEnum.Register"
+                            class="card-button"
+                            mat-fab
+                            extended
+                            color="primary"
+                            (click)="openRegisterDialog(t)"
+                            matTooltip="Anmelden"
+                        >
+                            <mat-icon>event_note</mat-icon>
+                            Anmelden
+                        </button>
+                        <div class="secondary-action-buttons">
+                            <!-- <button *ngSwitchCase="tileActionsEnum.Share" class="card-button" mat-mini-fab
+                                (click)="openDetailDialog(t)" matTooltip="Informationen">
+                                <mat-icon>info_outline</mat-icon>
+                            </button> -->
+                            <button
+                                *ngSwitchCase="tileActionsEnum.Share"
+                                mat-mini-fab
+                                matTooltip="Teilen"
+                                class="card-button"
+                            >
+                                <mat-icon>share</mat-icon>
+                            </button>
+                        </div>
                     </ng-container>
                 </mat-card-actions>
             </mat-card>

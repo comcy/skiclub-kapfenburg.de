@@ -3,14 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build sck-app",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "start": "nx serve",
+    "build": "nx build sck-app",
+    "watch": "nx build --watch --configuration development",
+    "test": "nx test",
     "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
     "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
     "prepare": "cd ../.. && husky install src/web/.husky",
-    "lint": "ng lint"
+    "lint": "nx lint"
   },
   "husky": {
     "hooks": {
@@ -43,6 +43,8 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.1.8",
+    "@angular-devkit/core": "~16.1.8",
+    "@angular-devkit/schematics": "~16.1.8",
     "@angular-eslint/builder": "16.2.0",
     "@angular-eslint/eslint-plugin": "16.2.0",
     "@angular-eslint/eslint-plugin-template": "16.2.0",
@@ -50,6 +52,9 @@
     "@angular-eslint/template-parser": "16.2.0",
     "@angular/cli": "~16.1.8",
     "@angular/compiler-cli": "^16.1.0",
+    "@nx/angular": "17.0.2",
+    "@nx/workspace": "17.0.2",
+    "@schematics/angular": "~16.1.8",
     "@types/jasmine": "~4.3.0",
     "@types/node": "^12.11.1",
     "@types/showdown": "^2.0.0",
@@ -64,6 +69,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "lint-staged": "^14.0.1",
+    "nx": "17.0.2",
     "prettier": "^3.0.3",
     "typescript": "~5.1.3"
   }

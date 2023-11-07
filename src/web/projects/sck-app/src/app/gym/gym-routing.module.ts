@@ -4,7 +4,6 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { InformationComponent } from './components/information/information.component';
 import { GymComponent } from './gym.component';
 
 const routes: Routes = [
@@ -19,7 +18,8 @@ const routes: Routes = [
             },
             {
                 path: 'information',
-                component: InformationComponent,
+                loadComponent: () =>
+                    import('./components/information/information.component').then((mod) => mod.InformationComponent),
             },
         ],
     },

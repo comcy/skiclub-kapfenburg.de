@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MarkdownRenderService } from '../../../services';
+import { MarkdownRenderService } from '../../../util-markdown/services';
 
 @Component({
     selector: 'lib-base-dialog',

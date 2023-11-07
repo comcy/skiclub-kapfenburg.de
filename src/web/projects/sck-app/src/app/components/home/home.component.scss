@@ -1,7 +1,20 @@
+@use '@angular/material' as mat;
+
 :host {
     flex: 1;
     overflow: scroll;
     height: 100%;
+}
+
+mat-toolbar {
+    min-height: 100px;
+}
+
+.secondary-action-buttons {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 8px;
 }
 
 .content-container {
@@ -12,8 +25,15 @@
     }
 
     .card {
-        max-width: 360px;
+        max-width: 570px;
         margin-bottom: 24px;
+        @include mat.elevation(6);
+
+        &:hover {
+            // @include mat.elevation(14);
+            // transition: .8s ease;
+            // transform: scale(1.01);
+        }
     }
 
     .cards-grid {
@@ -40,7 +60,7 @@
 }
 
 .mat-mdc-card-content {
-    padding: 8px;
+    padding: 24px;
 }
 
 .canceled-stamp {

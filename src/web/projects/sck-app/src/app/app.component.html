@@ -1,26 +1,41 @@
-<div class="content">
-    <app-site-navigation [navItems]="navItems"></app-site-navigation>
+<div id="content">
+    <shared-lib-site-navigation [logo]="logoPath" [title]="title" [navItems]="navItems"></shared-lib-site-navigation>
 </div>
 
-<div class="footer">
-    <mat-toolbar>
-        <div>
-            <a mat-button [routerLink]="'/impressum'"> Impressum </a>
-            <a mat-button [routerLink]="'/datenschutz'"> Datenschutz </a>
+<div id="footer">
+    <shared-lib-site-footer [navItems]="footerNavItems" [color]="footerColor">
+        <div center>
+            <shared-lib-mail-button
+                [color]="'accent'"
+                [buttonName]="'mail'"
+                [link]="contactMail"
+                [tooltip]="contactMailTooltip"
+            ></shared-lib-mail-button>
+
+            <shared-lib-facebook-button
+                [color]="'accent'"
+                [buttonName]="'facebook'"
+                [tooltip]="'Facebook öffnen'"
+                [link]="'https://www.facebook.com/SkiclubKapfenburg/'"
+            ></shared-lib-facebook-button>
+
+            <shared-lib-instagram-button
+                [color]="'accent'"
+                [buttonName]="'instagram'"
+                [tooltip]="'Instagram öffnen'"
+                [link]="'https://www.instagram.com/skiclub_kapfenburg/'"
+                [isSvgButton]="true"
+            ></shared-lib-instagram-button>
+            <shared-lib-sck-logo-icon></shared-lib-sck-logo-icon>
+            <shared-lib-instagram-icon></shared-lib-instagram-icon>
         </div>
 
-        <span class="spacer"></span>
-
-        <div class="mail-link">
-            <a href="mailto:webmaster@skiclub-kapfenburg.de">
-                <mat-icon>mail</mat-icon>
-            </a>
+        <div right>
+            <div class="copyright">
+                <shared-lib-comcy-copyright
+                    [link]="'https://github.com/comcy/skiclub-kapfenburg.de'"
+                ></shared-lib-comcy-copyright>
+            </div>
         </div>
-
-        <span class="spacer"></span>
-
-        <div>
-            <lib-comcy-copyright [link]="'https://github.com/comcy/skiclub-kapfenburg.de'"></lib-comcy-copyright>
-        </div>
-    </mat-toolbar>
+    </shared-lib-site-footer>
 </div>

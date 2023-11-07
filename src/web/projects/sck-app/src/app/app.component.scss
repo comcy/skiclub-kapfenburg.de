@@ -1,31 +1,22 @@
-@use "@angular/material" as mat;
-// @import "../../../shared-lib/src/lib/styles/variables";
+// @use '@angular/material' as mat;
 
 :host {
-  overflow: auto;
-  height: 100%;
+    overflow: auto;
+    height: 100%;
 }
 
-.mail-link {
-  a {
-    text-decoration: none !important;
-    color: black;
-  }
+.copyright {
+    shared-lib-comcy-copyright {
+        --copyright-container-text-color: yellow;
+        --copyright-container-link-color: yellow;
+    }
 }
 
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 10;
-
-  @include mat.elevation(5);
-}
-
-.spacer {
-  flex: 1 1 auto;
-}
-
-.small-spacer {
-  padding: 8pt;
+.logo {
+    color: white;
+    // width: 24px;
+    // height: 24px;
+    transform: scale(6);
+    top: 0;
+    left: 0; // padding: 32 32 32 32;
 }
