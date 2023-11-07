@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "nx serve",
-    "build": "nx build sck-app",
+    "build": "ng build sck-app",
+    "build:nx": "nx build sck-app",
     "watch": "nx build --watch --configuration development",
     "test": "nx test",
     "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
