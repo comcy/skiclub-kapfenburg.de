@@ -101,7 +101,6 @@
             </mat-form-field>
         </div>
 
-        <!-- <p> -->
         <mat-form-field class="full-width" appearance="fill">
             <mat-label>Zusatzinformationen</mat-label>
             <textarea
@@ -111,16 +110,12 @@
                 placeholder="Bei Auswahl von mehreren Personen bitte hier alle Namen einzeln aufzählen. Ansonsten: 0"
             ></textarea>
         </mat-form-field>
-        <!-- </p> -->
+
         <mat-error *ngIf="!tripRegisterForm.valid && tripRegisterForm.touched">
             Bitte alle erfordelichen Felder (*) ausfüllen.
         </mat-error>
 
-        <mat-dialog-actions>
-            <button mat-button mat-dialog-close>Schließen</button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
-        </mat-dialog-actions>
-
+        <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
         <mat-progress-spinner *ngIf="!isSending" class="example-margin" color="primary"> </mat-progress-spinner>
     </form>
 </div>

@@ -1,5 +1,9 @@
-.close-button{
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-end;
+}
+
+.close-button {
     float: right;
-    top:-24px;
-    right:-24px;
-  }
+}
