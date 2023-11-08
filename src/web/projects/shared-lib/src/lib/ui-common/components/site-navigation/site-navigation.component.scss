@@ -21,6 +21,7 @@ mat-toolbar.mat-primary {
     position: fixed;
     top: 0;
     z-index: 1000;
+    min-height: 64px; // avoid resizeof the navigationbar on mobile devices
 }
 
 .small-spacer {
