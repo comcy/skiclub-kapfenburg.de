@@ -31,16 +31,10 @@ mat-toolbar.mat-primary {
     flex: 1 1 auto;
 }
 
-mat-sidenav-content {
-    padding-top: 56px;
-}
-
 .title-container {
     display: flex;
     flex-flow: row;
     align-items: center;
-    // padding-left: 96px;
-    // gap: 64px;
 }
 
 .logo {
@@ -49,7 +43,6 @@ mat-sidenav-content {
     width: 24px;
     height: 24px;
     transform: scale(9);
-    // padding: 420 32 32 32;
 }
 
 .header-title {

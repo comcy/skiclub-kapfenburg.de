@@ -1,8 +1,22 @@
-// @use '@angular/material' as mat;
-
 :host {
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
     height: 100%;
+    justify-content: space-between;
+    overflow: auto;
+}
+
+.navigation {
+    // INTENTIONALLY LEFT EMPTY
+}
+
+.content {
+    padding-top: 64px;
+    flex: 1 1 auto;
+}
+
+.footer {
+    bottom: 0;
 }
 
 .copyright {
@@ -14,8 +28,6 @@
 
 .logo {
     color: white;
-    // width: 24px;
-    // height: 24px;
     transform: scale(6);
     top: 0;
     left: 0; // padding: 32 32 32 32;
