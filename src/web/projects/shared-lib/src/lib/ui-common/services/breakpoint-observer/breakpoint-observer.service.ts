@@ -18,6 +18,13 @@ export class BreakpointObserverService {
     }
 
     constructor(private breakpointObserver: BreakpointObserver) {
-        this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map((result) => result.matches));
+        const breakPoints: string[] = [
+            Breakpoints.Small,
+            Breakpoints.Handset,
+            Breakpoints.WebPortrait,
+            Breakpoints.TabletPortrait,
+        ];
+
+        this.isHandset$ = this.breakpointObserver.observe(breakPoints).pipe(map((result) => result.matches));
     }
 }
