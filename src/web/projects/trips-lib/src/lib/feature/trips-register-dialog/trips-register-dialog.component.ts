@@ -17,6 +17,7 @@ export class TripsRegisterDialogComponent implements OnInit {
     @Output() public handleConfirmClicked: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
     public dialogTitle!: string;
+    public tripDate!: string;
     public tripDetails$: BehaviorSubject<Trip[]> = new BehaviorSubject([
         {
             destination: '',
@@ -35,7 +36,8 @@ export class TripsRegisterDialogComponent implements OnInit {
     ngOnInit(): void {
         const tile = this.data.tile;
 
-        this.dialogTitle = `${tile.title} - ${tile.date}`;
+        this.dialogTitle = `${tile.title}`;
+        this.tripDate = `${tile.date}`;
 
         this.tripDetails$.next([
             {

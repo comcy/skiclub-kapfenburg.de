@@ -13,6 +13,7 @@ import { MarkdownRenderService } from '../../../util-markdown/services';
 })
 export class BaseDialogComponent implements OnInit {
     @Input() title?: string;
+    @Input() date?: string;
     @Input() share?: boolean;
     @Input() registerForm?: boolean;
 

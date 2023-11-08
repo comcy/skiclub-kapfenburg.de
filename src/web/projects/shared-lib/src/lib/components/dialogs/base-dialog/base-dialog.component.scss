@@ -4,6 +4,19 @@
     align-items: flex-end;
 }
 
-.close-button {
-    float: right;
+.dialog-top-bar {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-self: stretch;
+}
+
+.dialog-title {
+    display: flex;
+    flex-flow: column;
+    align-self: center;
+}
+
+.dialog-content {
+    // EMPTY
 }
