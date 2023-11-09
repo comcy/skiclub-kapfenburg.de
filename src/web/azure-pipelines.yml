@@ -55,9 +55,10 @@ steps:
   displayName: 'npm install and build'
 
 # Copy .htaccess for Apache WebServer
+# TODO: Think about a better solution and integrate it into the build processn with package.json
 - script: |
     cp ${{ variables.APACHE_HTACCESS_SCK_APP }} ${{ variables.PROJECT_DIST_PATH }}
-  displayName: 'Install sshpass'
+  displayName: 'Copy .htaccess for Apache WebServer'
 
 # INSTALL sshpass
 - script: |
