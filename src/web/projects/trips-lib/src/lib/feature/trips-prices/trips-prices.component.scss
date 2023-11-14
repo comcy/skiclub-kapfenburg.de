@@ -1,44 +1,47 @@
 .content {
-  h3 {
-    font-size: 16pt;
-  }
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    height: 100%;
 
-  font-size: 12pt;
+    h3 {
+        font-size: 16pt;
+    }
+
+    font-size: 12pt;
 }
 
 .price-overview {
-  padding: 32px;
-  background-color: rgb(236, 236, 236);
+    padding: 32px;
 
-  hr {
-    width: 100%;
-  }
+    hr {
+        width: 100%;
+    }
 }
 
 .price-overview {
-  padding: 32px;
-  background-color: rgb(236, 236, 236);
+    padding: 32px;
 
-  hr {
-    width: 100%;
-  }
+    hr {
+        width: 100%;
+    }
 }
 
 .price-table {
-  padding: 16px 16px 16px 16px;
+    padding: 16px 16px 16px 16px;
 
-  &__type {
-    padding-top: 32px;
-  }
+    &__type {
+        padding-top: 32px;
+    }
 
-  &__group {
-    padding-top: 16px;
-  }
+    &__group {
+        padding-top: 16px;
+    }
 
-  &__values {
-    padding: 16px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
+    &__values {
+        padding: 16px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 }

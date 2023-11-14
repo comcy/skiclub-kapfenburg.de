@@ -26,6 +26,7 @@ Nach einem erfolgreichen Schneetag lassen wir den Tag in der *„KELO-Bar“* au
 const BOARDING_LIST = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
 export const PARTYAUSFAHRT_SONNENKOPF_TILE: Tile = {
+    id: '506d9683-28cf-4239-8790-d0f6ced91dc9',
     order: 3,
     behavior: TileBehavior.View,
     title: 'PARTYAUSFAHRT AN DEN SONNENKOPF',

@@ -30,6 +30,7 @@ const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem F
 const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
 export const LA_OELE_AUSFAHRT: Tile = {
+    id: '6f575916-54f3-46ed-abe1-1e7d5abb8f93',
     order: 5,
     behavior: TileBehavior.View,
     title: 'LA OELE 2-TAGES SKIAUSFAHRT NACH GOLM',

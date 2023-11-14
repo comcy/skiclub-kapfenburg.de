@@ -35,6 +35,7 @@ Zum Abschluss lassen wir den Tag beim Après Ski in der Brent Alm an der Talstat
 const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)', 'Ebnat Jurahalle (5:35 Uhr)'];
 
 export const BLAULICHTAUSFAHRT_EHRWALD: Tile = {
+    id: 'c8f7feae-9a99-49ad-93f4-b70eb42b82c2',
     order: 5,
     behavior: TileBehavior.View,
     title: 'BLAULICHTAUSFAHRT EHRWALD',

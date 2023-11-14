@@ -34,6 +34,7 @@ const BOARDING_LIST = [
 ];
 
 export const PARTYAUSFAHRT_LERMOOS: Tile = {
+    id: 'c298534d-fa7b-423a-a926-fec7faf01e34',
     order: 6,
     behavior: TileBehavior.View,
     title: 'PARTYAUSFAHRT NACH LERMOOS',

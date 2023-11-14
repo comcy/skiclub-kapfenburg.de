@@ -5,6 +5,7 @@
 import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
 
 export const PROGRAM_TILE: Tile = {
+    id: 'e9c26987-583d-4971-b57a-4df63eca8ce3',
     order: 1,
     behavior: TileBehavior.Click,
     title: 'SCK-Programm',

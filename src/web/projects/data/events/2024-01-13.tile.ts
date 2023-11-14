@@ -37,6 +37,7 @@ dazu.
 const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)'];
 
 export const TRAININGSTAG_OBERJOCH_TILE: Tile = {
+    id: '8edb4365-d883-4452-ba21-4f8441e8e26c',
     order: 4,
     behavior: TileBehavior.View,
     title: 'TRAININGSTAG IN OBERJOCH',

@@ -28,6 +28,7 @@ const DESCRIPTION_TEXT = `Eine Ausfahrt für alle, die unter der Woche Zeit habe
 const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
 export const FREIE_PISTENAUSFAHRT: Tile = {
+    id: 'ddb45a8c-38cf-496f-b3fe-eb608b4b78a6',
     order: 5,
     behavior: TileBehavior.View,
     title: '2-TAGES "FREIE PISTEN" AUSFAHRT"',

@@ -37,6 +37,7 @@ Pisten, die gut zu bewältigen sind.
 const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)'];
 
 export const TAGESAUSFAHRT_MELLAU_DAMUELS: Tile = {
+    id: '938a3cfd-4fda-4bd9-bbca-e1b2be1d2a90',
     order: 5,
     behavior: TileBehavior.View,
     title: 'TAGESAUSFAHRT NACH MELLAU-DAMÜLS',

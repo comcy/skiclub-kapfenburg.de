@@ -5,6 +5,7 @@
 import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
 
 export const MEMBERSHIP_TILE: Tile = {
+    id: '98caad3a-b2aa-40da-a6d2-a14a5c75ee76',
     order: 5,
     behavior: TileBehavior.Click,
     title: 'Mitgliedsantrag',

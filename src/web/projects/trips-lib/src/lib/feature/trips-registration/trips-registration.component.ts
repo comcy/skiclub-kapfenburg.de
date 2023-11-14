@@ -3,8 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Price } from '@courses-lib';
-import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
+import { BOARDING_LIST, TRIP_DATA } from '@data';
 import { Tile, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../domain/models';
@@ -20,9 +19,6 @@ export class TripsRegistrationComponent implements OnInit {
 
     public tripData: Tile[] = TRIP_DATA;
     public trips: Trip[] = [];
-
-    public busOnlyPrice: Price = BUS_ONLY_PRICE_DATA;
-    public busAndPassPrice: Price[] = BUS_AND_PASS_PRICE_DATA;
     public boardings: string[] = BOARDING_LIST;
 
     ngOnInit(): void {

@@ -3,7 +3,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
+import { BOARDING_LIST, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
 import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/ui-common/models';
 
 @Component({
@@ -16,7 +16,6 @@ export class TripsPricesComponent implements OnInit {
     public trips: Trip[] = [];
 
     public busOnlyPrice: Price = BUS_ONLY_PRICE_DATA;
-    public busAndPassPrice: Price[] = BUS_AND_PASS_PRICE_DATA;
     public boardings: string[] = BOARDING_LIST;
 
     ngOnInit(): void {

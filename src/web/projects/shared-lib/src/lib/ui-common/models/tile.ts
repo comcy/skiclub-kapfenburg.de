@@ -3,6 +3,7 @@
  */
 
 export interface Tile {
+    id: string;
     order: number;
     title: string;
     date: string;

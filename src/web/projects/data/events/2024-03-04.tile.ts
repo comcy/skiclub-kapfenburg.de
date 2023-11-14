@@ -32,6 +32,7 @@ Nach einem tollen Schneetag lassen wir den Tag mit Kaffee und Kuchen am Bus oder
 const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)'];
 
 export const MONTAGSAUSFAHRT_FELLHORN: Tile = {
+    id: '8ce3487f-0490-441a-903a-5c300d5a2163',
     order: 5,
     behavior: TileBehavior.View,
     title: 'MONTAGSAUSFAHRT FELLHORN',

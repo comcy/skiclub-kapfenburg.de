@@ -31,60 +31,60 @@ export const BUS_ONLY_PRICE_DATA: Price = {
     ],
 };
 
-export const BUS_AND_PASS_PRICE_DATA: Price[] = [
-    {
-        // Busfahrt und Skipass
-        id: PriceMapping.BusAndPass,
-        label: PriceMapping.BusAndPass,
-        ageGroup: [
-            {
-                group: PriceAgeGroup.Adult,
-                clubMemberStatus: [
-                    {
-                        // Mitgled
-                        clubMemberStatus: PriceClubMemberStatus.Member,
-                        value: '80 EURO',
-                    },
-                    {
-                        // Nichtmitgled / Alle
-                        clubMemberStatus: PriceClubMemberStatus.All,
-                        value: '90 EURO',
-                    },
-                ],
-            },
-            {
-                group: PriceAgeGroup.Teenager,
-                clubMemberStatus: [
-                    {
-                        // Mitgled
-                        clubMemberStatus: PriceClubMemberStatus.Member,
-                        value: '70 EURO',
-                    },
-                    {
-                        // Nichtmitgled / Alle
-                        clubMemberStatus: PriceClubMemberStatus.All,
-                        value: '80 EURO',
-                    },
-                ],
-            },
-            {
-                group: PriceAgeGroup.Child,
-                clubMemberStatus: [
-                    {
-                        // Mitgled
-                        clubMemberStatus: PriceClubMemberStatus.Member,
-                        value: '55 EURO',
-                    },
-                    {
-                        // Nichtmitglied / Alle
-                        clubMemberStatus: PriceClubMemberStatus.All,
-                        value: '60 EURO',
-                    },
-                ],
-            },
-        ],
-    },
-];
+// export const BUS_AND_PASS_PRICE_DATA: Price[] = [
+//     {
+//         // Busfahrt und Skipass
+//         id: PriceMapping.BusAndPass,
+//         label: PriceMapping.BusAndPass,
+//         ageGroup: [
+//             {
+//                 group: PriceAgeGroup.Adult,
+//                 clubMemberStatus: [
+//                     {
+//                         // Mitgled
+//                         clubMemberStatus: PriceClubMemberStatus.Member,
+//                         value: '80 EURO',
+//                     },
+//                     {
+//                         // Nichtmitgled / Alle
+//                         clubMemberStatus: PriceClubMemberStatus.All,
+//                         value: '90 EURO',
+//                     },
+//                 ],
+//             },
+//             {
+//                 group: PriceAgeGroup.Teenager,
+//                 clubMemberStatus: [
+//                     {
+//                         // Mitgled
+//                         clubMemberStatus: PriceClubMemberStatus.Member,
+//                         value: '70 EURO',
+//                     },
+//                     {
+//                         // Nichtmitgled / Alle
+//                         clubMemberStatus: PriceClubMemberStatus.All,
+//                         value: '80 EURO',
+//                     },
+//                 ],
+//             },
+//             {
+//                 group: PriceAgeGroup.Child,
+//                 clubMemberStatus: [
+//                     {
+//                         // Mitgled
+//                         clubMemberStatus: PriceClubMemberStatus.Member,
+//                         value: '55 EURO',
+//                     },
+//                     {
+//                         // Nichtmitglied / Alle
+//                         clubMemberStatus: PriceClubMemberStatus.All,
+//                         value: '60 EURO',
+//                     },
+//                 ],
+//             },
+//         ],
+//     },
+// ];
 
 export const COURSE_ON_TRAVEL_PRICE_DATA: Price[] = [
     // Kurspreise bei Ausfahrten

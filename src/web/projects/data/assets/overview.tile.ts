@@ -5,6 +5,7 @@
 import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
 
 export const OVERVIEW_TILE: Tile = {
+    id: '9933b5e2-60f2-4ae1-8f38-5db8fea5f7a1',
     order: 3,
     behavior: TileBehavior.Click,
     title: 'Themenübersicht',

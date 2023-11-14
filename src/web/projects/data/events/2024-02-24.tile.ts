@@ -35,6 +35,7 @@ Almbahn loslegen: Von dort aus starten zwei schöne Winterwanderwege und Schnees
 const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)'];
 
 export const TAGESAUSFAHRT_EHRWALD: Tile = {
+    id: '5862fdd4-8a6a-4fed-b369-7b34859761ee',
     order: 5,
     behavior: TileBehavior.View,
     title: 'TAGESAUSFAHRT NACH EHRWALD',
