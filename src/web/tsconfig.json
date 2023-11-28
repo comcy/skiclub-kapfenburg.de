@@ -21,24 +21,54 @@
                 "projects/courses-lib/src/lib/domain",
                 "projects/courses-lib/src/lib/feature"
             ],
-            "@data": ["projects/data"],
-            "@gym-lib": ["projects/gym-lib/src/lib", "projects/gym-lib/src/lib/feature"],
-            "@shared/ui-common": ["projects/shared-lib/src/lib/ui-common"],
-            "@shared/util-markdown": ["projects/shared-lib/src/lib/util-markdown"],
+            "@data": [
+                "projects/data"
+            ],
+            "@gym-lib": [
+                "projects/gym-lib/src/lib",
+                "projects/gym-lib/src/lib/feature"
+            ],
+            "@shared/ui-common": [
+                "projects/shared-lib/src/lib/ui-common"
+            ],
+            "@shared/util-markdown": [
+                "projects/shared-lib/src/lib/util-markdown"
+            ],
             "@trips-lib": [
                 "projects/trips-lib/src/lib",
                 "projects/trips-lib/src/lib/feature",
                 "projects/trips-lib/src/lib/domain"
             ],
-            "courses-lib": ["dist/courses-lib/courses-lib", "dist/courses-lib"],
-            "gym-lib": ["dist/gym-lib/gym-lib", "dist/gym-lib"],
-            "membership-lib": ["dist/membership-lib/membership-lib", "dist/membership-lib"],
-            "shared-lib": ["dist/shared-lib/shared-lib", "dist/shared-lib"],
-            "trips-lib": ["dist/trips-lib/trips-lib", "dist/trips-lib"]
+            "courses-lib": [
+                "dist/courses-lib/courses-lib",
+                "dist/courses-lib"
+            ],
+            "gym-lib": [
+                "dist/gym-lib/gym-lib",
+                "dist/gym-lib"
+            ],
+            "membership-lib": [
+                "dist/membership-lib/membership-lib",
+                "dist/membership-lib"
+            ],
+            "@membership-lib/feature": [
+                "projects/membership-lib/src/lib/feature"
+            ],
+            "shared-lib": [
+                "dist/shared-lib/shared-lib",
+                "dist/shared-lib"
+            ],
+            "trips-lib": [
+                "dist/trips-lib/trips-lib",
+                "dist/trips-lib"
+            ]
         },
         "target": "ES2022",
         "module": "es2020",
-        "lib": ["es2020", "dom"]
+        "lib": [
+            "es2020",
+            "dom"
+        ]
     },
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false,

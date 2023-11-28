@@ -19,6 +19,11 @@ import {
 
 const routes: Routes = [
     {
+        path: 'share-membership',
+        loadComponent: () => import('@membership-lib/feature').then((m) => m.MembershipDetailDialogComponent),
+        outlet: 'popup',
+    },
+    {
         path: HOME_ROUTE,
         component: HomeComponent,
     },
