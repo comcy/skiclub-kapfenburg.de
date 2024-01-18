@@ -41,5 +41,5 @@ export const LA_OELE_AUSFAHRT: Tile = {
     actions: [TileActions.Register],
     expiration: new Date('2024-01-21'),
     boardings: BOARDING_LIST,
-    status: TileStatus.Open,
+    status: TileStatus.BookedUp,
 };
