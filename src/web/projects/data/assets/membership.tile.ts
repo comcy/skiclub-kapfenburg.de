@@ -16,7 +16,7 @@ export const MEMBERSHIP_TILE: Tile = {
     actions: [TileActions.Download],
     downloadActionLink: 'https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA',
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
-    expiration: new Date('2023-12-31'),
+    expiration: new Date('2028-12-31'),
     status: TileStatus.Open,
     boardings: [],
 };
