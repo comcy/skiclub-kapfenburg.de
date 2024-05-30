@@ -45,5 +45,5 @@ export const PARTYAUSFAHRT_LERMOOS: Tile = {
     actions: [TileActions.Register],
     expiration: new Date('2024-02-17'),
     boardings: BOARDING_LIST,
-    status: TileStatus.Open,
+    status: TileStatus.BookedUp
 };
