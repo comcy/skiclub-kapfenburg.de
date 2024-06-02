@@ -1,77 +1,45 @@
 {
-  "name": "web",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "nx serve",
-    "build": "ng build sck-app",
-    "build:nx": "nx build sck-app",
-    "watch": "nx build --watch --configuration development",
-    "test": "nx test",
-    "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
-    "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
-    "prepare": "cd ../.. && husky install src/web/.husky",
-    "lint": "nx lint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run test"
+    "name": "web",
+    "version": "0.0.0",
+    "scripts": {
+        "ng": "ng",
+        "start": "nx serve",
+        "build": "ng build sck-app",
+        "build:nx": "nx build sck-app",
+        "watch": "nx build --watch --configuration development",
+        "test": "nx test",
+        "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
+        "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
+        "prepare": "cd ../.. && husky install src/web/.husky",
+        "lint": "nx lint"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "pre-push": "npm run test"
+        }
+    },
+    "lint-staged": {
+        "projects/**/*.{ts,scss,html}": [
+            "npm run prettier:fix"
+        ]
+    },
+    "private": true,
+    "dependencies": {
+        "@angular/animations": "^17.0.3",
+        "@angular/cdk": "^16.1.0",
+        "@angular/common": "^17.0.3",
+        "@angular/compiler": "^17.0.3",
+        "@angular/core": "^17.0.3",
+        "@angular/forms": "^17.0.3",
+        "@angular/material": "^16.1.0",
+        "@angular/platform-browser": "^17.0.3",
+        "@angular/platform-browser-dynamic": "^17.0.3",
+        "@angular/router": "^17.0.3",
+        "date-fns": "^2.30.0",
+        "rxjs": "~7.8.0",
+        "showdown": "^2.1.0",
+        "tslib": "^2.3.0",
+        "zone.js": "~0.14.2"
     }
-  },
-  "lint-staged": {
-    "projects/**/*.{ts,scss,html}": [
-      "npm run prettier:fix"
-    ]
-  },
-  "private": true,
-  "dependencies": {
-    "@angular/animations": "^17.0.3",
-    "@angular/cdk": "^16.1.0",
-    "@angular/common": "^17.0.3",
-    "@angular/compiler": "^17.0.3",
-    "@angular/core": "^17.0.3",
-    "@angular/forms": "^17.0.3",
-    "@angular/material": "^16.1.0",
-    "@angular/platform-browser": "^17.0.3",
-    "@angular/platform-browser-dynamic": "^17.0.3",
-    "@angular/router": "^17.0.3",
-    "date-fns": "^2.30.0",
-    "rxjs": "~7.8.0",
-    "showdown": "^2.1.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.14.2"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^17.0.1",
-    "@angular-devkit/core": "~17.0.1",
-    "@angular-devkit/schematics": "~17.0.1",
-    "@angular-eslint/builder": "16.2.0",
-    "@angular-eslint/eslint-plugin": "16.2.0",
-    "@angular-eslint/eslint-plugin-template": "16.2.0",
-    "@angular-eslint/schematics": "16.2.0",
-    "@angular-eslint/template-parser": "16.2.0",
-    "@angular/cli": "~17.0.1",
-    "@angular/compiler-cli": "^17.0.3",
-    "@nx/angular": "17.0.2",
-    "@nx/workspace": "17.0.2",
-    "@schematics/angular": "~16.1.8",
-    "@types/jasmine": "~4.3.0",
-    "@types/node": "^12.11.1",
-    "@types/showdown": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "5.62.0",
-    "@typescript-eslint/parser": "5.62.0",
-    "eslint": "^8.49.0",
-    "husky": "^8.0.0",
-    "jasmine-core": "~4.6.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "lint-staged": "^14.0.1",
-    "nx": "17.0.2",
-    "prettier": "^3.0.3",
-    "typescript": "~5.2.2"
-  }
 }
