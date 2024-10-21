@@ -6,10 +6,7 @@ on:
       - 'master'
     paths:
       - 'src/ui/sck-web/*'
-    paths-ignore:
-      - 'README.md'
-      - 'docs/**'
-
+      
 env:
   PROJECT_PATH: 'src/web/'
   APACHE_HTACCESS_SCK_APP: 'src/web/projects/sck-app/src/.htaccess'
