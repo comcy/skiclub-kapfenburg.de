@@ -7,7 +7,13 @@ trigger:
   batch: true
   branches:
     include:
-    - '*'
+    - 'master'
+  paths:
+    include:
+    - src/web
+    exclude:
+    - README.md
+    - docs
 
 variables:
 - name: PROJECT_PATH
