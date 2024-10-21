@@ -6,6 +6,8 @@ The website is based on the Angular framework and is written as standalone clien
 
 ---
 
+## Information
+ 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.9.
 
 ## Development server
