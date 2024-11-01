@@ -4,9 +4,9 @@
 
 import { DownloadItem } from 'projects/trips-lib/src/lib/domain/models';
 
-export const PROGRAMM_DOWNLOAD_LINK = 'https://1drv.ms/b/s!AlpybhuWN2nhgeg84qHJtnqsYKL8gg?e=drhRrK';
+export const PROGRAMM_DOWNLOAD_LINK = 'https://1drv.ms/b/s!AlpybhuWN2nhguFe6RiXvo_jjiU0eg?e=qdC0Gu';
 
-export const PROGRAMM_DOWNLOAD_LINK_SHORT = 'https://1drv.ms/b/s!AlpybhuWN2nhgeg7YtsNP_zGVbajHQ?e=PlqvTX';
+export const PROGRAMM_DOWNLOAD_LINK_SHORT = '';
 
 const EINVERSTAENDNIS_U18_LINK = 'https://1drv.ms/b/s!AlpybhuWN2nhgehuhqZdmNmjn_77xw?e=nVR9fH';
 
