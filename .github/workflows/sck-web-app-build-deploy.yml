@@ -6,14 +6,18 @@ on:
       - 'master'
     paths:
       - 'src/ui/sck-web/*'
-    paths-ignore:
-      - 'README.md'
-      - 'docs/**'
-
+      - '.github/workflows/sck-web-app-*'
+      
 env:
   PROJECT_PATH: 'src/web/'
   APACHE_HTACCESS_SCK_APP: 'src/web/projects/sck-app/src/.htaccess'
   PROJECT_DIST_PATH: 'src/web/dist/sck-app/'
+
+  COURSE_SHEET_URL: ${{ secrets.COURSE_SHEET_URL }}
+  TRIP_SHEET_URL: ${{ secrets.TRIP_SHEET_URL }}
+  SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+  SSH_USER: ${{ secrets.SSH_USER }}
+  SERVER_ADDRESS: ${{ secrets.SERVER_ADDRESS }}
 
 jobs:
   build:
@@ -55,7 +59,7 @@ jobs:
     - name: SCP files to server
       run: |
         cd ${{ env.PROJECT_DIST_PATH }}
-        sshpass -p ${{ secrets.SSH_PASSWORD }} scp -o StrictHostKeyChecking=no -r . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ env.SERVER_DIST_PATH }}
+        sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o "StrictHostKeyChecking=no" -r . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ env.SERVER_DIST_PATH }}
       env:
         SERVER_DIST_PATH: ${{ github.ref == 'refs/heads/master' && secrets.SERVER_DIST_PATH_BASE || secrets.SERVER_DIST_PATH_STAGE }}
 

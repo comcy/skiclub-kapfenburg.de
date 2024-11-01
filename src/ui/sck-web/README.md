@@ -1,5 +1,13 @@
 # SckWeb
 
+This project represents the web page of "Skiclub Kapfenburg e.V." a society to promote and support winter sports. It's residence is in the south of Germany, Baden-Württemberg within small district called "Ostalb".
+
+The website is based on the Angular framework and is written as standalone client application. Logos and images are owned by the society "Skiclub Kapfenburg e.V." - The usage of any of these files is prohibited in any way!
+
+---
+
+## Information
+ 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.9.
 
 ## Development server
