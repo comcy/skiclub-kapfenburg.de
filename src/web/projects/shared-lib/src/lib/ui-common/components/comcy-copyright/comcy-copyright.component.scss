@@ -14,13 +14,13 @@
         padding-top: 20px;
         padding-right: 30px;
         color: var(--copyright-container-text-color, white);
-    }
-
-    a {
-        color: var(--copyright-container-link-color, white);
-        text-decoration: none;
-        i {
-            text-transform: uppercase;
+        word-spacing: 1em;
+        a {
+            color: var(--copyright-container-link-color, white);
+            text-decoration: none;
+            i {
+                text-transform: uppercase;
+            }
         }
     }
 }
