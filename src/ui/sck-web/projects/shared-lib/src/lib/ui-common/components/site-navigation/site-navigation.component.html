@@ -1,0 +1,55 @@
+<mat-toolbar id="main" class="shadow" color="primary">
+    <div class="title-container">
+        <!-- <shared-lib-sck-logo-icon class="logo"></shared-lib-sck-logo-icon> -->
+        <span class="header-title" [routerLink]="'/home'">{{ title }}</span>
+    </div>
+
+    <span class="spacer"></span>
+
+    <!-- Desktop view: Highlited items -->
+    <ng-container *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false">
+        <div *ngFor="let n of highlightedNavItems" class="highlight-container">
+            <a mat-button (click)="routeTo(n.route)">
+                {{ n.name }}
+            </a>
+        </div>
+    </ng-container>
+
+    <span class="spacer"></span>
+
+    <!-- Desktop view -->
+    <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false" class="navitems-container">
+        <a *ngFor="let n of navItems" mat-flat-button color="primary" (click)="routeTo(n.route)">
+            {{ n.name }}
+        </a>
+    </div>
+
+    <!-- Mobile View -->
+    <button
+        *ngIf="breakpointObserver.handsetBreakpoint$ | async"
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+    >
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+</mat-toolbar>
+
+<!-- Mobile view: Side navigation container -->
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+        #drawer
+        class="sidenav"
+        fixedInViewport
+        [attr.role]="(breakpointObserver.handsetBreakpoint$ | async) ? 'dialog' : 'navigation'"
+        [mode]="(breakpointObserver.handsetBreakpoint$ | async) ? 'over' : 'side'"
+        [opened]="false"
+    >
+        <mat-nav-list *ngFor="let n of navItems">
+            <a mat-list-item (click)="drawer.close()" [routerLink]="[n.route]" routerLinkActive="list-item-active">
+                {{ n.name }}
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+</mat-sidenav-container>

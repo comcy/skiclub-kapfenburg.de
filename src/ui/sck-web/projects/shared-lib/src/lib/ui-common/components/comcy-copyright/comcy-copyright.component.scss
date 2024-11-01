@@ -1,0 +1,26 @@
+@use '../../../styles/mixins';
+@import '../../../styles/variables';
+
+:host {
+    flex: 1;
+}
+
+.copyright-container {
+    p {
+        display: flex;
+        flex: end;
+        justify-content: flex-end;
+        font-size: 12px;
+        padding-top: 20px;
+        padding-right: 30px;
+        color: var(--copyright-container-text-color, white);
+        word-spacing: 1em;
+        a {
+            color: var(--copyright-container-link-color, white);
+            text-decoration: none;
+            i {
+                text-transform: uppercase;
+            }
+        }
+    }
+}

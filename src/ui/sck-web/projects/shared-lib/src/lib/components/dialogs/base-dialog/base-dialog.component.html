@@ -1,0 +1,11 @@
+<div class="dialog-top-bar">
+    <h3 *ngIf="date" [innerHTML]="this.markdown.render(date)"></h3>
+    <button mat-button (click)="close()">X</button>
+</div>
+<div mat-dialog-title class="dialog-title">
+    <h2 *ngIf="title" [innerHTML]="this.markdown.render(title)"></h2>
+</div>
+<mat-dialog-content class="dialog-content">
+    <ng-content select="[registerForm]"></ng-content>
+    <ng-content select="[share]"></ng-content>
+</mat-dialog-content>

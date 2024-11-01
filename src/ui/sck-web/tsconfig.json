@@ -29,6 +29,10 @@
       "dom"
     ]
   },
+  "include": [
+    "node_modules/@types/showdown"
+  ],
+
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

@@ -1,0 +1,22 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-end;
+}
+
+.dialog-top-bar {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-self: stretch;
+}
+
+.dialog-title {
+    display: flex;
+    flex-flow: column;
+    align-self: center;
+}
+
+.dialog-content {
+    // EMPTY
+}
