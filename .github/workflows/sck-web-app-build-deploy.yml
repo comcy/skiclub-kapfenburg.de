@@ -13,7 +13,6 @@ env:
   PROJECT_PATH: "src/web/"
   APACHE_HTACCESS_SCK_APP: "src/web/projects/sck-app/src/.htaccess"
   PROJECT_DIST_PATH: "src/web/dist/sck-app/"
-
   COURSE_SHEET_URL: ${{ secrets.COURSE_SHEET_URL }}
   TRIP_SHEET_URL: ${{ secrets.TRIP_SHEET_URL }}
   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
