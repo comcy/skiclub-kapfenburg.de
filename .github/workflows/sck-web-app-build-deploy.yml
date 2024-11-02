@@ -6,7 +6,7 @@ on:
       - "master"
     paths:
       # - "src/ui/sck-web/*"
-      # - "src/web/*"
+      - "src/web/*"
       - ".github/workflows/sck-web-app-*"
 
 env:
