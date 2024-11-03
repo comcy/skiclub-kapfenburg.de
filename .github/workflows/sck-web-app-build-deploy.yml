@@ -72,7 +72,7 @@ jobs:
         run: |
           pwd
           ls -al
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }} 'pwd'
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }} 'pwd && echo "========== DEBUG ======" && ls -al /html'
 
       # Sicheres Kopieren von Dateien auf den Remote-Server
       - name: SCP files to server
