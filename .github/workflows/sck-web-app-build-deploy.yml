@@ -18,7 +18,7 @@ env:
   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
   SSH_USER: ${{ secrets.SSH_USER }}
   SERVER_ADDRESS: ${{ secrets.SERVER_ADDRESS }}
-  SERVER_DIST_PATH: ${{ github.ref == 'refs/heads/master' && secrets.SERVER_DIST_PATH_BASE || secrets.SERVER_DIST_PATH_STAGE }}
+  SERVER_DIST_PATH: ${{ secrets.SERVER_DIST_PATH_STAGE }}
 
 jobs:
   build:
@@ -68,11 +68,23 @@ jobs:
       #     ls -al ${{ env.PROJECT_DIST_PATH }}
 
       # Sicheres Kopieren von Dateien auf den Remote-Server
+      - name: DEBUG
+        run: |
+          pwd
+          ls -al
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }} 'pwd'
+
+      # Sicheres Kopieren von Dateien auf den Remote-Server
       - name: SCP files to server
         run: |
+          pwd
+          ls -al
+          cd "${{ env.PROJECT_DIST_PATH }}"
+          pwd
+          ls -al
           sshpass -p "${{ secrets.SSH_PASSWORD }}" \
-            scp -o "StrictHostKeyChecking=no" -r src/web/dist/sck-app/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ secrets.SERVER_DIST_PATH_STAGE }}
+            scp -v -o "StrictHostKeyChecking=no" -r . \
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ env.SERVER_DIST_PATH }}
 
       # # Secure copy files to remote server
       # - name: SCP files to server
