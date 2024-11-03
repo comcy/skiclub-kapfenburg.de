@@ -56,16 +56,16 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
-      # Definiere die SERVER_DIST_PATH abhängig vom Branch
-      - name: Set target path based on branch
-        run: echo "SERVER_DIST_PATH=$([[ '${{ github.ref }}' == 'refs/heads/master' ]] && echo '${{ secrets.SERVER_DIST_PATH_BASE }}' || echo '${{ secrets.SERVER_DIST_PATH_STAGE }}')" >> $GITHUB_ENV
+      # # Definiere die SERVER_DIST_PATH abhängig vom Branch
+      # - name: Set target path based on branch
+      #   run: echo "SERVER_DIST_PATH=$([[ '${{ github.ref }}' == 'refs/heads/master' ]] && echo '${{ secrets.SERVER_DIST_PATH_BASE }}' || echo '${{ secrets.SERVER_DIST_PATH_STAGE }}')" >> $GITHUB_ENV
 
-      # Debugging-Schritt: Zeige SERVER_DIST_PATH und PROJECT_DIST_PATH an
-      - name: Print paths for debugging
-        run: |
-          echo "SERVER_DIST_PATH: ${{ env.SERVER_DIST_PATH }}"
-          echo "PROJECT_DIST_PATH: ${{ env.PROJECT_DIST_PATH }}"
-          ls -al ${{ env.PROJECT_DIST_PATH }}
+      # # Debugging-Schritt: Zeige SERVER_DIST_PATH und PROJECT_DIST_PATH an
+      # - name: Print paths for debugging
+      #   run: |
+      #     echo "SERVER_DIST_PATH: ${{ env.SERVER_DIST_PATH }}"
+      #     echo "PROJECT_DIST_PATH: ${{ env.PROJECT_DIST_PATH }}"
+      #     ls -al ${{ env.PROJECT_DIST_PATH }}
 
       # Sicheres Kopieren von Dateien auf den Remote-Server
       - name: SCP files to server
@@ -73,7 +73,7 @@ jobs:
           cd "${{ env.PROJECT_DIST_PATH }}"
           sshpass -p "${{ secrets.SSH_PASSWORD }}" \
             scp -o "StrictHostKeyChecking=no" -r . \
-            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ env.SERVER_DIST_PATH }}
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ secrets.SERVER_DIST_PATH_STAGE }}
 
       # # Secure copy files to remote server
       # - name: SCP files to server
