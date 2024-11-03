@@ -13,21 +13,21 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'registration',
+                redirectTo: 'information',
                 pathMatch: 'full',
-            },
-            {
-                path: 'registration',
-                loadComponent: () =>
-                    import('./components/tabs/registration/registration.component').then(
-                        (mod) => mod.RegistrationComponent,
-                    ),
             },
             {
                 path: 'information',
                 loadComponent: () =>
                     import('./components/tabs/information/information.component').then(
                         (mod) => mod.InformationComponent,
+                    ),
+            },
+            {
+                path: 'registration',
+                loadComponent: () =>
+                    import('./components/tabs/registration/registration.component').then(
+                        (mod) => mod.RegistrationComponent,
                     ),
             },
             {

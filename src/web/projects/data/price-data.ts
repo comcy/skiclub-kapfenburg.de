@@ -121,6 +121,7 @@ export const COURSE_AT_HOME_PRICE_DATA: Price[] = [
             {
                 // Snowboard
                 type: SportType.Snowboard,
+                time: '6 Stunden',
                 ageGroup: [
                     {
                         // Erwachsene
@@ -129,12 +130,12 @@ export const COURSE_AT_HOME_PRICE_DATA: Price[] = [
                             {
                                 // Mitgled
                                 clubMemberStatus: PriceClubMemberStatus.Member,
-                                value: '45 EURO',
+                                value: '55 EURO',
                             },
                             {
                                 // Nichtmitgled / Alle
                                 clubMemberStatus: PriceClubMemberStatus.All,
-                                value: '55 EURO',
+                                value: '70 EURO',
                             },
                         ],
                     },
@@ -145,29 +146,7 @@ export const COURSE_AT_HOME_PRICE_DATA: Price[] = [
                             {
                                 // Mitgled
                                 clubMemberStatus: PriceClubMemberStatus.Member,
-                                value: '35 EURO',
-                            },
-                            {
-                                // Nichtmitgled / Alle
-                                clubMemberStatus: PriceClubMemberStatus.All,
                                 value: '45 EURO',
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                // Alpin
-                type: SportType.Alpin,
-                ageGroup: [
-                    {
-                        // Erwachsene
-                        group: PriceAgeGroup.Adult,
-                        clubMemberStatus: [
-                            {
-                                // Mitgled
-                                clubMemberStatus: PriceClubMemberStatus.Member,
-                                value: '50 EURO',
                             },
                             {
                                 // Nichtmitgled / Alle
@@ -176,6 +155,29 @@ export const COURSE_AT_HOME_PRICE_DATA: Price[] = [
                             },
                         ],
                     },
+                ],
+            },
+            {
+                // Alpin
+                type: SportType.Alpin,
+                time: '8 Stunden',
+                ageGroup: [
+                    {
+                        // Erwachsene
+                        group: PriceAgeGroup.Adult,
+                        clubMemberStatus: [
+                            {
+                                // Mitgled
+                                clubMemberStatus: PriceClubMemberStatus.Member,
+                                value: '60 EURO',
+                            },
+                            {
+                                // Nichtmitgled / Alle
+                                clubMemberStatus: PriceClubMemberStatus.All,
+                                value: '75 EURO',
+                            },
+                        ],
+                    },
                     {
                         // Kinder
                         group: PriceAgeGroup.Child,
@@ -183,12 +185,12 @@ export const COURSE_AT_HOME_PRICE_DATA: Price[] = [
                             {
                                 // Mitgled
                                 clubMemberStatus: PriceClubMemberStatus.Member,
-                                value: '40 EURO',
+                                value: '50 EURO',
                             },
                             {
                                 // Nichtmitgled / Alle
                                 clubMemberStatus: PriceClubMemberStatus.All,
-                                value: '50 EURO',
+                                value: '65 EURO',
                             },
                         ],
                     },

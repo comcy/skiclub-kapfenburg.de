@@ -6,6 +6,7 @@
 
 .sidenav-container {
     height: 100%;
+    z-index: 10000000; // avoid overlapping items from mat-toolbar
 }
 
 .sidenav {

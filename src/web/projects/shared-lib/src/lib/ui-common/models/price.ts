@@ -23,6 +23,7 @@ export interface PriceSplitPerClubMemberStatus {
 
 export interface PriceSplitByBySportType {
     type: SportType;
+    time: string;
     ageGroup: PriceSplitByAgeGroup[];
 }
 

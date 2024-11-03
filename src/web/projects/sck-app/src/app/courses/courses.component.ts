@@ -30,12 +30,12 @@ export class CoursesComponent {
     public color: MaterialColor = 'primary';
     public navLinks = [
         {
-            label: 'Anmeldung',
-            link: './registration',
-        },
-        {
             label: 'Information',
             link: './information',
+        },
+        {
+            label: 'Anmeldung',
+            link: './registration',
         },
         {
             label: 'Preise',
