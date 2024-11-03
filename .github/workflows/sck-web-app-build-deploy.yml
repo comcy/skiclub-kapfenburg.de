@@ -70,9 +70,8 @@ jobs:
       # Sicheres Kopieren von Dateien auf den Remote-Server
       - name: SCP files to server
         run: |
-          cd "${{ env.PROJECT_DIST_PATH }}"
           sshpass -p "${{ secrets.SSH_PASSWORD }}" \
-            scp -o "StrictHostKeyChecking=no" -r . \
+            scp -o "StrictHostKeyChecking=no" -r src/web/dist/sck-app/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ secrets.SERVER_DIST_PATH_STAGE }}
 
       # # Secure copy files to remote server
