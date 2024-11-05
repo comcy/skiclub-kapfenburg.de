@@ -30,7 +30,8 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
     ) {}
 
     /**
-     *
+     * This method is the implementation of the corresponding abstract declaration of the service inteface.
+     * It is used to transmit the form data to any desired endpoint.
      * @param courseRegisterForm
      */
     sendFormToSheetsIo(formData: FormData) {
@@ -44,6 +45,17 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
                 this.snackBar.open(this.errorMessage, this.snackAction);
             },
         });
+    }
+
+    /**
+     * This method is the implementation of the corresponding abstract declaration
+     * of the service inteface which can be used to invoke a transmission of a confirmation mail.
+     *
+     * This method triggers the `sck-api` which will send a confirmation mail with all relevant form data.
+     * @param formData, the dataset of the course registration form.
+     */
+    sendConfirmationMail(formData: FormData) {
+        console.log(formData);
     }
 }
 

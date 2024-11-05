@@ -14,4 +14,5 @@ export interface CourseRegisterForm {
 @Injectable()
 export abstract class CourseRegistrationFormServiceInterface {
     public abstract sendFormToSheetsIo(formData: FormData): void;
+    public abstract sendConfirmationMail(formData: FormData): void;
 }

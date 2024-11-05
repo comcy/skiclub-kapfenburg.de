@@ -8,6 +8,7 @@
 
 export const environment = {
     production: false,
+    sckApiUrl: '',
     courseSheetUrl: '',
     tripSheetUrl: '',
 };

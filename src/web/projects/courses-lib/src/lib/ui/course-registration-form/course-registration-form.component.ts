@@ -72,6 +72,7 @@ export class CourseRegistrationFormComponent implements OnInit {
             if (formData) {
                 this.submitForm.emit(true);
                 this.courseRegistrationFormService.sendFormToSheetsIo(formData);
+                this.courseRegistrationFormService.sendConfirmationMail(formData);
             } else {
                 console.error('No data provided');
             }
