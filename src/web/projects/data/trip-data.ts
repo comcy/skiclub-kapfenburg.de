@@ -3,7 +3,7 @@
  */
 
 import { Tile } from 'projects/shared-lib/src/lib/ui-common/models';
-import { SKIBOERSE_TILE } from './events';
+import { PARTYAUSFAHRT_SONNENKOPF_TILE, SKIBOERSE_TILE } from './events';
 
 export const BOARDING_LIST = [
     'Westhausen Turnhalle (5:40 Uhr)',
@@ -14,4 +14,4 @@ export const BOARDING_LIST = [
 
 export const BOARDING_LIST_SHORT = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
-export const TRIP_DATA: Tile[] = [SKIBOERSE_TILE];
+export const TRIP_DATA: Tile[] = [SKIBOERSE_TILE, PARTYAUSFAHRT_SONNENKOPF_TILE];
