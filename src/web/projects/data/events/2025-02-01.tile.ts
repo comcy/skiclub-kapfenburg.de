@@ -15,36 +15,43 @@ Almbahn loslegen: Von dort aus starten zwei schöne Winterwanderwege und Schnees
  **Abfahrtszeiten**
  - 05:15 Uhr Westhausen Turnhalle 
  - 05:25 Uhr Lauchheim Schule
+ - 05:30 Uhr Hülen Bushaltestelle Wiesenweg
 
 **Kosten**
 
 |        Bus + Liftkarte      |   Mitglieder |  Nicht-Mtglieder |
 |:----------------------------|-------------:|------------------:|
-|  Erwachsene                 |   75,00 €    |  85,00 €          |
+|  Erwachsene                 |   85,00 €    |  95,00 €          |
 |  Jugendliche bis 16 Jahre   |   65,00 €    |  75,00 €          | 
 |  Kinder bis 6 Jahre         |   50,00 €    |  55,00 €          |
 |                             |              |                   |
 |                             |              |                   |
 |                             |              |                   |
-|  Kurse                      |   35,00 €    |  40,00 €          |
-|  Schneeschuhe               |    5,00 €    |   5,00 €          |
+|  Anfängerkurse              |   35,00 €    |  40,00 €          |
+|  Techniktraining 1/2 Tag    |   25,00 €    |  30,00 €          |
+|  Techniktraining            |   50,00 €    |  55,00 €          |
+|  Schneeschuhe               |   5,00 €     |  5,00 €           |
 |  Nur Busfahrt               |   30,00 €    |  30,00 €          |
 
 `;
 
-const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)'];
+const BOARDING_LIST = [
+    'Westhausen Turnhalle (5:15 Uhr)',
+    'Lauchheim Schule (5:25 Uhr)',
+    'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
+];
 
 export const TAGESAUSFAHRT_EHRWALD: Tile = {
     order: 5,
     behavior: TileBehavior.View,
     title: 'TAGESAUSFAHRT NACH EHRWALD',
-    date: '24. Februar 2024',
+    date: '01. Februar 2025',
     subTitle: 'Familienfreundlich',
     image: '../../../../assets/img/cards/huette.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2024-02-24'),
+    expiration: new Date('2025-02-01'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

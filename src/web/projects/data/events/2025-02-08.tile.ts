@@ -17,36 +17,42 @@ Pisten, die gut zu bewältigen sind.
  **Abfahrtszeiten**
  - 05:15 Uhr Westhausen Turnhalle 
  - 05:25 Uhr Lauchheim Schule
+ - 05:30 Uhr Hülen Bushaltestelle Wiesenweg
 
 **Kosten**
 
 |        Bus + Liftkarte      |   Mitglieder |  Nicht-Mtglieder |
 |:----------------------------|-------------:|------------------:|
-|  Erwachsene                 |   80,00 €    |  90,00 €          |
-|  Jugendliche bis 16 Jahre   |   70,00 €    |  80,00 €          | 
-|  Kinder bis 6 Jahre         |   55,00 €    |  60,00 €          |
+|  Erwachsene                 |   90,00 €    |  100,00 €          |
+|  Jugendliche bis 16 Jahre   |   80,00 €    |  90,00 €          | 
+|  Kinder bis 6 Jahre         |   65,00 €    |  70,00 €          |
 |                             |              |                   |
 |                             |              |                   |
 |                             |              |                   |
-|  Kurse                      |   35,00 €    |  40,00 €          |
-|  Schneeschuhe               |    5,00 €    |   5,00 €          |
+|  Techniktraining 1/2 Tag    |   25,00 €    |  30,00 €          |
+|  Techniktraining            |   50,00 €    |  55,00 €          |
+|  Schneeschuhe               |   5,00 €     |  5,00 €           |
 |  Nur Busfahrt               |   30,00 €    |  30,00 €          |
 
+_Hinweis: Keine Anfänger_
 `;
 
-const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)'];
+const BOARDING_LIST = [
+    'Westhausen Turnhalle (5:15 Uhr)',
+    'Lauchheim Schule (5:25 Uhr), Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
+];
 
 export const TAGESAUSFAHRT_MELLAU_DAMUELS: Tile = {
     order: 5,
     behavior: TileBehavior.View,
     title: 'TAGESAUSFAHRT NACH MELLAU-DAMÜLS',
-    date: '27. Januar 2024',
+    date: '08. Februar 2025',
     subTitle: '',
     image: '../../../../assets/img/cards/snow.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2024-01-27'),
+    expiration: new Date('2025-02-08'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

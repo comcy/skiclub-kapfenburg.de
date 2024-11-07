@@ -11,7 +11,8 @@ Nach einem tollen Schneetag lassen wir den Tag mit Kaffee und Kuchen am Bus oder
 
  **Abfahrtszeiten**
  - 05:15 Uhr Westhausen Turnhalle 
- - 05:25 Uhr Lauchheim Schule
+ - 05:25 Uhr Lauchheim Schule 
+ - 05:30 Uhr Hülen Bushaltestelle Wiesenweg
 
 **Kosten**
 
@@ -23,25 +24,31 @@ Nach einem tollen Schneetag lassen wir den Tag mit Kaffee und Kuchen am Bus oder
 |                             |              |                   |
 |                             |              |                   |
 |                             |              |                   |
-|  Kurse                      |   35,00 €    |  40,00 €          |
-|  Schneeschuhe               |    5,00 €    |   5,00 €          |
+|  Techniktraining 1/2 Tag    |   25,00 €    |  30,00 €          |
+|  Techniktraining            |   50,00 €    |  55,00 €          |
+|  Schneeschuhe               |   5,00 €     |  5,00 €           |
 |  Nur Busfahrt               |   30,00 €    |  30,00 €          |
 
+_Hinweis: Keine Anfänger_
 `;
 
-const BOARDING_LIST = ['Westhausen Turnhalle (5:15 Uhr)', 'Lauchheim Schule (5:25 Uhr)'];
+const BOARDING_LIST = [
+    'Westhausen Turnhalle (5:15 Uhr)',
+    'Lauchheim Schule (5:25 Uhr)',
+    'Hülen Bushaltestelle (5:30 Uhr)',
+];
 
 export const MONTAGSAUSFAHRT_FELLHORN: Tile = {
     order: 5,
     behavior: TileBehavior.View,
     title: 'MONTAGSAUSFAHRT FELLHORN',
-    date: '04. März 2024',
+    date: '10. Februar 2025',
     subTitle: '',
     image: '../../../../assets/img/cards/skiing.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2024-03-04'),
+    expiration: new Date('2025-02-10'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

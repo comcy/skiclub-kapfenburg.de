@@ -50,7 +50,7 @@ export const TRIPS_REGISTER_FORM_ELEMENTS: BaseFormElements[] = [
     {
         id: 'additionalText',
         label: 'Zusatz',
-        validation: [{ type: 'required', message: 'is required' }],
+        validation: [],
         area: true,
         fullWidth: true,
         cols: 2,

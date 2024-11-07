@@ -15,6 +15,7 @@ zurück Richtung Heimat.
  - 05:00 Uhr Schwabsberg Schule
  - 05:15 Uhr Westhausen Turnhalle 
  - 05:25 Uhr Lauchheim Schule
+ - 05:30 Uhr Hülen Bushaltestelle Wiesenweg 
 
 **Rückfahrt**
 - 19:00 Uhr
@@ -23,7 +24,7 @@ zurück Richtung Heimat.
 
 |                                 |               |
 |:--------------------------------|--------------:|
-|  Bus + Liftkarte + kl. Vesper   |   89,00 €     |
+|  Bus + Liftkarte + kl. Vesper   |   95,00 €     |
 |  Schneeschuhe                   |    5,00 €     |
 `;
 
@@ -31,19 +32,20 @@ const BOARDING_LIST = [
     'Schwabsberg Schule (5:00 Uhr)',
     'Westhausen Turnhalle (5:15 Uhr)',
     'Lauchheim Schule (5:25 Uhr)',
+    'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
 ];
 
 export const PARTYAUSFAHRT_LERMOOS: Tile = {
     order: 6,
     behavior: TileBehavior.View,
     title: 'PARTYAUSFAHRT NACH LERMOOS',
-    date: '17. Februar 2024',
+    date: '08. März 2025',
     subTitle: 'Ausfahrt ab 18 Jahre',
     image: '../../../../assets/img/cards/lift.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2024-02-17'),
+    expiration: new Date('2025-03-08'),
     boardings: BOARDING_LIST,
-    status: TileStatus.BookedUp
+    status: TileStatus.Open,
 };

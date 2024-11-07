@@ -45,7 +45,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
             phone: [{ value: '', disabled: true }, [Validators.required]],
             amount: [{ value: '', disabled: true }, [Validators.required]],
-            additionalText: [{ value: '', disabled: true }, [Validators.required]],
+            additionalText: [{ value: '', disabled: true }],
             boarding: [{ value: '', disabled: true }, [Validators.required]],
         });
 

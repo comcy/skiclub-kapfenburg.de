@@ -4,10 +4,15 @@
 
 import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Eine Ausfahrt für alle, die unter der Woche Zeit haben und freie Pisten lieben. Zusammen mit dem Freizeitclub La-Oele geht es ins Allgäu mit Übernachtung im „Explorer“ Hotel.
+const DESCRIPTION_TEXT = `
+Eine Ausfahrt für alle, die unter der Woche Zeit haben und freie Pisten lieben.
+Zusammen mit dem Freizeitclub La-Oele geht es nach Montafon ins Skigebiet „Silvretta“ mit Übernachtung im Hotel Lifestyle/Bludenz. 
+Das Skigebiet bietet über 140 Pistenkilometer für Skifahrer und Snowboarder aller Levels. 
+Mit modernen Liftanlagen und einer beeindruckenden Alpenlandschaft ist es ein beliebtes Ziel für Wintersportler. 
+Neben Skifahren kann man auch Rodeln und Winterwandern genießen. Die gemütichen Hütten laden zum Entspannen ein.
 
 **Ziel**
-- Allgäu / Fellhorn
+- Montafon "Silvretta"
 
 **Abfahrtszeiten**
  - 05:00 Uhr Schwabsberg Schule 
@@ -17,7 +22,7 @@ const DESCRIPTION_TEXT = `Eine Ausfahrt für alle, die unter der Woche Zeit habe
 
 |                             |              |
 |:----------------------------|-------------:|
-|  Erwachsene:                |   230,00 €*  |
+|  Erwachsene:                |   249,00 €*  |
 
 ---
 
@@ -31,13 +36,13 @@ export const FREIE_PISTENAUSFAHRT: Tile = {
     order: 5,
     behavior: TileBehavior.View,
     title: '2-TAGES "FREIE PISTEN" AUSFAHRT"',
-    date: '18. bis 19. März 2024',
+    date: '17. bis 18. März 2025',
     subTitle: 'Ab 18 Jahren',
     image: '../../../../assets/img/cards/ski.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2024-03-19'),
+    expiration: new Date('2025-03-17'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

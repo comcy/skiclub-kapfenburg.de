@@ -17,8 +17,8 @@ const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem F
 
 |                             |              |
 |:----------------------------|-------------:|
-|  Erwachsene                 |   225,00 €*  |
-|  Jugendliche bis 16 Jahre   |   170,00 €*  | 
+|  Erwachsene                 |   240,00 €*  |
+|  Jugendliche bis 16 Jahre   |   180,00 €*  | 
 |  Kinder bis 6 Jahre         |   85,00 €*   |
 
 --- 
@@ -33,13 +33,13 @@ export const LA_OELE_AUSFAHRT: Tile = {
     order: 5,
     behavior: TileBehavior.View,
     title: 'LA OELE 2-TAGES SKIAUSFAHRT NACH GOLM',
-    date: '20. bis 21. Januar 2024',
+    date: '18. bis 19. Januar 2025',
     subTitle: '',
     image: '../../../../assets/img/cards/snowboarding.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2024-01-21'),
+    expiration: new Date('2025-01-18'),
     boardings: BOARDING_LIST,
-    status: TileStatus.BookedUp,
+    status: TileStatus.Open,
 };
