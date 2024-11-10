@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'projects/sck-app/src/environments/environment';
+import { MailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import { TripRegistrationFormServiceInterface } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
 
 @Injectable()
@@ -25,7 +26,7 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
      *
      * @param tripRegisterForm
      */
-    sendFormToSheetsIo(formData: FormData) {
+    sendFormToSheetsIo(formData: FormData): void {
         this.http.post(`${environment.tripSheetUrl}`, formData).subscribe({
             next: (response) => {
                 console.log(response);
@@ -36,6 +37,10 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
                 this.snackBar.open(this.errorMessage, this.snackAction);
             },
         });
+    }
+
+    public sendConfirmationMail(mailData: MailInformation): void {
+        throw new Error(`Method not implemented. ${mailData}`);
     }
 }
 

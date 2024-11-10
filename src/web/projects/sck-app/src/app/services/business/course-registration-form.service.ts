@@ -10,11 +10,23 @@
  * License: MIT
  */
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CourseRegistrationFormServiceInterface } from 'projects/courses-lib/src/lib/ui/course-registration-form';
+import {
+    CourseRegisterFormFields,
+    CourseRegistrationFormServiceInterface,
+} from 'projects/courses-lib/src/lib/ui/course-registration-form';
+import {
+    getCourseConfirmationMailBcc,
+    getCourseConfirmationMailSubject,
+    getCourseConfirmationMailText,
+} from 'projects/data/mail-templates';
 import { environment } from 'projects/sck-app/src/environments/environment';
+import {
+    FormToMailInformation,
+    MailInformation,
+} from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 
 @Injectable()
 export class CourseRegistrationFormService implements CourseRegistrationFormServiceInterface {
@@ -34,7 +46,7 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
      * It is used to transmit the form data to any desired endpoint.
      * @param courseRegisterForm
      */
-    sendFormToSheetsIo(formData: FormData) {
+    sendFormToSheetsIo(formData: FormData): void {
         this.http.post(`${environment.courseSheetUrl}`, formData).subscribe({
             next: (response) => {
                 console.log(response);
@@ -54,8 +66,40 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
      * This method triggers the `sck-api` which will send a confirmation mail with all relevant form data.
      * @param formData, the dataset of the course registration form.
      */
-    sendConfirmationMail(formData: FormData) {
-        console.log(formData);
+    sendConfirmationMail(formToMailData: FormToMailInformation<CourseRegisterFormFields>): void {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+
+        const mailData: MailInformation = {
+            to: formToMailData.receiver,
+            subject: this.getSubjectText(formToMailData.formValues),
+            text: this.getMailText(formToMailData.formValues),
+            bcc: this.getBccReceivers(),
+        };
+
+        this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
+            next: (response) => {
+                console.log(response);
+                this.snackBar.open(this.successMessage, this.snackAction);
+            },
+            error: (error) => {
+                console.log(error);
+                this.snackBar.open(this.errorMessage, this.snackAction);
+            },
+        });
+    }
+
+    private getSubjectText(values: CourseRegisterFormFields): string {
+        return getCourseConfirmationMailSubject(values);
+    }
+
+    private getBccReceivers(): string {
+        return getCourseConfirmationMailBcc();
+    }
+
+    private getMailText(values: CourseRegisterFormFields): string {
+        return getCourseConfirmationMailText(values);
     }
 }
 

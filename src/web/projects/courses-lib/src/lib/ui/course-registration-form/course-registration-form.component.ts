@@ -4,9 +4,13 @@
 
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { COURSE_REGISTRATION_FORM_ELEMENTS } from './course-registration-form-fields';
-import { CourseRegistrationFormServiceInterface } from './course-registration-form-service.interface';
+import {
+    CourseRegisterFormFields,
+    CourseRegistrationFormServiceInterface,
+} from './course-registration-form.interfaces';
 
 @Component({
     selector: 'lib-course-registration-form',
@@ -34,7 +38,7 @@ export class CourseRegistrationFormComponent implements OnInit {
             email: [null, [Validators.required, Validators.email]],
             phone: [null, [Validators.required]],
             age: [null, [Validators.required]],
-            additionalText: [null, [Validators.required]],
+            additionalText: [null, []],
             level: [null, [Validators.required]],
         });
     }
@@ -46,7 +50,6 @@ export class CourseRegistrationFormComponent implements OnInit {
         // })?.validation;
 
         const emailError = this.courseRegisterForm.get(field)?.hasError('email') as boolean;
-
         const requiredError = this.courseRegisterForm.get(field)?.value;
 
         return emailError && requiredError;
@@ -72,7 +75,13 @@ export class CourseRegistrationFormComponent implements OnInit {
             if (formData) {
                 this.submitForm.emit(true);
                 this.courseRegistrationFormService.sendFormToSheetsIo(formData);
-                this.courseRegistrationFormService.sendConfirmationMail(formData);
+
+                const mailToFormData: FormToMailInformation<CourseRegisterFormFields> = {
+                    receiver: this.courseRegisterForm.controls['email'].getRawValue(),
+                    formValues: this.courseRegisterForm.getRawValue(),
+                };
+
+                this.courseRegistrationFormService.sendConfirmationMail(mailToFormData);
             } else {
                 console.error('No data provided');
             }

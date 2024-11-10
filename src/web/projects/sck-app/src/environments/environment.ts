@@ -8,7 +8,7 @@
 
 export const environment = {
     production: false,
-    sckApiUrl: '',
+    sckApiUrl: 'http://localhost:3000',
     courseSheetUrl: '',
     tripSheetUrl: '',
 };
