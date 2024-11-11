@@ -8,6 +8,9 @@
 /bazel-out
 /worktrees
 
+#config
+.env
+
 # dependencies
 /node_modules
 node_modules
@@ -20,6 +23,10 @@ speed-measure-plugin*.json
 .angular/
 src/web/.angular
 src/web/dist/
+
+# nodejs
+# angular
+src/api/**/dist/
 
 # IDEs and editors
 /.idea
