@@ -39,7 +39,8 @@ _Hinweis: Keine Anfänger_
 
 const BOARDING_LIST = [
     'Westhausen Turnhalle (5:15 Uhr)',
-    'Lauchheim Schule (5:25 Uhr), Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
+    'Lauchheim Schule (5:25 Uhr)',
+    'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
 ];
 
 export const TAGESAUSFAHRT_MELLAU_DAMUELS: Tile = {
