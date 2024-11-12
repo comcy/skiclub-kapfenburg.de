@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - "./src/api/sck-api/*"
+      - "src/api/sck-api/*"
       - ".github/workflows/sck-api-app-*"
 
 jobs:

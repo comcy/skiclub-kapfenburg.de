@@ -3,9 +3,9 @@ name: Node.js CI/CD Pipeline
 on:
   push:
     branches:
-      - "master"
+      - master
     paths:
-      - "./src/web/*"
+      - "src/web/*"
       - ".github/workflows/sck-web-app-*"
 
 env:
