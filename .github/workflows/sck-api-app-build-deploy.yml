@@ -1,0 +1,37 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "./src/api/sck-api/*"
+      - ".github/workflows/sck-web-app-*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - run: npm install
+      - run: npm run build
+
+      # # Install sshpass
+      # - name: Install sshpass
+      #   run: sudo apt-get install -y sshpass
+
+      # # Secure copy files to remote server
+      # - name: SCP files to server
+      #   run: |
+      #     cd "${{ env.PROJECT_DIST_PATH }}"
+      #     sshpass -p "${{ secrets.SSH_PASSWORD }}" \
+      #         scp -v -o "StrictHostKeyChecking=no" -r . \
+      #         "${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ secrets.SERVER_DIST_PATH_BASE }}"
+        

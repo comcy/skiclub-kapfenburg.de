@@ -2,12 +2,25 @@
  * @copyright Copyright (c) 2024 Christian Silfang
  */
 
-import { CourseRegisterFormFields } from 'projects/courses-lib/src/lib/ui/course-registration-form';
+import { TripRegisterFormFields } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
 
-export const getTripConfirmationMailTemplate = (values: CourseRegisterFormFields): string => {
+export const getTripConfirmationSuccessMessage = (): string => {
+    return `Alle Anghaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
+        Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über <b>registration@skiclub-kapfenburg.de</b>.`;
+};
+
+export const getTripConfirmationMailSubject = (values: TripRegisterFormFields): string => {
+    return `SC-Kapfenburg Anmeldung: ${values.firstName}}`;
+};
+
+export const getTripConfirmationMailBcc = (): string => {
+    return '';
+};
+
+export const getTripConfirmationMailText = (values: TripRegisterFormFields): string => {
     return `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding-top: 8px; padding-bottom: 16px;">
-            <h1 style="color: #0073e6;">${values.sportType} - Deine Anmeldung beim Skiclub Kapfenburg e.V.</h1>
+            <h1 style="color: #0073e6;">Anmeldung beim Skiclub Kapfenburg e.V. zur Ausfahrt "${values.trip.destination}" am ${values.trip.date}</h1>
             <p>Hallo ${values.firstName},</p>
             
             <p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung.</p>
@@ -31,8 +44,8 @@ export const getTripConfirmationMailTemplate = (values: CourseRegisterFormFields
             
                 <!-- Rechte Spalte -->
                 <div style="flex: 1; padding-left: 16px;">
-                    <p style="margin: 4px 0;">Zugstieg: <span style="font-weight: bold; color: #333;">${values.sportType}</span></p>
-                    <p style="margin: 4px 0;">Zusätzliche Personen: <span style="font-weight: bold; color: #333;">${values.level}</span></p>
+                    <p style="margin: 4px 0;">Zugstieg: <span style="font-weight: bold; color: #333;">${values.boarding}</span></p>
+                    <p style="margin: 4px 0;">Zusätzliche Personen: <span style="font-weight: bold; color: #333;">${values.amount}</span></p>
                     <p style="margin: 4px 0;">Zusatzangaben:</p>
                     <div style="padding: 8px; background-color: #0073e610; border-radius: 4px; border: 1px solid #ddd;">
                         <p style="margin: 0; color: #333; padding-left: 8px;">${values.additionalText}</p>
@@ -88,7 +101,7 @@ export const getTripConfirmationMailTemplate = (values: CourseRegisterFormFields
                     https://www.skiclub-kapfenburg.de/club/membership
                 </a>
             </p>
-        </div >
+
             <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
             <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert.</small>
         </div>

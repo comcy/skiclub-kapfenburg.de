@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
-import { TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
+import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
 
 @Component({
     selector: 'lib-trips-registration-form',
@@ -19,15 +20,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     public isSending = false;
     public tripView!: string;
-
     public boardingList$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-
     public isTripChanged = true;
-
     public hasPreselectedData = false;
     public firstPartSelected = false;
     public currentSelectedTrip = null;
-
     public tripRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
 
@@ -128,6 +125,13 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 this.submitForm.emit(true);
                 this.tripRegistrationFormService.sendFormToSheetsIo(formData);
                 this.isSending = false;
+
+                const mailToFormData: FormToMailInformation<TripRegisterFormFields> = {
+                    receiver: this.tripRegisterForm.controls['email'].getRawValue(),
+                    formValues: this.tripRegisterForm.getRawValue(),
+                };
+
+                this.tripRegistrationFormService.sendConfirmationMail(mailToFormData);
             } else {
                 console.error('No data provided');
             }

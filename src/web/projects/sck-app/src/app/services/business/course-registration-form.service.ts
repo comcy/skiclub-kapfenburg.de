@@ -21,6 +21,7 @@ import {
     getCourseConfirmationMailBcc,
     getCourseConfirmationMailSubject,
     getCourseConfirmationMailText,
+    getTripConfirmationSuccessMessage,
 } from 'projects/data/mail-templates';
 import { environment } from 'projects/sck-app/src/environments/environment';
 import {
@@ -30,10 +31,6 @@ import {
 
 @Injectable()
 export class CourseRegistrationFormService implements CourseRegistrationFormServiceInterface {
-    private readonly successMessage: string =
-        'Ihre Anghaben wurden übertragen. Bitte kontaktieren Sie uns telefonisch falls Sie in den nächsten 3 Tagen keine Bestätighung per Mail erhalten haben.';
-    private readonly errorMessage: string =
-        'Beim Versand Ihrer Angaben ist ein Fehler aufgetreten. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal. Falls die Propbleme weiterhin bestehen nehmen Sie bitte telefonisch Kontakt mit uns auf.';
     private snackAction = 'Ok';
 
     constructor(
@@ -50,11 +47,10 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
         this.http.post(`${environment.courseSheetUrl}`, formData).subscribe({
             next: (response) => {
                 console.log(response);
-                this.snackBar.open(this.successMessage, this.snackAction);
+                this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
                 console.log(error);
-                this.snackBar.open(this.errorMessage, this.snackAction);
             },
         });
     }
@@ -81,11 +77,9 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
         this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
             next: (response) => {
                 console.log(response);
-                this.snackBar.open(this.successMessage, this.snackAction);
             },
             error: (error) => {
                 console.log(error);
-                this.snackBar.open(this.errorMessage, this.snackAction);
             },
         });
     }

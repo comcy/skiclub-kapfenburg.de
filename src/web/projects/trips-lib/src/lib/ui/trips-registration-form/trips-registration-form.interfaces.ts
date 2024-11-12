@@ -5,7 +5,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseFormElements } from 'projects/shared-lib/src/lib/components';
-import { MailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { Trip } from '../../domain/models';
 
 export interface TripRegisterForm {
     tripRegisterForm: FormGroup;
@@ -13,7 +14,7 @@ export interface TripRegisterForm {
 }
 
 export interface TripRegisterFormFields {
-    trip: string;
+    trip: Trip;
     firstName: string;
     lastName: string;
     phone: string;
@@ -26,5 +27,5 @@ export interface TripRegisterFormFields {
 @Injectable()
 export abstract class TripRegistrationFormServiceInterface {
     public abstract sendFormToSheetsIo(formData: FormData): void;
-    public abstract sendConfirmationMail(mailData: MailInformation): void;
+    public abstract sendConfirmationMail(mailData: FormToMailInformation<TripRegisterFormFields>): void;
 }

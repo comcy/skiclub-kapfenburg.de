@@ -1,7 +1,9 @@
-import 'dotenv/config';
 import { RequestHandler } from 'express';
 import nodemailer from 'nodemailer';
 import { EmailRequestBody } from '../domain/email';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Serverkonfiguration und Umgebungsvariablen
 const SMTP_SERVER = process.env.SMTP_SERVER || '';
@@ -11,7 +13,8 @@ const SENDER_PW = process.env.SENDER_PW || '';
 
 
 export const sendEmail: RequestHandler = async (req, res) => {
-    const { to, subject, text, cc = '', bcc = '', from = '' } = req.body as EmailRequestBody;
+
+  const { to, subject, text, cc = '', bcc = '', from = '' } = req.body as EmailRequestBody;
   
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(to)) {
@@ -37,8 +40,7 @@ export const sendEmail: RequestHandler = async (req, res) => {
       socketTimeout: 10000,
       connectionTimeout: 10000,
     });
-  
-    // E-Mail-Details
+
     const mailOptions = {
       from: from || SENDER_MAIL,
       cc,
@@ -49,7 +51,6 @@ export const sendEmail: RequestHandler = async (req, res) => {
     };
   
     try {
-      // E-Mail senden
       const info = await transporter.sendMail(mailOptions);
       console.log("E-Mail gesendet:", info.messageId);
       res.status(200).json({
