@@ -3,33 +3,33 @@
 
 @serverName = localhost:3000
 
-### E-Mail über die API senden (local)
+### E-Mail über die API senden (local -> http)
 POST http://{{baseUrl}}/send_email
 Content-Type: application/json
 
 {
-    "recipientEmail": "test",
+    "to": "test@test.com",
     "subject": "TEST",
-    "body": "!!! TEST !!! "
+    "text": "!!! TEST !!! "
 }
 
 
-### E-Mail über die API senden (AZURE VM)
+### E-Mail über die API senden (AZURE VM -> https)
 POST https://{{serverIp}}/send_email
 Content-Type: application/json
 
 {
-    "recipientEmail": "test",
+    "to": "test@test.com",
     "subject": "TEST",
-    "body": "!!! TEST !!! "
+    "text": "!!! TEST !!! "
 }
 
-### E-Mail über die API senden (AZURE VM)
+### E-Mail über die API senden (AZURE VM -> https)
 POST https://{{serverName}}/send_email
 Content-Type: application/json
 
 {
-    "recipientEmail": "test",
+    "to": "test@test.com",
     "subject": "TEST",
-    "body": "!!! TEST !!! "
+    "text": "!!! TEST !!! "
 }
