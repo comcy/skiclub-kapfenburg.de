@@ -1,7 +1,7 @@
 @baseUrl = localhost:3000
 @serverIp = localhost:3000
 
-@serverName = localhost:3000
+@serverName = sckvm24.westeurope.cloudapp.azure.com
 
 ### E-Mail über die API senden (local -> http)
 POST http://{{baseUrl}}/send_email
@@ -29,7 +29,7 @@ POST https://{{serverName}}/send_email
 Content-Type: application/json
 
 {
-    "to": "test@test.com",
+    "to": "christian.silfang@gmail.com",
     "subject": "TEST",
     "text": "!!! TEST !!! "
 }
