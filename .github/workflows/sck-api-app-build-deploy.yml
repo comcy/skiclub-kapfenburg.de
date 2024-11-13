@@ -8,6 +8,11 @@ on:
       - "src/api/sck-api/*"
       - ".github/workflows/sck-api-app-*"
 
+env:
+  PROJECT_PATH: "src/api/sck-api/"
+  PROJECT_DIST_PATH: "src/api/sck-api/dist/"
+
+
 jobs:
   build:
     runs-on: ubuntu-latest

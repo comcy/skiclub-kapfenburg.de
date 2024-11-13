@@ -10,6 +10,7 @@ on:
 
 env:
   PROJECT_PATH: "src/web/"
+  INFRASTRUCTURE_SCRIPTS_PATH: "infrastructure/scripts/"
   APACHE_HTACCESS_SCK_APP: "src/web/projects/sck-app/src/.htaccess"
   PROJECT_DIST_PATH: "src/web/dist/sck-app/"
 
@@ -30,7 +31,7 @@ jobs:
       - name: Environment substitution
         run: |
           cd ${{ env.PROJECT_PATH }}/scripts
-          ./envsubst.sh "${{ secrets.COURSE_SHEET_URL }}" "${{ secrets.TRIP_SHEET_URL }}"
+          ./envsubst.sh "${{ secrets.COURSE_SHEET_URL }}" "${{ secrets.TRIP_SHEET_URL }}" "${{ secrets.SCK_API_URL }}"
 
       # PREPARE
       - name: Install dependencies
