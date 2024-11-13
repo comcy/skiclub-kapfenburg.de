@@ -14,7 +14,7 @@ export const getTripConfirmationMailSubject = (values: TripRegisterFormFields): 
 };
 
 export const getTripConfirmationMailBcc = (): string => {
-    return '';
+    return 'christian.silfang@gmail.com, m.rup@gmx.de';
 };
 
 export const getTripConfirmationMailText = (values: TripRegisterFormFields): string => {
@@ -103,7 +103,7 @@ export const getTripConfirmationMailText = (values: TripRegisterFormFields): str
             </p>
 
             <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
-            <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert.</small>
+            <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert. Solltest du Fragen oder Probleme mit der Darstellung dieser E-Mail haben, nehme bitte baldmöglichst Kontakt mit uns auf.</small>
         </div>
 `;
 };

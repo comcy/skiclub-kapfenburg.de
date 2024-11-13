@@ -14,7 +14,7 @@ export const getCourseConfirmationMailSubject = (values: CourseRegisterFormField
 };
 
 export const getCourseConfirmationMailBcc = (): string => {
-    return '';
+    return 'christian.silfang@gmail.com, m.rup@gmx.de';
 };
 
 export const getCourseConfirmationMailText = (values: CourseRegisterFormFields): string => {
@@ -23,7 +23,7 @@ export const getCourseConfirmationMailText = (values: CourseRegisterFormFields):
             <h1 style="color: #0073e6;">${values.sportType} - Deine Anmeldung beim Skiclub Kapfenburg e.V.</h1>
             <p>Hallo ${values.firstName},</p>
             
-            <p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung zum ${values.sportType}.</p>
+            <p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung zum Kurs "${values.sportType}".</p>
 
             <p>Wir haben folgende Daten registriert:</p>
 
@@ -92,6 +92,6 @@ export const getCourseConfirmationMailText = (values: CourseRegisterFormFields):
             </p>
 
             <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
-            <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert. Solltest du Probleme mit der Darstellung dieser E-Mail haben nehmen bitte baldmöglichst Kontakt mit uns auf.</small>
+            <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert. Solltest du Fragen oder Probleme mit der Darstellung dieser E-Mail haben, nehme bitte baldmöglichst Kontakt mit uns auf.</small>
         </div>`;
 };
