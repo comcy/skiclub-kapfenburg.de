@@ -10,7 +10,7 @@ export const getTripConfirmationSuccessMessage = (): string => {
 };
 
 export const getTripConfirmationMailSubject = (values: TripRegisterFormFields): string => {
-    return `SC-Kapfenburg Anmeldung: ${values.firstName}}`;
+    return `SC-Kapfenburg Anmeldung: ${values.firstName}`;
 };
 
 export const getTripConfirmationMailBcc = (): string => {
