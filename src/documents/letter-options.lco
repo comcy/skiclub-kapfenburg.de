@@ -1,0 +1,95 @@
+\ProvidesFile{absender.tex}
+
+\KOMAoptions{%
+% fromemail=true,       % Email wird im Briefkopf angezeigt
+% fromphone=true,       % Telefonnumer wird im Briefkopf angezeigt
+% fromfax=false,         % Faxnummer wird im Briefkopf angezeit
+% fromurl=true,         % URL wird im Briefkopf angezeigt
+% subject=titled,       % Druckt "Betrifft: " vor dem Betreff
+fromlogo=true,        % Logo wird im Briefkopf angezeigt
+locfield=wide,          % Breite Absenderergänzung (location)
+fromalign=left,         % Ausrichtung des Briefkopfes
+fromrule=afteraddress%  % Trennlinie unter dem Briefkopf
+}
+
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[ngerman]{babel}
+
+\newcommand\rechtsform{Registergericht: ULM  123456-3}
+
+\setkomavar{fromname}{Christian Silfang} % Name
+\setkomavar{from}{Christian Silfang} % Name
+\setkomavar{fromaddress}{% % Adresse
+  Falkenstraße 18\\
+  73463 Westhausen%
+}
+% \setkomavar{fromfax}{01234~56789} % Faxnummer
+\setkomavar{fromemail}{info@skiclub-kapfenburg.de} % Email-Adresse
+\setkomavar{fromphone}{0049 1575 1765 444} % Telefonnummer
+\setkomavar{fromurl}[Website:~]{www.skiclub-kapfenburg.de} % Website
+
+% ===== Absenderergänzung =====
+\setkomavar{location}{%
+  \raggedright\footnotesize{%
+  \usekomavar{fromname}\\
+  \usekomavar{fromaddress}\\
+  \usekomavar*{fromphone}\usekomavar{fromphone}\\
+  % \usekomavar*{fromfax}\usekomavar{fromfax}\\
+  \usekomavar*{fromemail}\usekomavar{fromemail}
+  \usekomavar*{fromurl}\usekomavar{fromurl}}%
+}
+% ============================
+
+% Logo
+\setkomavar{fromlogo}{\includegraphics[width=3cm]{./logo.png}}
+
+% Die Bankverbindung wird nicht automatisch verwendet. Dazu muss bspw. mittels \firstfoot ein eigener Brieffuß definiert werden.
+%\setkomavar{frombank}{}
+
+% ===== Bankverbindung und Fußbereich =====
+\setkomavar{frombank}{%
+  Musterbank AG\\
+  IBAN: DE12345678901234567890\\
+  BIC: MUSKDEFFXXX\\
+  Konto: 123-456-789
+}
+
+\setkomavar{firstfoot}{%
+      \scriptsize{
+        \parbox{\useplength{firstfootwidth}}{ 
+%           %\rule{180mm}{0.5pt} 
+          \begin{tabular}{ll}
+	          \usekomavar{fromname}\\
+              % \rechtsform\\
+	            \usekomavar{fromaddress}\\
+	        \end{tabular}\hfill
+          \begin{tabular}{cc}
+              \usekomavar{fromemail}\\
+              \usekomavar{fromphone}\\
+              \usekomavar{fromurl}\\
+              % \ustid
+          \end{tabular}\hfill
+          \begin{tabular}{rr}
+	          \usekomavar{frombank}\\
+          \end{tabular}
+        
+       }
+    }
+}
+
+% \setkomavar{firstfoot}{%
+%   \usekomavar{frombank}
+% }
+
+
+% ===== Signatur =====
+\setkomavar{signature}{%
+  \includegraphics[height=1.5cm]{./logo.png}\\
+  \usekomavar{fromname}\\
+  \scriptsize{(\textnormal{Vereinsvorsitzender})}%
+}
+
+
+
+\renewcommand*{\raggedsignature}{\raggedright}
+% ====================
