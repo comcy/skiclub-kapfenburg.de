@@ -18,9 +18,9 @@ Nach einem tollen Schneetag lassen wir den Tag mit Kaffee und Kuchen am Bus oder
 
 |        Bus + Liftkarte      |   Mitglieder |  Nicht-Mtglieder |
 |:----------------------------|-------------:|------------------:|
-|  Erwachsene                 |   75,00 €    |  85,00 €          |
-|  Jugendliche bis 16 Jahre   |   65,00 €    |  75,00 €          | 
-|  Kinder bis 6 Jahre         |   50,00 €    |  55,00 €          |
+|  Erwachsene                 |   80,00 €    |  90,00 €          |
+|  Jugendliche bis 16 Jahre   |   70,00 €    |  80,00 €          | 
+|  Kinder bis 6 Jahre         |   55,00 €    |  60,00 €          |
 |                             |              |                   |
 |                             |              |                   |
 |                             |              |                   |
