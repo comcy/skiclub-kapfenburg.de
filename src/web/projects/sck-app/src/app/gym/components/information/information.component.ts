@@ -9,7 +9,6 @@ import { GymFeatureModule } from '@gym-lib';
 import { GymInformationCoreServiceInterface } from 'projects/gym-lib/src/lib/domain';
 
 @Component({
-    standalone: true,
     selector: 'app-information',
     templateUrl: './information.component.html',
     imports: [CommonModule, RouterModule, GymFeatureModule],

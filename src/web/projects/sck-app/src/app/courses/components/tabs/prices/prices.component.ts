@@ -7,7 +7,6 @@ import { Component } from '@angular/core';
 import { CoursesFeatureModule, CoursesUiModule } from '@courses-lib';
 
 @Component({
-    standalone: true,
     selector: 'app-prices',
     templateUrl: './prices.component.html',
     imports: [CommonModule, CoursesFeatureModule, CoursesUiModule],

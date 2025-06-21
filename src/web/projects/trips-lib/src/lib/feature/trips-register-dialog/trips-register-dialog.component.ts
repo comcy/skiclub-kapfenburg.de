@@ -12,6 +12,7 @@ import { DialogData } from './trip-register-dialog.interfaces';
     selector: 'lib-trips-register-dialog',
     templateUrl: './trips-register-dialog.component.html',
     styleUrls: ['./trips-register-dialog.component.scss'],
+    standalone: false,
 })
 export class TripsRegisterDialogComponent implements OnInit {
     @Output() public handleConfirmClicked: EventEmitter<boolean> = new EventEmitter<boolean>(false);

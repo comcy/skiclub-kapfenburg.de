@@ -9,6 +9,7 @@ import { NewsCardItem } from '../news-card/news-card.interfaces';
     selector: 'lib-news-banner',
     templateUrl: './news-banner.component.html',
     styleUrls: ['./news-banner.component.scss'],
+    standalone: false,
 })
 export class NewsBannerComponent {
     public title = 'Termine';

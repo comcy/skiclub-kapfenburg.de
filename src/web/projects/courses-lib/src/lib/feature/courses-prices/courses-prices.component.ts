@@ -10,6 +10,7 @@ import { Price } from '../../domain/models';
     selector: 'lib-courses-prices',
     templateUrl: './courses-prices.component.html',
     styleUrls: ['./courses-prices.component.scss'],
+    standalone: false,
 })
 export class CoursesPricesComponent {
     public currentSeason: string = CURRENT_SEASON;

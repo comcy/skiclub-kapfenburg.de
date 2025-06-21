@@ -11,6 +11,7 @@ import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './
     selector: 'lib-trips-registration-form',
     templateUrl: './trips-registration-form.component.html',
     styleUrls: ['./trips-registration-form.component.scss'],
+    standalone: false,
 })
 export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     @Input() public additionalData$!: BehaviorSubject<Trip[]>;

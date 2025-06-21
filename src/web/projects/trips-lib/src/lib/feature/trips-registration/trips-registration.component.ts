@@ -13,6 +13,7 @@ import { Trip } from '../../domain/models';
     selector: 'lib-trips-registration',
     templateUrl: './trips-registration.component.html',
     styleUrls: ['./trips-registration.component.scss'],
+    standalone: false,
 })
 export class TripsRegistrationComponent implements OnInit {
     @Input() public additionalData$!: BehaviorSubject<Trip[]>;

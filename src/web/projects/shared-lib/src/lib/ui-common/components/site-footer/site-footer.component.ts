@@ -11,7 +11,6 @@ import { FacebookButtonComponent, InstagramButtonComponent, WhatsappButtonCompon
 
 @Component({
     selector: 'shared-lib-site-footer',
-    standalone: true,
     imports: [
         ANGULAR_MODULES,
         ANGULAR_MATERIAL_MODULES,

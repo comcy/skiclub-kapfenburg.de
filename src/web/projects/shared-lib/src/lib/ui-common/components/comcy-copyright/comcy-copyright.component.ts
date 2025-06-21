@@ -7,7 +7,6 @@ import { Component, Input } from '@angular/core';
 import { getYear } from 'date-fns';
 
 @Component({
-    standalone: true,
     imports: [CommonModule],
     selector: 'shared-lib-comcy-copyright',
     templateUrl: './comcy-copyright.component.html',

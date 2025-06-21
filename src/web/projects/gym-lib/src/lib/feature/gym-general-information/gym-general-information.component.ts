@@ -9,6 +9,7 @@ import { GymInformationCoreServiceInterface } from '../../domain';
     selector: 'lib-gym-general-information',
     templateUrl: './gym-general-information.component.html',
     styleUrls: ['./gym-general-information.component.scss'],
+    standalone: false,
 })
 export class GymGeneralInformationComponent {
     @Input() gymState!: GymInformationCoreServiceInterface;

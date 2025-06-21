@@ -16,6 +16,7 @@ import {
     selector: 'lib-course-registration-form',
     templateUrl: './course-registration-form.component.html',
     styleUrls: ['./course-registration-form.component.scss'],
+    standalone: false,
 })
 export class CourseRegistrationFormComponent implements OnInit {
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();

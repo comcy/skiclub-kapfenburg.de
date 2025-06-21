@@ -7,7 +7,6 @@ import { Component } from '@angular/core';
 import { TripsFeatureModule } from '@trips-lib';
 
 @Component({
-    standalone: true,
     selector: 'app-prices',
     templateUrl: './prices.component.html',
     imports: [CommonModule, TripsFeatureModule],

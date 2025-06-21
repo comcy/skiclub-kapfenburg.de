@@ -9,7 +9,6 @@ import { CoursesFeatureModule, CoursesUiModule, Price } from '@courses-lib';
 import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
 
 @Component({
-    standalone: true,
     selector: 'app-registration',
     templateUrl: './registration.component.html',
     imports: [CommonModule, CoursesFeatureModule, CoursesUiModule],

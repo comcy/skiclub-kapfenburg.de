@@ -9,7 +9,6 @@ import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common
 import { SHARED_LIB_ICONS } from '../icons';
 
 @Component({
-    standalone: true,
     imports: [ANGULAR_MODULES, ANGULAR_MATERIAL_MODULES, SHARED_LIB_ICONS],
     selector: 'shared-lib-site-navigation',
     templateUrl: './site-navigation.component.html',

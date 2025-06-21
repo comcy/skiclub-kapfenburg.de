@@ -13,6 +13,7 @@ import { Tile, TileActions, TileBehavior, TileStatus } from 'projects/shared-lib
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
+    standalone: false,
 })
 export class HomeComponent implements OnInit {
     public title = 'Aktuelles';

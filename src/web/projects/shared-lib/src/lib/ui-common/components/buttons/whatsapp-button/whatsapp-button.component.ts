@@ -4,7 +4,6 @@ import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
 
 @Component({
     selector: 'shared-lib-whatsapp-button',
-    standalone: true,
     imports: [CommonModule, SHARED_LIB_BUTTONS_NG_MAT_MODULES],
     templateUrl: './whatsapp-button.component.html',
     styleUrls: ['./whatsapp-button.component.scss'],

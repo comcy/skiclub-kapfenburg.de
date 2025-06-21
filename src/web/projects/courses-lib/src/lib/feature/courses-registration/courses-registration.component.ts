@@ -11,6 +11,7 @@ import { Price } from '../../domain/models';
     selector: 'lib-courses-registration',
     templateUrl: './courses-registration.component.html',
     styleUrls: ['./courses-registration.component.scss'],
+    standalone: false,
 })
 export class CoursesRegistrationComponent {
     public courseAtTravelPrice: Price[] = COURSE_ON_TRAVEL_PRICE_DATA;

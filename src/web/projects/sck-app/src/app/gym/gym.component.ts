@@ -10,7 +10,6 @@ import { SiteHeaderComponent } from '@shared/ui-common';
 import { RouterModule } from '@angular/router';
 
 @Component({
-    standalone: true,
     selector: 'app-gym',
     templateUrl: './gym.component.html',
     styleUrls: ['./gym.component.scss'],

@@ -10,6 +10,7 @@ import { MarkdownRenderService } from '../../../util-markdown/services';
     selector: 'lib-base-dialog',
     templateUrl: './base-dialog.component.html',
     styleUrls: ['./base-dialog.component.scss'],
+    standalone: false,
 })
 export class BaseDialogComponent implements OnInit {
     @Input() title?: string;

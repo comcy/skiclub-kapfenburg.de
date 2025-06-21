@@ -9,6 +9,7 @@ import { NewsCardItem } from './news-card.interfaces';
     selector: 'lib-news-card',
     templateUrl: './news-card.component.html',
     styleUrls: ['./news-card.component.scss'],
+    standalone: false,
 })
 export class NewsCardComponent implements OnInit {
     @Input() newsCardItem!: NewsCardItem;

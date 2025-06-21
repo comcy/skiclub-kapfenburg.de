@@ -10,6 +10,7 @@ import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/ui-c
     selector: 'lib-trips-prices',
     templateUrl: './trips-prices.component.html',
     styleUrls: ['./trips-prices.component.scss'],
+    standalone: false,
 })
 export class TripsPricesComponent implements OnInit {
     public tripData: Tile[] = TRIP_DATA;
