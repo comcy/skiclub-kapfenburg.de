@@ -19,7 +19,16 @@ const routes: Routes = [
             {
                 path: 'information',
                 loadComponent: () =>
-                    import('./components/information/information.component').then((mod) => mod.InformationComponent),
+                    import('./components/tabs/information/information.component').then(
+                        (mod) => mod.InformationComponent,
+                    ),
+            },
+            {
+                path: 'registration',
+                loadComponent: () =>
+                    import('./components/tabs/registration/registration.component').then(
+                        (mod) => mod.RegistrationComponent,
+                    ),
             },
         ],
     },

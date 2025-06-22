@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { GymFeatureModule } from '@gym-lib';
 import { GymInformationCoreServiceInterface } from 'projects/gym-lib/src/lib/domain';
@@ -14,5 +14,5 @@ import { GymInformationCoreServiceInterface } from 'projects/gym-lib/src/lib/dom
     imports: [CommonModule, RouterModule, GymFeatureModule],
 })
 export class InformationComponent {
-    constructor(public gymInformationCoreService: GymInformationCoreServiceInterface) {}
+    public gymInformationCoreService = inject(GymInformationCoreServiceInterface);
 }
