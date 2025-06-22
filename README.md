@@ -1,6 +1,6 @@
 # Skiclub Kapfenburg e.V.
 
-[![SCK-WEB Workflow](https://github.com/comcy/skiclub-kapfenburg.de/actions/workflows/sck-web-app-build-deploy.yml/badge.svg)](https://github.com/comcy/skiclub-kapfenburg.de/actions/workflows/sck-web-app-build-deploy.yml))
+[![SCK-WEB Workflow](https://github.com/comcy/skiclub-kapfenburg.de/actions/workflows/sck-web-app-build-deploy.yml/badge.svg)](https://github.com/comcy/skiclub-kapfenburg.de/actions/workflows/sck-web-app-build-deploy.yml)
 
 This project represents the web page of "Skiclub Kapfenburg e.V." a society to promote and support winter sports. It's residence is in the south of Germany, Baden-Württemberg within small district called "Ostalb". 
 
