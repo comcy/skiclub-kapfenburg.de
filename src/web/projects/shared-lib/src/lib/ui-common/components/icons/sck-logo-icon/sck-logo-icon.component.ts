@@ -10,7 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'shared-lib-sck-logo-icon',
-    standalone: true,
     imports: [CommonModule, MatIconModule, MatButtonModule],
     providers: [MatIconRegistry],
     templateUrl: './sck-logo-icon.component.html',

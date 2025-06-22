@@ -11,7 +11,6 @@ import { TripsFeatureModule } from '@trips-lib';
 import { RouterModule } from '@angular/router';
 
 @Component({
-    standalone: true,
     selector: 'app-trips',
     templateUrl: './trips.component.html',
     styleUrls: ['./trips.component.scss'],

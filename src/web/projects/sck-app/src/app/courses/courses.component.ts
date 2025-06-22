@@ -11,7 +11,6 @@ import { MaterialColor, SiteHeaderComponent } from '@shared/ui-common';
 import { RouterModule } from '@angular/router';
 
 @Component({
-    standalone: true,
     selector: 'app-courses',
     templateUrl: './courses.component.html',
     styleUrls: ['./courses.component.scss'],

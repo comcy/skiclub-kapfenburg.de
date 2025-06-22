@@ -9,7 +9,6 @@ import { MaterialColor } from '../../enums';
 
 @Component({
     selector: 'shared-lib-site-header',
-    standalone: true,
     imports: [CommonModule, ANGULAR_MATERIAL_MODULES],
     templateUrl: './site-header.component.html',
     styleUrls: ['./site-header.component.css'],

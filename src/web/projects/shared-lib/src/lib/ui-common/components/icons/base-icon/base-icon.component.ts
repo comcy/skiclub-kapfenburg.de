@@ -10,7 +10,6 @@ import { BaseIconProperties } from './base-icon.interfaces';
 
 @Component({
     selector: 'shared-lib-base-icon',
-    standalone: true,
     imports: [CommonModule, MatIconModule],
     providers: [MatIconRegistry],
     templateUrl: './base-icon.component.html',

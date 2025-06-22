@@ -10,7 +10,6 @@ import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 
 @Component({
     selector: 'shared-lib-instagram-icon',
-    standalone: true,
     imports: [CommonModule, MatIconModule],
     templateUrl: '../base-icon/base-icon.component.html',
     styleUrls: ['../base-icon/base-icon.component.scss'],

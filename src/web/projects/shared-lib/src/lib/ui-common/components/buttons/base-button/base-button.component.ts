@@ -5,7 +5,6 @@ import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
 
 @Component({
     selector: 'shared-lib-base-button',
-    standalone: true,
     imports: [CommonModule, SHARED_LIB_BUTTONS_NG_MAT_MODULES],
     templateUrl: './base-button.component.html',
     styleUrls: ['./base-button.component.scss'],

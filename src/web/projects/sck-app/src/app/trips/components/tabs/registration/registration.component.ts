@@ -9,7 +9,6 @@ import { TripsFeatureModule } from '@trips-lib';
 import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/ui-common/models';
 
 @Component({
-    standalone: true,
     selector: 'app-registration',
     templateUrl: './registration.component.html',
     imports: [CommonModule, TripsFeatureModule],

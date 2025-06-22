@@ -8,5 +8,6 @@ import { Component } from '@angular/core';
     selector: 'lib-membership-lib',
     template: ` <p>membership-lib works!</p> `,
     styles: [],
+    standalone: false,
 })
 export class MembershipLibComponent {}

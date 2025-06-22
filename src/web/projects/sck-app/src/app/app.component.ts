@@ -10,6 +10,7 @@ import { COURSES_ROUTE, DSGVO_ROUTE, GYM_ROUTE, HOME_ROUTE, IMPRESSUM_ROUTE, TRI
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
+    standalone: false,
 })
 export class AppComponent {
     public title = 'Skiclub Kapfenburg e.V.';
