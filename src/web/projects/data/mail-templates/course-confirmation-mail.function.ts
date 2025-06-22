@@ -86,7 +86,7 @@ export const getCourseConfirmationMailText = (values: CourseRegisterFormFields):
             <div style="font-size: 14px;"></div>
             <p style="margin: 15px 0 0 0;">Unseren Mitgliedsantrag findest du hier:</p>
             <p style="margin: 0;">
-                <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: none;">
+                <a href="https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA" style="color: #0073e6; text-decoration: none;">
                     > Mitglied werden
                 </a>
             </p>

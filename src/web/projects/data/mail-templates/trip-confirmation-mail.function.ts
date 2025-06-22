@@ -5,7 +5,7 @@
 import { TripRegisterFormFields } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
 
 export const getTripConfirmationSuccessMessage = (): string => {
-    return `Alle Anghaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
+    return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
         Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über <b>registration@skiclub-kapfenburg.de</b>.`;
 };
 
@@ -97,7 +97,7 @@ export const getTripConfirmationMailText = (values: TripRegisterFormFields): str
             <div style="font-size: 14px;"></div>
             <p style="margin: 15px 0 0 0;">Unseren Mitgliedsantrag findest du unter:</p>
             <p style="margin: 0;">
-                <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: none;">
+                <a href="https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA" style="color: #0073e6; text-decoration: none;">
                     https://www.skiclub-kapfenburg.de/club/membership
                 </a>
             </p>

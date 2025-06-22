@@ -3,7 +3,7 @@
  */
 
 import { Tile } from '@shared/ui-common';
-import { MEMBERSHIP_TILE, PROGRAM_TILE } from './assets';
+import { MEMBERSHIP_TILE } from './static';
 
 export const CURRENT_SEASON: string = '2024 / 2025';
-export const STATIC_DATA: Tile[] = [PROGRAM_TILE, MEMBERSHIP_TILE];
+export const STATIC_DATA: Tile[] = [MEMBERSHIP_TILE];
