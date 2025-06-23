@@ -33,6 +33,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     ],
     templateUrl: './gym-courses-registration-form.component.html',
     styleUrl: './gym-courses-registration-form.component.scss',
+    standalone: true,
 })
 export class GymCoursesRegistrationFormComponent implements OnInit {
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();

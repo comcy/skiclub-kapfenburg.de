@@ -1,14 +1,54 @@
-<div class="content">
-  <ng-container *ngIf="gymState.gymOffers$ | async as gymOffers">
-    <div class="info-page" *ngFor="let g of gymOffers">
-      <h3>{{ g.title }}</h3>
-      <h2>{{ g.appointment }}</h2>
-      <p>
-        {{ g.description }}
-      </p>
-      <p>
-        <i>{{ g.contact }}</i>
-      </p>
+<div class="info-page">
+    <h3>Pilates</h3>
+
+    Pilates ist ein Figur-formendes Ganzkörpertraining. Im Vordergrund steht der ganzheitliche Ansatz, der Körper und
+    Geist gleichermaßen fordert.
+    <br />
+    <br />
+    Pilates verbindet Kraft mit Beweglichkeit und schafft so eine Brücke zwischen Wohlbefinden, Heilung und
+    Prävention.<br />
+    Basis der Übungen bildet die aktive Körpermitte, das sogenannte „Powerhouse“, verbunden mit einer präzisen
+    Übungsausführung und unter Einsatz der Atemkontrolle. Das ausgewogene Programm aus Kräftigungs- und Dehnungsübungen
+    verbessert die Körperhaltung und sensibilisiert die Körperwahrnehmung.<br />
+    Ob Beckenboden, Bauch oder Rücken – in unserem Pilates-Kurs bieten wir dir ein perfekt zugeschnittenes Training, das
+    deine Muskulatur langfristig kräftigt
+
+    <br />
+    <br />
+    <h2>Mittwochs 09.00 – 10.00 Uhr - Altes Schulhaus Hülen</h2>
+    <h2>Kursgebühren</h2>
+    <ul>
+        <li>Mitglieder: 40,00 €</li>
+        <li>Nicht-Mtglieder: 60,00 €</li>
+    </ul>
+    <br />
+    Anmeldung über unser Formular auf der Website:
+    <a href="https://skiclub-kapfenburg.de/gymnastik/registration"> Anmeldung </a>
+
+    <br />
+    Die Anmeldung ist erst gültig bei Überweisung der Kursgebühr auf das nachstehende Konto:
+    <div style="padding-left: 8px; border-left: 4px solid #ac1dee; margin: 16px 0">
+        <p style="margin: 0; font-weight: bold">Skiclub Kapfenburg e.V.</p>
+        <p style="margin: 0">BIC: <strong>GENODES1AAV</strong></p>
+        <p style="margin: 0">IBAN: <strong>DE61 6149 0150 0131 4700 00</strong></p>
+        <p style="margin: 0">Verwendungszweck: <em>Pilates Kurs + Monat / Jahr</em></p>
     </div>
-  </ng-container>
+    <br />
+    <b><i>Wichtig: Gymnastikmatten müssen von den Teilnehmern selbst mitgebracht werden!</i></b>
+    <br />
+    <br />
+    <i>Kursleitung: Mascha Welk</i>
 </div>
+
+<ng-container *ngIf="gymState.gymOffers$ | async as gymOffers">
+    <div class="info-page" *ngFor="let g of gymOffers">
+        <h3>{{ g.title }}</h3>
+        <h2>{{ g.appointment }}</h2>
+        <p>
+            {{ g.description }}
+        </p>
+        <p>
+            <i>{{ g.contact }}</i>
+        </p>
+    </div>
+</ng-container>

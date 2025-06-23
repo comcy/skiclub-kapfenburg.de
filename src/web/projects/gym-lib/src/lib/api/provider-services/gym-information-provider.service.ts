@@ -13,12 +13,6 @@ export class GymInformationProviderService implements GymInformationProviderServ
         // TODO: GET DATA FROM SOMEWHERE ELSE ---> WEB API ?
         return of<GymInformation[]>([
             {
-                title: 'Pilates',
-                appointment: 'Mittwoch, 09.00 – 10.00 Uhr - Altes Schulhaus Hülen',
-                description: 'Bewegung in ihrer schönsten Form - Alter und Fitnessniveau spielen keine Rolle',
-                contact: 'Mascha Welk',
-            },
-            {
                 title: 'Fitness Cocktail',
                 appointment: 'Montags, 19:00 – 20:00 Uhr - Schulturnhalle Lauchheim',
                 description: 'Fitness / Gymnastik für Jedermann - findet ganzjährig statt, ausser in den Ferien',

@@ -1,23 +1,23 @@
 /**
- * @copyright Copyright (c) 2024 Christian Silfang
+ * @copyright Copyright (c) 2025 Christian Silfang
  */
 
-import { TripRegisterFormFields } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
+import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-courses-registration-form.interfaces';
 
-export const getTripConfirmationSuccessMessage = (): string => {
+export const getGymConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
         Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über <b>registration@skiclub-kapfenburg.de</b>.`;
 };
 
-export const getTripConfirmationMailSubject = (values: TripRegisterFormFields): string => {
+export const getGymConfirmationMailSubject = (values: GymCoursesRegisterFormFields): string => {
     return `SC-Kapfenburg Anmeldung: ${values.firstName}`;
 };
 
-export const getTripConfirmationMailBcc = (): string => {
+export const getGymConfirmationMailBcc = (): string => {
     return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
 };
 
-export const getTripConfirmationMailText = (values: TripRegisterFormFields): string => {
+export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields): string => {
     return `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding-top: 8px; padding-bottom: 16px;">
             <h1 style="color: #0073e6;">Anmeldung beim Skiclub Kapfenburg e.V. zur Ausfahrt "${values.trip.destination}" am ${values.trip.date}</h1>
