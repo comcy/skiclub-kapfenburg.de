@@ -71,7 +71,7 @@ export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields)
 
                     </li>
                     <li>Anmeldeschluss sowie die Möglichkeit zur Stornierung der Anmeldung besteht bis 14 Tage vor Kursbeginn. Die geleistete Zahlung wird dir in diesem Fall zurück erstattet</li>
-                    <li>Im Falle einer kurzfristigen Absage oder eines Nichterscheinens behalten wir uns vor, den Buspreis in Rechnung zu stellen bzw. die Anzahlung einzubehalten</li>
+                    <li>Bei zu geringer Teilnehmerzahl kann der Kurs ggfs. nicht stattfinden. Die geleistete Zahlung wird dir in diesem Fall selbstverständlich ebenfalls zurück erstattet</li>
                 </ul>                   
                 
                 <p style="color: #e60f00; font-weight: bold;">Bitte bringe deine eigene Gymnastikmatte zum Kurs mit!</p> 
