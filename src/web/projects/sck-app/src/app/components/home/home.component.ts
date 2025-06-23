@@ -2,6 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,6 +34,7 @@ import { ComponentsModule } from 'projects/shared-lib/src/public-api';
     styleUrls: ['./home.component.scss'],
     standalone: true,
     imports: [
+        CommonModule,
         ComponentsModule,
         MatToolbarModule,
         MatIconModule,
