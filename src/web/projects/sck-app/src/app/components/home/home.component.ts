@@ -2,18 +2,59 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CoursesFeatureModule } from '@courses-lib';
 import { PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
+import { GymFeatureModule } from '@gym-lib';
+import { SiteHeaderComponent } from '@shared/ui-common';
 import { MarkdownRenderService } from '@shared/util-markdown';
-import { TripsRegisterDialogComponent } from '@trips-lib';
-import { Tile, TileActions, TileBehavior, TileStatus } from 'projects/shared-lib/src/lib/ui-common/models';
+import { TripsFeatureModule, TripsRegisterDialogComponent } from '@trips-lib';
+import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feature/gym-courses-register-dialog/gym-courses-register-dialog.component';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { ComponentsModule } from 'projects/shared-lib/src/public-api';
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    standalone: false,
+    standalone: true,
+    imports: [
+        CommonModule,
+        ComponentsModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatSidenavModule,
+        MatListModule,
+        MatSliderModule,
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatGridListModule,
+        MatCardModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        CoursesFeatureModule,
+        GymFeatureModule,
+        TripsFeatureModule,
+        SiteHeaderComponent,
+    ],
 })
 export class HomeComponent implements OnInit {
     public title = 'Aktuelles';
@@ -27,10 +68,8 @@ export class HomeComponent implements OnInit {
     private trips = TRIP_DATA;
     private staticData = STATIC_DATA;
 
-    constructor(
-        public dialog: MatDialog,
-        public markdown: MarkdownRenderService,
-    ) {}
+    public dialog = inject(MatDialog);
+    public markdown = inject(MarkdownRenderService);
 
     ngOnInit(): void {
         const homeTiles: Tile[] = [...this.staticData, ...this.trips];
@@ -62,8 +101,12 @@ export class HomeComponent implements OnInit {
         dialogConfig.data = {
             tile,
         };
-
-        const dialogRef = this.dialog.open(TripsRegisterDialogComponent, dialogConfig);
+        let dialogRef;
+        if (tile.type === TileType.Course) {
+            dialogRef = this.dialog.open(GymCoursesRegisterDialogComponent, dialogConfig);
+        } else {
+            dialogRef = this.dialog.open(TripsRegisterDialogComponent, dialogConfig);
+        }
 
         dialogRef.afterClosed().subscribe();
     }

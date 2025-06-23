@@ -2,10 +2,11 @@
  * @copyright Copyright (c) 2019 - 2024 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 export const PROGRAM_TILE: Tile = {
     order: 1,
+    type: TileType.Info,
     behavior: TileBehavior.Click,
     title: 'SCK-Programm',
     date: '',

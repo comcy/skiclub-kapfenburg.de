@@ -6,7 +6,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DatenschutzComponent } from 'projects/shared-lib/src/lib/components/datenschutz';
 import { ImpressumComponent } from 'projects/shared-lib/src/lib/components/impressum';
-import { HomeComponent } from './components';
 import {
     COURSES_ROUTE,
     DSGVO_ROUTE,
@@ -20,7 +19,7 @@ import {
 const routes: Routes = [
     {
         path: HOME_ROUTE,
-        component: HomeComponent,
+        loadComponent: () => import('./components/home/home.component').then((m) => m.HomeComponent),
     },
     {
         path: COURSES_ROUTE,

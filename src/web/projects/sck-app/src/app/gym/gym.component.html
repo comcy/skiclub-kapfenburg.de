@@ -1,2 +1,19 @@
-<shared-lib-site-header [title]="title"></shared-lib-site-header>
-<router-outlet></router-outlet>
+<shared-lib-site-header [title]="title" [color]="color"></shared-lib-site-header>
+
+<nav class="courses-lib-tab-navigation" mat-tab-nav-bar [tabPanel]="tabPanel">
+    <a
+        mat-tab-link
+        *ngFor="let link of navLinks"
+        [routerLink]="link.link"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [active]="rla.isActive"
+    >
+        {{ link.label }}
+    </a>
+</nav>
+<div class="tab-content">
+    <mat-tab-nav-panel #tabPanel>
+        <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+</div>

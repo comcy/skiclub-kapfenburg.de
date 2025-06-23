@@ -7,6 +7,3 @@ export interface Trip {
     date: string;
     boarding: string[];
 }
-/**
- * @copyright Copyright (c) 2019 Christian Silfang
- */

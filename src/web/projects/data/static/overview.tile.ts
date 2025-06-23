@@ -2,10 +2,11 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 export const OVERVIEW_TILE: Tile = {
     order: 3,
+    type: TileType.Info,
     behavior: TileBehavior.Click,
     title: 'Themenübersicht',
     date: '',

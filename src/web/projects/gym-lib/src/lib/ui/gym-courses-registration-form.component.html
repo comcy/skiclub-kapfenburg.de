@@ -1,0 +1,86 @@
+<div class="content-container">
+    <form class="form" [formGroup]="gymCoursesRegisterForm" (submit)="submit()">
+        <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Kurs</mat-label>
+            <mat-select formControlName="courseType">
+                <mat-option *ngFor="let type of courseList" [value]="type">{{ type }} </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+            <table class="full-width" cellspacing="0">
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Vorname</mat-label>
+                            <input matInput formControlName="firstName" />
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Nachname</mat-label>
+                            <input matInput formControlName="lastName" />
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div *ngIf="breakpointObserver.handsetBreakpoint$ | async">
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Vorname</mat-label>
+                <input matInput formControlName="firstName" />
+            </mat-form-field>
+
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Nachname</mat-label>
+                <input matInput formControlName="lastName" />
+            </mat-form-field>
+        </div>
+
+        <p>
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>E-Mail</mat-label>
+                <input matInput formControlName="email" />
+                <mat-error *ngIf="hasError('email')"> Bitte geben Sie eine korrekte E-Mail Adresse an. </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Telefonnummer</mat-label>
+                <input matInput formControlName="phone" />
+            </mat-form-field>
+        </p>
+
+        <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
+            <table class="full-width" cellspacing="0">
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Alter</mat-label>
+                            <input matInput formControlName="age" value="1" />
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div *ngIf="breakpointObserver.handsetBreakpoint$ | async">
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Alter</mat-label>
+                <input matInput formControlName="age" value="1" />
+            </mat-form-field>
+        </div>
+
+        <p>
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Zusatzinformationen</mat-label>
+                <textarea matInput formControlName="additionalText" rows="8"></textarea>
+            </mat-form-field>
+        </p>
+        <mat-error *ngIf="!gymCoursesRegisterForm.valid && gymCoursesRegisterForm.touched">
+            Bitte alle erfordelichen Felder (*) ausfüllen.
+        </mat-error>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
+    </form>
+</div>
