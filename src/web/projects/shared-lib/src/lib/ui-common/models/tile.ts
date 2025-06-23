@@ -4,6 +4,7 @@
 
 export interface Tile {
     order: number;
+    type: TileType;
     title: string;
     date: string;
     subTitle: string;
@@ -19,6 +20,12 @@ export interface Tile {
     avatar?: string;
     visible?: boolean;
     expired?: boolean;
+}
+
+export enum TileType {
+    Info = 'info',
+    Event = 'event',
+    Course = 'course',
 }
 
 export enum TileActions {

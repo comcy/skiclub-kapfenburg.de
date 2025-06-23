@@ -1,9 +1,9 @@
 <div class="content-container">
     <form class="form" [formGroup]="gymCoursesRegisterForm" (submit)="submit()">
         <mat-form-field class="full-width" appearance="fill">
-            <mat-label>Sportart</mat-label>
-            <mat-select formControlName="sportType">
-                <mat-option *ngFor="let type of sportTypeList" [value]="type">{{ type }} </mat-option>
+            <mat-label>Kurs</mat-label>
+            <mat-select formControlName="courseType">
+                <mat-option *ngFor="let type of courseList" [value]="type">{{ type }} </mat-option>
             </mat-select>
         </mat-form-field>
 

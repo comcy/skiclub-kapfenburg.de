@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BreakpointObserverService } from '@shared/ui-common';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { GymCourse } from '../domain';
 
 @Component({
     selector: 'lib-gym-courses-registration-form',
@@ -36,11 +37,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     standalone: true,
 })
 export class GymCoursesRegistrationFormComponent implements OnInit {
+    @Input() public additionalData!: GymCourse[];
+
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public gymCoursesRegisterForm: FormGroup = new FormGroup({});
-    public sportTypeList = ['Ski Alpin', 'Snowboard'];
-    public levelList = ['Anfänger', 'Könner', 'Fortgeschritten'];
+    public courseList = ['Pilates'];
 
     private formBuilder = inject(FormBuilder);
     private gymCoursesRegistrationFormService = inject(GymCoursesRegistrationFormServiceInterface);
@@ -48,7 +50,7 @@ export class GymCoursesRegistrationFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.gymCoursesRegisterForm = this.formBuilder.group({
-            sportType: [null, [Validators.required]],
+            courseType: [null, [Validators.required]],
             firstName: [null, Validators.required],
             lastName: [null, Validators.required],
             email: [null, [Validators.required, Validators.email]],

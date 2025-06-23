@@ -7,6 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
     getGymConfirmationMailBcc,
+    getGymConfirmationMailSubject,
     getGymConfirmationMailText,
 } from 'projects/data/mail-templates/pilates-confirmation-mail.function';
 import {

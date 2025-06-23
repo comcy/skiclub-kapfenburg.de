@@ -3,3 +3,4 @@
  */
 
 export * from './gym-information';
+export * from './gym-course';

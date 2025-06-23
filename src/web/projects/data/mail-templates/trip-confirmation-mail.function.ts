@@ -32,6 +32,7 @@ export const getTripConfirmationMailText = (values: TripRegisterFormFields): str
 
             <p>Wir haben folgende Daten registriert:</p>
 
+            
             <div style="display: flex; border-left: 4px solid #ac1dee; padding-left: 16px; font-family: Arial, sans-serif;">
                 <!-- Linke Spalte -->
                 <div style="flex: 1; padding-right: 16px;">
@@ -90,20 +91,21 @@ export const getTripConfirmationMailText = (values: TripRegisterFormFields): str
                 </p>
             </div>
             
+
             <p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
             <p style="margin: 0; font-weight: bold; font-size: 16px;">Das Team des Skiclub Kapfenburg e.V.</p>
-            
             
             <div style="font-size: 14px;"></div>
             <p style="margin: 15px 0 0 0;">Unseren Mitgliedsantrag findest du unter:</p>
             <p style="margin: 0;">
                 <a href="https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA" style="color: #0073e6; text-decoration: none;">
-                    https://www.skiclub-kapfenburg.de/club/membership
+                    > Mitglied werden
                 </a>
             </p>
+
 
             <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
             <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert. Solltest du Fragen oder Probleme mit der Darstellung dieser E-Mail haben, nehme bitte baldmöglichst Kontakt mit uns auf.</small>
         </div>
-`;
+    `;
 };
