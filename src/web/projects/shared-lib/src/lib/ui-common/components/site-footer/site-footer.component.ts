@@ -2,24 +2,13 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Component, Input } from '@angular/core';
-import { ANGULAR_MATERIAL_MODULES, ANGULAR_MODULES, NavigationItem } from '../../../components';
-import { ComcyCopyrightComponent } from '../comcy-copyright';
+import { Component, inject, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MailButtonComponent } from '../buttons/mail-button';
-import { FacebookButtonComponent, InstagramButtonComponent, WhatsappButtonComponent } from '../buttons';
+import { ANGULAR_MATERIAL_MODULES, ANGULAR_MODULES, NavigationItem } from '../../../components';
 
 @Component({
     selector: 'shared-lib-site-footer',
-    imports: [
-        ANGULAR_MODULES,
-        ANGULAR_MATERIAL_MODULES,
-        ComcyCopyrightComponent,
-        MailButtonComponent,
-        FacebookButtonComponent,
-        InstagramButtonComponent,
-        WhatsappButtonComponent,
-    ],
+    imports: [ANGULAR_MODULES, ANGULAR_MATERIAL_MODULES],
     templateUrl: './site-footer.component.html',
     styleUrls: ['./site-footer.component.scss'],
 })
@@ -27,10 +16,8 @@ export class SiteFooterComponent {
     @Input() color = 'primary';
     @Input() navItems: NavigationItem[] = [];
 
-    constructor(
-        private router: Router,
-        private activatedRoute: ActivatedRoute,
-    ) {}
+    private router = inject(Router);
+    private activatedRoute = inject(ActivatedRoute);
 
     routeTo(routeLink: string) {
         this.router.navigate([routeLink], { relativeTo: this.activatedRoute });
