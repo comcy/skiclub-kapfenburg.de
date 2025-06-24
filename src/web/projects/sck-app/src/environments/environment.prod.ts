@@ -7,4 +7,7 @@ export const environment = {
     sckApiUrl: '',
     courseSheetUrl: '',
     tripSheetUrl: '',
+    buildDate: '',
+    buildNumber: '',
+    gitCommitHash: '',
 };

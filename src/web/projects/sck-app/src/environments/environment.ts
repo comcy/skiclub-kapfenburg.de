@@ -11,6 +11,9 @@ export const environment = {
     sckApiUrl: 'http://localhost:3000',
     courseSheetUrl: '',
     tripSheetUrl: '',
+    buildDate: '2025-06-24T12:34:56Z',
+    buildNumber: '202506241234', // oder aus Git,
+    gitCommitHash: '${GIT_COMMIT_HASH}',
 };
 
 /*

@@ -15,10 +15,12 @@ import { getYear } from 'date-fns';
 export class ComcyCopyrightComponent {
     @Input() link!: string;
     @Input() name!: string;
+    @Input() version!: string;
 
     constructor() {
         this.link = 'https://github.com/comcy';
         this.name = 'comcy';
+        this.version = 'v1.0.0';
     }
 
     getYear(): string {
