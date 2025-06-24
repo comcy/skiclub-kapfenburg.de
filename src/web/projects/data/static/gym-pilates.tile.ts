@@ -10,7 +10,7 @@ Mit Fokus auf das „Powerhouse“, präzise Übungen und bewusste Atmung verbes
 
 **Termine**
 - 7 x mittwochs 
-- 9:00 Uhr - 10:00 Uhr 
+- 8:30 Uhr - 09:30 Uhr 
 - im "Alten Schulhaus" in Hülen
 
 **Kursgebühren**
@@ -24,7 +24,7 @@ export const GYM_PILATES_TILE: Tile = {
     title: 'PILATES',
     type: TileType.Course,
     date: 'NEU ab Juli 2025',
-    subTitle: 'Mittwochs, 9:00 Uhr - 10:00 Uhr (Altes Schulhaus Hülen)',
+    subTitle: 'Mittwochs, 8:30 Uhr - 09:30 Uhr (Altes Schulhaus Hülen)',
     image: 'https://cdn.pixabay.com/photo/2016/10/15/18/29/yoga-mat-1743203_960_720.jpg',
     imageDescription: 'pilates',
     description: DESCRIPTION_TEXT,

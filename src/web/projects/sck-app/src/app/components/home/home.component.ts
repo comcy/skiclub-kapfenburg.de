@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MatSnackBarRef } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -69,6 +69,7 @@ export class HomeComponent implements OnInit {
     private staticData = STATIC_DATA;
 
     public dialog = inject(MatDialog);
+    public snackBar = inject(MatSnackBarRef);
     public markdown = inject(MarkdownRenderService);
 
     ngOnInit(): void {

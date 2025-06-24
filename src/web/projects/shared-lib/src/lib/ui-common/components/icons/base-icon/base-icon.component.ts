@@ -4,7 +4,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BaseIconProperties } from './base-icon.interfaces';
 
@@ -14,17 +14,17 @@ import { BaseIconProperties } from './base-icon.interfaces';
     providers: [MatIconRegistry],
     templateUrl: './base-icon.component.html',
     styleUrls: ['./base-icon.component.scss'],
+    standalone: true,
 })
 export class BaseIconComponent {
-    public baseIconProperties: BaseIconProperties;
-
     constructor(
+        // eslint-disable-next-line @angular-eslint/prefer-inject
         protected domSanitizer: DomSanitizer,
+        // eslint-disable-next-line @angular-eslint/prefer-inject
         protected matIconRegistry: MatIconRegistry,
+        // eslint-disable-next-line @angular-eslint/prefer-inject
         @Inject('baseIconProperties') baseIconProperties: BaseIconProperties,
     ) {
-        this.baseIconProperties = baseIconProperties;
-
         this.matIconRegistry.addSvgIcon(
             baseIconProperties.iconName,
             this.domSanitizer.bypassSecurityTrustResourceUrl(baseIconProperties.iconPath),

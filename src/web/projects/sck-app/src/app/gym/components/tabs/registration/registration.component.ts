@@ -8,5 +8,6 @@ import { GymCoursesRegistrationComponent } from 'projects/gym-lib/src/lib/featur
     imports: [CommonModule, RouterModule, GymCoursesRegistrationComponent],
     templateUrl: './registration.component.html',
     styleUrl: './registration.component.scss',
+    standalone: true,
 })
 export class RegistrationComponent {}

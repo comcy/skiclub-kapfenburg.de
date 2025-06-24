@@ -14,7 +14,8 @@ export const getGymConfirmationMailSubject = (values: GymCoursesRegisterFormFiel
 };
 
 export const getGymConfirmationMailBcc = (): string => {
-    return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
+    return 'christian.silfang@gmail.com';
+    // return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
 };
 
 export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields): string => {
