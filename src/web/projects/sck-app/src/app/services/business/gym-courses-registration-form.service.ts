@@ -20,10 +20,10 @@ import {
     FormToMailInformation,
     MailInformation,
 } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { SnackbarComponent } from 'projects/shared-lib/src/lib/ui-common/components/snackbar/snackbar.component';
 
 @Injectable()
 export class GymCoursesRegistrationFormService implements GymCoursesRegistrationFormServiceInterface {
-    private snackAction = 'Ok';
     private http = inject(HttpClient);
     private snackBar = inject(MatSnackBar);
 
@@ -42,7 +42,10 @@ export class GymCoursesRegistrationFormService implements GymCoursesRegistration
         this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
             next: (response) => {
                 console.log(response);
-                this.snackBar.open(getGymConfirmationSuccessMessage(), this.snackAction);
+                this.snackBar.openFromComponent(SnackbarComponent, {
+                    data: getGymConfirmationSuccessMessage(),
+                    panelClass: 'custom-snackbar',
+                });
             },
             error: (error) => {
                 console.log(error);

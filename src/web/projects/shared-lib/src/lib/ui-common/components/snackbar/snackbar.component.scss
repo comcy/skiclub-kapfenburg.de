@@ -1,0 +1,17 @@
+.snackbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+}
+
+::ng-deep .mat-mdc-snack-bar-container a[href^='mailto:'] {
+    color: #673ab7 !important;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+button {
+    color: #673ab7;
+}

@@ -6,7 +6,8 @@ import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-co
 
 export const getGymConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
-        Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über <b>registration@skiclub-kapfenburg.de</b>.`;
+        Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über 
+        <a href="mailto:registration@skiclub-kapfenburg.de"><b>registration@skiclub-kapfenburg.de</b></a>.`;
 };
 
 export const getGymConfirmationMailSubject = (values: GymCoursesRegisterFormFields): string => {
@@ -14,8 +15,7 @@ export const getGymConfirmationMailSubject = (values: GymCoursesRegisterFormFiel
 };
 
 export const getGymConfirmationMailBcc = (): string => {
-    return 'christian.silfang@gmail.com';
-    // return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
+    return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
 };
 
 export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields): string => {
