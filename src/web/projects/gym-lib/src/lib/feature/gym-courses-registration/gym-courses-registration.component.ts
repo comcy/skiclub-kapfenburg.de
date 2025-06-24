@@ -7,6 +7,7 @@ import { GymCoursesRegistrationFormComponent } from '../../ui/gym-courses-regist
     imports: [GymCoursesRegistrationFormComponent],
     templateUrl: './gym-courses-registration.component.html',
     styleUrl: './gym-courses-registration.component.css',
+    standalone: true,
 })
 export class GymCoursesRegistrationComponent {
     public email = new FormControl('', [Validators.required, Validators.email]);

@@ -12,6 +12,7 @@ import { MaterialColor } from '../../enums';
     imports: [CommonModule, ANGULAR_MATERIAL_MODULES],
     templateUrl: './site-header.component.html',
     styleUrls: ['./site-header.component.css'],
+    standalone: true,
 })
 export class SiteHeaderComponent {
     @Input() title = '';

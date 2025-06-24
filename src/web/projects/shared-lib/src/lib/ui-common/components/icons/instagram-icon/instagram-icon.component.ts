@@ -13,8 +13,10 @@ import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
     imports: [CommonModule, MatIconModule],
     templateUrl: '../base-icon/base-icon.component.html',
     styleUrls: ['../base-icon/base-icon.component.scss'],
+    standalone: true,
 })
 export class InstagramIconComponent extends BaseIconComponent {
+    // eslint-disable-next-line @angular-eslint/prefer-inject
     constructor(domSanitizer: DomSanitizer, matIconRegistry: MatIconRegistry) {
         super(domSanitizer, matIconRegistry, { iconName: 'instagram', iconPath: 'assets/logos/instagram.svg' });
     }
