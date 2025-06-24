@@ -15,12 +15,21 @@ import { getYear } from 'date-fns';
 export class ComcyCopyrightComponent {
     @Input() link!: string;
     @Input() name!: string;
-    @Input() version!: string;
+    @Input() version?: string;
+    @Input() buildNumber?: string;
 
     constructor() {
         this.link = 'https://github.com/comcy';
         this.name = 'comcy';
-        this.version = 'v1.0.0';
+    }
+
+    getVersionOrBuildNumber(): string {
+        if (this.version) {
+            return `v${this.version}`;
+        } else if (this.buildNumber) {
+            return `#${this.buildNumber}`;
+        }
+        return '';
     }
 
     getYear(): string {
