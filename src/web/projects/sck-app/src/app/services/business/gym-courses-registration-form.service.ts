@@ -9,6 +9,7 @@ import {
     getGymConfirmationMailBcc,
     getGymConfirmationMailSubject,
     getGymConfirmationMailText,
+    getGymConfirmationSuccessMessage,
 } from 'projects/data/mail-templates/pilates-confirmation-mail.function';
 import {
     GymCoursesRegisterFormFields,
@@ -41,6 +42,7 @@ export class GymCoursesRegistrationFormService implements GymCoursesRegistration
         this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
             next: (response) => {
                 console.log(response);
+                this.snackBar.open(getGymConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
                 console.log(error);

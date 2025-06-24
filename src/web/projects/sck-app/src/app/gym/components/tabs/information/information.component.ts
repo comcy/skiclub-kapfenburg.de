@@ -12,6 +12,7 @@ import { GymInformationCoreServiceInterface } from 'projects/gym-lib/src/lib/dom
     selector: 'app-information',
     templateUrl: './information.component.html',
     imports: [CommonModule, RouterModule, GymFeatureModule],
+    standalone: true,
 })
 export class InformationComponent {
     public gymInformationCoreService = inject(GymInformationCoreServiceInterface);
