@@ -3,11 +3,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import * as showdown from 'showdown';
+import { marked } from 'marked';
 
-const converter = new showdown.Converter({
-    strikethrough: true,
-    tables: true,
+marked.setOptions({
+    gfm: true, // GitHub Flavored Markdown (aktiviert Strikethrough & Tables)
+    breaks: false,
 });
 
 @Injectable({
@@ -15,6 +15,6 @@ const converter = new showdown.Converter({
 })
 export class MarkdownRenderService {
     render(text: string): string {
-        return converter.makeHtml(text);
+        return marked.parse(text) as string;
     }
 }
