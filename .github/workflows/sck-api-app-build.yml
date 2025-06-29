@@ -1,0 +1,64 @@
+name: SCK-API Build
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/api/sck-api/**/*"
+      - ".github/workflows/sck-api-*"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "src/api/sck-api/**/*"
+
+env:
+  PROJECT_PATH: "src/api/sck-api/"
+  PROJECT_DIST_PATH: "src/api/sck-api/dist/"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: 'npm'
+          cache-dependency-path: '${{ env.PROJECT_PATH }}package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          npm ci
+
+      - name: Run linting and tests
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          npm run test
+          # npm run lint  # falls vorhanden
+
+      - name: Build project
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sck-api-dist-${{ github.sha }}
+          path: ${{ env.PROJECT_DIST_PATH }}
+          retention-days: 30
+
+      - name: Upload package.json for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: sck-api-package-${{ github.sha }}
+          path: |
+            ${{ env.PROJECT_PATH }}package.json
+            ${{ env.PROJECT_PATH }}package-lock.json
+          retention-days: 30

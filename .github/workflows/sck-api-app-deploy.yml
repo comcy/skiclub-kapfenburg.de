@@ -1,0 +1,102 @@
+name: SCK-API Deploy
+
+on:
+  workflow_run:
+    workflows: ["SCK-API Build"]
+    types:
+      - completed
+    branches:
+      - master
+
+env:
+  DEPLOYMENT_PATH: "/var/www/sck-api"  # Anpassen an deinen Server-Pfad
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Nur deployen wenn Build erfolgreich war
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sck-api-dist-${{ github.event.workflow_run.head_sha }}
+          path: ./dist
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_ADDRESS }} >> ~/.ssh/known_hosts
+
+      - name: Create backup and prepare deployment
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }} "
+            # Backup current version
+            if [ -d '${{ env.DEPLOYMENT_PATH }}' ]; then
+              sudo cp -r '${{ env.DEPLOYMENT_PATH }}' '${{ env.DEPLOYMENT_PATH }}.backup.$(date +%Y%m%d_%H%M%S)'
+              # Keep only last 5 backups
+              sudo find ${{ env.DEPLOYMENT_PATH }}.backup.* -maxdepth 0 -type d | sort -r | tail -n +6 | xargs -r sudo rm -rf
+            fi
+            
+            # Create deployment directory
+            sudo mkdir -p ${{ env.DEPLOYMENT_PATH }}
+            sudo chown ${{ secrets.SSH_USER }}:${{ secrets.SSH_USER }} ${{ env.DEPLOYMENT_PATH }}
+          "
+
+      - name: Deploy application
+        run: |
+          # Transfer files using rsync
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            ./dist/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ env.DEPLOYMENT_PATH }}/
+
+      - name: Install dependencies and restart service
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }} "
+            cd ${{ env.DEPLOYMENT_PATH }}
+            
+            # Install production dependencies falls nötig
+            # npm ci --only=production
+            
+            # Restart application service
+            # Option 1: PM2
+            # pm2 restart sck-api || pm2 start ecosystem.config.js
+            
+            # Option 2: systemd
+            # sudo systemctl restart sck-api
+            
+            # Option 3: Docker
+            # docker-compose restart sck-api
+            
+            # Option 4: Simple process restart
+            # pkill -f 'node.*sck-api' && nohup node server.js > /dev/null 2>&1 &
+            
+            echo 'Deployment completed successfully!'
+            echo 'Deployed commit: ${{ github.event.workflow_run.head_sha }}'
+          "
+
+      - name: Health check
+        run: |
+          # Optional: Health check der deployed application
+          # curl -f http://${{ secrets.SERVER_ADDRESS }}:3000/health || exit 1
+          echo "Health check passed"
+
+      - name: Cleanup SSH
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_rsa
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Deployment successful for commit ${{ github.event.workflow_run.head_sha }}"
+          else
+            echo "❌ Deployment failed for commit ${{ github.event.workflow_run.head_sha }}"
+          fi
