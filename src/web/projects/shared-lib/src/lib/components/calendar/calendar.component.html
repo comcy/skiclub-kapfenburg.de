@@ -1,0 +1,17 @@
+<div class="wochenplan-container">
+    <div class="tag" *ngFor="let tag of tage">
+        <div class="tag-name">{{ tag }}</div>
+
+        <div class="zeitblock vormittag">
+            <div *ngFor="let termin of getTermine(tag, 'vormittag')" class="termin">
+                <strong>{{ termin.uhrzeit }}</strong> - {{ termin.titel }}
+            </div>
+        </div>
+
+        <div class="zeitblock nachmittag">
+            <div *ngFor="let termin of getTermine(tag, 'nachmittag')" class="termin">
+                <strong>{{ termin.uhrzeit }}</strong> - {{ termin.titel }}
+            </div>
+        </div>
+    </div>
+</div>
