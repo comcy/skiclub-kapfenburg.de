@@ -1,0 +1,155 @@
+# .github/workflows/sck-api-deploy.yml  
+name: SCK-API Deploy
+
+on:
+  workflow_run:
+    workflows: ["SCK-API Build"]
+    types:
+      - completed
+    branches:
+      - master
+
+env:
+  PROJECT_PATH: "src/api/sck-api/"
+  APP_NAME: "sck-api"
+  APP_USER: "azureus"
+  APP_DIR: "/var/www/html/sck-api/sck-api"
+  NODE_PATH: "/usr/bin/node"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Nur ausführen wenn der Build erfolgreich war
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # DEPLOYMENT
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_ADDRESS }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            set -e  # Exit on any error
+            
+            # Backup aktueller Service falls vorhanden
+            if systemctl is-active --quiet ${{ env.APP_NAME }}; then
+              echo "🔄 Stopping existing service..."
+              sudo systemctl stop ${{ env.APP_NAME }}
+            fi
+            
+            # Backup der aktuellen Installation
+            if [ -d "${{ env.APP_DIR }}" ]; then
+              BACKUP_DIR="${{ env.APP_DIR }}.backup.$(date +%Y%m%d_%H%M%S)"
+              echo "📦 Creating backup: $BACKUP_DIR"
+              sudo cp -r ${{ env.APP_DIR }} $BACKUP_DIR
+            fi
+            
+            # Verzeichnis vorbereiten
+            sudo mkdir -p $(dirname ${{ env.APP_DIR }})
+            
+            # Repository klonen oder updaten
+            if [ ! -d "${{ env.APP_DIR }}/.git" ]; then
+              echo "📥 Cloning repository..."
+              sudo rm -rf ${{ env.APP_DIR }}
+              sudo git clone ${{ github.server_url }}/${{ github.repository }}.git ${{ env.APP_DIR }}
+            else
+              echo "🔄 Updating repository..."
+              cd ${{ env.APP_DIR }}
+              sudo git fetch origin
+              sudo git reset --hard origin/master
+            fi
+            
+            # Ownership setzen
+            sudo chown -R ${{ env.APP_USER }}:${{ env.APP_USER }} ${{ env.APP_DIR }}
+            
+            # Dependencies installieren und builden
+            echo "📦 Installing dependencies..."
+            cd ${{ env.APP_DIR }}/${{ env.PROJECT_PATH }}
+            sudo -u ${{ env.APP_USER }} npm ci --production
+            
+            echo "🔨 Building application..."
+            sudo -u ${{ env.APP_USER }} npm run build
+            
+            # SystemD Service aus Template generieren
+            echo "⚙️  Creating systemd service from template..."
+            cd ${{ env.APP_DIR }}
+            
+            # Umgebungsvariablen für envsubst setzen
+            export APP_USER="${{ env.APP_USER }}"
+            export WORKING_DIRECTORY="${{ env.APP_DIR }}/${{ env.PROJECT_PATH }}"
+            export NODE_PATH="${{ env.NODE_PATH }}"
+            export NODE_ENV="production"
+            export SMTP_SERVER="${{ secrets.SMTP_SERVER }}"
+            export SMTP_PORT="${{ secrets.SMTP_PORT }}"
+            export SENDER_MAIL="${{ secrets.SENDER_MAIL }}"
+            export SENDER_PW="${{ secrets.SENDER_PW }}"
+            
+            # Template mit envsubst verarbeiten
+            envsubst '$APP_USER,$WORKING_DIRECTORY,$NODE_PATH,$NODE_ENV,$SMTP_SERVER,$SMTP_PORT,$SENDER_MAIL,$SENDER_PW' \
+              < systemd/sck-api.service.template | sudo tee /etc/systemd/system/${{ env.APP_NAME }}.service > /dev/null
+            
+            # Service aktivieren und starten
+            echo "🚀 Starting service..."
+            sudo systemctl daemon-reload
+            sudo systemctl enable ${{ env.APP_NAME }}
+            sudo systemctl start ${{ env.APP_NAME }}
+            
+            # Warten und Status prüfen
+            sleep 3
+            if systemctl is-active --quiet ${{ env.APP_NAME }}; then
+              echo "✅ Service ${{ env.APP_NAME }} successfully started"
+              sudo systemctl status ${{ env.APP_NAME }} --no-pager -l
+            else
+              echo "❌ Service ${{ env.APP_NAME }} failed to start"
+              echo "📋 Service logs:"
+              sudo journalctl -u ${{ env.APP_NAME }} --no-pager -l --since "5 minutes ago"
+              exit 1
+            fi
+            
+            # Alte Backups aufräumen (älter als 3 Tage)
+            echo "🧹 Cleaning up old backups..."
+            find $(dirname ${{ env.APP_DIR }}) -name "$(basename ${{ env.APP_DIR }}).backup.*" -mtime +3 -exec sudo rm -rf {} \; 2>/dev/null || true
+            
+            echo "🎉 Deployment completed successfully!"
+
+      # Health Check
+      - name: Health Check
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_ADDRESS }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: | 
+            # Service Status final prüfen
+            sleep 2
+            if systemctl is-active --quiet ${{ env.APP_NAME }}; then
+              echo "🎉 Final health check passed!"
+              echo "📊 Service status:"
+              sudo systemctl status ${{ env.APP_NAME }} --no-pager
+              echo ""
+              echo "📝 View logs with: journalctl -u ${{ env.APP_NAME }} -f"
+              echo "🔄 Restart with: sudo systemctl restart ${{ env.APP_NAME }}"
+            else
+              echo "💥 Health check failed!"
+              echo "📋 Recent logs:"
+              sudo journalctl -u ${{ env.APP_NAME }} --no-pager -l --since "2 minutes ago"
+              exit 1
+            fi
+
+  # Optional: Benachrichtigung bei fehlgeschlagenem Build
+  notify-build-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    
+    steps:
+      - name: Notify build failure
+        run: |
+          echo "❌ Build workflow failed - skipping deployment"
+          echo "Build run: ${{ github.event.workflow_run.html_url }}"

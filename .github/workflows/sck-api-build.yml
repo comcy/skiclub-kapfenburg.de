@@ -1,17 +1,16 @@
-name: SCK-API Workflow
+# .github/workflows/sck-api-build.yml
+name: SCK-API Build
 
 on:
   push:
     branches:
-      - master
+      - "**"  # Alle Branches
     paths:
       - "src/api/sck-api/**/*"
-      - ".github/workflows/sck-api-app-*"
+      - ".github/workflows/sck-api-*"
 
 env:
   PROJECT_PATH: "src/api/sck-api/"
-  PROJECT_DIST_PATH: "src/api/sck-api/dist/"
-
 
 jobs:
   build:
@@ -29,7 +28,6 @@ jobs:
       - name: Install dependencies
         run: |
           cd ${{ env.PROJECT_PATH }}
-          # npm install -g @angular/cli
           npm ci
 
       # # QA
@@ -44,15 +42,11 @@ jobs:
           cd ${{ env.PROJECT_PATH }}
           npm run build
 
-      # # Install sshpass
-      # - name: Install sshpass
-      #   run: sudo apt-get install -y sshpass
-
-      # # Secure copy files to remote server
-      # - name: SCP files to server
-      #   run: |
-      #     cd "${{ env.PROJECT_DIST_PATH }}"
-      #     sshpass -p "${{ secrets.SSH_PASSWORD }}" \
-      #         scp -v -o "StrictHostKeyChecking=no" -r . \
-      #         "${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ secrets.SERVER_DIST_PATH_BASE }}"
-        
+      # Build-Artefakte für Deployment bereitstellen
+      - name: Upload build artifacts
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sck-api-build
+          path: ${{ env.PROJECT_PATH }}dist/
+          retention-days: 1

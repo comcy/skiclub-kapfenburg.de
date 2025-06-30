@@ -1,0 +1,26 @@
+# systemd/sck-api.service.template
+[Unit]
+Description=SCK API Service
+After=network.target
+
+[Service]
+Type=simple
+User=${APP_USER}
+Group=${APP_USER}
+WorkingDirectory=${WORKING_DIRECTORY}
+ExecStart=${NODE_PATH} dist/index.js
+Environment=NODE_ENV=${NODE_ENV}
+Environment=SMTP_SERVER=${SMTP_SERVER}
+Environment=SMTP_PORT=${SMTP_PORT}
+Environment=SENDER_MAIL=${SENDER_MAIL}
+Environment=SENDER_PW=${SENDER_PW}
+StandardOutput=journal
+StandardError=journal
+Restart=always
+RestartSec=3
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
