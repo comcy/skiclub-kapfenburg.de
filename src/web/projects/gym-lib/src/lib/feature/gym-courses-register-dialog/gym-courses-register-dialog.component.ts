@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2025 Christian Silfang
+ */
+
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -22,6 +26,7 @@ export class GymCoursesRegisterDialogComponent implements OnInit {
     public gymCourseDetails$: BehaviorSubject<GymCourse[]> = new BehaviorSubject([
         {
             name: '',
+            date: '',
         },
     ]);
     public gymCourseDetails!: GymCourse[];
@@ -33,17 +38,19 @@ export class GymCoursesRegisterDialogComponent implements OnInit {
     ngOnInit(): void {
         const tile = this.data.tile;
 
-        this.dialogTitle = `${tile.title}`;
+        this.dialogTitle = `${tile.title} - ${tile.date}`;
 
         this.gymCourseDetails$.next([
             {
                 name: tile.title,
+                date: tile.date,
             },
         ]);
 
         this.gymCourseDetails = [
             {
                 name: tile.title,
+                date: tile.date,
             },
         ];
     }

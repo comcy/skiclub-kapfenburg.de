@@ -5,5 +5,6 @@
 export interface GymCourseDialogData {
     tile: {
         title: string;
+        date: string;
     };
 }
