@@ -61,7 +61,7 @@ export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields)
                 
                 <h3>Gültigkeit der Anmeldung, Anzahlung und Stornierung</h3>
                 <ul>
-                    <li>Die Anmeldung ist erst gültig mit der Bezahlung der Kursgebühren von 28 EUR (Mitglieder) oder 42 EUR (Nicht-Mitglieder).
+                    <li>Die Anmeldung ist erst gültig mit der Bezahlung der Kursgebühren von 48 EUR (Mitglieder) oder 72 EUR (Nicht-Mitglieder).
                         
                         <div style="padding-left: 8px; border-left: 4px solid#ac1dee; margin-top: 16px; margin-bottom: 16px;">
                             <p style="margin: 0; font-weight: bold; font-size: 14px;">Skiclub Kapfenburg e.V.</p>

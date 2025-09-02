@@ -15,7 +15,7 @@ export const MEMBERSHIP_TILE: Tile = {
     imageDescription: 'Mitgliedsantrag',
     description: '<h3>JAHRESBEITRÄGE</h3> \r - Kinder: 5€ \r - Erwachsene: 25€ \r - Familien: 40€',
     actions: [TileActions.Download],
-    downloadActionLink: 'https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA',
+    downloadActionLink: 'assets/downloads/Mitgliedsantrag_SCK.pdf',
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2028-12-31'),
     status: TileStatus.Open,
