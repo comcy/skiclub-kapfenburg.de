@@ -6,6 +6,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home.component';
 import { MatDialog } from '@angular/material/dialog';
+import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feature/gym-courses-register-dialog/gym-courses-register-dialog.component';
+import { TripsRegisterDialogComponent } from '@trips-lib';
+import { Tile, TileBehavior, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 // (Tile-related imports removed for skipped dialog tests)
 
 describe('HomeComponent', () => {
@@ -18,10 +21,11 @@ describe('HomeComponent', () => {
             providers: [
                 {
                     provide: MatDialog,
-                    useValue: {
-                        open: jasmine
-                            .createSpy('open')
-                            .and.returnValue({ afterClosed: () => ({ subscribe: () => {} }) }),
+                    useFactory: () => {
+                        const spy = jasmine.createSpy('open').and.callFake((comp: unknown) => {
+                            return { componentRef: { instance: comp }, afterClosed: () => ({ subscribe: () => {} }) };
+                        });
+                        return { open: spy } as unknown as MatDialog;
                     },
                 },
             ],
@@ -95,8 +99,39 @@ describe('HomeComponent', () => {
         });
     });
 
-    describe('openRegisterDialog (skipped due to MatDialog DI in standalone setup)', () => {
-        xit('should attempt to open dialog for course tile');
-        xit('should attempt to open dialog for non-course tile');
+    describe('resolveRegisterDialogComponent', () => {
+        it('returns GymCoursesRegisterDialogComponent for course tile', () => {
+            const tile: Tile = {
+                order: 1,
+                type: TileType.Course,
+                title: 'Course',
+                date: '',
+                subTitle: '',
+                image: '',
+                imageDescription: '',
+                description: '',
+                status: TileStatus.Open,
+                expiration: new Date('2099-01-01'),
+                behavior: TileBehavior.View,
+            };
+            expect(component.resolveRegisterDialogComponent(tile)).toBe(GymCoursesRegisterDialogComponent);
+        });
+
+        it('returns TripsRegisterDialogComponent for non-course tile', () => {
+            const tile: Tile = {
+                order: 2,
+                type: TileType.Info,
+                title: 'Info',
+                date: '',
+                subTitle: '',
+                image: '',
+                imageDescription: '',
+                description: '',
+                status: TileStatus.Open,
+                expiration: new Date('2099-01-01'),
+                behavior: TileBehavior.View,
+            };
+            expect(component.resolveRegisterDialogComponent(tile)).toBe(TripsRegisterDialogComponent);
+        });
     });
 });

@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Type } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
@@ -101,14 +101,14 @@ export class HomeComponent implements OnInit {
         dialogConfig.data = {
             tile,
         };
-        let dialogRef;
-        if (tile.type === TileType.Course) {
-            dialogRef = this.dialog.open(GymCoursesRegisterDialogComponent, dialogConfig);
-        } else {
-            dialogRef = this.dialog.open(TripsRegisterDialogComponent, dialogConfig);
-        }
+        const comp = this.resolveRegisterDialogComponent(tile);
+        const dialogRef = this.dialog.open(comp, dialogConfig);
 
         dialogRef.afterClosed().subscribe();
+    }
+
+    public resolveRegisterDialogComponent(tile: Tile): Type<unknown> {
+        return tile.type === TileType.Course ? GymCoursesRegisterDialogComponent : TripsRegisterDialogComponent;
     }
 
     public openLink(link: string | undefined) {
