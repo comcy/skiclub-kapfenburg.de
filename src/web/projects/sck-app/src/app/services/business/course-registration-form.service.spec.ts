@@ -6,6 +6,8 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseRegistrationFormService } from './course-registration-form.service';
+import { environment } from 'projects/sck-app/src/environments/environment';
+import { getTripConfirmationSuccessMessage } from 'projects/data/mail-templates';
 
 describe('CourseRegistrationFormService', () => {
     let service: CourseRegistrationFormService;
@@ -33,25 +35,29 @@ describe('CourseRegistrationFormService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should send form data to sheets.io and show success message', () => {
+    it('should POST form data to courseSheetUrl and open success snackbar on next', () => {
+        // Arrange
         const formData = new FormData();
+        (environment as unknown as { courseSheetUrl: string }).courseSheetUrl = 'https://example.com/sheet';
+
+        // Act
         service.sendFormToSheetsIo(formData);
 
-        const req = httpMock.expectOne(`${service['sheetUrl']}`);
+        const req = httpMock.expectOne(environment.courseSheetUrl);
         expect(req.request.method).toBe('POST');
-        req.flush({});
+        req.flush({ ok: true });
 
-        expect(snackBarSpy.open).toHaveBeenCalledWith(service['successMessage'], service['snackAction']);
+        // Assert
+        expect(snackBarSpy.open).toHaveBeenCalledWith(getTripConfirmationSuccessMessage(), 'Ok');
     });
 
-    it('should send form data to sheets.io and show error message', () => {
+    it('should POST form data and NOT open snackbar on error (only log)', () => {
         const formData = new FormData();
+        (environment as unknown as { courseSheetUrl: string }).courseSheetUrl = 'https://example.com/sheet-error';
         service.sendFormToSheetsIo(formData);
-
-        const req = httpMock.expectOne(`${service['sheetUrl']}`);
+        const req = httpMock.expectOne(environment.courseSheetUrl);
         expect(req.request.method).toBe('POST');
-        req.error(new ErrorEvent('network error'));
-
-        expect(snackBarSpy.open).toHaveBeenCalledWith(service['errorMessage'], service['snackAction']);
+        req.error(new ErrorEvent('network-error'));
+        expect(snackBarSpy.open).not.toHaveBeenCalled();
     });
 });
