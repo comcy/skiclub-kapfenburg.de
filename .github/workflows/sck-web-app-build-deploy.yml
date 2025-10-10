@@ -7,7 +7,7 @@ on:
     paths:
       - "src/web/**/*"
       - "src/web/projects/**/*.ts"
-      - ".github/workflows/sck-web-app-*"
+      - ".github/workflows/*"
 
 env:
   PROJECT_PATH: "src/web/"
