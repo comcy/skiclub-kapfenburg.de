@@ -2,12 +2,12 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem Freizeitclub La-Oele geht es wieder nach Vorarlberg ins Skigebiet Golm mit Übernachtung im Hotel „Weisses Kreuz“ in Feldkirch.
 
 **Ziel**
- - Vorarlberg, Skigebiet Golm
+ - Brandnertal
 
 **Abfahrtszeiten**
  - 05:00 Uhr Schwabsberg Schule 
@@ -17,7 +17,7 @@ const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem F
 
 |                             |              |
 |:----------------------------|-------------:|
-|  Erwachsene                 |   240,00 €*  |
+|  Erwachsene                 |   245,00 €*  |
 |  Jugendliche bis 16 Jahre   |   180,00 €*  | 
 |  Kinder bis 6 Jahre         |   85,00 €*   |
 
@@ -31,15 +31,16 @@ const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr
 
 export const LA_OELE_AUSFAHRT: Tile = {
     order: 5,
+    type: TileType.Event,
     behavior: TileBehavior.View,
     title: 'LA OELE 2-TAGES SKIAUSFAHRT NACH GOLM',
-    date: '18. bis 19. Januar 2025',
+    date: '17. bis 18. Januar 2026',
     subTitle: '',
     image: '../../../../assets/img/cards/snowboarding.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2025-01-18'),
+    expiration: new Date('2026-01-18'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

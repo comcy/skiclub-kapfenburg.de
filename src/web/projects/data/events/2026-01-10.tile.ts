@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Diese Ausfahrt eignet sich sowohl für reine Anfänger als auch für Fortgeschrittene. 
 Egal ob ihr das erste Mal auf Skiern oder dem Board steht oder einfach eure Technik 
@@ -30,8 +30,8 @@ dazu. Bei guter Schneelage ist eine Langlaufloipe vorhanden.
 |                             |              |                   |
 |                             |              |                   |
 |  Anfängerkurse              |   35,00 €    |  40,00 €          |
-|  Techniktraining 1/2 Tag    |   25,00 €    |  30,00 €          |
-|  Techniktraining            |   50,00 €    |  55,00 €          |
+|  Techniktraining 1/2 Tag    |   35,00 €    |  30,00 €          |
+|  Techniktraining            |   60,00 €    |  55,00 €          |
 |  Schneeschuhe               |   5,00 €     |  5,00 €           |
 |  Nur Busfahrt               |   30,00 €    |  30,00 €          |
 
@@ -46,15 +46,16 @@ const BOARDING_LIST = [
 
 export const TRAININGSTAG_OBERJOCH_TILE: Tile = {
     order: 4,
+    type: TileType.Event,
     behavior: TileBehavior.View,
     title: 'TRAININGSTAG IN OBERJOCH',
-    date: '11. Januar 2025',
+    date: '10. Januar 2026',
     subTitle: '',
     image: '../../../../assets/img/cards/piste2.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2025-01-11'),
+    expiration: new Date('2026-01-11'),
     boardings: BOARDING_LIST,
-    status: TileStatus.BookedUp,
+    status: TileStatus.Open,
 };

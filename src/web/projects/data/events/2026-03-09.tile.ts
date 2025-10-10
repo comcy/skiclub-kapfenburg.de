@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `An unserer Montagsausfahrt geht es traditionell nach Oberstdorf zum Skigebiet Fellhorn/Kanzelwand. Hier erwartet euch ein abwechslungsreiches Skigebiet mit 36 bestens präparierten Pisten für jedes Level. 
 Das Gebiet verfügt über eine der modernsten Beschneiungsanlagen in Deutschland, womit dem Schneevergnügen nichts mehr im Wege steht. 
@@ -24,8 +24,8 @@ Nach einem tollen Schneetag lassen wir den Tag mit Kaffee und Kuchen am Bus oder
 |                             |              |                   |
 |                             |              |                   |
 |                             |              |                   |
-|  Techniktraining 1/2 Tag    |   25,00 €    |  30,00 €          |
-|  Techniktraining            |   50,00 €    |  55,00 €          |
+|  Techniktraining 1/2 Tag    |   35,00 €    |  40,00 €          |
+|  Techniktraining            |   60,00 €    |  65,00 €          |
 |  Schneeschuhe               |   5,00 €     |  5,00 €           |
 |  Nur Busfahrt               |   30,00 €    |  30,00 €          |
 
@@ -40,15 +40,16 @@ const BOARDING_LIST = [
 
 export const MONTAGSAUSFAHRT_FELLHORN: Tile = {
     order: 5,
+    type: TileType.Event,
     behavior: TileBehavior.View,
     title: 'MONTAGSAUSFAHRT FELLHORN',
-    date: '10. Februar 2025',
+    date: '09. März 2026',
     subTitle: '',
     image: '../../../../assets/img/cards/skiing.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2025-02-10'),
+    expiration: new Date('2026-03-10'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

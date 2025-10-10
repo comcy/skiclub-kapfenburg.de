@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `
 Eine Ausfahrt für alle, die unter der Woche Zeit haben und freie Pisten lieben.
@@ -22,7 +22,7 @@ Neben Skifahren kann man auch Rodeln und Winterwandern genießen. Die gemütiche
 
 |                             |              |
 |:----------------------------|-------------:|
-|  Erwachsene:                |   249,00 €*  |
+|  Erwachsene:                |   260,00 €*  |
 
 ---
 
@@ -34,15 +34,16 @@ const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr
 
 export const FREIE_PISTENAUSFAHRT: Tile = {
     order: 5,
+    type: TileType.Event,
     behavior: TileBehavior.View,
     title: '2-TAGES "FREIE PISTEN" AUSFAHRT"',
-    date: '17. bis 18. März 2025',
+    date: '16. bis 17. März 2026',
     subTitle: 'Ab 18 Jahren',
     image: '../../../../assets/img/cards/ski.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2025-03-17'),
+    expiration: new Date('2026-03-17'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

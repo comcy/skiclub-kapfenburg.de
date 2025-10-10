@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Wie könnte das Wochenende besser beginnen als mit Skifahren/Snowboarden? 
 Getreu nach diesem Motto fahren wir am Freitag zur Ehrwalder Almbahn und genießen die tolle Landschaft mit leeren Pisten. 
@@ -35,17 +35,18 @@ const BOARDING_LIST = [
     'Ebnat Jurahalle (5:40 Uhr)',
 ];
 
-export const BLAULICHTAUSFAHRT_EHRWALD: Tile = {
+export const FREITAGSAUSFAHRT_EHRWALD: Tile = {
     order: 5,
+    type: TileType.Event,
     behavior: TileBehavior.View,
-    title: 'BLAULICHTAUSFAHRT EHRWALD',
-    date: '21. Februar 2025',
+    title: 'FREITAGSAUSFAHRT NACH EHRWALD',
+    date: '6. Februar 2026',
     subTitle: '',
     image: '../../../../assets/img/cards/skis.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2025-02-21'),
+    expiration: new Date('2026-02-07'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Kommt mit uns in die Tiroler Zugspitz-Arena nach Lermoos. Im Skigebiet Grubigstein steht auf 1000 - 2100m Höhe wintersportlicher Spaß auf dem Programm. Zwölf 
 Abfahrten bringen Abwechslung. Auch für das leibliche Wohl ist gesorgt: Zahlreiche 
@@ -37,15 +37,16 @@ const BOARDING_LIST = [
 
 export const PARTYAUSFAHRT_LERMOOS: Tile = {
     order: 6,
+    type: TileType.Event,
     behavior: TileBehavior.View,
     title: 'PARTYAUSFAHRT NACH LERMOOS',
-    date: '08. März 2025',
+    date: '21. Februar 2026',
     subTitle: 'Ausfahrt ab 18 Jahre',
     image: '../../../../assets/img/cards/lift.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2025-03-08'),
+    expiration: new Date('2026-02-22'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
 };

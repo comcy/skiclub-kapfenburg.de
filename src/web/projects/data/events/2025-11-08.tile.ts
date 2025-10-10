@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 - 2024 Christian Silfang (comcy)
  */
 
-import { Tile, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Ihr habt Zuhause ausgemistet, eure Kinder sind wieder gewachsen oder ihr möchtet einfach schauen, was es so gibt?
 Dann kommt vorbei und beginnt gemeinsam mit uns die neue Wintersaison.
@@ -18,14 +18,15 @@ Unser erfahrenes Lehrteam wird für euch da sein und steht euch gern mit gutem R
 
 export const SKIBOERSE_TILE: Tile = {
     order: 2,
+    type: TileType.Event,
     behavior: TileBehavior.View,
     title: 'Skibörse',
-    date: '09. November 2024',
+    date: '08. November 2025',
     subTitle: 'Altes Schulhaus Hülen',
     image: '../../../../assets/img/cards/skiboers.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
-    expiration: new Date('2024-11-10'),
+    expiration: new Date('2025-11-10'),
     status: TileStatus.Open,
 };

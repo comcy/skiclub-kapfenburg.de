@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus } from '@shared/ui-common';
+import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Bei dieser Ausfahrt geht es in das Traumskigebiet Mellau-Damüls. Dieses befindet 
 sich mitten im Bregenzerwald und ist das größte Gebiet in der Region. Es bietet über 
@@ -45,15 +45,16 @@ const BOARDING_LIST = [
 
 export const TAGESAUSFAHRT_MELLAU_DAMUELS: Tile = {
     order: 5,
+    type: TileType.Event,
     behavior: TileBehavior.View,
     title: 'TAGESAUSFAHRT NACH MELLAU-DAMÜLS',
-    date: '08. Februar 2025',
+    date: '28. Februar 2026',
     subTitle: '',
     image: '../../../../assets/img/cards/snow.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],
-    expiration: new Date('2025-02-08'),
+    expiration: new Date('2026-02-29'),
     boardings: BOARDING_LIST,
-    status: TileStatus.BookedUp,
+    status: TileStatus.Open,
 };
