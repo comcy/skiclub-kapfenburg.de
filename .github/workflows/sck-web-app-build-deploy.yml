@@ -39,7 +39,7 @@ jobs:
         run: |
           cd ${{ env.PROJECT_PATH }}
           # npm install -g @angular/cli
-          npm ci
+          npm install
 
       # # QA
       # - name: Run linting and tests
