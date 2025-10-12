@@ -4,9 +4,7 @@
 
 import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Nach dem Erfolg vom letzten Jahr fahren wir auch dieses Jahr wieder an den Sonnenkopf zur KELO-Bar.
-
-Gemeinsam mit euch wollen wir die Pisten auf über 2000m Höhe unsicher machen. 
+const DESCRIPTION_TEXT = `Gemeinsam mit euch wollen wir die Pisten auf über 2000m Höhe unsicher machen. 
 Es gibt hier familienfreundliche Abfahrten bei tollem Panorama, aber auch herausfordernde, steile Pisten wie die „Bäraloch-Piste“. 
 
 Das Skigebiet Sonnenkopf liegt am Fuße des Arlbergs und gilt als sehr schneesicher. 
