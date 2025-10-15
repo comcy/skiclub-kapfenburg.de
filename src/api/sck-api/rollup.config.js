@@ -25,5 +25,6 @@ export default {
     'express',
     'nodemailer',
     'cors',
+    'dotenv'
   ],
 };
