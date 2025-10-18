@@ -6,7 +6,7 @@ import { TripRegisterFormFields } from 'projects/trips-lib/src/lib/ui/trips-regi
 
 export const getTripConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
-        Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über <b>registration@skiclub-kapfenburg.de</b>.`;
+        Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über: registration@skiclub-kapfenburg.de`;
 };
 
 export const getTripConfirmationMailSubject = (values: TripRegisterFormFields): string => {
@@ -14,8 +14,7 @@ export const getTripConfirmationMailSubject = (values: TripRegisterFormFields): 
 };
 
 export const getTripConfirmationMailBcc = (): string => {
-    //return 'christian.silfang@gmail.com, m.rup@gmx.de, registration@skiclub-kapfenburg.de';
-    return 'christian.silfang@gmail.com';
+    return 'christian.silfang@gmail.com, m.rup@gmx.de, registration@skiclub-kapfenburg.de';
 };
 
 export const getTripConfirmationMailText = (values: TripRegisterFormFields): string => {
