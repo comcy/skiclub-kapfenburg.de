@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MarkdownRenderService } from '../../../util-markdown/services';
 
@@ -13,15 +13,13 @@ import { MarkdownRenderService } from '../../../util-markdown/services';
     standalone: false,
 })
 export class BaseDialogComponent implements OnInit {
+    private dialogRef = inject<MatDialogRef<BaseDialogComponent>>(MatDialogRef);
+    markdown = inject(MarkdownRenderService);
+
     @Input() title?: string;
     @Input() date?: string;
     @Input() share?: boolean;
     @Input() registerForm?: boolean;
-
-    constructor(
-        private dialogRef: MatDialogRef<BaseDialogComponent>,
-        public markdown: MarkdownRenderService,
-    ) {}
 
     ngOnInit(): void {
         this.registerForm = false;

@@ -6,7 +6,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TripRegistrationFormService } from './trip-registration-form.service';
 import { environment } from 'projects/sck-app/src/environments/environment';
-import { getCourseConfirmationSuccessMessage } from 'projects/data/mail-templates';
+import { getTripConfirmationSuccessMessage } from 'projects/data/mail-templates';
 
 describe('TripRegistrationFormService', () => {
     let service: TripRegistrationFormService;
@@ -39,7 +39,7 @@ describe('TripRegistrationFormService', () => {
         const req = httpMock.expectOne(environment.tripSheetUrl);
         expect(req.request.method).toBe('POST');
         req.flush({ ok: true });
-        expect(snackBarSpy.open).toHaveBeenCalledWith(getCourseConfirmationSuccessMessage(), 'Ok');
+        expect(snackBarSpy.open).toHaveBeenCalledWith(getTripConfirmationSuccessMessage(), 'Ok');
     });
 
     it('should POST and not open snackbar on error', () => {

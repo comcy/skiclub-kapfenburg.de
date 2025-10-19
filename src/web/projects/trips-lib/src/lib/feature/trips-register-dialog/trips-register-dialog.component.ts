@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../domain/models';
@@ -15,6 +15,9 @@ import { DialogData } from './trip-register-dialog.interfaces';
     standalone: false,
 })
 export class TripsRegisterDialogComponent implements OnInit {
+    private dialogRef = inject<MatDialogRef<TripsRegisterDialogComponent>>(MatDialogRef);
+    data = inject<DialogData>(MAT_DIALOG_DATA);
+
     @Output() public handleConfirmClicked: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
     public dialogTitle!: string;
@@ -28,11 +31,6 @@ export class TripsRegisterDialogComponent implements OnInit {
     ]);
     public tripDetails!: Trip[];
     public boardingList!: string[];
-
-    constructor(
-        private dialogRef: MatDialogRef<TripsRegisterDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    ) {}
 
     ngOnInit(): void {
         const tile = this.data.tile;

@@ -3,10 +3,10 @@
  */
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-    getCourseConfirmationSuccessMessage,
+    getTripConfirmationSuccessMessage,
     getTripConfirmationMailBcc,
     getTripConfirmationMailSubject,
     getTripConfirmationMailText,
@@ -23,12 +23,10 @@ import {
 
 @Injectable()
 export class TripRegistrationFormService implements TripRegistrationFormServiceInterface {
-    private snackAction = 'Ok';
+    private http = inject(HttpClient);
+    private snackBar = inject(MatSnackBar);
 
-    constructor(
-        private http: HttpClient,
-        private snackBar: MatSnackBar,
-    ) {}
+    private snackAction = 'Ok';
 
     /**
      *
@@ -38,7 +36,7 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
         this.http.post(`${environment.tripSheetUrl}`, formData).subscribe({
             next: (response) => {
                 console.log(response);
-                this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
+                this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
                 console.log(error);

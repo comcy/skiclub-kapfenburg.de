@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, take, tap } from 'rxjs';
 import { GymInformationProviderServiceInterface } from '../../api/provider-services/gym-provider-service.interface';
 import { GymInformation } from '../models';
@@ -10,6 +10,8 @@ import { GymInformationCoreServiceInterface } from './gym-information-core-servi
 
 @Injectable()
 export class GymInformationCoreService implements GymInformationCoreServiceInterface {
+    private gymInformationProviderService = inject(GymInformationProviderServiceInterface);
+
     public gymOffers$: BehaviorSubject<GymInformation[]> = new BehaviorSubject<GymInformation[]>([
         {
             title: 'TEST',
@@ -19,7 +21,7 @@ export class GymInformationCoreService implements GymInformationCoreServiceInter
         },
     ]);
 
-    constructor(private gymInformationProviderService: GymInformationProviderServiceInterface) {
+    constructor() {
         this.gymInformationProviderService
             .getGymOffers()
             .pipe(

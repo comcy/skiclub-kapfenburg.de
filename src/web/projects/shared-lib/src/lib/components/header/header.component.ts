@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationItem } from './header.interfaces';
 
@@ -13,12 +13,10 @@ import { NavigationItem } from './header.interfaces';
     standalone: false,
 })
 export class HeaderComponent {
-    @Input() navItems: NavigationItem[] = [];
+    private router = inject(Router);
+    private activatedRoute = inject(ActivatedRoute);
 
-    constructor(
-        private router: Router,
-        private activatedRoute: ActivatedRoute,
-    ) {}
+    @Input() navItems: NavigationItem[] = [];
 
     routerHome() {
         this.router.navigateByUrl('');
