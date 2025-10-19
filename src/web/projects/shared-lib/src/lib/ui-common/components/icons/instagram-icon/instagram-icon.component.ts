@@ -5,7 +5,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { BaseIconComponent } from '../base-icon';
+import { BASE_ICON_PROPERTIES, BaseIconComponent } from '../base-icon';
 
 @Component({
     selector: 'shared-lib-instagram-icon',
@@ -15,7 +15,7 @@ import { BaseIconComponent } from '../base-icon';
     standalone: true,
     providers: [
         {
-            provide: 'baseIconProperties',
+            provide: BASE_ICON_PROPERTIES,
             useValue: {
                 iconName: 'instagram',
                 iconPath: 'assets/logos/instagram.svg',

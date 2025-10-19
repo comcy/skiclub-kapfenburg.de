@@ -19,13 +19,12 @@ import { BASE_ICON_PROPERTIES } from './base-icon.interfaces';
 export class BaseIconComponent {
     protected domSanitizer = inject(DomSanitizer);
     protected matIconRegistry = inject(MatIconRegistry);
+    protected baseIconProperties = inject(BASE_ICON_PROPERTIES);
 
     constructor() {
-        const baseIconProperties = inject(BASE_ICON_PROPERTIES);
-
         this.matIconRegistry.addSvgIcon(
-            baseIconProperties.iconName,
-            this.domSanitizer.bypassSecurityTrustResourceUrl(baseIconProperties.iconPath),
+            this.baseIconProperties.iconName,
+            this.domSanitizer.bypassSecurityTrustResourceUrl(this.baseIconProperties.iconPath),
         );
     }
 }
