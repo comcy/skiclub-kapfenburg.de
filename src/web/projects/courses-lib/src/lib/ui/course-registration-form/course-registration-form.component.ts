@@ -2,8 +2,13 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatOption, MatSelect } from '@angular/material/select';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { COURSE_REGISTRATION_FORM_ELEMENTS } from './course-registration-form-fields';
@@ -11,11 +16,6 @@ import {
     CourseRegisterFormFields,
     CourseRegistrationFormServiceInterface,
 } from './course-registration-form.interfaces';
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
-import { MatSelect, MatOption } from '@angular/material/select';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
-import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
 
 @Component({
     selector: 'lib-course-registration-form',
@@ -36,17 +36,15 @@ import { MatButton } from '@angular/material/button';
     ],
 })
 export class CourseRegistrationFormComponent implements OnInit {
+    private formBuilder = inject(FormBuilder);
+    private courseRegistrationFormService = inject(CourseRegistrationFormServiceInterface);
+    breakpointObserver = inject(BreakpointObserverService);
+
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public courseRegisterForm: FormGroup = new FormGroup({});
     public sportTypeList = ['Ski Alpin', 'Snowboard'];
     public levelList = ['Anfänger', 'Könner', 'Fortgeschritten'];
-
-    constructor(
-        private formBuilder: FormBuilder,
-        private courseRegistrationFormService: CourseRegistrationFormServiceInterface,
-        public breakpointObserver: BreakpointObserverService,
-    ) {}
 
     ngOnInit(): void {
         this.courseRegisterForm = this.formBuilder.group({

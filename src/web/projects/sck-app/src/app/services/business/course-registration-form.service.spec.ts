@@ -7,7 +7,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseRegistrationFormService } from './course-registration-form.service';
 import { environment } from 'projects/sck-app/src/environments/environment';
-import { getTripConfirmationSuccessMessage } from 'projects/data/mail-templates';
+import { getCourseConfirmationSuccessMessage } from 'projects/data/mail-templates';
 
 describe('CourseRegistrationFormService', () => {
     let service: CourseRegistrationFormService;
@@ -48,7 +48,7 @@ describe('CourseRegistrationFormService', () => {
         req.flush({ ok: true });
 
         // Assert
-        expect(snackBarSpy.open).toHaveBeenCalledWith(getTripConfirmationSuccessMessage(), 'Ok');
+        expect(snackBarSpy.open).toHaveBeenCalledWith(getCourseConfirmationSuccessMessage(), 'Ok');
     });
 
     it('should POST form data and NOT open snackbar on error (only log)', () => {

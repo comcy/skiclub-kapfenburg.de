@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -16,13 +16,13 @@ import { DomSanitizer } from '@angular/platform-browser';
     styleUrls: ['./sck-logo-icon.component.scss'],
 })
 export class SckLogoIconComponent {
+    private domSanitizer = inject(DomSanitizer);
+    private matIconRegistry = inject(MatIconRegistry);
+
     public iconName = 'sck-logo';
     public iconPath = 'assets/img/burg.svg';
 
-    constructor(
-        private domSanitizer: DomSanitizer,
-        private matIconRegistry: MatIconRegistry,
-    ) {
+    constructor() {
         this.matIconRegistry.addSvgIcon(this.iconName, this.domSanitizer.bypassSecurityTrustResourceUrl(this.iconPath));
     }
 }

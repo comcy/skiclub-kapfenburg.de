@@ -1,4 +1,8 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+/**
+ * @copyright Copyright (c) 2022 Christian Silfang
+ */
+
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
@@ -34,6 +38,10 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     ],
 })
 export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
+    private formBuilder = inject(FormBuilder);
+    private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
+    breakpointObserver = inject(BreakpointObserverService);
+
     @Input() public additionalData$!: BehaviorSubject<Trip[]>;
     @Input() public additionalData!: Trip[];
 
@@ -48,12 +56,6 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     public currentSelectedTrip = null;
     public tripRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
-
-    constructor(
-        private formBuilder: FormBuilder,
-        private tripRegistrationFormService: TripRegistrationFormServiceInterface,
-        public breakpointObserver: BreakpointObserverService,
-    ) {}
 
     ngOnInit(): void {
         this.tripRegisterForm = this.formBuilder.group({
