@@ -5,12 +5,13 @@
 import { Component, OnInit } from '@angular/core';
 import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
 import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/ui-common/models';
+import { NgFor } from '@angular/common';
 
 @Component({
     selector: 'lib-trips-prices',
     templateUrl: './trips-prices.component.html',
     styleUrls: ['./trips-prices.component.scss'],
-    standalone: false,
+    imports: [NgFor],
 })
 export class TripsPricesComponent implements OnInit {
     public tripData: Tile[] = TRIP_DATA;

@@ -3,14 +3,23 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { MarkdownRenderService } from '../../../util-markdown/services';
+import { NgIf } from '@angular/common';
+import { MatButton } from '@angular/material/button';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
     selector: 'lib-base-dialog',
     templateUrl: './base-dialog.component.html',
     styleUrls: ['./base-dialog.component.scss'],
-    standalone: false,
+    imports: [
+        NgIf,
+        MatButton,
+        MatDialogTitle,
+        CdkScrollable,
+        MatDialogContent,
+    ],
 })
 export class BaseDialogComponent implements OnInit {
     @Input() title?: string;

@@ -12,8 +12,8 @@ describe('TripsRegisterDialogComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [TripsRegisterDialogComponent],
-        }).compileComponents();
+    imports: [TripsRegisterDialogComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

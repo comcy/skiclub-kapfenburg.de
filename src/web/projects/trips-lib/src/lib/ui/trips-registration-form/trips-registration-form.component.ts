@@ -1,17 +1,37 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
 import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
+import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'lib-trips-registration-form',
     templateUrl: './trips-registration-form.component.html',
     styleUrls: ['./trips-registration-form.component.scss'],
-    standalone: false,
+    imports: [
+        ReactiveFormsModule,
+        NgIf,
+        MatFormField,
+        MatLabel,
+        MatSelect,
+        NgFor,
+        MatOption,
+        NgClass,
+        MatInput,
+        MatError,
+        MatButton,
+        MatProgressSpinner,
+        AsyncPipe,
+    ],
 })
 export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     @Input() public additionalData$!: BehaviorSubject<Trip[]>;

@@ -12,8 +12,8 @@ describe('ImpressumComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ImpressumComponent],
-        }).compileComponents();
+    imports: [ImpressumComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

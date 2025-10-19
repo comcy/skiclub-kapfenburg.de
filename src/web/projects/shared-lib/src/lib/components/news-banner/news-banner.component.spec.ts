@@ -12,8 +12,8 @@ describe('NewsBannerComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [NewsBannerComponent],
-        }).compileComponents();
+    imports: [NewsBannerComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

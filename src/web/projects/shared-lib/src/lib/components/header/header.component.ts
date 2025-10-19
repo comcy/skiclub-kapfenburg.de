@@ -5,12 +5,13 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationItem } from './header.interfaces';
+import { NgFor } from '@angular/common';
 
 @Component({
     selector: 'shared-lib-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
-    standalone: false,
+    imports: [NgFor],
 })
 export class HeaderComponent {
     @Input() navItems: NavigationItem[] = [];

@@ -12,8 +12,8 @@ describe('CoursesRegistrationComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [CoursesRegistrationComponent],
-        }).compileComponents();
+    imports: [CoursesRegistrationComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

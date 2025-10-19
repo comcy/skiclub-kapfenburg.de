@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { COURSE_REGISTRATION_FORM_ELEMENTS } from './course-registration-form-fields';
@@ -11,12 +11,29 @@ import {
     CourseRegisterFormFields,
     CourseRegistrationFormServiceInterface,
 } from './course-registration-form.interfaces';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
 
 @Component({
     selector: 'lib-course-registration-form',
     templateUrl: './course-registration-form.component.html',
     styleUrls: ['./course-registration-form.component.scss'],
-    standalone: false,
+    imports: [
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatSelect,
+        NgFor,
+        MatOption,
+        NgIf,
+        MatInput,
+        MatError,
+        MatButton,
+        AsyncPipe,
+    ],
 })
 export class CourseRegistrationFormComponent implements OnInit {
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();

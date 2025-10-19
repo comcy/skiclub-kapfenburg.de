@@ -5,12 +5,13 @@
 import { Component } from '@angular/core';
 import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA, CURRENT_SEASON } from '@data';
 import { Price } from '../../domain/models';
+import { NgFor } from '@angular/common';
 
 @Component({
     selector: 'lib-courses-prices',
     templateUrl: './courses-prices.component.html',
     styleUrls: ['./courses-prices.component.scss'],
-    standalone: false,
+    imports: [NgFor],
 })
 export class CoursesPricesComponent {
     public currentSeason: string = CURRENT_SEASON;

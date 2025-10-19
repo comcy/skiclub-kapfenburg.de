@@ -12,8 +12,8 @@ describe('MembershipLibComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [MembershipLibComponent],
-        }).compileComponents();
+    imports: [MembershipLibComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

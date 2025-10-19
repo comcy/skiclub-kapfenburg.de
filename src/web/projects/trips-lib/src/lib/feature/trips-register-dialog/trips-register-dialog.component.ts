@@ -7,12 +7,20 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { DialogData } from './trip-register-dialog.interfaces';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { BaseDialogComponent } from '../../../../../shared-lib/src/lib/components/dialogs/base-dialog/base-dialog.component';
+import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form/trips-registration-form.component';
 
 @Component({
     selector: 'lib-trips-register-dialog',
     templateUrl: './trips-register-dialog.component.html',
     styleUrls: ['./trips-register-dialog.component.scss'],
-    standalone: false,
+    imports: [
+        NgIf,
+        BaseDialogComponent,
+        TripsRegistrationFormComponent,
+        AsyncPipe,
+    ],
 })
 export class TripsRegisterDialogComponent implements OnInit {
     @Output() public handleConfirmClicked: EventEmitter<boolean> = new EventEmitter<boolean>(false);

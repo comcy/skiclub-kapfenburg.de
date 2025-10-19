@@ -8,6 +8,5 @@ import { Component } from '@angular/core';
     selector: 'lib-trips-information',
     templateUrl: './trips-information.component.html',
     styleUrls: ['./trips-information.component.scss'],
-    standalone: false,
 })
 export class TripsInformationComponent {}

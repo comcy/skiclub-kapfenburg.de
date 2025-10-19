@@ -24,17 +24,6 @@ import { NewsCardComponent } from './news-card/news-card.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
 
 @NgModule({
-    declarations: [
-        HeaderComponent,
-        FooterComponent,
-        DatenschutzComponent,
-        ImpressumComponent,
-        NewsBannerComponent,
-        NewsCardComponent,
-        BaseDialogComponent,
-        InfoTileComponent,
-        TopBarComponent,
-    ],
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -46,6 +35,15 @@ import { TopBarComponent } from './top-bar/top-bar.component';
         MatSelectModule,
         MatToolbarModule,
         MatProgressSpinnerModule,
+        HeaderComponent,
+        FooterComponent,
+        DatenschutzComponent,
+        ImpressumComponent,
+        NewsBannerComponent,
+        NewsCardComponent,
+        BaseDialogComponent,
+        InfoTileComponent,
+        TopBarComponent,
     ],
     exports: [
         HeaderComponent,

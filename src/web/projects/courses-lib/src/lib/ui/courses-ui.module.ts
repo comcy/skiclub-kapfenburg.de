@@ -16,7 +16,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CourseRegistrationFormComponent } from './course-registration-form/course-registration-form.component';
 
 @NgModule({
-    declarations: [CourseRegistrationFormComponent],
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -28,6 +27,7 @@ import { CourseRegistrationFormComponent } from './course-registration-form/cour
         MatSelectModule,
         MatToolbarModule,
         MatProgressSpinnerModule,
+        CourseRegistrationFormComponent,
     ],
     exports: [CourseRegistrationFormComponent],
 })

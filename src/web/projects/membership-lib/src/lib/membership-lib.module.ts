@@ -6,8 +6,7 @@ import { NgModule } from '@angular/core';
 import { MembershipLibComponent } from './membership-lib.component';
 
 @NgModule({
-    declarations: [MembershipLibComponent],
-    imports: [],
+    imports: [MembershipLibComponent],
     exports: [MembershipLibComponent],
 })
 export class MembershipLibModule {}

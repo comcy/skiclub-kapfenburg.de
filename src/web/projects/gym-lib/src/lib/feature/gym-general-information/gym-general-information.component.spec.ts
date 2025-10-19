@@ -14,8 +14,8 @@ describe('GymGeneralInformationComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [GymGeneralInformationComponent],
-        }).compileComponents();
+    imports: [GymGeneralInformationComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

@@ -19,17 +19,17 @@ describe('SiteNavigationComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [SiteNavigationComponent],
-            imports: [
-                NoopAnimationsModule,
-                LayoutModule,
-                MatButtonModule,
-                MatIconModule,
-                MatListModule,
-                MatSidenavModule,
-                MatToolbarModule,
-            ],
-        }).compileComponents();
+    imports: [
+        NoopAnimationsModule,
+        LayoutModule,
+        MatButtonModule,
+        MatIconModule,
+        MatListModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        SiteNavigationComponent,
+    ],
+}).compileComponents();
     }));
 
     beforeEach(() => {

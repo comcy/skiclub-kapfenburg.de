@@ -10,8 +10,7 @@ import { CoursesPricesComponent } from './courses-prices/courses-prices.componen
 import { CoursesInformationComponent } from './courses-information/courses-information.component';
 
 @NgModule({
-    declarations: [CoursesPricesComponent, CoursesInformationComponent, CoursesRegistrationComponent],
-    imports: [CommonModule, CoursesUiModule],
+    imports: [CommonModule, CoursesUiModule, CoursesPricesComponent, CoursesInformationComponent, CoursesRegistrationComponent],
     exports: [CoursesPricesComponent, CoursesInformationComponent, CoursesRegistrationComponent],
 })
 export class CoursesFeatureModule {}

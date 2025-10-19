@@ -10,7 +10,6 @@ import { getYear } from 'date-fns';
     selector: 'shared-lib-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
-    standalone: false,
 })
 export class FooterComponent {
     @Input() baseRoute = '';

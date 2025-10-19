@@ -12,8 +12,8 @@ describe('ComcyCopyrightComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ComcyCopyrightComponent],
-        }).compileComponents();
+    imports: [ComcyCopyrightComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {
