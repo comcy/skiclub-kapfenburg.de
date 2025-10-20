@@ -13,7 +13,7 @@ export const MEMBERSHIP_TILE: Tile = {
     subTitle: '',
     image: 'https://cdn.pixabay.com/photo/2020/11/03/15/32/man-5710164_1280.jpg',
     imageDescription: 'Mitgliedsantrag',
-    description: '<h3>JAHRESBEITRÄGE</h3> \r - Kinder: 5€ \r - Erwachsene: 25€ \r - Familien: 40€',
+    description: '<h3>JAHRESBEITRÄGE</h3> \n\r - Kinder: 5€ \n\r - Erwachsene: 25€ \n\r - Familien: 40€',
     actions: [TileActions.Download],
     downloadActionLink: 'assets/downloads/Mitgliedsantrag_SCK.pdf',
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
