@@ -11,8 +11,8 @@ describe('InfoTileComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [InfoTileComponent],
-        }).compileComponents();
+    imports: [InfoTileComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

@@ -11,7 +11,7 @@
  */
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
     CourseRegisterFormFields,
@@ -21,7 +21,7 @@ import {
     getCourseConfirmationMailBcc,
     getCourseConfirmationMailSubject,
     getCourseConfirmationMailText,
-    getTripConfirmationSuccessMessage,
+    getCourseConfirmationSuccessMessage,
 } from 'projects/data/mail-templates';
 import { environment } from 'projects/sck-app/src/environments/environment';
 import {
@@ -31,12 +31,10 @@ import {
 
 @Injectable()
 export class CourseRegistrationFormService implements CourseRegistrationFormServiceInterface {
-    private snackAction = 'Ok';
+    private http = inject(HttpClient);
+    private snackBar = inject(MatSnackBar);
 
-    constructor(
-        private http: HttpClient,
-        private snackBar: MatSnackBar,
-    ) {}
+    private snackAction = 'Ok';
 
     /**
      * This method is the implementation of the corresponding abstract declaration of the service inteface.
@@ -47,7 +45,7 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
         this.http.post(`${environment.courseSheetUrl}`, formData).subscribe({
             next: (response) => {
                 console.log(response);
-                this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
+                this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
                 console.log(error);

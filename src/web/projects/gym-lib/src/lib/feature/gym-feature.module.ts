@@ -11,8 +11,7 @@ import { GymInformationCoreService, GymInformationCoreServiceInterface } from '.
 import { GymInformationProviderServiceInterface } from '../api/provider-services/gym-provider-service.interface';
 
 @NgModule({
-    declarations: [GymGeneralInformationComponent],
-    imports: [CommonModule, MatToolbarModule],
+    imports: [CommonModule, MatToolbarModule, GymGeneralInformationComponent],
     exports: [GymGeneralInformationComponent],
     providers: [
         // HTTP

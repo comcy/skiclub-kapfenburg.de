@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 
 @Component({
@@ -9,10 +9,6 @@ import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar'
     standalone: true,
 })
 export class SnackbarComponent {
-    constructor(
-        // eslint-disable-next-line @angular-eslint/prefer-inject
-        @Inject(MAT_SNACK_BAR_DATA) public data: string,
-        // eslint-disable-next-line @angular-eslint/prefer-inject
-        public snackBarRef: MatSnackBarRef<SnackbarComponent>,
-    ) {}
+    data = inject(MAT_SNACK_BAR_DATA);
+    snackBarRef = inject<MatSnackBarRef<SnackbarComponent>>(MatSnackBarRef);
 }

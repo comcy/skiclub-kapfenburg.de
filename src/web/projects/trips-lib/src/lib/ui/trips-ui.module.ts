@@ -16,7 +16,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
-    declarations: [TripsRegistrationFormComponent],
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -28,6 +27,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatSelectModule,
         MatToolbarModule,
         MatProgressSpinnerModule,
+        TripsRegistrationFormComponent,
     ],
     exports: [TripsRegistrationFormComponent],
 })

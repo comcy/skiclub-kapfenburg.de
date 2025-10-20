@@ -3,11 +3,12 @@
  */
 
 import { Component } from '@angular/core';
+import { MatToolbar } from '@angular/material/toolbar';
 
 @Component({
     selector: 'app-datenschutz',
     templateUrl: './datenschutz.component.html',
     styleUrls: ['./datenschutz.component.scss'],
-    standalone: false,
+    imports: [MatToolbar],
 })
 export class DatenschutzComponent {}

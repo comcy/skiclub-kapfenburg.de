@@ -8,6 +8,5 @@ import { Component } from '@angular/core';
     selector: 'lib-courses-information',
     templateUrl: './courses-information.component.html',
     styleUrls: ['./courses-information.component.scss'],
-    standalone: false,
 })
 export class CoursesInformationComponent {}

@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { getYear } from 'date-fns';
 
@@ -10,12 +10,11 @@ import { getYear } from 'date-fns';
     selector: 'shared-lib-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
-    standalone: false,
 })
 export class FooterComponent {
-    @Input() baseRoute = '';
+    private router = inject(Router);
 
-    constructor(private router: Router) {}
+    @Input() baseRoute = '';
 
     getYear(): string {
         return getYear(new Date()).toString();

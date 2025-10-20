@@ -7,8 +7,7 @@ import { CommonModule } from '@angular/common';
 import { NativeElementPipe } from './native-element';
 
 @NgModule({
-    declarations: [NativeElementPipe],
-    imports: [CommonModule],
+    imports: [CommonModule, NativeElementPipe],
     exports: [NativeElementPipe],
 })
 export class PipesModule {}

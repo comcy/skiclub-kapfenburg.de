@@ -12,8 +12,8 @@ describe('TripsPricesComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [TripsPricesComponent],
-        }).compileComponents();
+    imports: [TripsPricesComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

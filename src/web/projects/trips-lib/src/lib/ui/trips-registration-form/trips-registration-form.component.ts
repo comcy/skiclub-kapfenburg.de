@@ -1,19 +1,47 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+/**
+ * @copyright Copyright (c) 2022 Christian Silfang
+ */
+
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
 import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
+import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'lib-trips-registration-form',
     templateUrl: './trips-registration-form.component.html',
     styleUrls: ['./trips-registration-form.component.scss'],
-    standalone: false,
+    imports: [
+        ReactiveFormsModule,
+        NgIf,
+        MatFormField,
+        MatLabel,
+        MatSelect,
+        NgFor,
+        MatOption,
+        NgClass,
+        MatInput,
+        MatError,
+        MatButton,
+        MatProgressSpinner,
+        AsyncPipe,
+    ],
 })
 export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
+    private formBuilder = inject(FormBuilder);
+    private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
+    breakpointObserver = inject(BreakpointObserverService);
+
     @Input() public additionalData$!: BehaviorSubject<Trip[]>;
     @Input() public additionalData!: Trip[];
 
@@ -28,12 +56,6 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     public currentSelectedTrip = null;
     public tripRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
-
-    constructor(
-        private formBuilder: FormBuilder,
-        private tripRegistrationFormService: TripRegistrationFormServiceInterface,
-        public breakpointObserver: BreakpointObserverService,
-    ) {}
 
     ngOnInit(): void {
         this.tripRegisterForm = this.formBuilder.group({

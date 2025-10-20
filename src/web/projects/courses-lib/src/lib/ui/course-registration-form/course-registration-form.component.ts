@@ -2,8 +2,13 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatOption, MatSelect } from '@angular/material/select';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { COURSE_REGISTRATION_FORM_ELEMENTS } from './course-registration-form-fields';
@@ -16,20 +21,30 @@ import {
     selector: 'lib-course-registration-form',
     templateUrl: './course-registration-form.component.html',
     styleUrls: ['./course-registration-form.component.scss'],
-    standalone: false,
+    imports: [
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatSelect,
+        NgFor,
+        MatOption,
+        NgIf,
+        MatInput,
+        MatError,
+        MatButton,
+        AsyncPipe,
+    ],
 })
 export class CourseRegistrationFormComponent implements OnInit {
+    private formBuilder = inject(FormBuilder);
+    private courseRegistrationFormService = inject(CourseRegistrationFormServiceInterface);
+    breakpointObserver = inject(BreakpointObserverService);
+
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public courseRegisterForm: FormGroup = new FormGroup({});
     public sportTypeList = ['Ski Alpin', 'Snowboard'];
     public levelList = ['Anfänger', 'Könner', 'Fortgeschritten'];
-
-    constructor(
-        private formBuilder: FormBuilder,
-        private courseRegistrationFormService: CourseRegistrationFormServiceInterface,
-        public breakpointObserver: BreakpointObserverService,
-    ) {}
 
     ngOnInit(): void {
         this.courseRegisterForm = this.formBuilder.group({

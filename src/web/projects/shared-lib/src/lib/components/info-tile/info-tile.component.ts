@@ -8,6 +8,5 @@ import { Component } from '@angular/core';
     selector: 'lib-info-tile',
     templateUrl: './info-tile.component.html',
     styleUrls: ['./info-tile.component.css'],
-    standalone: false,
 })
 export class InfoTileComponent {}

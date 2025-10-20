@@ -12,8 +12,8 @@ describe('HeaderComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [HeaderComponent],
-        }).compileComponents();
+    imports: [HeaderComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

@@ -12,8 +12,8 @@ describe('RegisterDialogComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [BaseDialogComponent],
-        }).compileComponents();
+    imports: [BaseDialogComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

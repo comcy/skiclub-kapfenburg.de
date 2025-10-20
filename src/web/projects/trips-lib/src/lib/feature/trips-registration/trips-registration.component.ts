@@ -8,12 +8,13 @@ import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA 
 import { Tile, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../domain/models';
+import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form/trips-registration-form.component';
 
 @Component({
     selector: 'lib-trips-registration',
     templateUrl: './trips-registration.component.html',
     styleUrls: ['./trips-registration.component.scss'],
-    standalone: false,
+    imports: [TripsRegistrationFormComponent],
 })
 export class TripsRegistrationComponent implements OnInit {
     @Input() public additionalData$!: BehaviorSubject<Trip[]>;

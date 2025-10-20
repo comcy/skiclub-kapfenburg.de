@@ -4,25 +4,24 @@
 
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconModule } from '@angular/material/icon';
+import { BaseIconComponent } from '../base-icon/base-icon.component';
+import { BASE_ICON_PROPERTIES } from '../base-icon';
 
 @Component({
     selector: 'shared-lib-sck-logo-icon',
-    imports: [CommonModule, MatIconModule, MatButtonModule],
-    providers: [MatIconRegistry],
-    templateUrl: './sck-logo-icon.component.html',
-    styleUrls: ['./sck-logo-icon.component.scss'],
+    imports: [CommonModule, MatIconModule],
+    templateUrl: '../base-icon/base-icon.component.html',
+    styleUrls: ['../base-icon/base-icon.component.scss'],
+    standalone: true,
+    providers: [
+        {
+            provide: BASE_ICON_PROPERTIES,
+            useValue: {
+                iconName: 'sck-logo',
+                iconPath: 'assets/img/burg.svg',
+            },
+        },
+    ],
 })
-export class SckLogoIconComponent {
-    public iconName = 'sck-logo';
-    public iconPath = 'assets/img/burg.svg';
-
-    constructor(
-        private domSanitizer: DomSanitizer,
-        private matIconRegistry: MatIconRegistry,
-    ) {
-        this.matIconRegistry.addSvgIcon(this.iconName, this.domSanitizer.bypassSecurityTrustResourceUrl(this.iconPath));
-    }
-}
+export class SckLogoIconComponent extends BaseIconComponent {}

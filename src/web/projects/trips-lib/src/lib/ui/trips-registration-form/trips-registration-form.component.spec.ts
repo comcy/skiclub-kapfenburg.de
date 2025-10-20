@@ -12,8 +12,8 @@ describe('TripsRegistrationFormComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [TripsRegistrationFormComponent],
-        }).compileComponents();
+    imports: [TripsRegistrationFormComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

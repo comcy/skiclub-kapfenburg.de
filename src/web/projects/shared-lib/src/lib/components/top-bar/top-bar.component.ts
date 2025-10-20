@@ -8,6 +8,5 @@ import { Component } from '@angular/core';
     selector: 'lib-top-bar',
     templateUrl: './top-bar.component.html',
     styleUrls: ['./top-bar.component.css'],
-    standalone: false,
 })
 export class TopBarComponent {}

@@ -13,14 +13,11 @@ import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { TripsRegisterDialogComponent } from './trips-register-dialog/trips-register-dialog.component';
 
 @NgModule({
-    declarations: [
-        TripsDownloadsComponent,
+    imports: [CommonModule, TripsUiModule, ComponentsModule, TripsDownloadsComponent,
         TripsPricesComponent,
         TripsInformationComponent,
         TripsRegistrationComponent,
-        TripsRegisterDialogComponent,
-    ],
-    imports: [CommonModule, TripsUiModule, ComponentsModule],
+        TripsRegisterDialogComponent],
     exports: [
         TripsDownloadsComponent,
         TripsInformationComponent,

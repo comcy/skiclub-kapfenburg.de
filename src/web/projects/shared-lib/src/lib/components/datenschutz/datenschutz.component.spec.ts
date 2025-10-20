@@ -12,8 +12,8 @@ describe('DatenschutzComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DatenschutzComponent],
-        }).compileComponents();
+    imports: [DatenschutzComponent],
+}).compileComponents();
     });
 
     beforeEach(() => {

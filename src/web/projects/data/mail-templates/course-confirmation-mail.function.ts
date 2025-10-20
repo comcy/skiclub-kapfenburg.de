@@ -5,7 +5,7 @@
 import { CourseRegisterFormFields } from 'projects/courses-lib/src/lib/ui/course-registration-form';
 
 export const getCourseConfirmationSuccessMessage = (): string => {
-    return `Alle Anghaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
+    return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
         Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über: registration@skiclub-kapfenburg.de`;
 };
 
