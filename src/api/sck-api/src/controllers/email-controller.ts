@@ -1,11 +1,15 @@
+/**
+ * @copyright Copyright (c) 2025 Christian Silfang
+ */
+
 import { RequestHandler } from "express";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { EmailRequestBody } from "../domain/email.js";
+import { saveData } from "../services/data-service.js";
 
 dotenv.config();
 
-// Serverkonfiguration und Umgebungsvariablen
 const SMTP_SERVER = process.env.SMTP_SERVER || "";
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || "465", 10);
 const SENDER_MAIL = process.env.SENDER_MAIL || "";
@@ -14,7 +18,7 @@ const SENDER_PW = process.env.SENDER_PW || "";
 const parseEmailList = (value?: string): string[] => {
   if (!value) return [];
   return value
-    .split(/[,;]+/) // trennt nach Komma oder Semikolon
+    .split(/[,;]+/) // avoid errors on "," and ";"
     .map(addr => addr.trim())
     .filter(addr => addr.length > 0);
 };
@@ -23,7 +27,12 @@ const isValidEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.te
 
 export const sendEmail: RequestHandler = async (req, res) => {
   try {
-    const { to, subject, text, cc, bcc, from } = req.body as EmailRequestBody;
+    const emailData = req.body as EmailRequestBody;
+
+    // E-Mail-Daten speichern
+    await saveData('email-contact', emailData);
+
+    const { to, subject, text, cc, bcc, from } = emailData;
 
     const toList = parseEmailList(to);
     const ccList = parseEmailList(cc);
