@@ -60,3 +60,4 @@ testem.log
 .DS_Store
 Thumbs.db
 src/.styles.scss.swp
+src/api/sck-api/data/*.ndjson

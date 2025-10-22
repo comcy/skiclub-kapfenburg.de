@@ -32,7 +32,7 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
      *
      * @param tripRegisterForm
      */
-    sendFormToSheetsIo(formData: FormData): void {
+    public sendFormToSheetsIo(formData: FormData): void {
         this.http.post(`${environment.tripSheetUrl}`, formData).subscribe({
             next: (response) => {
                 console.log(response);
@@ -59,6 +59,7 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
         this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
             next: (response) => {
                 console.log(response);
+                this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
                 console.log(error);
