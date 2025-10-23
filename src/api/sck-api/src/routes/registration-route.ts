@@ -3,10 +3,10 @@
  */
 
 import { Router } from 'express';
-import { sendEmail } from '../controllers/email-controller';
+import { createRegistration } from '../controllers/registration-controller.js';
 
 const router = Router();
 
-router.post('/send_email', sendEmail);
+router.post('/register', createRegistration);
 
 export default router;
