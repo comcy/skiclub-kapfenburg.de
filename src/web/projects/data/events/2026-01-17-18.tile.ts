@@ -33,7 +33,7 @@ export const LA_OELE_AUSFAHRT: Tile = {
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
-    title: 'LA OELE 2-TAGES SKIAUSFAHRT NACH GOLM',
+    title: 'LA OELE 2-TAGES SKIAUSFAHRT INS BRANDNERTAL',
     date: '17. bis 18. Januar 2026',
     subTitle: '',
     image: '../../../../assets/img/cards/snowboarding.jpg',
