@@ -59,8 +59,8 @@ export const getCourseConfirmationMailText = (values: CourseRegisterFormFields):
                     <li>Bei geeigneter Wetterlage finden die Kurse bei uns im heimischen Gelände (Skilift an der Kapfenburg) statt.</li>
                     <li>Lässt es die Wetterlage im heimischen Gelände nicht zu, bieten wir spezielle Kursausfahrten mit Kursen an:
                         <ul>
-                            <li><b>Trainigstag in Oberjoch (11. Januar 2025)</b></li>
-                            <li><b>Tagesausfahrt nach Ehrwald (1. Februar 2025)</b></li>
+                            <li><b>Trainigstag in Oberjoch (10. Januar 2026)</b></li>
+                            <li><b>Tagesausfahrt nach Ehrwald (31. Januar 2026)</b></li>
                         </ul>
                         <p style="color: #e60f00; font-weight: bold;">Wichtig: Hierzu muss eine Anmeldung zur jeweiligen Ausfahrt erfolgen, diese Registrierung reicht dazu nicht aus!</p>
                     </li>
