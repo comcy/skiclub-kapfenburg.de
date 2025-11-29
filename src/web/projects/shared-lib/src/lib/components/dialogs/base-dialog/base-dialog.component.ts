@@ -3,17 +3,18 @@
  */
 
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { NgIf } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { MatButton } from '@angular/material/button';
-import { MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MarkdownRenderService } from '../../../util-markdown/services';
 
 @Component({
     selector: 'lib-base-dialog',
     templateUrl: './base-dialog.component.html',
     styleUrls: ['./base-dialog.component.scss'],
-    imports: [NgIf, MatButton, MatDialogTitle, CdkScrollable, MatDialogContent],
+    imports: [MatButtonModule, CdkScrollable, MatDialogContent, MatDialogActions, MatToolbarModule, MatIconModule],
 })
 export class BaseDialogComponent implements OnInit {
     private dialogRef = inject<MatDialogRef<BaseDialogComponent>>(MatDialogRef);
@@ -23,6 +24,7 @@ export class BaseDialogComponent implements OnInit {
     @Input() date?: string;
     @Input() share?: boolean;
     @Input() registerForm?: boolean;
+    @Input() titleBackgroundColor?: string = 'primary';
 
     ngOnInit(): void {
         this.registerForm = false;

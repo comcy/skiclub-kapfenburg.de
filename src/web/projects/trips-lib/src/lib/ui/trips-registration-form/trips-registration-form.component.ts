@@ -2,14 +2,15 @@
  * @copyright Copyright (c) 2022 Christian Silfang
  */
 
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatOption, MatSelect } from '@angular/material/select';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
@@ -21,18 +22,17 @@ import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './
     selector: 'lib-trips-registration-form',
     templateUrl: './trips-registration-form.component.html',
     styleUrls: ['./trips-registration-form.component.scss'],
+    standalone: true,
     imports: [
+        CommonModule,
         ReactiveFormsModule,
-        MatFormField,
-        MatLabel,
-        MatSelect,
-        MatOption,
-        NgClass,
-        MatInput,
-        MatError,
-        MatButton,
-        MatProgressSpinner,
         AsyncPipe,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
     ],
 })
 export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
@@ -58,14 +58,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.tripRegisterForm = this.formBuilder.group({
             trip: [null, [Validators.required]],
-            firstName: [{ value: '', disabled: true }, Validators.required],
-            lastName: [{ value: '', disabled: true }, Validators.required],
-            email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-            phone: [{ value: '', disabled: true }, [Validators.required]],
-            amount: [{ value: '', disabled: true }, [Validators.required]],
+            participants: this.formBuilder.array([]),
             additionalText: [{ value: '', disabled: true }],
-            boarding: [{ value: '', disabled: true }, [Validators.required]],
         });
+
+        this.addParticipant(); // Add one participant by default
 
         if (this.additionalData.length === 1) {
             this.hasPreselectedData = true;
@@ -96,14 +93,53 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         this.toDestroy$.complete();
     }
 
+    participants(): FormArray {
+        return this.tripRegisterForm.get('participants') as FormArray;
+    }
+
+    newParticipant(): FormGroup {
+        return this.formBuilder.group({
+            firstName: ['', Validators.required],
+            lastName: ['', Validators.required],
+            birthDate: ['', Validators.required],
+            phone: ['', Validators.required],
+            email: ['', Validators.email],
+            boarding: ['', Validators.required],
+            isCollapsed: [false],
+        });
+    }
+
+    addParticipant() {
+        this.participants().push(this.newParticipant());
+    }
+
+    removeParticipant(index: number) {
+        this.participants().removeAt(index);
+    }
+
+    toggleCollapse(index: number) {
+        const participant = this.participants().at(index);
+        participant.get('isCollapsed')?.setValue(!participant.get('isCollapsed')?.value);
+    }
+
+    isParticipantCollapsed(index: number): boolean {
+        return this.participants().at(index).get('isCollapsed')?.value;
+    }
+
     private enableFormFields() {
         for (const field of TRIPS_REGISTER_FORM_ELEMENTS) {
+            if (['firstName', 'lastName', 'email', 'phone', 'amount', 'boarding'].includes(field.id)) {
+                continue;
+            }
             this.tripRegisterForm.controls[field.id as string].enable();
         }
+        this.tripRegisterForm.controls['additionalText'].enable();
     }
 
     private updateBoardingList(trip: Trip) {
-        this.boardingList$.next(trip.boarding);
+        if (trip) {
+            this.boardingList$.next(trip.boarding);
+        }
     }
 
     public hasError(field: string): boolean {
@@ -133,14 +169,21 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             // Add form group data to form data
             const timestamp = Date.now();
             formData.append('timestamp', new Date(timestamp).toLocaleString());
-            for (const field of TRIPS_REGISTER_FORM_ELEMENTS) {
-                if (field.id === 'trip') {
-                    const tripValue = this.tripRegisterForm.get(field.id)?.value;
-                    formData.append('destination', tripValue.destination);
-                    formData.append('date', tripValue.date);
-                }
-                formData.append(field.id, this.tripRegisterForm.get(field.id)?.value);
-            }
+
+            const tripValue = this.tripRegisterForm.get('trip')?.value;
+            formData.append('destination', tripValue.destination);
+            formData.append('date', tripValue.date);
+            formData.append('additionalText', this.tripRegisterForm.get('additionalText')?.value);
+
+            const participants = this.tripRegisterForm.get('participants') as FormArray;
+            participants.controls.forEach((participant, index) => {
+                formData.append(`participant_${index}_firstName`, participant.get('firstName')?.value);
+                formData.append(`participant_${index}_lastName`, participant.get('lastName')?.value);
+                formData.append(`participant_${index}_birthDate`, participant.get('birthDate')?.value);
+                formData.append(`participant_${index}_phone`, participant.get('phone')?.value);
+                formData.append(`participant_${index}_email`, participant.get('email')?.value);
+                formData.append(`participant_${index}_boarding`, participant.get('boarding')?.value);
+            });
 
             if (formData) {
                 this.submitForm.emit(true);
@@ -148,7 +191,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 this.isSending = false;
 
                 const mailToFormData: FormToMailInformation<TripRegisterFormFields> = {
-                    receiver: this.tripRegisterForm.controls['email'].getRawValue(),
+                    receiver: this.participants().controls[0].get('email')?.getRawValue(),
                     formValues: this.tripRegisterForm.getRawValue(),
                 };
 

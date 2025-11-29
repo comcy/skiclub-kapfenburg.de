@@ -52,6 +52,56 @@ td {
         &.disabled {
             color: rgb(195, 195, 195);
         }
+
         padding-left: 16px;
     }
+}
+
+.participants-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.participant-group {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.participant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-participant-btn {
+    width: 20%;
+    margin-top: 1rem;
+    margin-left: auto;
+}
+
+@media (max-width: 480px) {
+    .add-participant-btn {
+        width: 80%;
+        font-size: 0.75rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .add-participant-btn mat-icon {
+        font-size: 18px;
+        /* Icon auch etwas kleiner */
+    }
+}
+
+.remove-participant-btn {
+    margin-left: auto;
+}
+
+.submit-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
 }
