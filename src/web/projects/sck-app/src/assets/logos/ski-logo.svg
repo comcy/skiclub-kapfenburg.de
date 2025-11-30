@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="140"
+   height="70"
+   viewBox="0 0 130 65"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="ski-logo.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs9" />
+  <sodipodi:namedview
+     id="namedview9"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="7.2071429"
+     inkscape:cx="85.332012"
+     inkscape:cy="59.593657"
+     inkscape:window-width="2991"
+     inkscape:window-height="1218"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg9" />
+  <style
+     id="style1">
+    :root {
+      --logo-fill: #1a1a1a;      /* dunkles Grau/Schwarz für Bergfläche */
+      --logo-stroke: #333333;    /* dunkleres Grau für Berg-Outline */
+      --tree-fill: #bbbbbb;      /* hellgrau für Bäume */
+      --cross-fill: #bbbbbb;     /* hellgrau für Kreuz */
+      --snow-tip-fill: #333333;  /* gleiche Farbe wie Outline */
+    }
+
+  .mountain-fill {
+    fill: var(--logo-fill);
+    stroke: none;
+  }
+
+  .mountain-stroke {
+    fill: none;
+    stroke: var(--logo-stroke);
+    stroke-width: 2;
+  }
+
+    .tree {
+      fill: var(--tree-fill);
+      stroke: none;
+    }
+
+    .cross {
+      stroke: var(--cross-fill);
+      fill: var(--cross-fill);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill-rule:evenodd;
+    }
+
+    .snow-tip {
+      fill: var(--snow-tip-fill);
+      stroke: none;
+    }
+  </style>
+  <!-- Bergsilhouette -->
+  <path
+     class="mountain-fill"
+     d="M10 60             L40 20             L60 40             L85 5             L120 60            Z"
+     id="path1"
+     style="fill:#b3b3b3" />
+  <!-- Schneespitze (innerhalb des Berges, gezackte Unterkante) -->
+  <polygon
+     class="snow-tip"
+     points="     85,6.8     91.5,17     88,16 87,17 86,19 85,17 83,17 81,16 79,16 77.65,17     85,6.7   "
+     id="polygon1"
+     style="fill:#ffffff" />
+  <!-- Bäume -->
+  <polygon
+     class="tree"
+     points="23,52 27,44 31,52"
+     id="polygon2"
+     style="fill:#4d4d4d" />
+  <polygon
+     class="tree"
+     points="28,55 32,45 36,55"
+     id="polygon3"
+     style="fill:#4d4d4d" />
+  <polygon
+     class="tree"
+     points="32,50 36,40 40,50"
+     id="polygon4"
+     style="fill:#4d4d4d" />
+  <!-- Kreuz / Ski+Snowboard (vergrößert, höher positioniert) -->
+  <g
+     transform="translate(87,33) scale(0.08)"
+     id="g9"
+     style="fill:#333333">
+    <path
+       class="cross"
+       d="M173,241.5 C173.545,242.618 173.637,243.483 172.531,244.533 C160.648,255.814 148.829,267.162 137.001,278.501 C124.663,290.329 112.409,302.247 99.980,313.979 C85.231,327.901 70.331,341.664 55.505,355.505 C54.300,356.631 53.013,357.717 52.026,359.020 C47.049,365.590 47.316,369.896 53.009,375.992 C54.617,377.713 56.512,379.191 57.966,381.027 C62.362,386.574 66.464,388.210 74.401,380.892 C83.660,372.354 92.226,363.057 100.986,353.987 C115.152,339.319 128.952,324.305 143.460,309.960 C159.634,293.969 175.500,277.667 191.500,261.500"
+       id="path4"
+       style="fill:#333333" />
+    <path
+       class="cross"
+       d="M144.500,215.500 C128.500,231.167 112.008,246.367 96.617,262.611 C74.456,286.002 50.339,307.335 27.499,330.000 C24.835,332.643 22.548,335.331 22.409,339.497 C22.285,343.183 23.698,345.988 26.028,348.474 C27.717,350.276 29.963,351.606 31.446,353.541 C36.640,360.316 43.744,358.013 48.403,353.402 C59.373,342.542 69.912,331.240 80.482,319.983 C98.320,300.988 115.732,281.593 133.987,262.987 C143.727,253.059 153.333,243.000 163.000,233.000"
+       id="path5"
+       style="fill:#333333" />
+    <path
+       class="cross"
+       d="M270.000,185.000 C283.000,173.000 295.955,160.951 309.011,149.012 C327.468,132.132 346.201,115.546 364.411,98.405 C372.807,90.501 382.434,83.700 388.950,73.967 C397.833,60.699 391.323,50.244 380.433,45.659 C374.983,43.365 369.125,45.031 364.025,48.042 C360.754,49.973 357.571,52.070 354.953,54.958 C353.505,56.556 352.269,58.804 349.500,58.500"
+       id="path6"
+       style="fill:#333333" />
+    <path
+       class="cross"
+       d="M347.500,56.500 C347.157,54.159 349.219,53.655 350.483,52.481 C355.905,47.446 360.745,41.829 362.393,34.476 C364.027,27.190 360.858,21.377 354.994,17.007 C349.405,12.842 343.251,12.168 337.027,15.059 C328.765,18.897 322.531,25.450 316.548,32.043 C287.295,64.284 259.199,97.578 228.510,128.510 C226.268,130.769 223.990,133.033 222.081,135.561 C221.231,136.686 220.411,136.362 219.500,136.500"
+       id="path7"
+       style="fill:#333333" />
+    <path
+       class="cross"
+       d="M241.000,155.500 C275.931,122.427 310.862,89.354 345.581,56.483 C348.068,56.449 349.078,57.631 349.647,59.833 C317.296,95.418 284.877,131.136 251.000,165.500"
+       id="path8"
+       style="fill:#333333" />
+    <path
+       class="cross"
+       d="M66.500,15.000 C57.841,16.660 49.336,18.837 42.016,24.023 C29.111,33.166 23.497,46.536 21.040,61.507 C18.425,77.433 24.812,90.513 35.059,101.947 C43.488,111.352 54.055,118.357 64.047,125.938 C77.269,135.970 89.720,146.853 102.057,157.937 C132.245,185.059 161.046,213.609 189.430,242.568 C214.265,267.907 238.213,294.117 263.119,319.382 C275.880,332.327 288.275,345.578 300.437,359.057 C305.538,364.709 310.714,370.046 316.920,374.609 C334.984,387.888 358.107,385.715 373.908,373.382 C389.649,361.097 394.976,343.746 393.271,324.520 C392.433,315.066 387.411,306.764 381.035,299.470 C372.534,289.744 362.262,282.108 351.961,274.553 C335.027,262.133 320.010,247.548 304.470,233.534 C273.281,205.407 244.115,175.219 214.580,145.420 C189.856,120.475 165.573,95.076 141.611,69.396 C129.865,56.808 118.440,43.867 106.769,31.213 C96.467,20.044 82.854,14.033 67.000,15.000"
+       id="path9"
+       style="fill:#333333" />
+  </g>
+</svg>
