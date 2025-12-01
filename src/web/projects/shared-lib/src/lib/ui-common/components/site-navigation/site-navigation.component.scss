@@ -37,14 +37,15 @@ mat-toolbar.mat-primary {
     display: flex;
     flex-flow: row;
     align-items: center;
+    margin-left: 48px;
 }
 
 .logo {
+    margin-left: 28px;
     color: white;
-
     width: 24px;
     height: 24px;
-    transform: scale(9);
+    transform: scale(5);
 }
 
 .header-title {

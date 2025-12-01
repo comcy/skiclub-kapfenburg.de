@@ -20,8 +20,13 @@ import { BASE_ICON_PROPERTIES } from '../../icons/base-icon';
             useValue: {
                 iconName: 'instagram',
                 iconPath: 'assets/logos/instagram.svg',
+                color: 'accent',
             },
         },
     ],
 })
-export class InstagramButtonComponent extends BaseButtonComponent {}
+export class InstagramButtonComponent extends BaseButtonComponent {
+    constructor() {
+        super();
+    }
+}

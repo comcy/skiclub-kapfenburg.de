@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { BASE_ICON_PROPERTIES, BaseIconComponent } from '../base-icon';
+import { MATERIAL_COLOR } from '../../../enums';
 
 @Component({
     selector: 'shared-lib-instagram-icon',
@@ -19,6 +20,7 @@ import { BASE_ICON_PROPERTIES, BaseIconComponent } from '../base-icon';
             useValue: {
                 iconName: 'instagram',
                 iconPath: 'assets/logos/instagram.svg',
+                color: MATERIAL_COLOR.ACCENT,
             },
         },
     ],

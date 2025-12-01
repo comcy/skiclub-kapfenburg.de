@@ -61,7 +61,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="participant-form" *ngIf="!participant.get('isCollapsed')?.value">
+                        <div class="participant-form" [class.collapsed]="isParticipantCollapsed(i)">
                             @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
                                 <div>
                                     <table class="full-width" cellspacing="0">

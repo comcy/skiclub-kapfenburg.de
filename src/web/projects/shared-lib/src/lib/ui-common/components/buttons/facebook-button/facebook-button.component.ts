@@ -11,9 +11,10 @@ import { BaseButtonComponent } from '../base-button/base-button.component';
     // styleUrls: ['./facebook-button.component.scss'], // DOES NOT WORK
     templateUrl: '../base-button/base-button.component.html',
     styleUrls: ['../base-button/base-button.component.scss'],
+    standalone: true,
 })
 export class FacebookButtonComponent extends BaseButtonComponent {
     constructor() {
-        super();
+        super('facebook');
     }
 }

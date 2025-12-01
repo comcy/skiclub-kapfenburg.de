@@ -19,10 +19,8 @@ export class AppComponent {
     public logoPath = 'assets/img/sck_logo.svg';
     public routeTypes = NavigationItemTypes;
     public footerColor = 'primary';
-
     public contactMail = 'webmaster@skiclub-kapfenburg.de';
     public contactMailTooltip = 'Mail senden';
-
     public buildNumber: string = environment.buildNumber;
 
     public navItems: NavigationItem[] = [

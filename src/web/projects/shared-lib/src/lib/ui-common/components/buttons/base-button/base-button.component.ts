@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialColor } from '../../../enums';
 import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
@@ -11,12 +11,15 @@ import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
 })
 export class BaseButtonComponent {
     @Input() link: string | undefined;
-    @Input() buttonName: string | undefined;
+    // @Input() buttonName: string | undefined;
     @Input() color: MaterialColor | undefined;
     @Input() tooltip: string;
     @Input() isSvgButton: boolean;
 
+    protected buttonName = inject(string);
+
     constructor() {
+        this.buttonName = name;
         this.tooltip = '';
         this.isSvgButton = false;
     }
