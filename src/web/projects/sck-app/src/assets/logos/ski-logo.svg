@@ -80,7 +80,7 @@
   <!-- Schneespitze (innerhalb des Berges, gezackte Unterkante) -->
   <polygon
      class="snow-tip"
-     points="     85,6.8     91.5,17     88,16 87,17 86,19 85,17 83,17 81,16 79,16 77.65,17     85,6.7   "
+     points="     86,6.8     92.5,17     88,16 87,17 86,19 85,17 83,17 81,16 79,16 76.55,17     85,5"
      id="polygon1"
      style="fill:#ffffff" />
   <!-- Bäume -->

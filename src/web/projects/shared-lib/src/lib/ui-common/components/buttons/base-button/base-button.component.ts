@@ -1,32 +1,23 @@
-import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialColor } from '../../../enums';
+import { Component, Input } from '@angular/core';
 import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
+import { MATERIAL_COLOR, MaterialColor } from '../../../enums';
 
 @Component({
     selector: 'shared-lib-base-button',
+    standalone: true,
     imports: [CommonModule, SHARED_LIB_BUTTONS_NG_MAT_MODULES],
     templateUrl: './base-button.component.html',
     styleUrls: ['./base-button.component.scss'],
 })
 export class BaseButtonComponent {
-    @Input() link: string | undefined;
-    // @Input() buttonName: string | undefined;
-    @Input() color: MaterialColor | undefined;
-    @Input() tooltip: string;
-    @Input() isSvgButton: boolean;
+    @Input({ required: true }) icon!: string;
+    @Input({ required: true }) link!: string;
+    @Input() tooltip = '';
+    @Input() color?: MaterialColor = MATERIAL_COLOR.PRIMARY;
+    @Input() isSvg = false;
 
-    protected buttonName = inject(string);
-
-    constructor() {
-        this.buttonName = name;
-        this.tooltip = '';
-        this.isSvgButton = false;
-    }
-
-    public openLink(): void {
-        if (this.link) {
-            window.open(this.link, '_blank');
-        }
+    openLink(): void {
+        window.open(this.link, '_blank');
     }
 }

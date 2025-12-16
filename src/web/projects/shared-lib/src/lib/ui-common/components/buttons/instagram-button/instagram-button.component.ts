@@ -2,31 +2,23 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
+import { MATERIAL_COLOR } from '../../../enums';
+import { InstagramIconComponent } from '../../icons/instagram-icon';
 import { BaseButtonComponent } from '../base-button/base-button.component';
-import { BASE_ICON_PROPERTIES } from '../../icons/base-icon';
 
 @Component({
     selector: 'shared-lib-instagram-button',
-    imports: [CommonModule, SHARED_LIB_BUTTONS_NG_MAT_MODULES],
-    templateUrl: '../base-button/base-button.component.html',
-    styleUrls: ['../base-button/base-button.component.scss'],
+    imports: [BaseButtonComponent, InstagramIconComponent],
+    templateUrl: './instagram-button.component.html',
+    styleUrls: ['./instagram-button.component.scss'],
     standalone: true,
-    providers: [
-        {
-            provide: BASE_ICON_PROPERTIES,
-            useValue: {
-                iconName: 'instagram',
-                iconPath: 'assets/logos/instagram.svg',
-                color: 'accent',
-            },
-        },
-    ],
 })
-export class InstagramButtonComponent extends BaseButtonComponent {
-    constructor() {
-        super();
-    }
+export class InstagramButtonComponent {
+    readonly MATERIAL_COLOR = MATERIAL_COLOR;
+    icon = 'instagram';
+    link = 'https://www.instagram.com/skiclub_kapfenburg/';
+    color = MATERIAL_COLOR.ACCENT;
+    tooltip = 'Instagram öffnen';
+    isSvgButton = true;
 }

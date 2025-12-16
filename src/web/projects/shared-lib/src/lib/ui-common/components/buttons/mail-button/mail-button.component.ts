@@ -3,18 +3,19 @@
  */
 
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
+import { MATERIAL_COLOR } from '../../../enums';
 import { BaseButtonComponent } from '../base-button/base-button.component';
 
 @Component({
     selector: 'shared-lib-mail-button',
-    imports: [CommonModule, SHARED_LIB_BUTTONS_NG_MAT_MODULES],
-    templateUrl: '../base-button/base-button.component.html',
-    styleUrls: ['../base-button/base-button.component.scss'],
+    imports: [BaseButtonComponent],
+    templateUrl: './mail-button.component.html',
+    styleUrls: ['./mail-button.component.scss'],
 })
-export class MailButtonComponent extends BaseButtonComponent {
-    constructor() {
-        super();
-    }
+export class MailButtonComponent {
+    readonly MATERIAL_COLOR = MATERIAL_COLOR;
+    icon = 'mail';
+    link = 'webmaster@skiclub-kapfenburg.de';
+    color = MATERIAL_COLOR.ACCENT;
+    tooltip = 'Mail senden';
 }

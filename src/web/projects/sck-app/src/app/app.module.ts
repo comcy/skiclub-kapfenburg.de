@@ -32,7 +32,6 @@ import {
     InstagramButtonComponent,
     MailButtonComponent,
 } from 'projects/shared-lib/src/lib/ui-common/components/buttons';
-import { BaseButtonComponent } from 'projects/shared-lib/src/lib/ui-common/components/buttons/base-button/base-button.component';
 import { SckLogoIconComponent } from 'projects/shared-lib/src/lib/ui-common/components/icons';
 import { InstagramIconComponent } from 'projects/shared-lib/src/lib/ui-common/components/icons/instagram-icon';
 import { SiteFooterComponent } from 'projects/shared-lib/src/lib/ui-common/components/site-footer/site-footer.component';
@@ -75,7 +74,6 @@ import { tripRegistrationServiceProvider } from './services/business/trip-regist
         ComcyCopyrightComponent,
         MailButtonComponent,
         SckLogoIconComponent,
-        BaseButtonComponent,
         FacebookButtonComponent,
         InstagramButtonComponent,
         InstagramIconComponent,
