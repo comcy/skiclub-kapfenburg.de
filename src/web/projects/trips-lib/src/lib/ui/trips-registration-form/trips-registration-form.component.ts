@@ -14,12 +14,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
+import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/locale';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { Trip } from '../../domain/models';
-import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
 import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
-import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/locale';
 
 @Component({
     selector: 'lib-trips-registration-form',
@@ -158,13 +157,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     private enableFormFields() {
-        for (const field of TRIPS_REGISTER_FORM_ELEMENTS) {
-            if (['firstName', 'lastName', 'email', 'phone', 'birthday', 'boarding'].includes(field.id)) {
-                continue;
-            }
-            this.tripRegisterForm.controls[field.id as string].enable();
-        }
-        this.tripRegisterForm.controls['additionalText'].enable();
+        this.tripRegisterForm.get('additionalText')?.enable();
     }
 
     private updateBoardingList(trip: Trip) {

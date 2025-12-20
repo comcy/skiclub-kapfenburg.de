@@ -151,38 +151,6 @@
 
         <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
 
-        @if (true) {
-            <hr />
-            <h3>Debug Output</h3>
-            <pre>
-        Form Value: {{ tripRegisterForm.value | json }}
-        Form Status: {{ tripRegisterForm.status | json }}
-        Form Errors: {{ tripRegisterForm.errors | json }}
-    </pre
-            >
-            <h4>Controls</h4>
-            @for (control of tripRegisterForm.controls | keyvalue; track control.key) {
-                <div>
-                    <strong>{{ control.key }}</strong>
-                    - Valid: {{ control.value.valid }} - Touched: {{ control.value.touched }} - Errors:
-                    {{ control.value.errors | json }}
-                </div>
-            }
-
-            <h4>Participants</h4>
-            @for (participant of participants().controls; track $index; let i = $index) {
-                <div>
-                    <h5>Participant {{ i + 1 }}</h5>
-                    <pre>
-                Value: {{ participant.value | json }}
-                Status: {{ participant.status | json }}
-                Errors: {{ participant.errors | json }}
-            </pre
-                    >
-                </div>
-            }
-        }
-
         @if (isSending) {
             <mat-progress-spinner class="example-margin" color="primary"> </mat-progress-spinner>
         }
