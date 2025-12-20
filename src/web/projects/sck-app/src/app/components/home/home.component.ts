@@ -101,6 +101,8 @@ export class HomeComponent implements OnInit {
         dialogConfig.data = {
             tile,
         };
+        dialogConfig.width = '90vw';
+        dialogConfig.maxWidth = '600px';
         const comp = this.resolveRegisterDialogComponent(tile);
         const dialogRef = this.dialog.open(comp, dialogConfig);
 

@@ -5,6 +5,6 @@
 export interface RegistrationRequestBody {
   firstName: string;
   lastName: string;
-  birthDate: string;
+  birthday: string;
   email: string;
 }

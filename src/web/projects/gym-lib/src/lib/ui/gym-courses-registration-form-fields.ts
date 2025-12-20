@@ -42,10 +42,10 @@ export const GYM_COURSES_REGISTRATION_FORM_ELEMENTS: BaseFormElements[] = [
         cols: 2,
     },
     {
-        id: 'age',
-        label: 'Alter',
+        id: 'birthday',
+        label: 'Geburtstag',
         validation: [{ type: 'required', message: 'is required' }],
-        cols: 1,
+        cols: 2,
     },
     {
         id: 'additionalText',

@@ -2,7 +2,10 @@
  * @copyright Copyright (c) 2024 Christian Silfang
  */
 
-import { TripRegisterFormFields } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
+import {
+    TripRegisterFormFields,
+    TripRegisterParticipant,
+} from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
 
 export const getTripConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
@@ -10,58 +13,98 @@ export const getTripConfirmationSuccessMessage = (): string => {
 };
 
 export const getTripConfirmationMailSubject = (values: TripRegisterFormFields): string => {
-    return `SC-Kapfenburg Anmeldung: ${values.firstName}`;
+    return `SC-Kapfenburg Anmeldung: ${values.participants[0].firstName}`;
 };
 
 export const getTripConfirmationMailBcc = (): string => {
-    return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
+    // return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
+    return 'christian.silfang@gmail.com';
 };
 
+const formatDateDE = (date: Date | string): string => {
+    const d = new Date(date);
+    return d.toLocaleDateString('de-DE');
+};
+
+const renderParticipant = (participant: TripRegisterParticipant, title?: string): string => `
+    <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #eee;">
+        ${title ? `<h3 style="margin-bottom: 8px; color: #0073e6;">${title}</h3>` : ''}
+
+        <p style="margin: 0; font-weight: bold; font-size: 1.1em;">
+            ${participant.firstName} ${participant.lastName}
+        </p>
+
+        <p style="margin: 4px 0;">
+            Geburtstdatum: <strong>${formatDateDE(participant.birthday)}</strong>
+        </p>
+        <p style="margin: 4px 0;">
+            E-Mail: <strong>${participant.email}</strong>
+        </p>
+        <p style="margin: 4px 0;">
+            Telefon: <strong>${participant.phone}</strong>
+        </p>
+        <p style="margin: 4px 0;">
+            Zugstieg: <strong>${participant.boarding}</strong>
+        </p>
+    </div>
+`;
+
 export const getTripConfirmationMailText = (values: TripRegisterFormFields): string => {
+    const [contactPerson, ...additionalParticipants] = values.participants;
+
     return `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding-top: 8px; padding-bottom: 16px;">
-            <h1 style="color: #0073e6;">Anmeldung beim Skiclub Kapfenburg e.V. zur Ausfahrt "${values.trip.destination}" am ${values.trip.date}</h1>
-            <p>Hallo ${values.firstName},</p>
             
-            <p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung.</p>
-            <p>Bitte prüfe die folgenden Daten auf Richtigkeit und beachte unsere nachstehenden Informationen und Teilnahmebedingungen.
-                <br>
-                <br>
-                Solltest du Fehler in deinen Daten entdeckt haben oder sind dir die Teilnahmebedingungen noch nicht ganz klar, melde dich gerne bei uns. Du kannst direkt auf diese E-Mail antworten. Im Falle einer Stornierung verwende bitte ebenfalls diese Mail als Referenz. 
-                Wir kümmern uns umgehend um die Änderungen und setzen uns mit dir in Verbindung.</p>
+            <h1 style="color: #0073e6;">
+                Anmeldung beim Skiclub Kapfenburg e.V. zur Ausfahrt
+                "${values.trip.destination}" am ${values.trip.date}
+            </h1>
 
-            <p>Wir haben folgende Daten registriert:</p>
+            <p>Hallo ${contactPerson.firstName},</p>
 
-            
-            <div style="display: flex; border-left: 4px solid #ac1dee; padding-left: 16px; font-family: Arial, sans-serif;">
-                <!-- Linke Spalte -->
-                <div style="flex: 1; padding-right: 16px;">
-                    <p style="margin: 0; font-weight: bold; font-size: 1.2em; color: #0073e6;">
-                        ${values.firstName} ${values.lastName}
-                    </p>
-                    <p style="margin: 4px 0;">E-Mail: <span style="font-weight: bold; color: #333;">${values.email}</span></p>
-                    <p style="margin: 4px 0;">Telefon: <span style="font-weight: bold; color: #333;">${values.phone}</span></p>
-                </div>
-            
-                <!-- Rechte Spalte -->
-                <div style="flex: 1; padding-left: 16px;">
-                    <p style="margin: 4px 0;">Zugstieg: <span style="font-weight: bold; color: #333;">${values.boarding}</span></p>
-                    <p style="margin: 4px 0;">Zusätzliche Personen: <span style="font-weight: bold; color: #333;">${values.amount}</span></p>
-                    <p style="margin: 4px 0;">Zusatzangaben:</p>
-                    <div style="padding: 8px; background-color: #0073e610; border-radius: 4px; border: 1px solid #ddd;">
-                        <p style="margin: 0; color: #333; padding-left: 8px;">${values.additionalText}</p>
-                    </div>
-                </div>
+            <p>
+                wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit eure Anmeldung.
+                Bitte prüfe die folgenden Daten auf Richtigkeit.
+            </p>
+
+            <p>Wir haben folgende Teilnehmer registriert:</p>
+
+            <div style="border-left: 4px solid #ac1dee; padding-left: 16px;">
+                
+                <!-- Ansprechpartner -->
+                ${renderParticipant(contactPerson, 'Ansprechpartner')}
+
+                <!-- Zusatzpersonen -->
+                ${
+                    additionalParticipants.length > 0
+                        ? `
+                            <h3 style="margin-top: 24px; color: #0073e6;">
+                                Zusatzpersonen
+                            </h3>
+                            ${additionalParticipants.map((p) => renderParticipant(p)).join('')}
+                          `
+                        : ''
+                }
             </div>
-            
-            
-            <div style="background-color: #f7f7f7; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0;">
+
+            ${
+                values.additionalText
+                    ? `
+                        <p style="margin-top: 16px;">Zusatzangaben:</p>
+                        <div style="padding: 8px; background-color: #0073e610; border-radius: 4px; border: 1px solid #ddd;">
+                            <p style="margin: 0;">${values.additionalText}</p>
+                        </div>
+                      `
+                    : ''
+            }
+
+        <div style="background-color: #f7f7f7; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0;">
 
                 <h2>Aktuelle Teilnahmebedingungen</h2>
                 
                 <h3>Gültigkeit der Anmeldung, Anzahlung und Stornierung</h3>
                 <ul>
-                    <li>Die Anmeldung ist erst gültig bei einer Anzahlung von 30 EUR (entspricht der Busgebühr). Der restliche Betrag wird üblicherweise in Bar am Tag der Reise kassiert, andernfalls sind Vollzahlungen vorab ebenfalls möglich.
+                    <li>Die Anmeldung ist erst gültig bei einer Anzahlung von 30 EUR pro Person (entspricht der Busgebühr). Der restliche Betrag wird üblicherweise in Bar am Tag der Reise kassiert, andernfalls sind Vollzahlungen vorab ebenfalls möglich.
                         
                         <div style="padding-left: 8px; border-left: 4px solid#ac1dee; margin-top: 16px; margin-bottom: 16px;">
                             <p style="margin: 0; font-weight: bold; font-size: 14px;">Skiclub Kapfenburg e.V.</p>

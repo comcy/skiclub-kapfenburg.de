@@ -15,7 +15,13 @@ export const getGymConfirmationMailSubject = (values: GymCoursesRegisterFormFiel
 };
 
 export const getGymConfirmationMailBcc = (): string => {
-    return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
+    // return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
+    return 'christian.silfang@gmail.com';
+};
+
+const formatDateDE = (date: Date | string): string => {
+    const d = new Date(date);
+    return d.toLocaleDateString('de-DE');
 };
 
 export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields): string => {
@@ -46,7 +52,7 @@ export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields)
                 <!-- Rechte Spalte -->
                 <div style="flex: 1; padding-left: 16px;">
                     <p style="margin: 4px 0;">Kurs: <span style="font-weight: bold; color: #333;">${values.courseType}</span></p>
-                    <p style="margin: 4px 0;">Alter: <span style="font-weight: bold; color: #333;">${values.age}</span></p>
+                    <p style="margin: 4px 0;">Geburtstag: <span style="font-weight: bold; color: #333;">${formatDateDE(values.birthday)}</span></p>
                     <p style="margin: 4px 0;">Zusatzangaben:</p>
                     <div style="padding: 8px; background-color: #0073e610; border-radius: 4px; border: 1px solid #ddd;">
                         <p style="margin: 0; color: #333; padding-left: 8px;">${values.additionalText}</p>
@@ -61,7 +67,7 @@ export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields)
                 
                 <h3>Gültigkeit der Anmeldung, Anzahlung und Stornierung</h3>
                 <ul>
-                    <li>Die Anmeldung ist erst gültig mit der Bezahlung der Kursgebühren von 48 EUR (Mitglieder) oder 72 EUR (Nicht-Mitglieder).
+                    <li>Die Anmeldung ist erst gültig mit der Bezahlung der Kursgebühren von 40 EUR (Mitglieder) oder 60 EUR (Nicht-Mitglieder).
                         
                         <div style="padding-left: 8px; border-left: 4px solid#ac1dee; margin-top: 16px; margin-bottom: 16px;">
                             <p style="margin: 0; font-weight: bold; font-size: 14px;">Skiclub Kapfenburg e.V.</p>

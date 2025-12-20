@@ -6,6 +6,8 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -17,6 +19,7 @@ import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { TRIPS_REGISTER_FORM_ELEMENTS } from './trips-register-form-fields';
 import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
+import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/locale';
 
 @Component({
     selector: 'lib-trips-registration-form',
@@ -33,6 +36,12 @@ import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './
         MatFormFieldModule,
         MatSelectModule,
         MatProgressSpinnerModule,
+        MatDatepickerModule,
+    ],
+    providers: [
+        provideNativeDateAdapter(),
+        { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
+        { provide: MAT_DATE_FORMATS, useValue: GERMAN_DATE_FORMATS },
     ],
 })
 export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
@@ -93,6 +102,26 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         this.toDestroy$.complete();
     }
 
+    private updateParticipantValidators(): void {
+        this.participants().controls.forEach((participant, index) => {
+            const emailControl = participant.get('email');
+            const phoneControl = participant.get('phone');
+
+            if (index === 0) {
+                // First participant
+                emailControl?.setValidators([Validators.required, Validators.email]);
+                phoneControl?.setValidators(Validators.required);
+            } else {
+                // Additional participants
+                emailControl?.clearValidators();
+                emailControl?.setValidators(Validators.email);
+                phoneControl?.clearValidators();
+            }
+            emailControl?.updateValueAndValidity();
+            phoneControl?.updateValueAndValidity();
+        });
+    }
+
     participants(): FormArray {
         return this.tripRegisterForm.get('participants') as FormArray;
     }
@@ -101,9 +130,9 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         return this.formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
-            birthDate: ['', Validators.required],
+            birthday: ['', Validators.required],
             phone: ['', Validators.required],
-            email: ['', Validators.email],
+            email: [null, [Validators.required, Validators.email]],
             boarding: ['', Validators.required],
             isCollapsed: [false],
         });
@@ -111,10 +140,12 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     addParticipant() {
         this.participants().push(this.newParticipant());
+        this.updateParticipantValidators();
     }
 
     removeParticipant(index: number) {
         this.participants().removeAt(index);
+        this.updateParticipantValidators();
     }
 
     toggleCollapse(index: number) {
@@ -128,7 +159,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     private enableFormFields() {
         for (const field of TRIPS_REGISTER_FORM_ELEMENTS) {
-            if (['firstName', 'lastName', 'email', 'phone', 'amount', 'boarding'].includes(field.id)) {
+            if (['firstName', 'lastName', 'email', 'phone', 'birthday', 'boarding'].includes(field.id)) {
                 continue;
             }
             this.tripRegisterForm.controls[field.id as string].enable();
@@ -179,7 +210,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             participants.controls.forEach((participant, index) => {
                 formData.append(`participant_${index}_firstName`, participant.get('firstName')?.value);
                 formData.append(`participant_${index}_lastName`, participant.get('lastName')?.value);
-                formData.append(`participant_${index}_birthDate`, participant.get('birthDate')?.value);
+                formData.append(`participant_${index}_birthday`, participant.get('birthday')?.value);
                 formData.append(`participant_${index}_phone`, participant.get('phone')?.value);
                 formData.append(`participant_${index}_email`, participant.get('email')?.value);
                 formData.append(`participant_${index}_boarding`, participant.get('boarding')?.value);
@@ -187,6 +218,9 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
             if (formData) {
                 this.submitForm.emit(true);
+
+                console.log('FORM DATA >>> ', formData);
+
                 this.tripRegistrationFormService.sendFormToSheetsIo(formData);
                 this.isSending = false;
 
@@ -194,6 +228,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                     receiver: this.participants().controls[0].get('email')?.getRawValue(),
                     formValues: this.tripRegisterForm.getRawValue(),
                 };
+                console.log('MAIL FORM DATA >>> ', mailToFormData);
 
                 this.tripRegistrationFormService.sendConfirmationMail(mailToFormData);
             } else {

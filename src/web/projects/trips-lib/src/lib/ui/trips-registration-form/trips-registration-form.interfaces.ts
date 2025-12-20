@@ -13,15 +13,19 @@ export interface TripRegisterForm {
     formFields: BaseFormElements[];
 }
 
-export interface TripRegisterFormFields {
-    trip: Trip;
+export interface TripRegisterParticipant {
     firstName: string;
     lastName: string;
-    phone: string;
+    birthday: string;
     email: string;
-    amount: string;
-    additionalText: string;
+    phone: string;
     boarding: string;
+}
+
+export interface TripRegisterFormFields {
+    trip: Trip;
+    additionalText: string;
+    participants: TripRegisterParticipant[];
 }
 
 @Injectable()

@@ -13,7 +13,7 @@ export interface GymCoursesRegisterFormFields {
     courseType: string;
     email: string;
     phone: string;
-    age: string;
+    birthday: string;
     additionalText: string;
 }
 
