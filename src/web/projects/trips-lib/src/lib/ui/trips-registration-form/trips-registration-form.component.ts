@@ -201,7 +201,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const rawValue = this.tripRegisterForm.getRawValue(); //as TripRegistrationFormValue;
+        const rawValue = this.tripRegisterForm.getRawValue();
         const timestamp = new Date().toISOString();
 
         const contactPerson = rawValue.participants[0];
