@@ -10,7 +10,7 @@ on:
       - master
 
 env:
-  PROJECT_PATH: "src/api/sck-api/"
+  PROJECT_PATH: "src/sck-api/"
   APP_NAME: "sck-api"
   APP_USER: "azureus"
   APP_DIR: "/var/www/html/sck-api/sck-api"

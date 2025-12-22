@@ -3,7 +3,7 @@
  */
 
 import cors from 'cors';
-import 'dotenv/config';
+import 'dotenv/config.js';
 import express from 'express';
 import emailRoutes from './routes/email-route.js';
 import registrationRoutes from './routes/registration-route.js';
