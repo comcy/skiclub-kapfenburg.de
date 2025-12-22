@@ -16,8 +16,7 @@ export const getTripConfirmationMailSubject = (values: TripRegisterFormValue): s
 };
 
 export const getTripConfirmationMailBcc = (): string => {
-    // return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
-    return 'christian.silfang@gmail.com';
+    return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
 };
 
 const renderParticipant = (participant: TripParticipant, title?: string): string => `
