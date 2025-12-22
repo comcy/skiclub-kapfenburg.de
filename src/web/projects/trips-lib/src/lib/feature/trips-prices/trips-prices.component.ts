@@ -2,10 +2,11 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
+import { NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
-import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/ui-common/models';
-import { NgFor } from '@angular/common';
+import { Price, Tile, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
+import { Trip } from '../../domain/models';
 
 @Component({
     selector: 'lib-trips-prices',
@@ -27,7 +28,7 @@ export class TripsPricesComponent implements OnInit {
                 this.trips.push({
                     destination: t.title,
                     date: t.date,
-                    boarding: t.boardings as string[],
+                    availableBoardings: t.boardings as string[],
                 });
             }
         }

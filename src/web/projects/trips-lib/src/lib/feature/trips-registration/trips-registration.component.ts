@@ -22,7 +22,6 @@ export class TripsRegistrationComponent implements OnInit {
 
     public tripData: Tile[] = TRIP_DATA;
     public trips: Trip[] = [];
-
     public busOnlyPrice: Price = BUS_ONLY_PRICE_DATA;
     public busAndPassPrice: Price[] = BUS_AND_PASS_PRICE_DATA;
     public boardings: string[] = BOARDING_LIST;
@@ -33,7 +32,7 @@ export class TripsRegistrationComponent implements OnInit {
                 this.trips.push({
                     destination: t.title,
                     date: t.date,
-                    boarding: t.boardings as string[],
+                    availableBoardings: t.boardings as string[],
                 });
             }
         }

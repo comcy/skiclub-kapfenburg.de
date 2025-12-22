@@ -6,10 +6,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-    getTripConfirmationSuccessMessage,
     getTripConfirmationMailBcc,
     getTripConfirmationMailSubject,
     getTripConfirmationMailText,
+    getTripConfirmationSuccessMessage,
 } from 'projects/data/mail-templates';
 import { environment } from 'projects/sck-app/src/environments/environment';
 import {
@@ -17,7 +17,8 @@ import {
     MailInformation,
 } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import {
-    TripRegisterFormFields,
+    SheetDbRow,
+    TripRegisterFormValue,
     TripRegistrationFormServiceInterface,
 } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
 
@@ -32,19 +33,20 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
      *
      * @param tripRegisterForm
      */
-    public sendFormToSheetsIo(formData: FormData): void {
-        this.http.post(`${environment.tripSheetUrl}`, formData).subscribe({
+    public sendFormToSheetsIo(rows: SheetDbRow[]): void {
+        this.http.post(`${environment.tripSheetUrl}`, { data: rows }).subscribe({
             next: (response) => {
-                console.log(response);
+                console.log('SheetDB response:', response);
                 this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
-                console.log(error);
+                console.error('SheetDB error:', error);
+                this.snackBar.open('Fehler beim Speichern der Anmeldung', this.snackAction);
             },
         });
     }
 
-    public sendConfirmationMail(formToMailData: FormToMailInformation<TripRegisterFormFields>): void {
+    public sendConfirmationMail(formToMailData: FormToMailInformation<TripRegisterFormValue>): void {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
         });
@@ -67,7 +69,7 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
         });
     }
 
-    private getSubjectText(values: TripRegisterFormFields): string {
+    private getSubjectText(values: TripRegisterFormValue): string {
         return getTripConfirmationMailSubject(values);
     }
 
@@ -75,7 +77,7 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
         return getTripConfirmationMailBcc();
     }
 
-    private getMailText(values: TripRegisterFormFields): string {
+    private getMailText(values: TripRegisterFormValue): string {
         return getTripConfirmationMailText(values);
     }
 }

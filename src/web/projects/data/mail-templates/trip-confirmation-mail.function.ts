@@ -2,17 +2,16 @@
  * @copyright Copyright (c) 2024 Christian Silfang
  */
 
-import {
-    TripRegisterFormFields,
-    TripRegisterParticipant,
-} from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
+import { calculateAge, formatDateByLocale } from 'projects/shared-lib/src/lib/date-time';
+import { TripParticipant } from 'projects/trips-lib/src/lib/domain/models';
+import { TripRegisterFormValue } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
 
 export const getTripConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
         Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über: registration@skiclub-kapfenburg.de`;
 };
 
-export const getTripConfirmationMailSubject = (values: TripRegisterFormFields): string => {
+export const getTripConfirmationMailSubject = (values: TripRegisterFormValue): string => {
     return `SC-Kapfenburg Anmeldung: ${values.participants[0].firstName}`;
 };
 
@@ -21,12 +20,7 @@ export const getTripConfirmationMailBcc = (): string => {
     return 'christian.silfang@gmail.com';
 };
 
-const formatDateDE = (date: Date | string): string => {
-    const d = new Date(date);
-    return d.toLocaleDateString('de-DE');
-};
-
-const renderParticipant = (participant: TripRegisterParticipant, title?: string): string => `
+const renderParticipant = (participant: TripParticipant, title?: string): string => `
     <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #eee;">
         ${title ? `<h3 style="margin-bottom: 8px; color: #0073e6;">${title}</h3>` : ''}
 
@@ -35,7 +29,7 @@ const renderParticipant = (participant: TripRegisterParticipant, title?: string)
         </p>
 
         <p style="margin: 4px 0;">
-            Geburtstdatum: <strong>${formatDateDE(participant.birthday)}</strong>
+            Geburtstdatum: <strong>${formatDateByLocale(participant.birthday)} (${calculateAge(participant.birthday)})</strong>
         </p>
         <p style="margin: 4px 0;">
             E-Mail: <strong>${participant.email}</strong>
@@ -49,7 +43,7 @@ const renderParticipant = (participant: TripRegisterParticipant, title?: string)
     </div>
 `;
 
-export const getTripConfirmationMailText = (values: TripRegisterFormFields): string => {
+export const getTripConfirmationMailText = (values: TripRegisterFormValue): string => {
     const [contactPerson, ...additionalParticipants] = values.participants;
 
     return `

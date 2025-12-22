@@ -25,7 +25,7 @@ export class TripsRegisterDialogComponent implements OnInit {
         {
             destination: '',
             date: '',
-            boarding: [''],
+            availableBoardings: [''],
         },
     ]);
     public tripDetails!: Trip[];
@@ -44,7 +44,7 @@ export class TripsRegisterDialogComponent implements OnInit {
             {
                 destination: tile.title,
                 date: tile.date,
-                boarding: tile.boardings,
+                availableBoardings: tile.boardings,
             },
         ]);
 
@@ -52,7 +52,7 @@ export class TripsRegisterDialogComponent implements OnInit {
             {
                 destination: tile.title,
                 date: tile.date,
-                boarding: tile.boardings,
+                availableBoardings: tile.boardings,
             },
         ];
     }

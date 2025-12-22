@@ -31,7 +31,7 @@ import {
     GymCoursesRegisterFormFields,
     GymCoursesRegistrationFormServiceInterface,
 } from './gym-courses-registration-form.interfaces';
-import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/locale';
+import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
 
 @Component({
     selector: 'lib-gym-courses-registration-form',
@@ -73,18 +73,18 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         this.gymCoursesRegisterForm = this.formBuilder.group({
-            courseType: [null, [Validators.required]],
+            course: [null, [Validators.required]],
             firstName: [null, Validators.required],
             lastName: [null, Validators.required],
             email: [null, [Validators.required, Validators.email]],
             phone: [null, [Validators.required]],
             birthday: [null, [Validators.required]],
-            additionalText: [null, []],
+            additionalText: ['', []],
         });
 
         if (this.additionalData.length === 1) {
             this.gymCoursesRegisterForm.patchValue({
-                courseType: this.additionalData[0],
+                course: this.additionalData[0],
             });
         }
     }
@@ -93,13 +93,13 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
         if (changes['additionalData'] && this.additionalData) {
             this.courseList = this.additionalData.map((course) => `${course.name}: ${course.date}`);
             this.gymCoursesRegisterForm.patchValue({
-                courseType: this.courseList[0],
+                course: this.courseList[0],
             });
             this.cdr.markForCheck();
         } else {
             const course = this.additionalData.map((course) => `${course.name}: ${course.date}`);
             this.gymCoursesRegisterForm.patchValue({
-                courseType: course[0],
+                course: course[0],
             });
         }
     }
@@ -121,6 +121,7 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
     public submit(): void {
         if (this.gymCoursesRegisterForm.valid) {
             const formData: FormData = new FormData();
+
             // Add form group data to form data
             const timestamp = Date.now();
             formData.append('timestamp', new Date(timestamp).toLocaleString());
@@ -130,12 +131,13 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
 
             if (formData) {
                 this.submitForm.emit(true);
-                this.tripRegistrationFormService.sendFormToSheetsIo(formData);
+                // this.tripRegistrationFormService.sendFormToSheetsIo(formData);
 
                 const mailToFormData: FormToMailInformation<GymCoursesRegisterFormFields> = {
                     receiver: this.gymCoursesRegisterForm.controls['email'].getRawValue(),
                     formValues: this.gymCoursesRegisterForm.getRawValue(),
                 };
+                console.log('MAIL FORM DATA >>> ', mailToFormData);
 
                 this.gymCoursesRegistrationFormService.sendConfirmationMail(mailToFormData);
             } else {

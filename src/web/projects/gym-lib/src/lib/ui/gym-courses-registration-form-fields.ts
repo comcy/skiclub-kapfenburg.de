@@ -6,7 +6,7 @@ import { BaseFormElements } from 'projects/shared-lib/src/lib/components/forms';
 
 export const GYM_COURSES_REGISTRATION_FORM_ELEMENTS: BaseFormElements[] = [
     {
-        id: 'courseType',
+        id: 'course',
         label: 'Kurs',
         validation: [{ type: 'required', message: 'is required' }],
         fullWidth: true,

@@ -3,7 +3,7 @@
  */
 
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
@@ -13,12 +13,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import {
+    calculateAge,
+    formatDateByLocale,
+    formatDateTime,
+    GERMAN_DATE_FORMATS,
+} from 'projects/shared-lib/src/lib/date-time';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
-import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/locale';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { Trip } from '../../domain/models';
-import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './trips-registration-form.interfaces';
+import { Trip, TripParticipant } from '../../domain/models';
+import {
+    SheetDbRow,
+    TripRegisterFormValue,
+    TripRegistrationFormServiceInterface,
+} from './trips-registration-form.interfaces';
 
 @Component({
     selector: 'lib-trips-registration-form',
@@ -55,7 +64,6 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     public isTripChanged = true;
     public hasPreselectedData = false;
     public firstPartSelected = false;
-    // public currentSelectedTrip = null;
     public tripRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
 
@@ -130,7 +138,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             lastName: ['', Validators.required],
             birthday: ['', Validators.required],
             phone: ['', Validators.required],
-            email: [null, [Validators.required, Validators.email]],
+            email: ['', [Validators.required, Validators.email]],
             boarding: ['', Validators.required],
             isCollapsed: [false],
         });
@@ -161,7 +169,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     private updateBoardingList(trip: Trip) {
         if (trip) {
-            this.boardingList$.next(trip.boarding);
+            this.boardingList$.next(trip.availableBoardings);
         }
     }
 
@@ -187,45 +195,43 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     public submit(): void {
         this.isSending = true;
-        if (this.tripRegisterForm.valid) {
-            const formData: FormData = new FormData();
-            // Add form group data to form data
-            const timestamp = Date.now();
-            formData.append('timestamp', new Date(timestamp).toLocaleString());
 
-            const tripValue = this.tripRegisterForm.get('trip')?.value;
-            formData.append('destination', tripValue.destination);
-            formData.append('date', tripValue.date);
-            formData.append('additionalText', this.tripRegisterForm.get('additionalText')?.value);
-
-            const participants = this.tripRegisterForm.get('participants') as FormArray;
-            participants.controls.forEach((participant, index) => {
-                formData.append(`participant_${index}_firstName`, participant.get('firstName')?.value);
-                formData.append(`participant_${index}_lastName`, participant.get('lastName')?.value);
-                formData.append(`participant_${index}_birthday`, participant.get('birthday')?.value);
-                formData.append(`participant_${index}_phone`, participant.get('phone')?.value);
-                formData.append(`participant_${index}_email`, participant.get('email')?.value);
-                formData.append(`participant_${index}_boarding`, participant.get('boarding')?.value);
-            });
-
-            if (formData) {
-                this.submitForm.emit(true);
-
-                console.log('FORM DATA >>> ', formData);
-
-                this.tripRegistrationFormService.sendFormToSheetsIo(formData);
-                this.isSending = false;
-
-                const mailToFormData: FormToMailInformation<TripRegisterFormFields> = {
-                    receiver: this.participants().controls[0].get('email')?.getRawValue(),
-                    formValues: this.tripRegisterForm.getRawValue(),
-                };
-                console.log('MAIL FORM DATA >>> ', mailToFormData);
-
-                this.tripRegistrationFormService.sendConfirmationMail(mailToFormData);
-            } else {
-                console.error('No data provided');
-            }
+        if (!this.tripRegisterForm.valid) {
+            this.isSending = false;
+            return;
         }
+
+        const rawValue = this.tripRegisterForm.getRawValue(); //as TripRegistrationFormValue;
+        const timestamp = new Date().toISOString();
+
+        const contactPerson = rawValue.participants[0];
+
+        const rows: SheetDbRow[] = rawValue.participants.map((participant: TripParticipant) => {
+            return {
+                firstName: participant.firstName,
+                lastName: participant.lastName,
+                email: participant.email || contactPerson.email,
+                phone: participant.phone || contactPerson.phone,
+                additionalText: rawValue.additionalText || '',
+                boarding: participant.boarding,
+                destination: rawValue.trip.destination,
+                date: rawValue.trip.date,
+                birthday: `${formatDateByLocale(participant.birthday)} (${calculateAge(participant.birthday)})`,
+                timestamp: formatDateTime(timestamp),
+            };
+        });
+
+        this.submitForm.emit(true);
+
+        this.tripRegistrationFormService.sendFormToSheetsIo(rows);
+
+        const mailToFormData: FormToMailInformation<TripRegisterFormValue> = {
+            receiver: contactPerson.email,
+            formValues: rawValue,
+        };
+
+        this.tripRegistrationFormService.sendConfirmationMail(mailToFormData);
+
+        this.isSending = false;
     }
 }

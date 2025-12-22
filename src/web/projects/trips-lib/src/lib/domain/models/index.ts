@@ -4,3 +4,4 @@
 
 export * from './download-item';
 export * from './trip';
+export * from './trip-participant';

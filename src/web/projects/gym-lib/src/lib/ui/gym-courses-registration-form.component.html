@@ -2,7 +2,7 @@
     <form class="form" [formGroup]="gymCoursesRegisterForm" (submit)="submit()">
         <mat-form-field class="full-width" appearance="fill">
             <mat-label>Kurs</mat-label>
-            <mat-select formControlName="courseType">
+            <mat-select formControlName="course">
                 @for (course of additionalData; track $index) {
                     <mat-option [value]="course">{{ course.name }} - {{ course.date }} </mat-option>
                 }
