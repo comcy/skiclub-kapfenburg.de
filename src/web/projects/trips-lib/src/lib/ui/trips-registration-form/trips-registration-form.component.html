@@ -26,66 +26,98 @@
             </div>
         }
 
-        @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
-            <div>
-                <table class="full-width" cellspacing="0">
-                    <tr>
-                        <td>
+        <div class="participants-container">
+            <div formArrayName="participants">
+                @for (participant of participants().controls; track $index; let i = $index) {
+                    <div [formGroupName]="i" class="participant-group">
+                        <div class="participant-header">
+                            <h4>
+                                Teilnehmer {{ i + 1 }}
+                                @if (i === 0) {
+                                    (Ansprechpartner)
+                                } @else {
+                                    (Zusatzperson)
+                                }
+                                @if (participant.get('isCollapsed')?.value) {
+                                    <span>
+                                        - {{ participant.get('firstName')?.value }}
+                                        {{ participant.get('lastName')?.value }}
+                                    </span>
+                                }
+                            </h4>
+                            <div>
+                                @if (i > 0) {
+                                    <button
+                                        mat-icon-button
+                                        (click)="removeParticipant(i)"
+                                        class="remove-participant-btn"
+                                    >
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                }
+                                <button mat-icon-button (click)="toggleCollapse(i)">
+                                    <mat-icon>
+                                        {{
+                                            participant.get('isCollapsed')?.value
+                                                ? 'keyboard_arrow_down'
+                                                : 'keyboard_arrow_up'
+                                        }}
+                                    </mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="participant-form" [class.collapsed]="isParticipantCollapsed(i)">
+                            @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+                                <div>
+                                    <table class="full-width" cellspacing="0">
+                                        <tr>
+                                            <td>
+                                                <mat-form-field class="full-width" appearance="fill">
+                                                    <mat-label>Vorname</mat-label>
+                                                    <input matInput formControlName="firstName" />
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field class="full-width" appearance="fill">
+                                                    <mat-label>Nachname</mat-label>
+                                                    <input matInput formControlName="lastName" />
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            } @else {
+                                <div>
+                                    <mat-form-field class="full-width" appearance="fill">
+                                        <mat-label>Vorname</mat-label>
+                                        <input matInput formControlName="firstName" />
+                                    </mat-form-field>
+
+                                    <mat-form-field class="full-width" appearance="fill">
+                                        <mat-label>Nachname</mat-label>
+                                        <input matInput formControlName="lastName" />
+                                    </mat-form-field>
+                                </div>
+                            }
+
                             <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Vorname</mat-label>
-                                <input matInput formControlName="firstName" />
+                                <mat-label>Geburtstag</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="birthday" />
+                                <mat-hint>DD.MM.YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
                             </mat-form-field>
-                        </td>
-                        <td>
+
                             <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Nachname</mat-label>
-                                <input matInput formControlName="lastName" />
+                                <mat-label>E-Mail</mat-label>
+                                <input matInput formControlName="email" />
                             </mat-form-field>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        }
 
-        @if (breakpointObserver.handsetBreakpoint$ | async) {
-            <div>
-                <mat-form-field class="full-width" appearance="fill">
-                    <mat-label>Vorname</mat-label>
-                    <input matInput formControlName="firstName" />
-                </mat-form-field>
-
-                <mat-form-field class="full-width" appearance="fill">
-                    <mat-label>Nachname</mat-label>
-                    <input matInput formControlName="lastName" />
-                </mat-form-field>
-            </div>
-        }
-
-        <mat-form-field class="full-width" appearance="fill">
-            <mat-label>E-Mail</mat-label>
-            <input matInput formControlName="email" />
-
-            @if (hasError('email')) {
-                <mat-error> Bitte geben Sie eine korrekte E-Mail Adresse an. </mat-error>
-            }
-        </mat-form-field>
-
-        <mat-form-field class="full-width" appearance="fill">
-            <mat-label>Telefonnummer</mat-label>
-            <input matInput formControlName="phone" />
-        </mat-form-field>
-
-        @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
-            <div>
-                <table class="full-width" cellspacing="0">
-                    <tr>
-                        <td>
                             <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Anzahl Personen</mat-label>
-                                <input matInput formControlName="amount" value="1" />
+                                <mat-label>Telefonnummer</mat-label>
+                                <input matInput formControlName="phone" />
                             </mat-form-field>
-                        </td>
-                        <td>
+
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Zustieg</mat-label>
                                 @if (boardingList$ | async; as boardingList) {
@@ -96,41 +128,21 @@
                                     </mat-select>
                                 }
                             </mat-form-field>
-                        </td>
-                    </tr>
-                </table>
+                        </div>
+                    </div>
+                }
             </div>
-        }
 
-        @if (breakpointObserver.handsetBreakpoint$ | async) {
-            <div>
-                <mat-form-field class="full-width" appearance="fill">
-                    <mat-label>Anzahl Personen</mat-label>
-                    <input matInput formControlName="amount" value="1" />
-                </mat-form-field>
-
-                <mat-form-field class="full-width" appearance="fill">
-                    <mat-label>Zustieg</mat-label>
-
-                    @if (boardingList$ | async; as boardingList) {
-                        <mat-select formControlName="boarding">
-                            @for (boarding of boardingList; track $index) {
-                                <mat-option [value]="boarding">{{ boarding }}</mat-option>
-                            }
-                        </mat-select>
-                    }
-                </mat-form-field>
+            <div class="button-wrapper">
+                <button matFab (click)="addParticipant()">
+                    <mat-icon>person_add</mat-icon>
+                </button>
             </div>
-        }
+        </div>
 
         <mat-form-field class="full-width" appearance="fill">
             <mat-label>Zusatzinformationen</mat-label>
-            <textarea
-                matInput
-                formControlName="additionalText"
-                rows="8"
-                placeholder="Bei Auswahl von mehreren Personen bitte hier alle Namen einzeln aufzählen. Ansonsten: 0"
-            ></textarea>
+            <textarea matInput formControlName="additionalText" rows="8"></textarea>
         </mat-form-field>
 
         @if (!tripRegisterForm.valid && tripRegisterForm.touched) {
@@ -139,7 +151,7 @@
 
         <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
 
-        @if (!isSending) {
+        @if (isSending) {
             <mat-progress-spinner class="example-margin" color="primary"> </mat-progress-spinner>
         }
     </form>

@@ -20,9 +20,8 @@ import { GymCourseDialogData } from './gym-course-register-dialog.interfaces';
 })
 export class GymCoursesRegisterDialogComponent implements OnInit {
     @Output() public handleConfirmClicked: EventEmitter<boolean> = new EventEmitter<boolean>(false);
-
     public dialogTitle!: string;
-    public tripDate!: string;
+    public eventDate!: string;
     public gymCourseDetails$: BehaviorSubject<GymCourse[]> = new BehaviorSubject([
         {
             name: '',
@@ -30,15 +29,15 @@ export class GymCoursesRegisterDialogComponent implements OnInit {
         },
     ]);
     public gymCourseDetails!: GymCourse[];
-    public boardingList!: string[];
+    public data = inject<GymCourseDialogData>(MAT_DIALOG_DATA);
 
     private dialogRef = inject(MatDialogRef<GymCoursesRegisterDialogComponent>);
-    public data = inject<GymCourseDialogData>(MAT_DIALOG_DATA);
 
     ngOnInit(): void {
         const tile = this.data.tile;
 
-        this.dialogTitle = `${tile.title} - ${tile.date}`;
+        this.dialogTitle = `${tile.title}`;
+        this.eventDate = `${tile.date}`;
 
         this.gymCourseDetails$.next([
             {

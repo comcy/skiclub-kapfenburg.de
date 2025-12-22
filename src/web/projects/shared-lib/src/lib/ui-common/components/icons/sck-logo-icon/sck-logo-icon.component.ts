@@ -18,8 +18,8 @@ import { BASE_ICON_PROPERTIES } from '../base-icon';
         {
             provide: BASE_ICON_PROPERTIES,
             useValue: {
-                iconName: 'sck-logo',
-                iconPath: 'assets/img/burg.svg',
+                iconName: 'ski-logo',
+                iconPath: 'assets/logos/ski-logo.svg',
             },
         },
     ],

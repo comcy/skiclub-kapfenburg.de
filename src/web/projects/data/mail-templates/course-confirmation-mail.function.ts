@@ -14,7 +14,7 @@ export const getCourseConfirmationMailSubject = (values: CourseRegisterFormField
 };
 
 export const getCourseConfirmationMailBcc = (): string => {
-    return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
+    return 'christian.silfang@gmail.com';
 };
 
 export const getCourseConfirmationMailText = (values: CourseRegisterFormFields): string => {

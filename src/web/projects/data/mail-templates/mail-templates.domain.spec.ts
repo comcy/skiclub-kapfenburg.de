@@ -1,13 +1,13 @@
-import { getTripConfirmationMailSubject, getTripConfirmationMailBcc } from './trip-confirmation-mail.function';
-import { getCourseConfirmationMailSubject, getCourseConfirmationMailBcc } from './course-confirmation-mail.function';
-import { getGymConfirmationMailSubject, getGymConfirmationMailBcc } from './pilates-confirmation-mail.function';
-import { TripRegisterFormFields } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
 import { CourseRegisterFormFields } from 'projects/courses-lib/src/lib/ui/course-registration-form/course-registration-form.interfaces';
 import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-courses-registration-form.interfaces';
+import { TripRegisterFormValue } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
+import { getCourseConfirmationMailBcc, getCourseConfirmationMailSubject } from './course-confirmation-mail.function';
+import { getGymConfirmationMailBcc, getGymConfirmationMailSubject } from './pilates-confirmation-mail.function';
+import { getTripConfirmationMailBcc, getTripConfirmationMailSubject } from './trip-confirmation-mail.function';
 
 describe('Mail Template Domain Logic', () => {
     it('trip mail subject contains first name', () => {
-        const trip: TripRegisterFormFields = {
+        const trip: TripRegisterFormValue = {
             firstName: 'Max',
             lastName: 'Mustermann',
             phone: '123',
@@ -15,7 +15,7 @@ describe('Mail Template Domain Logic', () => {
             amount: '1',
             additionalText: '',
             boarding: 'Board',
-            trip: { destination: 'Alps', date: '1.1.2026', boarding: [] },
+            trip: { destination: 'Alps', date: '1.1.2026', availableBoardings: [] },
         };
         const subject = getTripConfirmationMailSubject(trip);
         expect(subject).toContain('Max');
@@ -41,7 +41,7 @@ describe('Mail Template Domain Logic', () => {
         const gym: GymCoursesRegisterFormFields = {
             firstName: 'Lisa',
             lastName: 'Lustig',
-            courseType: 'Pilates',
+            course: 'Pilates',
             email: 'lisa@example.com',
             phone: '789',
             age: '20',

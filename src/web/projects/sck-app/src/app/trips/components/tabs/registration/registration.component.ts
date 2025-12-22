@@ -4,9 +4,10 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { TRIP_DATA, BUS_ONLY_PRICE_DATA, BUS_AND_PASS_PRICE_DATA, BOARDING_LIST } from '@data';
+import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
 import { TripsFeatureModule } from '@trips-lib';
-import { Price, Tile, TileActions, Trip } from 'projects/shared-lib/src/lib/ui-common/models';
+import { Price, Tile, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
+import { Trip } from 'projects/trips-lib/src/lib/domain/models';
 
 @Component({
     selector: 'app-registration',
@@ -27,7 +28,7 @@ export class RegistrationComponent implements OnInit {
                 this.trips.push({
                     destination: t.title,
                     date: t.date,
-                    boarding: t.boardings as string[],
+                    availableBoardings: t.boardings as string[],
                 });
             }
         }

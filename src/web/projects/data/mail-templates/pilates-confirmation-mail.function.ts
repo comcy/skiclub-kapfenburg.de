@@ -3,6 +3,7 @@
  */
 
 import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-courses-registration-form.interfaces';
+import { calculateAge, formatDateByLocale } from 'projects/shared-lib/src/lib/date-time';
 
 export const getGymConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
@@ -15,13 +16,14 @@ export const getGymConfirmationMailSubject = (values: GymCoursesRegisterFormFiel
 };
 
 export const getGymConfirmationMailBcc = (): string => {
-    return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
+    // return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
+    return 'christian.silfang@gmail.com';
 };
 
 export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields): string => {
     return `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding-top: 8px; padding-bottom: 16px;">
-            <h1 style="color: #0073e6;">Anmeldung beim Skiclub Kapfenburg e.V. zum Kurs "${values.courseType}"</h1>
+            <h1 style="color: #0073e6;">Anmeldung beim Skiclub Kapfenburg e.V. zum Kurs "${values.course.name}" - ${values.course.date}</h1>
             <p>Hallo ${values.firstName},</p>
             
             <p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung.</p>
@@ -45,8 +47,8 @@ export const getGymConfirmationMailText = (values: GymCoursesRegisterFormFields)
             
                 <!-- Rechte Spalte -->
                 <div style="flex: 1; padding-left: 16px;">
-                    <p style="margin: 4px 0;">Kurs: <span style="font-weight: bold; color: #333;">${values.courseType}</span></p>
-                    <p style="margin: 4px 0;">Alter: <span style="font-weight: bold; color: #333;">${values.age}</span></p>
+                    <p style="margin: 4px 0;">Kurs: <span style="font-weight: bold; color: #333;">${values.course.name} - ${values.course.date}</span></p>
+                    <p style="margin: 4px 0;">Geburtstag: <span style="font-weight: bold; color: #333;">${formatDateByLocale(values.birthday)} (${calculateAge(values.birthday)})</span></p>
                     <p style="margin: 4px 0;">Zusatzangaben:</p>
                     <div style="padding: 8px; background-color: #0073e610; border-radius: 4px; border: 1px solid #ddd;">
                         <p style="margin: 0; color: #333; padding-left: 8px;">${values.additionalText}</p>

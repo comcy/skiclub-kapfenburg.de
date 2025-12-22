@@ -6,26 +6,28 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseFormElements } from 'projects/shared-lib/src/lib/components';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
-import { Trip } from '../../domain/models';
+import { Trip, TripParticipant } from '../../domain/models';
 
 export interface TripRegisterForm {
     tripRegisterForm: FormGroup;
     formFields: BaseFormElements[];
 }
 
-export interface TripRegisterFormFields {
+export interface TripRegisterFormValue {
     trip: Trip;
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-    amount: string;
     additionalText: string;
-    boarding: string;
+    participants: TripParticipant[];
 }
+
+export type SheetDbRow = Omit<Trip, 'availableBoardings'> &
+    TripParticipant & {
+        age?: number;
+        additionalText: string;
+        timestamp?: string;
+    };
 
 @Injectable()
 export abstract class TripRegistrationFormServiceInterface {
-    public abstract sendFormToSheetsIo(formData: FormData): void;
-    public abstract sendConfirmationMail(mailData: FormToMailInformation<TripRegisterFormFields>): void;
+    public abstract sendFormToSheetsIo(rows: SheetDbRow[]): void;
+    public abstract sendConfirmationMail(mailData: FormToMailInformation<TripRegisterFormValue>): void;
 }

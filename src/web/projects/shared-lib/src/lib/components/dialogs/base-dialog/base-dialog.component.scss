@@ -1,14 +1,6 @@
 :host {
     display: flex;
     flex-flow: column;
-    align-items: flex-end;
-}
-
-.dialog-top-bar {
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-    align-self: stretch;
 }
 
 .dialog-title {
@@ -17,6 +9,59 @@
     align-self: center;
 }
 
+.title-wrapper {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.title-text {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.date-text {
+    font-size: 0.8em;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.close-icon {
+    cursor: pointer;
+    transition:
+        color 0.3s ease,
+        transform 0.2s ease;
+}
+
+/* Hover-Effekt */
+.close-icon:hover {
+    color: red;
+    transform: scale(1.2);
+}
+
 .dialog-content {
     // EMPTY
+}
+
+::ng-deep .mat-mdc-dialog-container {
+    --mdc-dialog-container-width: 700px;
+    /* Default width */
+    max-width: 90vw;
+    /* Responsive max-width */
+    width: var(--mdc-dialog-container-width);
+    /* Use the custom property */
+
+    @media (max-width: 768px) {
+        --mdc-dialog-container-width: 95vw;
+        /* Adjust for smaller screens */
+    }
+
+    @media (max-width: 480px) {
+        --mdc-dialog-container-width: 98vw;
+        /* Even smaller screens */
+    }
 }

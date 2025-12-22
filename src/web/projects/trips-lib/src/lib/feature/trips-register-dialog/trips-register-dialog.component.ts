@@ -2,14 +2,14 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
-import { Trip } from '../../domain/models';
-import { DialogData } from './trip-register-dialog.interfaces';
-import { NgIf, AsyncPipe } from '@angular/common';
 import { BaseDialogComponent } from '../../../../../shared-lib/src/lib/components/dialogs/base-dialog/base-dialog.component';
+import { Trip } from '../../domain/models';
 import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form/trips-registration-form.component';
+import { DialogData } from './trip-register-dialog.interfaces';
 
 @Component({
     selector: 'lib-trips-register-dialog',
@@ -18,22 +18,21 @@ import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form
     imports: [NgIf, BaseDialogComponent, TripsRegistrationFormComponent, AsyncPipe],
 })
 export class TripsRegisterDialogComponent implements OnInit {
-    private dialogRef = inject<MatDialogRef<TripsRegisterDialogComponent>>(MatDialogRef);
-    data = inject<DialogData>(MAT_DIALOG_DATA);
-
     @Output() public handleConfirmClicked: EventEmitter<boolean> = new EventEmitter<boolean>(false);
-
     public dialogTitle!: string;
     public tripDate!: string;
     public tripDetails$: BehaviorSubject<Trip[]> = new BehaviorSubject([
         {
             destination: '',
             date: '',
-            boarding: [''],
+            availableBoardings: [''],
         },
     ]);
     public tripDetails!: Trip[];
     public boardingList!: string[];
+    public data = inject<DialogData>(MAT_DIALOG_DATA);
+
+    private dialogRef = inject<MatDialogRef<TripsRegisterDialogComponent>>(MatDialogRef);
 
     ngOnInit(): void {
         const tile = this.data.tile;
@@ -45,7 +44,7 @@ export class TripsRegisterDialogComponent implements OnInit {
             {
                 destination: tile.title,
                 date: tile.date,
-                boarding: tile.boardings,
+                availableBoardings: tile.boardings,
             },
         ]);
 
@@ -53,7 +52,7 @@ export class TripsRegisterDialogComponent implements OnInit {
             {
                 destination: tile.title,
                 date: tile.date,
-                boarding: tile.boardings,
+                availableBoardings: tile.boardings,
             },
         ];
     }

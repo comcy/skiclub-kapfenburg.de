@@ -36,7 +36,7 @@ describe('GymCoursesRegistrationFormService', () => {
         lastName: string;
         email: string;
         phone: string;
-        courseType: string;
+        course: string;
         age: string;
         additionalText: string;
     }
@@ -48,7 +48,7 @@ describe('GymCoursesRegistrationFormService', () => {
             lastName: 'B',
             email: 'a@b.c',
             phone: '1',
-            courseType: 'Pilates',
+            course: 'Pilates',
             age: '10',
             additionalText: 'x',
         };
@@ -70,7 +70,7 @@ describe('GymCoursesRegistrationFormService', () => {
             lastName: 'B',
             email: 'a@b.c',
             phone: '1',
-            courseType: 'Pilates',
+            course: 'Pilates',
             age: '10',
             additionalText: 'x',
         };

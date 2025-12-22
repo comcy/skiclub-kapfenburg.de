@@ -19,7 +19,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CoursesFeatureModule } from '@courses-lib';
-import { PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
+import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
 import { GymFeatureModule } from '@gym-lib';
 import { SiteHeaderComponent } from '@shared/ui-common';
 import { MarkdownRenderService } from '@shared/util-markdown';
@@ -66,13 +66,14 @@ export class HomeComponent implements OnInit {
     public programmDownloadLink = PROGRAMM_DOWNLOAD_LINK;
 
     private trips = TRIP_DATA;
+    private courses = COURSE_DATA;
     private staticData = STATIC_DATA;
 
     public dialog = inject(MatDialog);
     public markdown = inject(MarkdownRenderService);
 
     ngOnInit(): void {
-        const homeTiles: Tile[] = [...this.staticData, ...this.trips];
+        const homeTiles: Tile[] = [...this.courses, ...this.staticData, ...this.trips];
 
         homeTiles.sort((a, b) => {
             return a.order > b.order // Handle order
@@ -101,6 +102,8 @@ export class HomeComponent implements OnInit {
         dialogConfig.data = {
             tile,
         };
+        dialogConfig.width = '90vw';
+        dialogConfig.maxWidth = '600px';
         const comp = this.resolveRegisterDialogComponent(tile);
         const dialogRef = this.dialog.open(comp, dialogConfig);
 

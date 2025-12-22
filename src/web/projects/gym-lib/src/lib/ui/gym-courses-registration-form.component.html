@@ -2,8 +2,10 @@
     <form class="form" [formGroup]="gymCoursesRegisterForm" (submit)="submit()">
         <mat-form-field class="full-width" appearance="fill">
             <mat-label>Kurs</mat-label>
-            <mat-select formControlName="courseType">
-                <mat-option *ngFor="let type of courseList" [value]="type">{{ type }} </mat-option>
+            <mat-select formControlName="course">
+                @for (course of additionalData; track $index) {
+                    <mat-option [value]="course">{{ course.name }} - {{ course.date }} </mat-option>
+                }
             </mat-select>
         </mat-form-field>
 
@@ -56,8 +58,11 @@
                 <tr>
                     <td>
                         <mat-form-field class="full-width" appearance="fill">
-                            <mat-label>Alter</mat-label>
-                            <input matInput formControlName="age" value="1" />
+                            <mat-label>Geburtstag</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="birthday" />
+                            <mat-hint>DD.MM.YYYY</mat-hint>
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
                     </td>
                 </tr>
@@ -66,8 +71,11 @@
 
         <div *ngIf="breakpointObserver.handsetBreakpoint$ | async">
             <mat-form-field class="full-width" appearance="fill">
-                <mat-label>Alter</mat-label>
-                <input matInput formControlName="age" value="1" />
+                <mat-label>Geburtstag</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="birthday" />
+                <mat-hint>DD/MM/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
         </div>
 

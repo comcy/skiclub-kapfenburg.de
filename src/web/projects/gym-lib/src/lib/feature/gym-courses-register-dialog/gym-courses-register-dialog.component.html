@@ -1,8 +1,10 @@
-<lib-base-dialog *ngIf="gymCourseDetails$ | async as courses" [title]="dialogTitle" [registerForm]="true">
-    <lib-gym-courses-registration-form
-        registerForm
-        [additionalData]="courses"
-        (submitForm)="onGymCourseRegistrationFormSubmit($event)"
-    >
-    </lib-gym-courses-registration-form>
-</lib-base-dialog>
+@if (gymCourseDetails$ | async; as courses) {
+    <lib-base-dialog [title]="dialogTitle" [date]="eventDate" [registerForm]="true">
+        <lib-gym-courses-registration-form
+            registerForm
+            [additionalData]="courses"
+            (submitForm)="onGymCourseRegistrationFormSubmit($event)"
+        >
+        </lib-gym-courses-registration-form>
+    </lib-base-dialog>
+}

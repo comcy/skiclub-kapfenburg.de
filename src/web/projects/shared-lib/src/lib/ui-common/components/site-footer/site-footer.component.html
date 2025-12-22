@@ -1,9 +1,11 @@
 <mat-toolbar [color]="color">
-    <div *ngIf="navItems" class="flex-container">
-        <a *ngFor="let n of navItems" mat-button color="accent" (click)="routeTo(n.route)">
-            {{ n.name }}
-        </a>
-    </div>
+    @if (navItems) {
+        <div class="flex-container">
+            <a *ngFor="let n of navItems" mat-button color="accent" (click)="routeTo(n.route)">
+                {{ n.name }}
+            </a>
+        </div>
+    }
 
     <span class="spacer"></span>
 

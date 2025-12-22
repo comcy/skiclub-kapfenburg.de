@@ -23,7 +23,7 @@ Mit Fokus auf das „Powerhouse“, präzise Übungen und bewusste Atmung verbes
 export const GYM_PILATES_TILE: Tile = {
     order: 2,
     behavior: TileBehavior.View,
-    title: 'PILATES',
+    title: 'Pilates',
     type: TileType.Course,
     date: '14.01.2026 bis 25.03.2026',
     subTitle: 'Mittwochs, 8:30 Uhr - 09:30 Uhr (Altes Schulhaus Hülen)',

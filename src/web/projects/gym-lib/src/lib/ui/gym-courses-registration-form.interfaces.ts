@@ -10,11 +10,16 @@ import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail
 export interface GymCoursesRegisterFormFields {
     firstName: string;
     lastName: string;
-    courseType: string;
+    course: CourseInformation;
     email: string;
     phone: string;
-    age: string;
+    birthday: string;
     additionalText: string;
+}
+
+export interface CourseInformation {
+    name: string;
+    date: string;
 }
 
 export interface GymCoursesRegisterForm {

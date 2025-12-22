@@ -1,11 +1,17 @@
-<div class="dialog-top-bar">
-    <h3 *ngIf="date" [innerHTML]="this.markdown.render(date)"></h3>
-    <button mat-button (click)="close()">X</button>
-</div>
-<div mat-dialog-title class="dialog-title">
-    <h2 *ngIf="title" [innerHTML]="this.markdown.render(title)"></h2>
-</div>
+<mat-toolbar [color]="titleBackgroundColor">
+    <div class="title-wrapper">
+        <span class="title-text">{{ title }}</span>
+        <span class="date-text">{{ date }}</span>
+    </div>
+
+    <span class="spacer"></span>
+    <mat-icon class="close-icon" aria-hidden="false" aria-label="Close icon" (click)="close()">close</mat-icon>
+</mat-toolbar>
 <mat-dialog-content class="dialog-content">
     <ng-content select="[registerForm]"></ng-content>
     <ng-content select="[share]"></ng-content>
 </mat-dialog-content>
+
+<!-- <mat-dialog-actions> -->
+<!-- <button matButton mat-dialog-close>Close</button> -->
+<!-- </mat-dialog-actions> -->

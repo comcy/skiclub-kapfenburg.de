@@ -22,7 +22,7 @@ describe('Registration Routes', () => {
       firstName: 'Max',
       lastName: 'Mustermann',
       email: 'max@test.com',
-      birthDate: '2000-01-01'
+      birthday: '2000-01-01'
     };
 
     mockedSaveData.mockResolvedValue(undefined);
@@ -55,7 +55,7 @@ describe('Registration Routes', () => {
       firstName: 'Max',
       lastName: 'Mustermann',
       email: 'max@test.com',
-      birthDate: '2000-01-01'
+      birthday: '2000-01-01'
     };
 
     mockedSaveData.mockRejectedValue(new Error('Speicherfehler'));
