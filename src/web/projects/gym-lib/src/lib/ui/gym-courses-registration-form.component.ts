@@ -60,16 +60,15 @@ import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/locale';
 })
 export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
     @Input() public additionalData!: GymCourse[];
-
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
+    public breakpointObserver = inject(BreakpointObserverService);
     public gymCoursesRegisterForm: FormGroup = new FormGroup({});
     public courseList: string[] = [];
 
     private formBuilder = inject(FormBuilder);
     private gymCoursesRegistrationFormService = inject(GymCoursesRegistrationFormServiceInterface);
-    public breakpointObserver = inject(BreakpointObserverService);
+    private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
     private cdr = inject(ChangeDetectorRef);
 
     ngOnInit(): void {
@@ -82,6 +81,12 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
             birthday: [null, [Validators.required]],
             additionalText: [null, []],
         });
+
+        if (this.additionalData.length === 1) {
+            this.gymCoursesRegisterForm.patchValue({
+                courseType: this.additionalData[0],
+            });
+        }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -91,6 +96,11 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
                 courseType: this.courseList[0],
             });
             this.cdr.markForCheck();
+        } else {
+            const course = this.additionalData.map((course) => `${course.name}: ${course.date}`);
+            this.gymCoursesRegisterForm.patchValue({
+                courseType: course[0],
+            });
         }
     }
 

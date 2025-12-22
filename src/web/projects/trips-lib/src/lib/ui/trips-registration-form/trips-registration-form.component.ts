@@ -44,24 +44,23 @@ import { TripRegisterFormFields, TripRegistrationFormServiceInterface } from './
     ],
 })
 export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
-    private formBuilder = inject(FormBuilder);
-    private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
-    breakpointObserver = inject(BreakpointObserverService);
-
     @Input() public additionalData$!: BehaviorSubject<Trip[]>;
     @Input() public additionalData!: Trip[];
 
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
-
+    public breakpointObserver = inject(BreakpointObserverService);
     public isSending = false;
     public tripView!: string;
     public boardingList$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     public isTripChanged = true;
     public hasPreselectedData = false;
     public firstPartSelected = false;
-    public currentSelectedTrip = null;
+    // public currentSelectedTrip = null;
     public tripRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
+
+    private formBuilder = inject(FormBuilder);
+    private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
 
     ngOnInit(): void {
         this.tripRegisterForm = this.formBuilder.group({

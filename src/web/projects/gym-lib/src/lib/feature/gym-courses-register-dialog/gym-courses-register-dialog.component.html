@@ -1,5 +1,5 @@
 @if (gymCourseDetails$ | async; as courses) {
-    <lib-base-dialog [title]="dialogTitle" [registerForm]="true">
+    <lib-base-dialog [title]="dialogTitle" [date]="eventDate" [registerForm]="true">
         <lib-gym-courses-registration-form
             registerForm
             [additionalData]="courses"
