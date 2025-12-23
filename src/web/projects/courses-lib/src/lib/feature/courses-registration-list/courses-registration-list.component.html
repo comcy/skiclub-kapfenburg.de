@@ -1,1 +1,18 @@
-<p>courses-registration-list works!</p>
+<h2>Course Registrations</h2>
+
+<div *ngIf="registrations$ | async as registrations; else loading">
+    <div *ngIf="registrations.data.length > 0; else noRegistrations">
+        <ul>
+            <li *ngFor="let reg of registrations.data">
+                {{ reg.firstName }} {{ reg.lastName }} - {{ reg.sportType }} ({{ reg.email }})
+            </li>
+        </ul>
+    </div>
+    <ng-template #noRegistrations>
+        <p>No registrations found.</p>
+    </ng-template>
+</div>
+
+<ng-template #loading>
+    <p>Loading registrations...</p>
+</ng-template>
