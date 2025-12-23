@@ -72,5 +72,13 @@
         "strictInjectionParameters": true,
         "strictInputAccessModifiers": true,
         "strictTemplates": true
-    }
+    },
+    "references": [
+      {
+        "path": "./projects/sck-admin-app/tsconfig.app.json"
+      },
+      {
+        "path": "./projects/sck-admin-app/tsconfig.spec.json"
+      }
+    ]
 }
