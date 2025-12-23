@@ -1,4 +1,5 @@
 export interface EmailRequestBody {
+    id?: string;
     to: string;
     subject: string;
     text: string;

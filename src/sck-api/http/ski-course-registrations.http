@@ -1,0 +1,41 @@
+@baseUrl = http://localhost:3000/api
+
+# @name createSkiCourseRegistration
+POST {{baseUrl}}/ski-course-registrations
+Content-Type: application/json
+
+{
+    "firstName": "Peter",
+    "lastName": "Pan",
+    "sportType": "Alpin",
+    "email": "peter.pan@example.com",
+    "phone": "1234567890",
+    "age": "12",
+    "additionalText": "Allergisch gegen Nüsse",
+    "level": "Anfänger"
+}
+
+###
+
+# @name getSkiCourseRegistrations
+GET {{baseUrl}}/ski-course-registrations
+
+###
+
+# @name getSkiCourseRegistrationById
+GET {{baseUrl}}/ski-course-registrations/{{createSkiCourseRegistration.response.body.data.id}}
+
+###
+
+# @name updateSkiCourseRegistration
+PUT {{baseUrl}}/ski-course-registrations/{{createSkiCourseRegistration.response.body.data.id}}
+Content-Type: application/json
+
+{
+    "level": "Fortgeschritten"
+}
+
+###
+
+# @name deleteSkiCourseRegistration
+DELETE {{baseUrl}}/ski-course-registrations/{{createSkiCourseRegistration.response.body.data.id}}

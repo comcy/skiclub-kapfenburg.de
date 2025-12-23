@@ -6,7 +6,7 @@ import { RequestHandler } from "express";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { EmailRequestBody } from "../domain/email.js";
-import { saveData } from "../services/data-service.js";
+import { saveEntity } from "../services/data-service.js";
 
 dotenv.config();
 
@@ -30,7 +30,7 @@ export const sendEmail: RequestHandler = async (req, res) => {
     const emailData = req.body as EmailRequestBody;
 
     // E-Mail-Daten speichern
-    await saveData('email-contact', emailData);
+    await saveEntity('registrations', { ...emailData, type: 'email-contact' });
 
     const { to, subject, text, cc, bcc, from } = emailData;
 

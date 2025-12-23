@@ -9,63 +9,103 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const dataDir = path.join(__dirname, '..', 'data');
-const dataFile = path.join(dataDir, 'registrations.ndjson');
 
 if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }
 
-/**
- * Speichert ein Datenobjekt in der NDJSON-Datei.
- * @param type Der Typ des Datensatzes (z.B. 'email-contact', 'course-registration').
- * @param data Das zu speichernde Objekt.
- * @returns Das gespeicherte Objekt mit einer generierten ID.
- */
-export const saveData = async (type: string, data: object): Promise<any> => {
-    const record = {
-        id: randomUUID(),
-        type,
-        timestamp: new Date().toISOString(),
-        ...data,
-    };
+export type EntityType = 'registrations' | 'events' | 'gym-courses';
 
-    const line = JSON.stringify(record) + '\n';
-
-    try {
-        await fs.promises.appendFile(dataFile, line);
-        return record;
-    } catch (error) {
-        console.error('Fehler beim Speichern der Daten:', error);
-        throw new Error('Daten konnten nicht gespeichert werden.');
-    }
+const getFilePath = (entityType: EntityType): string => {
+    return path.join(dataDir, `${entityType}.ndjson`);
 };
 
-/**
- * Liest alle Registrierungen aus der NDJSON-Datei.
- * @returns Eine Liste aller Registrierungen.
- */
-export const getRegistrations = async (): Promise<any[]> => {
+export const readEntities = async <T>(entityType: EntityType): Promise<T[]> => {
+    const filePath = getFilePath(entityType);
     try {
-        const data = await fs.promises.readFile(dataFile, 'utf-8');
+        const data = await fs.promises.readFile(filePath, 'utf-8');
         const lines = data.split('\n').filter((line) => line.length > 0);
         return lines.map((line) => JSON.parse(line));
     } catch (error: any) {
         if (error.code === 'ENOENT') {
-            return []; // Datei nicht gefunden, leere Liste zurückgeben
+            return [];
         }
-        console.error('Fehler beim Lesen der Daten:', error);
+        console.error(`Fehler beim Lesen der Daten für ${entityType}:`, error);
         throw new Error('Daten konnten nicht gelesen werden.');
     }
 };
 
-/**
- * Liest eine einzelne Registrierung anhand ihrer ID.
- * @param id Die ID der zu suchenden Registrierung.
- * @returns Die gefundene Registrierung oder null.
- */
-export const getRegistrationById = async (id: string): Promise<any | null> => {
-    const registrations = await getRegistrations();
-    return registrations.find((reg) => reg.id === id) || null;
+const writeEntities = async <T>(entityType: EntityType, entities: T[]): Promise<void> => {
+    const filePath = getFilePath(entityType);
+    const data = entities.map((entity) => JSON.stringify(entity)).join('\n') + '\n';
+    try {
+        await fs.promises.writeFile(filePath, data, 'utf-8');
+    } catch (error) {
+        console.error(`Fehler beim Schreiben der Daten für ${entityType}:`, error);
+        throw new Error('Daten konnten nicht geschrieben werden.');
+    }
+};
+
+export const saveEntity = async <T extends { id?: string }>(entityType: EntityType, entity: T): Promise<T> => {
+    const entities = await readEntities<T>(entityType);
+    const newEntity = { ...entity, id: randomUUID(), timestamp: new Date().toISOString() };
+    entities.push(newEntity);
+    await writeEntities(entityType, entities);
+    return newEntity;
+};
+
+export interface PaginatedResult<T> {
+    data: T[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+}
+
+export const getEntities = async <T>(entityType: EntityType, page = 1, limit = 10): Promise<PaginatedResult<T>> => {
+    const entities = await readEntities<T>(entityType);
+    const total = entities.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const data = entities.slice(startIndex, startIndex + limit);
+
+    return {
+        data,
+        total,
+        page,
+        limit,
+        totalPages,
+    };
+};
+
+export const getEntityById = async <T extends { id?: string }>(entityType: EntityType, id: string): Promise<T | null> => {
+    const entities = await readEntities<T>(entityType);
+    return entities.find((e) => e.id === id) || null;
+};
+
+export const updateEntity = async <T extends { id?: string }>(
+    entityType: EntityType,
+    id: string,
+    updatedEntity: Partial<T>,
+): Promise<T | null> => {
+    const entities = await readEntities<T>(entityType);
+    const index = entities.findIndex((e) => e.id === id);
+    if (index === -1) {
+        return null;
+    }
+    entities[index] = { ...entities[index], ...updatedEntity, timestamp: new Date().toISOString() };
+    await writeEntities(entityType, entities);
+    return entities[index];
+};
+
+export const deleteEntity = async <T extends { id?: string }>(entityType: EntityType, id: string): Promise<boolean> => {
+    let entities = await readEntities<T>(entityType);
+    const initialLength = entities.length;
+    entities = entities.filter((e) => e.id !== id);
+    if (entities.length === initialLength) {
+        return false; // No entity found with the given id
+    }
+    await writeEntities(entityType, entities);
+    return true;
 };

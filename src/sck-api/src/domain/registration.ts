@@ -17,6 +17,7 @@ export interface TripRegisterFormValue {
 
 export type SheetDbRow = Omit<Trip, 'availableBoardings'> &
     TripParticipant & {
+        id?: string;
         age?: number;
         additionalText: string;
         timestamp?: string;

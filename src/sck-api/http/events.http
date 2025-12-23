@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:3000/api
+
+# @name createEvent
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+    "order": 3,
+    "type": "event",
+    "behavior": "view",
+    "title": "PARTYAUSFAHRT AN DEN SONNENKOPF",
+    "date": "28. Dezember 2025",
+    "subTitle": "Ausfahrt ab 18 Jahre",
+    "image": "https://cdn.pixabay.com/photo/2014/10/22/18/04/man-498473_960_720.jpg",
+    "imageDescription": "sample",
+    "description": "Gemeinsam mit euch wollen wir die Pisten auf über 2000m Höhe unsicher machen...",
+    "actions": ["register"],
+    "expiration": "2025-12-28T00:00:00.000Z",
+    "boardings": ["Schwabsberg Schule (5:00 Uhr)", "Westhausen Turnhalle (5:15 Uhr)"],
+    "status": "bookedUp"
+}
+
+###
+
+# @name getEvents
+GET {{baseUrl}}/events
+
+###
+
+# @name getEventById
+GET {{baseUrl}}/events/{{createEvent.response.body.data.id}}
+
+###
+
+# @name updateEvent
+PUT {{baseUrl}}/events/{{createEvent.response.body.data.id}}
+Content-Type: application/json
+
+{
+    "status": "canceled"
+}
+
+###
+
+# @name deleteEvent
+DELETE {{baseUrl}}/events/{{createEvent.response.body.data.id}}
+
+###
+
+# @name getEventsWithPagination
+GET {{baseUrl}}/events?page=1&limit=2

@@ -7,6 +7,9 @@ import 'dotenv/config.js';
 import express from 'express';
 import emailRoutes from './routes/email-route.js';
 import registrationRoutes from './routes/registration-route.js';
+import eventRoutes from './routes/event-route.js';
+import gymCourseRoutes from './routes/gym-course-route.js';
+import skiCourseRegistrationRoutes from './routes/ski-course-registration-route.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -23,12 +26,15 @@ app.use(cors());
 
 app.use('/api', emailRoutes);
 app.use('/api', registrationRoutes);
+app.use('/api', eventRoutes);
+app.use('/api', gymCourseRoutes);
+app.use('/api', skiCourseRegistrationRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server läuft auf Port ${PORT}`);
-  console.log(`SMTP Server ${SMTP_SERVER}`);
-  console.log(`SMTP Port ${SMTP_PORT}`);
-  console.log(`Absender Mail-Adresse ${SENDER_MAIL}`);
-  console.log(`Absender Mail-Password ${SENDER_PW}`);
+    console.log(`Server läuft auf Port ${PORT}`);
+    console.log(`SMTP Server ${SMTP_SERVER}`);
+    console.log(`SMTP Port ${SMTP_PORT}`);
+    console.log(`Absender Mail-Adresse ${SENDER_MAIL}`);
+    console.log(`Absender Mail-Password ${SENDER_PW}`);
 });

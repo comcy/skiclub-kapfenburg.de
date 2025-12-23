@@ -1,0 +1,45 @@
+@baseUrl = http://localhost:3000/api
+
+# @name createGymCourse
+POST {{baseUrl}}/gym-courses
+Content-Type: application/json
+
+{
+    "order": 2,
+    "behavior": "view",
+    "title": "Pilates",
+    "type": "course",
+    "date": "14.01.2026 bis 25.03.2026",
+    "subTitle": "Mittwochs, 8:30 Uhr - 09:30 Uhr (Altes Schulhaus Hülen)",
+    "image": "../../../../assets/img/pilates/2026_01-03.png",
+    "imageDescription": "pilates",
+    "description": "Pilates ist ein effektives Ganzkörpertraining...",
+    "actions": ["register"],
+    "expiration": "2027-12-31T00:00:00.000Z",
+    "status": "open"
+}
+
+###
+
+# @name getGymCourses
+GET {{baseUrl}}/gym-courses
+
+###
+
+# @name getGymCourseById
+GET {{baseUrl}}/gym-courses/{{createGymCourse.response.body.data.id}}
+
+###
+
+# @name updateGymCourse
+PUT {{baseUrl}}/gym-courses/{{createGymCourse.response.body.data.id}}
+Content-Type: application/json
+
+{
+    "status": "bookedUp"
+}
+
+###
+
+# @name deleteGymCourse
+DELETE {{baseUrl}}/gym-courses/{{createGymCourse.response.body.data.id}}

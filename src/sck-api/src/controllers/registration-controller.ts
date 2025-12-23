@@ -3,7 +3,7 @@
  */
 
 import { RequestHandler } from 'express';
-import { saveData, getRegistrations, getRegistrationById as getRegistrationByIdFromService } from '../services/data-service.js';
+import { saveEntity, getEntities, getEntityById } from '../services/data-service.js';
 import { TripRegisterFormValue, SheetDbRow } from '../domain/registration.js';
 
 const calculateAge = (birthday: string): number => {
@@ -41,7 +41,7 @@ export const createRegistration: RequestHandler = async (req, res) => {
 
         const savedRecords = [];
         for (const row of sheetDbRows) {
-            const savedRecord = await saveData('trip-registration', row);
+            const savedRecord = await saveEntity('registrations', { ...row, type: 'trip-registration' });
             savedRecords.push(savedRecord);
         }
 
@@ -57,7 +57,9 @@ export const createRegistration: RequestHandler = async (req, res) => {
 
 export const getAllRegistrations: RequestHandler = async (req, res) => {
     try {
-        const registrations = await getRegistrations();
+        const page = parseInt(req.query.page as string, 10) || 1;
+        const limit = parseInt(req.query.limit as string, 10) || 10;
+        const registrations = await getEntities('registrations', page, limit);
         res.status(200).json(registrations);
     } catch (error: any) {
         console.error('Fehler beim Abrufen der Registrierungen:', error);
@@ -71,7 +73,7 @@ export const getAllRegistrations: RequestHandler = async (req, res) => {
 export const getRegistrationById: RequestHandler = async (req, res) => {
     try {
         const { id } = req.params;
-        const registration = await getRegistrationByIdFromService(id);
+        const registration = await getEntityById('registrations', id);
         if (registration) {
             res.status(200).json(registration);
         } else {
