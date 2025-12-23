@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CourseRegistrationFormComponent } from './course-registration-form/course-registration-form.component';
+import { CoursesRegistrationTableComponent } from './courses-registration-table/courses-registration-table.component';
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import { CourseRegistrationFormComponent } from './course-registration-form/cour
         MatToolbarModule,
         MatProgressSpinnerModule,
         CourseRegistrationFormComponent,
+        CoursesRegistrationTableComponent, // Now standalone, so imported
     ],
-    exports: [CourseRegistrationFormComponent],
+    exports: [CourseRegistrationFormComponent, CoursesRegistrationTableComponent],
 })
 export class CoursesUiModule {}

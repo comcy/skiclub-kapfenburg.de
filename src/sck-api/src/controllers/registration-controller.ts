@@ -59,7 +59,9 @@ export const getAllRegistrations: RequestHandler = async (req, res) => {
     try {
         const page = parseInt(req.query.page as string, 10) || 1;
         const limit = parseInt(req.query.limit as string, 10) || 10;
-        const registrations = await getEntities('registrations', page, limit);
+        const sort = req.query.sort as string | undefined;
+        const filter = req.query.filter as string | undefined;
+        const registrations = await getEntities('registrations', page, limit, sort, filter);
         res.status(200).json(registrations);
     } catch (error: any) {
         console.error('Fehler beim Abrufen der Registrierungen:', error);

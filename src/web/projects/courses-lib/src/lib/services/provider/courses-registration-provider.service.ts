@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiData, CourseRegistration } from '../../domain/course-registration';
+import { CourseRegistration } from '../../domain/models/course-registration';
+import { ApiData } from '../../domain/models';
 
 @Injectable({
     providedIn: 'root',
@@ -10,8 +11,15 @@ export class CoursesRegistrationProviderService {
     private readonly http = inject(HttpClient);
     private readonly apiUrl = 'http://localhost:3000/api/ski-course-registrations';
 
-    getRegistrations(): Observable<ApiData<CourseRegistration>> {
-        return this.http.get<ApiData<CourseRegistration>>(this.apiUrl);
+    getRegistrations(sort?: string, filter?: string): Observable<ApiData<CourseRegistration>> {
+        let params = new HttpParams();
+        if (sort) {
+            params = params.append('sort', sort);
+        }
+        if (filter) {
+            params = params.append('filter', filter);
+        }
+        return this.http.get<ApiData<CourseRegistration>>(this.apiUrl, { params });
     }
 
     getRegistrationById(id: string): Observable<CourseRegistration> {

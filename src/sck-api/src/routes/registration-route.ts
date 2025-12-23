@@ -11,8 +11,8 @@ import {
 
 const router = Router();
 
-router.post('/register', createRegistration);
-router.get('/register', getAllRegistrations);
-router.get('/register/:id', getRegistrationById);
+router.post('/registrations', createRegistration);
+router.get('/registrations', getAllRegistrations);
+router.get('/registrations/:id', getRegistrationById);
 
 export default router;

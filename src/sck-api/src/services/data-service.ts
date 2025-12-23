@@ -21,7 +21,7 @@ const getFilePath = (entityType: EntityType): string => {
     return path.join(dataDir, `${entityType}.ndjson`);
 };
 
-export const readEntities = async <T>(entityType: EntityType): Promise<T[]> => {
+export const readEntities = async <T extends Record<string, any>>(entityType: EntityType): Promise<T[]> => {
     const filePath = getFilePath(entityType);
     try {
         const data = await fs.promises.readFile(filePath, 'utf-8');
@@ -63,8 +63,42 @@ export interface PaginatedResult<T> {
     totalPages: number;
 }
 
-export const getEntities = async <T>(entityType: EntityType, page = 1, limit = 10): Promise<PaginatedResult<T>> => {
-    const entities = await readEntities<T>(entityType);
+export const getEntities = async <T extends Record<string, any>>(
+    entityType: EntityType,
+    page = 1,
+    limit = 10,
+    sort?: string,
+    filter?: string,
+): Promise<PaginatedResult<T>> => {
+    let entities = await readEntities<T>(entityType);
+
+    // Filtering
+    if (filter) {
+        entities = entities.filter((entity) => {
+            return Object.values(entity).some((value) =>
+                typeof value === 'string' ? value.toLowerCase().includes(filter.toLowerCase()) : false,
+            );
+        });
+    }
+
+    // Sorting
+    if (sort) {
+        const [sortBy, sortOrder] = sort.split(':');
+        entities.sort((a, b) => {
+            const valA = a[sortBy as keyof T];
+            const valB = b[sortBy as keyof T];
+
+            if (valA < valB) {
+                return sortOrder === 'asc' ? -1 : 1;
+            }
+            if (valA > valB) {
+                return sortOrder === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+    }
+
+    // Pagination
     const total = entities.length;
     const totalPages = Math.ceil(total / limit);
     const startIndex = (page - 1) * limit;

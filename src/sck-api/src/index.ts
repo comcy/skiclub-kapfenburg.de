@@ -25,10 +25,10 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/api', emailRoutes);
-app.use('/api', registrationRoutes);
 app.use('/api', eventRoutes);
 app.use('/api', gymCourseRoutes);
 app.use('/api', skiCourseRegistrationRoutes);
+app.use('/api', registrationRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

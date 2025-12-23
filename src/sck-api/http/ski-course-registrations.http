@@ -5,12 +5,12 @@ POST {{baseUrl}}/ski-course-registrations
 Content-Type: application/json
 
 {
-    "firstName": "Peter",
-    "lastName": "Pan",
-    "sportType": "Alpin",
-    "email": "peter.pan@example.com",
-    "phone": "1234567890",
-    "age": "12",
+    "firstName": "Chris",
+    "lastName": "Chross",
+    "sportType": "Snowboard",
+    "email": "cr.oss@example.com",
+    "phone": "98765412",
+    "age": "18",
     "additionalText": "Allergisch gegen Nüsse",
     "level": "Anfänger"
 }

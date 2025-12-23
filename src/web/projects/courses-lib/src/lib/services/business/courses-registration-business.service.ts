@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiData, CourseRegistration } from '../../domain/course-registration';
+
+import { ApiData, CourseRegistration } from '../../domain/models';
 import { CoursesRegistrationProviderService } from '../provider/courses-registration-provider.service';
 
 @Injectable({
@@ -9,9 +10,9 @@ import { CoursesRegistrationProviderService } from '../provider/courses-registra
 export class CoursesRegistrationBusinessService {
     private readonly provider = inject(CoursesRegistrationProviderService);
 
-    getRegistrations(): Observable<ApiData<CourseRegistration>> {
+    getRegistrations(sort?: string, filter?: string): Observable<ApiData<CourseRegistration>> {
         // Business logic, mapping, etc. would go here.
-        return this.provider.getRegistrations();
+        return this.provider.getRegistrations(sort, filter);
     }
 
     getRegistrationById(id: string): Observable<CourseRegistration> {
