@@ -1,0 +1,31 @@
+@api_url = http://localhost:3000/api
+@event_id = 669f9e4a1b9b2b001f0b0b1a
+
+### Create Event Registration
+POST {{api_url}}/events/{{event_id}}/registrations
+Content-Type: application/json
+
+{
+  "trip": {
+    "destination": "Sample Trip",
+    "date": "2025-12-25",
+    "availableBoardings": ["City A", "City B"]
+  },
+  "additionalText": "This is an additional text.",
+  "participants": [
+    {
+      "firstName": "John",
+      "lastName": "Doe",
+      "birthday": "1990-01-01",
+      "email": "john.doe@example.com",
+      "phone": "123456789",
+      "boarding": "City A"
+    }
+  ]
+}
+
+### Get Event Registrations
+GET {{api_url}}/events/{{event_id}}/registrations
+
+### Get Event Registration by ID
+GET {{api_url}}/events/{{event_id}}/registrations/669f9e4a1b9b2b001f0b0b1b
