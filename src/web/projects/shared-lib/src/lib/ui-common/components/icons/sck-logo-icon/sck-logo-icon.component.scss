@@ -1,0 +1,40 @@
+:host {
+    display: inline-block;
+    width: 140px;
+    height: 70px;
+}
+
+.sck-logo {
+    width: 100%;
+    height: 100%;
+}
+
+.mountain-fill {
+    fill: #b3b3b3; // hellgrau
+    stroke: none;
+}
+
+.mountain-stroke {
+    fill: none;
+    stroke: #333333; // dunkelgrau
+    stroke-width: 2;
+}
+
+.tree {
+    fill: #4d4d4d; // dunkleres grau
+    stroke: none;
+}
+
+.cross {
+    fill: #333333; // dunkelgrau wie Ski/Snowboard
+    stroke: #333333;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill-rule: evenodd;
+}
+
+.snow-tip {
+    fill: #ffffff; // weiß
+    stroke: none;
+}

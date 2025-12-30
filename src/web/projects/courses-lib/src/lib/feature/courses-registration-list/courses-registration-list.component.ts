@@ -6,6 +6,8 @@ import { CoursesUiModule } from '../../ui/courses-ui.module';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { Sort } from '@angular/material/sort';
 
+const SKI_COURSE_SPORT_TYPES = 'Alpin,Snowboard';
+
 @Component({
     selector: 'lib-courses-registration-list',
     standalone: true,
@@ -29,7 +31,7 @@ export class CoursesRegistrationListComponent implements OnInit {
                         this.filter.pipe(
                             switchMap((filter) =>
                                 this.businessService
-                                    .getRegistrations(sort, filter)
+                                    .getRegistrations(sort, filter, SKI_COURSE_SPORT_TYPES) // Pass sportTypeFilter
                                     .pipe(map((response) => response.data)),
                             ),
                         ),

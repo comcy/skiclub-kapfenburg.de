@@ -30,3 +30,4 @@ export * from './datenschutz';
 export * from './impressum';
 export * from './dialogs';
 export * from './forms';
+export * from './error-pages/not-found/not-found.component';

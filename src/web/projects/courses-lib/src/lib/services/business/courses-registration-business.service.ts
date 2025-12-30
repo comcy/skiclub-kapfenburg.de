@@ -10,9 +10,13 @@ import { CoursesRegistrationProviderService } from '../provider/courses-registra
 export class CoursesRegistrationBusinessService {
     private readonly provider = inject(CoursesRegistrationProviderService);
 
-    getRegistrations(sort?: string, filter?: string): Observable<ApiData<CourseRegistration>> {
+    getRegistrations(
+        sort?: string,
+        filter?: string,
+        sportTypeFilter?: string,
+    ): Observable<ApiData<CourseRegistration>> {
         // Business logic, mapping, etc. would go here.
-        return this.provider.getRegistrations(sort, filter);
+        return this.provider.getRegistrations(sort, filter, sportTypeFilter);
     }
 
     getRegistrationById(id: string): Observable<CourseRegistration> {

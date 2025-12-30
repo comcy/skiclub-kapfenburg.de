@@ -19,9 +19,6 @@ import { FooterComponent } from './footer';
 import { HeaderComponent } from './header';
 import { ImpressumComponent } from './impressum';
 import { InfoTileComponent } from './info-tile/info-tile.component';
-import { NewsBannerComponent } from './news-banner/news-banner.component';
-import { NewsCardComponent } from './news-card/news-card.component';
-import { TopBarComponent } from './top-bar/top-bar.component';
 
 @NgModule({
     imports: [
@@ -39,21 +36,9 @@ import { TopBarComponent } from './top-bar/top-bar.component';
         FooterComponent,
         DatenschutzComponent,
         ImpressumComponent,
-        NewsBannerComponent,
-        NewsCardComponent,
         BaseDialogComponent,
         InfoTileComponent,
-        TopBarComponent,
     ],
-    exports: [
-        HeaderComponent,
-        FooterComponent,
-        DatenschutzComponent,
-        ImpressumComponent,
-        NewsBannerComponent,
-        NewsCardComponent,
-        BaseDialogComponent,
-        TopBarComponent,
-    ],
+    exports: [HeaderComponent, FooterComponent, DatenschutzComponent, ImpressumComponent, BaseDialogComponent],
 })
 export class ComponentsModule {}

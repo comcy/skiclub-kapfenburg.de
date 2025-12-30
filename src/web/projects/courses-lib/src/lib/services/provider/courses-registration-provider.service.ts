@@ -3,21 +3,29 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CourseRegistration } from '../../domain/models/course-registration';
 import { ApiData } from '../../domain/models';
+import { environment } from 'projects/sck-app/src/environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class CoursesRegistrationProviderService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = 'http://localhost:3000/api/ski-course-registrations';
+    private readonly apiUrl = environment.sckApiUrl;
 
-    getRegistrations(sort?: string, filter?: string): Observable<ApiData<CourseRegistration>> {
+    getRegistrations(
+        sort?: string,
+        filter?: string,
+        sportTypeFilter?: string,
+    ): Observable<ApiData<CourseRegistration>> {
         let params = new HttpParams();
         if (sort) {
             params = params.append('sort', sort);
         }
         if (filter) {
             params = params.append('filter', filter);
+        }
+        if (sportTypeFilter) {
+            params = params.append('sportTypeFilter', sportTypeFilter);
         }
         return this.http.get<ApiData<CourseRegistration>>(this.apiUrl, { params });
     }

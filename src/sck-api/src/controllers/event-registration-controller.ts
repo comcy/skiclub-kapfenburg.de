@@ -4,7 +4,7 @@
 
 import { RequestHandler } from 'express';
 import { saveEntity, getEntities, getEntityById } from '../services/data-service.js';
-import { TripRegisterFormValue, SheetDbRow } from '../domain/registration.js';
+import { TripRegisterFormValue, SheetDbRow } from '../domain/trip-registration.js';
 
 const calculateAge = (birthday: string): number => {
     const birthDate = new Date(birthday);
@@ -17,8 +17,9 @@ const calculateAge = (birthday: string): number => {
     return age;
 };
 
-export const createRegistration: RequestHandler = async (req, res) => {
+export const createEventRegistration: RequestHandler = async (req, res) => {
     try {
+        const { eventId } = req.params;
         const registrationData = req.body as TripRegisterFormValue;
         const { trip, additionalText, participants } = registrationData;
 
@@ -36,6 +37,7 @@ export const createRegistration: RequestHandler = async (req, res) => {
                 ...participant,
                 age: calculateAge(participant.birthday),
                 additionalText: additionalText,
+                eventId: eventId,
             };
         });
 
@@ -55,13 +57,15 @@ export const createRegistration: RequestHandler = async (req, res) => {
     }
 };
 
-export const getAllRegistrations: RequestHandler = async (req, res) => {
+export const getEventRegistrations: RequestHandler = async (req, res) => {
     try {
+        const { eventId } = req.params;
         const page = parseInt(req.query.page as string, 10) || 1;
         const limit = parseInt(req.query.limit as string, 10) || 10;
         const sort = req.query.sort as string | undefined;
         const filter = req.query.filter as string | undefined;
-        const registrations = await getEntities('registrations', page, limit, sort, filter);
+        const sportTypeFilter = req.query.sportTypeFilter as string | undefined; 
+        const registrations = await getEntities('registrations', page, limit, sort, `${filter},eventId=${eventId}`, sportTypeFilter);
         res.status(200).json(registrations);
     } catch (error: any) {
         console.error('Fehler beim Abrufen der Registrierungen:', error);
@@ -72,7 +76,7 @@ export const getAllRegistrations: RequestHandler = async (req, res) => {
     }
 };
 
-export const getRegistrationById: RequestHandler = async (req, res) => {
+export const getEventRegistrationById: RequestHandler = async (req, res) => {
     try {
         const { id } = req.params;
         const registration = await getEntityById('registrations', id);

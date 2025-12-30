@@ -1,15 +1,22 @@
 import { Routes } from '@angular/router';
+import { NotFoundComponent } from 'projects/shared-lib/src/lib/components/error-pages/not-found/not-found.component';
 
 export const routes: Routes = [
     {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'courses',
+    },
+    // {
+    //     path: 'dashboard',
+    //     loadChildren: () => import('@courses-lib').then((m) => m.COURSES_LIB_ROUTES),
+    // },
+    {
         path: 'courses',
-        // providers: [AdminService, { provide: ADMIN_API_KEY, useValue: '12345' }],
-        // children: [
-        //     { path: 'users', component: AdminUsersComponent },
-        //     { path: 'teams', component: AdminTeamsComponent },
-        // ],
         loadChildren: () => import('@courses-lib').then((m) => m.COURSES_LIB_ROUTES),
-        // loadChildren: () => import('./courses-registration-list/courses-registration-list.component').then(m => m.CoursesRegistrationListComponent),
-        // component: () => M.then(m => m.DashboardComponent),},
+    },
+    {
+        path: '**',
+        component: NotFoundComponent,
     },
 ];
