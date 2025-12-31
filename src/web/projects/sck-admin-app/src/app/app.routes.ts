@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import { NotFoundComponent } from 'projects/shared-lib/src/lib/components/error-pages/not-found/not-found.component';
 import { TripsRegistrationListComponent } from 'projects/trips-lib/src/lib/feature/trips-registration-list/trips-registration-list.component';
 
-import { TripsRegistrationListComponent } from 'projects/trips-lib/src/lib/feature/trips-registration-list/trips-registration-list.component';
-
 export const routes: Routes = [
     {
         path: '',
@@ -20,11 +18,11 @@ export const routes: Routes = [
     },
     {
         path: 'registrations',
-        component: TripsRegistrationListComponent
+        component: TripsRegistrationListComponent,
     },
     {
         path: 'events/:eventId/registrations',
-        component: TripsRegistrationListComponent
+        component: TripsRegistrationListComponent,
     },
     {
         path: '**',
