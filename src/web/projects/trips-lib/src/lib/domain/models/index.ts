@@ -5,3 +5,5 @@
 export * from './download-item';
 export * from './trip';
 export * from './trip-participant';
+export * from './api-data';
+export * from './trip-registration';

@@ -1,25 +1,25 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map, switchMap, tap } from 'rxjs';
-import { CourseRegistration } from '../../domain/models/course-registration';
-import { CoursesRegistrationBusinessService } from '../../services/business/courses-registration-business.service';
-import { CoursesUiModule } from '../../ui/courses-ui.module';
+import { TripRegistration } from '../../domain/models/trip-registration';
+import { TripsRegistrationBusinessService } from '../../services/business/trips-registration-business.service';
+import { TripsUiModule } from '../../ui/trips-ui.module';
 import { CommonModule } from '@angular/common';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
-    selector: 'lib-courses-registration-list',
+    selector: 'lib-trips-registration-list',
     standalone: true,
-    imports: [CommonModule, CoursesUiModule],
-    templateUrl: './courses-registration-list.component.html',
-    styleUrl: './courses-registration-list.component.scss',
+    imports: [CommonModule, TripsUiModule],
+    templateUrl: './trips-registration-list.component.html',
+    styleUrl: './trips-registration-list.component.scss',
 })
-export class CoursesRegistrationListComponent implements OnInit {
-    private readonly businessService = inject(CoursesRegistrationBusinessService);
+export class TripsRegistrationListComponent implements OnInit {
+    private readonly businessService = inject(TripsRegistrationBusinessService);
     private readonly route = inject(ActivatedRoute);
 
-    public registrations$!: Observable<CourseRegistration[]>;
+    public registrations$!: Observable<TripRegistration[]>;
     public totalItems = 0;
     public eventId!: string;
 

@@ -15,7 +15,7 @@ Content-Type: application/json
   "participants": [
     {
       "firstName": "John",
-      "lastName": "Doe",
+      "lastName": "Bla",
       "birthday": "1990-01-01",
       "email": "john.doe@example.com",
       "phone": "123456789",
@@ -29,3 +29,6 @@ GET {{api_url}}/events/{{event_id}}/registrations
 
 ### Get Event Registration by ID
 GET {{api_url}}/events/{{event_id}}/registrations/669f9e4a1b9b2b001f0b0b1b
+
+### Get All Registrations
+GET {{api_url}}/registrations

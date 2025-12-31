@@ -14,7 +14,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { TripsRegistrationTableComponent } from './trips-registration-table/trips-registration-table.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -28,7 +28,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatToolbarModule,
         MatProgressSpinnerModule,
         TripsRegistrationFormComponent,
+        TripsRegistrationTableComponent,
     ],
-    exports: [TripsRegistrationFormComponent],
+    exports: [TripsRegistrationFormComponent, TripsRegistrationTableComponent],
 })
 export class TripsUiModule {}

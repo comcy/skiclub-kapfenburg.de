@@ -12,7 +12,7 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Observable } from 'rxjs';
-import { CourseRegistration } from '../../domain/models/course-registration';
+import { TripRegistration } from '../../domain/models/trip-registration';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-    selector: 'lib-courses-registration-table',
+    selector: 'lib-trips-registration-table',
     standalone: true,
     imports: [
         CommonModule,
@@ -32,11 +32,11 @@ import { MatButtonModule } from '@angular/material/button';
         MatIconModule,
         MatButtonModule,
     ],
-    templateUrl: './courses-registration-table.component.html',
-    styleUrls: ['./courses-registration-table.component.scss'],
+    templateUrl: './trips-registration-table.component.html',
+    styleUrls: ['./trips-registration-table.component.scss'],
 })
-export class CoursesRegistrationTableComponent implements AfterViewInit, OnChanges {
-    @Input() registrations$!: Observable<CourseRegistration[]>;
+export class TripsRegistrationTableComponent implements AfterViewInit, OnChanges {
+    @Input() registrations$!: Observable<TripRegistration[]>;
     @Input() totalItems!: number;
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() filterChange = new EventEmitter<string>();
@@ -46,14 +46,13 @@ export class CoursesRegistrationTableComponent implements AfterViewInit, OnChang
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
 
-    dataSource = new MatTableDataSource<CourseRegistration>();
-    displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phone', 'age', 'level', 'sportType', 'action'];
+    dataSource = new MatTableDataSource<TripRegistration>();
+    displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phone', 'boarding', 'age', 'action'];
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['registrations$']) {
             this.registrations$.subscribe((data) => {
                 this.dataSource.data = data;
-                // Re-attach paginator and sort if they are already available
                 if (this.paginator) {
                     this.dataSource.paginator = this.paginator;
                 }

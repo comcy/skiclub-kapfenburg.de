@@ -1,13 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiData, CourseRegistration } from '../../domain/models';
-import { CoursesRegistrationProviderService } from '../provider/courses-registration-provider.service';
+import { ApiData } from '../../domain/models/api-data';
+import { TripRegistration } from '../../domain/models/trip-registration';
+import { TripsRegistrationProviderService } from '../provider/trips-registration-provider.service';
 
 @Injectable({
     providedIn: 'root',
 })
-export class CoursesRegistrationBusinessService {
-    private readonly provider = inject(CoursesRegistrationProviderService);
+export class TripsRegistrationBusinessService {
+    private readonly provider = inject(TripsRegistrationProviderService);
 
     getRegistrations(
         eventId?: string,
@@ -15,20 +16,20 @@ export class CoursesRegistrationBusinessService {
         filter?: string,
         page?: number,
         limit?: number,
-    ): Observable<ApiData<CourseRegistration>> {
+    ): Observable<ApiData<TripRegistration>> {
         // Business logic, mapping, etc. would go here.
         return this.provider.getRegistrations(eventId, sort, filter, page, limit);
     }
 
-    getRegistrationById(eventId: string, id: string): Observable<CourseRegistration> {
+    getRegistrationById(eventId: string, id: string): Observable<TripRegistration> {
         return this.provider.getRegistrationById(eventId, id);
     }
 
-    createRegistration(eventId: string, registration: CourseRegistration): Observable<CourseRegistration> {
+    createRegistration(eventId: string, registration: TripRegistration): Observable<TripRegistration> {
         return this.provider.createRegistration(eventId, registration);
     }
 
-    updateRegistration(eventId: string, id: string, registration: CourseRegistration): Observable<CourseRegistration> {
+    updateRegistration(eventId: string, id: string, registration: TripRegistration): Observable<TripRegistration> {
         return this.provider.updateRegistration(eventId, id, registration);
     }
 
