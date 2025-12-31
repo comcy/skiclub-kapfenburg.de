@@ -1,4 +1,4 @@
-<h2>Trip Registrations</h2>
+<shared-lib-site-header [title]="title"></shared-lib-site-header>
 
 <div *ngIf="registrations$ | async; else loading" class="content">
     <lib-trips-registration-table

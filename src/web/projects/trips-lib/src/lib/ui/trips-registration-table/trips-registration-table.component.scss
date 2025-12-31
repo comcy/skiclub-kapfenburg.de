@@ -1,0 +1,74 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allow the host to grow */
+}
+
+.mat-elevation-z8 {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Hide overflow to ensure inner elements respect flex boundaries */
+    height: 100%; /* Explicitly set height */
+}
+
+table {
+    width: 100%;
+    min-width: 800px; /* Adjust based on your columns and desired minimum width */
+    flex-grow: 1; /* Allow table to grow within its container */
+    overflow-y: auto; /* Allow vertical scrolling within the table body if content exceeds height */
+}
+
+mat-paginator {
+    flex-shrink: 0; /* Ensure paginator does not shrink and stays at the bottom */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .mat-elevation-z8 {
+        overflow-x: auto; /* Enable horizontal scroll for the table container */
+    }
+
+    table {
+        min-width: unset; /* Remove min-width on small screens if you want to stack/hide */
+    }
+
+    /* Example for stacking header on small screens */
+    .mat-column-firstName,
+    .mat-column-lastName,
+    .mat-column-email,
+    .mat-column-phone,
+    .mat-column-age,
+    .mat-column-level,
+    .mat-column-sportType,
+    .mat-column-action {
+        padding: 8px; /* Adjust padding for better spacing */
+        box-sizing: border-box;
+    }
+
+    .mat-header-cell {
+        display: block; /* Make header cells block for stacking */
+        text-align: left !important;
+        font-weight: bold;
+    }
+
+    .mat-cell {
+        display: block; /* Make data cells block for stacking */
+        text-align: left !important;
+        border-bottom: none; /* Remove individual cell borders */
+    }
+
+    .mat-row {
+        flex-direction: column; /* Stack rows vertically */
+        align-items: flex-start;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #e0e0e0; /* Add border for row separation */
+    }
+
+    /* Hide some columns on small screens if desired */
+    .mat-column-phone,
+    .mat-column-age {
+        display: none; /* Example: hide phone and age columns */
+    }
+}

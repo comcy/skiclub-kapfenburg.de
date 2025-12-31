@@ -7,11 +7,12 @@ import { CoursesUiModule } from '../../ui/courses-ui.module';
 import { CommonModule } from '@angular/common';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
+import { SiteHeaderComponent } from '@shared/ui-common';
 
 @Component({
     selector: 'lib-courses-registration-list',
     standalone: true,
-    imports: [CommonModule, CoursesUiModule],
+    imports: [CommonModule, CoursesUiModule, SiteHeaderComponent],
     templateUrl: './courses-registration-list.component.html',
     styleUrl: './courses-registration-list.component.scss',
 })
@@ -22,6 +23,7 @@ export class CoursesRegistrationListComponent implements OnInit {
     public registrations$!: Observable<CourseRegistration[]>;
     public totalItems = 0;
     public eventId!: string;
+    public title: string = '';
 
     private readonly sort = new BehaviorSubject<string | undefined>(undefined);
     private readonly filter = new BehaviorSubject<string | undefined>(undefined);
@@ -45,7 +47,12 @@ export class CoursesRegistrationListComponent implements OnInit {
                 this.businessService
                     .getRegistrations(this.eventId, sort, filter, page.pageIndex + 1, page.pageSize)
                     .pipe(
-                        tap((response) => (this.totalItems = response.total)),
+                        tap(
+                            (response) => (
+                                (this.totalItems = response.total),
+                                (this.title = `Course Registrations: ${response.total}`)
+                            ),
+                        ),
                         map((response) => response.data),
                     ),
             ),

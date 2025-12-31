@@ -7,11 +7,12 @@ import { TripsUiModule } from '../../ui/trips-ui.module';
 import { CommonModule } from '@angular/common';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
+import { SiteHeaderComponent } from '@shared/ui-common';
 
 @Component({
     selector: 'lib-trips-registration-list',
     standalone: true,
-    imports: [CommonModule, TripsUiModule],
+    imports: [CommonModule, TripsUiModule, SiteHeaderComponent],
     templateUrl: './trips-registration-list.component.html',
     styleUrl: './trips-registration-list.component.scss',
 })
@@ -22,6 +23,7 @@ export class TripsRegistrationListComponent implements OnInit {
     public registrations$!: Observable<TripRegistration[]>;
     public totalItems = 0;
     public eventId!: string;
+    public title: string = '';
 
     private readonly sort = new BehaviorSubject<string | undefined>(undefined);
     private readonly filter = new BehaviorSubject<string | undefined>(undefined);
@@ -45,7 +47,12 @@ export class TripsRegistrationListComponent implements OnInit {
                 this.businessService
                     .getRegistrations(this.eventId, sort, filter, page.pageIndex + 1, page.pageSize)
                     .pipe(
-                        tap((response) => (this.totalItems = response.total)),
+                        tap(
+                            (response) => (
+                                (this.totalItems = response.total),
+                                (this.title = `Trip Registrations: ${response.total}`)
+                            ),
+                        ),
                         map((response) => response.data),
                     ),
             ),
