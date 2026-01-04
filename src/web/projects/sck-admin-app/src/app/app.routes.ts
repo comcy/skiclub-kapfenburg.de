@@ -14,7 +14,7 @@ export const routes: Routes = [
     // },
     {
         path: 'courses',
-        loadChildren: () => import('@courses-lib').then((m) => m.COURSES_LIB_ROUTES),
+        loadChildren: () => import('../../../courses-app/src/app/app.routes').then((m) => m.COURSES_APP_ROUTES),
     },
     {
         path: 'registrations',

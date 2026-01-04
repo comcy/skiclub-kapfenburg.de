@@ -1,0 +1,16 @@
+<shared-lib-site-header [title]="title"></shared-lib-site-header>
+
+<div *ngIf="registrations$ | async; else loading" class="content">
+    <lib-courses-registration-table
+        [registrations$]="registrations$"
+        [totalItems]="totalItems"
+        (sortChange)="onSortChange($event)"
+        (filterChange)="onFilterChange($event)"
+        (pageChange)="onPageChange($event)"
+        (delete)="onDelete($event)"
+    ></lib-courses-registration-table>
+</div>
+
+<ng-template #loading>
+    <p>Loading registrations...</p>
+</ng-template>
