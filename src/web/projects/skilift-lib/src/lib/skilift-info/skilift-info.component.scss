@@ -1,0 +1,149 @@
+.ski-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+    font-family: 'Segoe UI', sans-serif;
+    color: #1a1a1a;
+}
+
+.header {
+    text-align: center;
+    background: linear-gradient(135deg, #673ab7, #ffd740);
+    color: white;
+    padding: 2rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+
+    h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+
+    p {
+        margin-top: 0.5rem;
+        opacity: 0.9;
+    }
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    h2 {
+        margin-bottom: 0.8rem;
+        color: #673ab7;
+    }
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-bottom: 1px dashed #ddd;
+    font-size: 0.95rem;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+ul {
+    padding-left: 1.2rem;
+
+    li {
+        margin-bottom: 0.4rem;
+    }
+}
+
+.footer {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-top: 2rem;
+    color: #666;
+}
+
+/* Mobile Optimierung */
+@media (max-width: 600px) {
+    .hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+}
+
+.snow-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    margin-bottom: 1.2rem;
+    color: white;
+    font-size: 0.95rem;
+
+    h3 {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    p {
+        margin: 0;
+        opacity: 0.9;
+    }
+
+    .snow-left {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .icon {
+        font-size: 1.8rem;
+    }
+
+    .snow-right {
+        text-align: right;
+        font-size: 0.8rem;
+        opacity: 0.9;
+
+        strong {
+            display: block;
+            font-size: 0.85rem;
+        }
+    }
+}
+
+/* Farbstatus */
+.snow-banner.open {
+    background: linear-gradient(135deg, #2e7d32, #66bb6a);
+}
+
+.snow-banner.closed {
+    background: linear-gradient(135deg, #c62828, #ef5350);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .snow-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+
+        .snow-right {
+            text-align: left;
+        }
+    }
+}

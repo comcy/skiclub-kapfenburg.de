@@ -54,5 +54,5 @@ export const TAGESAUSFAHRT_EHRWALD: Tile = {
     actions: [TileActions.Register],
     expiration: new Date('2026-02-01'),
     boardings: BOARDING_LIST,
-    status: TileStatus.Open,
+    status: TileStatus.BookedUp,
 };

@@ -10,6 +10,7 @@
     <ng-container *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false">
         <div *ngFor="let n of highlightedNavItems" class="highlight-container">
             <a mat-button (click)="routeTo(n.route)">
+                <mat-icon>check</mat-icon>
                 {{ n.name }}
             </a>
         </div>
@@ -19,7 +20,10 @@
 
     <!-- Desktop view -->
     <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false" class="navitems-container">
-        <a *ngFor="let n of navItems" mat-flat-button color="primary" (click)="routeTo(n.route)">
+        <a *ngFor="let n of navItems" mat-flat-button [color]="resolveColor(n)()" (click)="routeTo(n.route)">
+            @if (logo) {
+                <mat-icon>{{ n.icon }}</mat-icon>
+            }
             {{ n.name }}
         </a>
     </div>

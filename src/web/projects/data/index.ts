@@ -7,3 +7,4 @@ export * from './trip-data';
 export * from './static-data';
 export * from './downloads';
 export * from './course-data';
+export * from './skilift-data';

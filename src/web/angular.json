@@ -363,6 +363,45 @@
           }
         }
       }
+    },
+    "skilift-lib": {
+      "projectType": "library",
+      "root": "projects/skilift-lib",
+      "sourceRoot": "projects/skilift-lib/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/skilift-lib/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/skilift-lib/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/skilift-lib/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/skilift-lib/**/*.ts",
+              "projects/skilift-lib/**/*.html"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {

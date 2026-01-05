@@ -55,6 +55,9 @@
           "dist/shared-lib/shared-lib",
           "dist/shared-lib"
         ],
+        "skilift-lib": [
+          "./dist/skilift-lib"
+        ],
         "trips-lib": [
           "dist/trips-lib/trips-lib",
           "dist/trips-lib"
@@ -79,6 +82,12 @@
       },
       {
         "path": "./projects/sck-admin-app/tsconfig.spec.json"
+      },
+      {
+        "path": "./projects/skilift-lib/tsconfig.lib.json"
+      },
+      {
+        "path": "./projects/skilift-lib/tsconfig.spec.json"
       }
     ]
 }

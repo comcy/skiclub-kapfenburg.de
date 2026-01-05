@@ -6,6 +6,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DatenschutzComponent } from 'projects/shared-lib/src/lib/components/datenschutz';
 import { ImpressumComponent } from 'projects/shared-lib/src/lib/components/impressum';
+import { SkiliftInfoComponent } from 'projects/skilift-lib/src/lib/skilift-info/skilift-info.component';
 import {
     COURSES_ROUTE,
     DSGVO_ROUTE,
@@ -13,8 +14,10 @@ import {
     GYM_ROUTE,
     HOME_ROUTE,
     IMPRESSUM_ROUTE,
+    SKILIFT_ROUTE,
     TRIPS_ROUTE,
 } from './route-segments';
+import { SkiGameComponent } from 'projects/shared-lib/src/lib/components/ski-game/ski-game.component';
 
 const routes: Routes = [
     {
@@ -32,6 +35,14 @@ const routes: Routes = [
     {
         path: TRIPS_ROUTE,
         loadChildren: () => import('./trips/trips-routing.module').then((m) => m.TripsRoutingModule),
+    },
+    {
+        path: SKILIFT_ROUTE,
+        component: SkiliftInfoComponent,
+    },
+    {
+        path: 'game',
+        component: SkiGameComponent,
     },
     {
         path: IMPRESSUM_ROUTE,

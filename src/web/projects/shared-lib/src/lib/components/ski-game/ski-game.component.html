@@ -1,0 +1,22 @@
+<div class="game-wrapper">
+    <h2>⛷️ Skiclub Downhill</h2>
+
+    <div class="game" #gameArea>
+        <div class="player" [style.left.px]="playerX"></div>
+
+        <div class="tree" *ngFor="let tree of trees" [style.top.px]="tree.y" [style.left.px]="tree.x"></div>
+
+        <div class="score">Punkte: {{ score }}</div>
+
+        <div *ngIf="gameOver" class="game-over">
+            <h3>💥 Sturz!</h3>
+            <p>Punkte: {{ score }}</p>
+            <button (click)="restart()">Neu starten</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button (click)="move(-40)">◀</button>
+        <button (click)="move(40)">▶</button>
+    </div>
+</div>

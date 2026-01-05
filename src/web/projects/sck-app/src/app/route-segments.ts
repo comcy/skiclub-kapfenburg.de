@@ -3,6 +3,7 @@
  */
 
 export const HOME_ROUTE = 'home';
+export const SKILIFT_ROUTE = 'skilift';
 export const TRIPS_ROUTE = 'trips';
 export const COURSES_ROUTE = 'courses';
 export const GYM_ROUTE = 'gymnastik';
