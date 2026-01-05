@@ -2,10 +2,18 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { NavigationItem, NavigationItemTypes } from 'projects/shared-lib/src/lib/components';
 import { environment } from '../environments/environment';
-import { COURSES_ROUTE, DSGVO_ROUTE, GYM_ROUTE, HOME_ROUTE, IMPRESSUM_ROUTE, TRIPS_ROUTE } from './route-segments';
+import {
+    COURSES_ROUTE,
+    DSGVO_ROUTE,
+    GYM_ROUTE,
+    HOME_ROUTE,
+    IMPRESSUM_ROUTE,
+    SKILIFT_ROUTE,
+    TRIPS_ROUTE,
+} from './route-segments';
 
 @Component({
     selector: 'app-root',
@@ -24,10 +32,11 @@ export class AppComponent {
     public buildNumber: string = environment.buildNumber;
 
     public navItems: NavigationItem[] = [
-        { name: 'Übersicht', route: HOME_ROUTE },
-        { name: 'Ski- und Snowboardschule', route: COURSES_ROUTE },
-        { name: 'Ausfahrten', route: TRIPS_ROUTE },
-        { name: 'Gymnastik', route: GYM_ROUTE },
+        { name: 'Übersicht', route: HOME_ROUTE, icon: 'home' },
+        { name: 'Ski- und Snowboardschule', route: COURSES_ROUTE, icon: 'downhill_skiing' },
+        { name: 'Ausfahrten', route: TRIPS_ROUTE, icon: 'directions_bus' },
+        { name: 'Gymnastik', route: GYM_ROUTE, icon: 'fitness_center' },
+        { name: 'Skilift', route: SKILIFT_ROUTE, icon: 'landscape', color: signal('accent') },
     ];
 
     public footerNavItems: NavigationItem[] = [

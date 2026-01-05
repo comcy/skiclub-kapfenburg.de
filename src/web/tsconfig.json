@@ -55,6 +55,9 @@
           "dist/shared-lib/shared-lib",
           "dist/shared-lib"
         ],
+        "skilift-lib": [
+          "./dist/skilift-lib"
+        ],
         "trips-lib": [
           "dist/trips-lib/trips-lib",
           "dist/trips-lib"
@@ -72,5 +75,13 @@
         "strictInjectionParameters": true,
         "strictInputAccessModifiers": true,
         "strictTemplates": true
-    }
+    },
+    "references": [
+      {
+        "path": "./projects/skilift-lib/tsconfig.lib.json"
+      },
+      {
+        "path": "./projects/skilift-lib/tsconfig.spec.json"
+      }
+    ]
 }

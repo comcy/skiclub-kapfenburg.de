@@ -1,0 +1,61 @@
+<div class="ski-container">
+    <header class="header">
+        <h1>SKILIFT KAPFENBURG</h1>
+        <p>Willkommen am Skihang bei der Kapfenburg</p>
+    </header>
+
+    <section class="snow-banner" [ngClass]="snowStatus.state">
+        <div class="snow-left">
+            @if (snowStatus.state === 'open') {
+                <mat-icon>check</mat-icon>
+            } @else {
+                <mat-icon>block</mat-icon>
+            }
+            <div>
+                <h3>{{ snowStatus.text }}</h3>
+            </div>
+        </div>
+
+        <div class="snow-right">
+            <span>Letztes Update</span>
+            <strong>{{ snowStatus.lastUpdate }}</strong>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Öffnungszeiten</h2>
+        <div class="list">
+            @for (opening of openingHours; track $index) {
+                <div class="row">
+                    <span>{{ opening.day }}</span>
+                    <span>{{ opening.time }}</span>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Preise</h2>
+        <div class="list">
+            @for (price of prices; track $index) {
+                <div class="row">
+                    <span>{{ price.label }}</span>
+                    <span>{{ price.price }}</span>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Konditionen</h2>
+        <ul>
+            @for (info of conditions; track $index) {
+                <li>{{ info }}</li>
+            }
+        </ul>
+    </section>
+
+    <footer class="footer">
+        <p>Gute Fahrt & viel Spaß!</p>
+    </footer>
+</div>
