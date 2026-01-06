@@ -1,15 +1,22 @@
-<shared-lib-site-header [title]="title"></shared-lib-site-header>
-
-<div *ngIf="registrations$ | async; else loading" class="content">
-    <lib-courses-registration-table
-        [registrations$]="registrations$"
-        [totalItems]="totalItems"
-        (sortChange)="onSortChange($event)"
-        (filterChange)="onFilterChange($event)"
-        (pageChange)="onPageChange($event)"
-        (delete)="onDelete($event)"
-    ></lib-courses-registration-table>
-</div>
+<shared-lib-site-header [title]="title">
+    <mat-form-field appearance="fill">
+        <mat-label>Sportart</mat-label>
+        <mat-select (selectionChange)="onSportTypeChange($event.value)">
+            <mat-option value="">Alle</mat-option>
+            <mat-option value="Alpin">Alpin</mat-option>
+            <mat-option value="Snowboard">Snowboard</mat-option>
+        </mat-select>
+    </mat-form-field>
+</shared-lib-site-header>
+<lib-courses-registration-table
+    [registrations$]="registrations$"
+    [totalItems]="totalItems"
+    [pageSize]="initialPageSize"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+    (filterChange)="onFilterChange($event)"
+    (delete)="onDelete($event)"
+></lib-courses-registration-table>
 
 <ng-template #loading>
     <p>Loading registrations...</p>

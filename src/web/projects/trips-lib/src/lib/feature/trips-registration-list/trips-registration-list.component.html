@@ -4,6 +4,7 @@
     <lib-trips-registration-table
         [registrations$]="registrations$"
         [totalItems]="totalItems"
+        [pageSize]="initialPageSize"
         (sortChange)="onSortChange($event)"
         (filterChange)="onFilterChange($event)"
         (pageChange)="onPageChange($event)"

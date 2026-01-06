@@ -33,7 +33,7 @@ export class TripsRegistrationProviderService {
             params = params.append('limit', limit);
         }
 
-        const url = eventId ? `${this.apiUrl}/events/${eventId}/registrations` : `${this.apiUrl}/registrations`;
+        const url = eventId ? `${this.apiUrl}/events/${eventId}/registrations` : `${this.apiUrl}/trip-registrations`;
         return this.http.get<ApiData<TripRegistration>>(url, { params });
     }
 

@@ -38,6 +38,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class TripsRegistrationTableComponent implements AfterViewInit, OnChanges {
     @Input() registrations$!: Observable<TripRegistration[]>;
     @Input() totalItems!: number;
+    @Input() pageSize = 10;
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() filterChange = new EventEmitter<string>();
     @Output() pageChange = new EventEmitter<PageEvent>();

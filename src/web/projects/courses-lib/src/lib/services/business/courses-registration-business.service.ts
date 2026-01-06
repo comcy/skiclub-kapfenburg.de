@@ -10,29 +10,29 @@ export class CoursesRegistrationBusinessService {
     private readonly provider = inject(CoursesRegistrationProviderService);
 
     getRegistrations(
-        eventId?: string,
         sort?: string,
         filter?: string,
         page?: number,
         limit?: number,
+        sportType?: string,
     ): Observable<ApiData<CourseRegistration>> {
         // Business logic, mapping, etc. would go here.
-        return this.provider.getRegistrations(eventId, sort, filter, page, limit);
+        return this.provider.getRegistrations(sort, filter, page, limit, sportType);
     }
 
-    getRegistrationById(eventId: string, id: string): Observable<CourseRegistration> {
-        return this.provider.getRegistrationById(eventId, id);
+    getRegistrationById(id: string): Observable<CourseRegistration> {
+        return this.provider.getRegistrationById(id);
     }
 
-    createRegistration(eventId: string, registration: CourseRegistration): Observable<CourseRegistration> {
-        return this.provider.createRegistration(eventId, registration);
+    createRegistration(registration: CourseRegistration): Observable<CourseRegistration> {
+        return this.provider.createRegistration(registration);
     }
 
-    updateRegistration(eventId: string, id: string, registration: CourseRegistration): Observable<CourseRegistration> {
-        return this.provider.updateRegistration(eventId, id, registration);
+    updateRegistration(id: string, registration: CourseRegistration): Observable<CourseRegistration> {
+        return this.provider.updateRegistration(id, registration);
     }
 
-    deleteRegistration(eventId: string, id: string): Observable<void> {
-        return this.provider.deleteRegistration(eventId, id);
+    deleteRegistration(id: string): Observable<void> {
+        return this.provider.deleteRegistration(id);
     }
 }

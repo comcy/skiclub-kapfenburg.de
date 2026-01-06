@@ -1,60 +1,56 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { PageEvent } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { Sort } from '@angular/material/sort';
+import { SiteHeaderComponent } from '@shared/ui-common';
 import { BehaviorSubject, Observable, combineLatest, map, switchMap, tap } from 'rxjs';
 import { CourseRegistration } from '../../domain/models/course-registration';
 import { CoursesRegistrationBusinessService } from '../../services/business/courses-registration-business.service';
 import { CoursesUiModule } from '../../ui/courses-ui.module';
-import { CommonModule } from '@angular/common';
-import { Sort } from '@angular/material/sort';
-import { PageEvent } from '@angular/material/paginator';
-import { SiteHeaderComponent } from '@shared/ui-common';
 
 @Component({
     selector: 'lib-courses-registration-list',
     standalone: true,
-    imports: [CommonModule, CoursesUiModule, SiteHeaderComponent],
+    imports: [CommonModule, CoursesUiModule, MatFormFieldModule, MatSelectModule, SiteHeaderComponent],
     templateUrl: './courses-registration-list.component.html',
     styleUrl: './courses-registration-list.component.scss',
 })
 export class CoursesRegistrationListComponent implements OnInit {
     private readonly businessService = inject(CoursesRegistrationBusinessService);
-    private readonly route = inject(ActivatedRoute);
+    private readonly storageKey = 'course-registration-table-limit';
 
     public registrations$!: Observable<CourseRegistration[]>;
     public totalItems = 0;
-    public eventId!: string;
     public title: string = '';
+    public initialPageSize: number;
 
     private readonly sort = new BehaviorSubject<string | undefined>(undefined);
     private readonly filter = new BehaviorSubject<string | undefined>(undefined);
-    private readonly page = new BehaviorSubject<PageEvent>({ pageIndex: 0, pageSize: 10, length: 0 });
+    private readonly page: BehaviorSubject<PageEvent>;
+    private readonly sportType = new BehaviorSubject<string | undefined>(undefined);
     private readonly reload = new BehaviorSubject<void>(undefined);
 
-    ngOnInit(): void {
-        const routeParams$ = this.route.paramMap.pipe(
-            map((params) => params.get('eventId')),
-            tap((eventId) => {
-                if (eventId) {
-                    this.eventId = eventId;
-                }
-            }),
-        );
+    constructor() {
+        const storedLimit = sessionStorage.getItem(this.storageKey);
+        this.initialPageSize = storedLimit ? parseInt(storedLimit, 10) : 10;
+        this.page = new BehaviorSubject<PageEvent>({ pageIndex: 0, pageSize: this.initialPageSize, length: 0 });
+    }
 
-        const combined$ = combineLatest([routeParams$, this.sort, this.filter, this.page, this.reload]);
+    ngOnInit(): void {
+        const combined$ = combineLatest([this.sort, this.filter, this.page, this.sportType, this.reload]);
 
         this.registrations$ = combined$.pipe(
-            switchMap(([, sort, filter, page]) =>
-                this.businessService
-                    .getRegistrations(this.eventId, sort, filter, page.pageIndex + 1, page.pageSize)
-                    .pipe(
-                        tap(
-                            (response) => (
-                                (this.totalItems = response.total),
-                                (this.title = `Course Registrations: ${response.total}`)
-                            ),
+            switchMap(([sort, filter, page, sportType]) =>
+                this.businessService.getRegistrations(sort, filter, page.pageIndex + 1, page.pageSize, sportType).pipe(
+                    tap(
+                        (response) => (
+                            (this.totalItems = response.total), (this.title = `Course Registrations: ${response.total}`)
                         ),
-                        map((response) => response.data),
                     ),
+                    map((response) => response.data),
+                ),
             ),
         );
     }
@@ -69,12 +65,17 @@ export class CoursesRegistrationListComponent implements OnInit {
     }
 
     onPageChange(page: PageEvent): void {
+        sessionStorage.setItem(this.storageKey, page.pageSize.toString());
         this.page.next(page);
+    }
+
+    onSportTypeChange(sportType: string): void {
+        this.sportType.next(sportType);
     }
 
     onDelete(id: string): void {
         this.businessService
-            .deleteRegistration(this.eventId, id)
+            .deleteRegistration(id)
             .pipe(tap(() => this.reload.next()))
             .subscribe();
     }

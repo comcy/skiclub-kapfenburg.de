@@ -19,16 +19,23 @@ import { SiteHeaderComponent } from '@shared/ui-common';
 export class TripsRegistrationListComponent implements OnInit {
     private readonly businessService = inject(TripsRegistrationBusinessService);
     private readonly route = inject(ActivatedRoute);
+    private readonly storageKey = 'trip-registration-table-limit';
+    private readonly sort = new BehaviorSubject<string | undefined>(undefined);
+    private readonly filter = new BehaviorSubject<string | undefined>(undefined);
+    private readonly page: BehaviorSubject<PageEvent>;
+    private readonly reload = new BehaviorSubject<void>(undefined);
 
     public registrations$!: Observable<TripRegistration[]>;
     public totalItems = 0;
     public eventId!: string;
     public title: string = '';
+    public initialPageSize: number;
 
-    private readonly sort = new BehaviorSubject<string | undefined>(undefined);
-    private readonly filter = new BehaviorSubject<string | undefined>(undefined);
-    private readonly page = new BehaviorSubject<PageEvent>({ pageIndex: 0, pageSize: 10, length: 0 });
-    private readonly reload = new BehaviorSubject<void>(undefined);
+    constructor() {
+        const storedLimit = sessionStorage.getItem(this.storageKey);
+        this.initialPageSize = storedLimit ? parseInt(storedLimit, 10) : 10;
+        this.page = new BehaviorSubject<PageEvent>({ pageIndex: 0, pageSize: this.initialPageSize, length: 0 });
+    }
 
     ngOnInit(): void {
         const routeParams$ = this.route.paramMap.pipe(
@@ -69,6 +76,7 @@ export class TripsRegistrationListComponent implements OnInit {
     }
 
     onPageChange(page: PageEvent): void {
+        sessionStorage.setItem(this.storageKey, page.pageSize.toString());
         this.page.next(page);
     }
 

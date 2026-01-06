@@ -11,13 +11,14 @@ import { environment } from 'projects/sck-app/src/environments/environment';
 export class CoursesRegistrationProviderService {
     private readonly http = inject(HttpClient);
     private readonly apiUrl = environment.sckApiUrl;
+    private readonly endpoint = 'course-registrations';
 
     getRegistrations(
-        eventId?: string,
         sort?: string,
         filter?: string,
         page?: number,
         limit?: number,
+        sportType?: string,
     ): Observable<ApiData<CourseRegistration>> {
         let params = new HttpParams();
         if (sort) {
@@ -32,24 +33,26 @@ export class CoursesRegistrationProviderService {
         if (limit) {
             params = params.append('limit', limit);
         }
+        if (sportType) {
+            params = params.append('sportType', sportType);
+        }
 
-        const url = eventId ? `${this.apiUrl}/events/${eventId}/registrations` : `${this.apiUrl}/registrations`;
-        return this.http.get<ApiData<CourseRegistration>>(url, { params });
+        return this.http.get<ApiData<CourseRegistration>>(`${this.apiUrl}/${this.endpoint}`, { params });
     }
 
-    getRegistrationById(eventId: string, id: string): Observable<CourseRegistration> {
-        return this.http.get<CourseRegistration>(`${this.apiUrl}/events/${eventId}/registrations/${id}`);
+    getRegistrationById(id: string): Observable<CourseRegistration> {
+        return this.http.get<CourseRegistration>(`${this.apiUrl}/${this.endpoint}/${id}`);
     }
 
-    createRegistration(eventId: string, registration: CourseRegistration): Observable<CourseRegistration> {
-        return this.http.post<CourseRegistration>(`${this.apiUrl}/events/${eventId}/registrations`, registration);
+    createRegistration(registration: CourseRegistration): Observable<CourseRegistration> {
+        return this.http.post<CourseRegistration>(`${this.apiUrl}/${this.endpoint}`, registration);
     }
 
-    updateRegistration(eventId: string, id: string, registration: CourseRegistration): Observable<CourseRegistration> {
-        return this.http.put<CourseRegistration>(`${this.apiUrl}/events/${eventId}/registrations/${id}`, registration);
+    updateRegistration(id: string, registration: CourseRegistration): Observable<CourseRegistration> {
+        return this.http.put<CourseRegistration>(`${this.apiUrl}/${this.endpoint}/${id}`, registration);
     }
 
-    deleteRegistration(eventId: string, id: string): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/events/${eventId}/registrations/${id}`);
+    deleteRegistration(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${this.endpoint}/${id}`);
     }
 }
