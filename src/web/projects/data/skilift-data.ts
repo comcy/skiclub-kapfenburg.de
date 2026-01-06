@@ -12,13 +12,14 @@ import {
 export const SKILIFT_STATUS: SkiliftSnowStatus = {
     state: SkiliftState.OPEN, // good | limited | closed
     text: 'Skilift in Betrieb',
-    lastUpdate: '5. Januar 2026',
+    lastUpdate: '6. Januar 2026 (im Falle von Fragen, nehmt gerne mit uns Kontakt auf.) ',
 };
 
 export const SKILIFT_OPENING_HOURS: SkiliftOpeningHours[] = [
     { day: '4. Januar 2026', time: 'ab 10:00 Uhr' },
     { day: '5. Januar 2026', time: 'ab 10:00 Uhr' },
     { day: '6. Januar 2026', time: 'ab 10:00 Uhr' },
+    { day: 'ab 7. Januar 2026', time: 'ab 15:30 Uhr' },
 ];
 
 export const SKILIFT_CONDITIONS: string[] = [
