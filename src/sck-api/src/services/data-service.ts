@@ -70,6 +70,7 @@ export const getEntities = async <T extends Record<string, any>>(
     sort?: string,
     filter?: string,
     sportTypeFilter?: string, // New parameter
+    typeFilter?: string,
 ): Promise<PaginatedResult<T>> => {
     let entities = await readEntities<T>(entityType);
 
@@ -87,6 +88,14 @@ export const getEntities = async <T extends Record<string, any>>(
         entities = entities.filter((entity) => {
             const sportType = (entity as any).sportType; // Assuming CourseRegistration has sportType
             return sportType && sportTypeFilter.split(',').includes(sportType);
+        });
+    }
+
+    // Filtering by type
+    if (typeFilter && entityType === 'registrations') {
+        entities = entities.filter((entity) => {
+            const type = (entity as any).type;
+            return type && typeFilter.split(',').includes(type);
         });
     }
 

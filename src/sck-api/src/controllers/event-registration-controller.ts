@@ -94,14 +94,22 @@ export const getEventRegistrationById: RequestHandler = async (req, res) => {
     }
 };
 
-export const getAllRegistrations: RequestHandler = async (req, res) => {
+export const getTripRegistrations: RequestHandler = async (req, res) => {
     try {
         const page = parseInt(req.query.page as string, 10) || 1;
         const limit = parseInt(req.query.limit as string, 10) || 10;
         const sort = req.query.sort as string | undefined;
         const filter = req.query.filter as string | undefined;
         const sportTypeFilter = req.query.sportTypeFilter as string | undefined;
-        const registrations = await getEntities('registrations', page, limit, sort, filter, sportTypeFilter);
+        const registrations = await getEntities(
+            'registrations',
+            page,
+            limit,
+            sort,
+            filter,
+            sportTypeFilter,
+            'trip-registration',
+        );
         res.status(200).json(registrations);
     } catch (error: any) {
         console.error('Fehler beim Abrufen der Registrierungen:', error);

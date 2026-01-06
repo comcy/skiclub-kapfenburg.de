@@ -4,11 +4,11 @@
 
 import { Router } from 'express';
 import {
-    getAllRegistrations,
+    getTripRegistrations,
 } from '../controllers/event-registration-controller.js';
 
 const router = Router();
 
-router.get('/', getAllRegistrations);
+router.get('/', getTripRegistrations);
 
 export default router;

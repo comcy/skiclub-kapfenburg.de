@@ -1,12 +1,12 @@
 @baseUrl = http://localhost:3000/api
 
 # @name createSkiCourseRegistration
-POST {{baseUrl}}/ski-course-registrations
+POST {{baseUrl}}/course-registrations
 Content-Type: application/json
 
 {
     "firstName": "Chris",
-    "lastName": "Chross",
+    "lastName": "Flanky",
     "sportType": "Snowboard",
     "email": "cr.oss@example.com",
     "phone": "98765412",
@@ -18,17 +18,17 @@ Content-Type: application/json
 ###
 
 # @name getSkiCourseRegistrations
-GET {{baseUrl}}/ski-course-registrations
+GET {{baseUrl}}/course-registrations
 
 ###
 
 # @name getSkiCourseRegistrationById
-GET {{baseUrl}}/ski-course-registrations/{{createSkiCourseRegistration.response.body.data.id}}
+GET {{baseUrl}}/course-registrations/{{createSkiCourseRegistration.response.body.data.id}}
 
 ###
 
 # @name updateSkiCourseRegistration
-PUT {{baseUrl}}/ski-course-registrations/{{createSkiCourseRegistration.response.body.data.id}}
+PUT {{baseUrl}}/course-registrations/{{createSkiCourseRegistration.response.body.data.id}}
 Content-Type: application/json
 
 {
@@ -38,4 +38,4 @@ Content-Type: application/json
 ###
 
 # @name deleteSkiCourseRegistration
-DELETE {{baseUrl}}/ski-course-registrations/{{createSkiCourseRegistration.response.body.data.id}}
+DELETE {{baseUrl}}/course-registrations/{{createSkiCourseRegistration.response.body.data.id}}

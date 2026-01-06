@@ -8,8 +8,8 @@ import express from 'express';
 import emailRoutes from './routes/email-route.js';
 import eventRoutes from './routes/event-route.js';
 import gymCourseRoutes from './routes/gym-course-route.js';
-import skiCourseRegistrationRoutes from './routes/ski-course-registration-route.js';
-import allRegistrationsRoutes from './routes/all-registrations-route.js';
+import courseRegistrationRoutes from './routes/course-registration-route.js';
+import tripRegistrationsRoutes from './routes/trip-registrations-route.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -22,8 +22,8 @@ app.use(cors());
 app.use('/api', emailRoutes);
 app.use('/api', eventRoutes);
 app.use('/api', gymCourseRoutes);
-app.use('/api', skiCourseRegistrationRoutes);
-app.use('/api/registrations', allRegistrationsRoutes);
+app.use('/api', courseRegistrationRoutes);
+app.use('/api/trip-registrations', tripRegistrationsRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

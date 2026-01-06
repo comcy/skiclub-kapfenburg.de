@@ -14,12 +14,12 @@ Content-Type: application/json
   "additionalText": "This is an additional text.",
   "participants": [
     {
-      "firstName": "John",
-      "lastName": "Bla",
+      "firstName": "Christian",
+      "lastName": "Silfang",
       "birthday": "1990-01-01",
       "email": "john.doe@example.com",
       "phone": "123456789",
-      "boarding": "City A"
+      "boarding": "City B"
     }
   ]
 }
