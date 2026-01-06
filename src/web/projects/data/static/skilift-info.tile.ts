@@ -7,9 +7,8 @@ import { Tile, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist geöffnet.
 
 **Öffnungszeiten**
-- Sonntag, 4. Januar 2026: ab 10 Uhr
-- Montag, 5. Januar 2026: ab 10 Uhr
 - Dienstag, 6. Januar 2026: ab 10 Uhr
+- ab 7. Januar 2026: ab 15:30 Uhr
 
 **Preise 10er Karte**
 - Kinder: 6€
@@ -18,6 +17,7 @@ const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist geöffnet.
 ---
 
 _*Bei Bedarf wird abends das Flutlicht eingeschaltet._
+_*Betrieb nur bei ausreichender Schneelage._
 `;
 
 export const SKILIFT_INFO_TILE: Tile = {
