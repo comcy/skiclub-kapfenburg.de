@@ -1,13 +1,20 @@
 <mat-form-field>
     <mat-label>Suche</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input />
+    <input matInput (keyup)="onFilter($event)" [value]="filter" #input />
     <button matSuffix mat-icon-button aria-label="Search">
         <mat-icon>search</mat-icon>
     </button>
 </mat-form-field>
 
 <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource" matSort>
+    <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        (matSortChange)="onSort($event)"
+        [matSortActive]="sortColumn"
+        [matSortDirection]="sortDirection"
+    >
         <!-- First Name Column -->
         <ng-container matColumnDef="firstName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
@@ -64,5 +71,11 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="pageSize"></mat-paginator>
+    <mat-paginator
+        [length]="totalItems"
+        [pageIndex]="pageIndex"
+        [pageSize]="limit"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onPage($event)"
+    ></mat-paginator>
 </div>

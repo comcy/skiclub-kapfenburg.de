@@ -1,23 +1,25 @@
+import { CommonModule } from '@angular/common';
 import {
-    AfterViewInit,
     Component,
     EventEmitter,
+    inject,
     Input,
     OnChanges,
+    OnInit,
     Output,
     SimpleChanges,
     ViewChild,
 } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { TripRegistration } from '../../domain/models/trip-registration';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'lib-trips-registration-table',
@@ -35,49 +37,68 @@ import { MatButtonModule } from '@angular/material/button';
     templateUrl: './trips-registration-table.component.html',
     styleUrls: ['./trips-registration-table.component.scss'],
 })
-export class TripsRegistrationTableComponent implements AfterViewInit, OnChanges {
+export class TripsRegistrationTableComponent implements OnChanges, OnInit {
     @Input() registrations$!: Observable<TripRegistration[]>;
     @Input() totalItems!: number;
-    @Input() pageSize = 10;
+    @Input() pageIndex = 0;
+    @Input() limit = 10;
+    @Input() filter = '';
+    @Input() sortDirection: 'asc' | 'desc' = 'asc';
+    @Input() sortColumn = 'lastName';
+
+    @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() filterChange = new EventEmitter<string>();
-    @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() delete = new EventEmitter<string>();
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
 
+    private readonly route = inject(ActivatedRoute);
+
     dataSource = new MatTableDataSource<TripRegistration>();
     displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phone', 'boarding', 'age', 'action'];
+
+    constructor() {}
+
+    ngOnInit(): void {
+        const { page, limit, filter, sortColumn, sortDirection } = this.route.snapshot.queryParams;
+        this.pageIndex = page ? page - 1 : this.pageIndex;
+        this.limit = limit ?? this.limit;
+        this.filter = filter ?? this.filter;
+        this.sortColumn = sortColumn ?? this.sortColumn;
+        this.sortDirection = sortDirection ?? this.sortDirection;
+
+        this.filterChange.emit(this.filter);
+        this.pageChange.emit({
+            pageIndex: this.pageIndex,
+            pageSize: this.limit,
+            length: this.totalItems,
+        });
+        this.sortChange.emit({
+            active: this.sortColumn,
+            direction: this.sortDirection,
+        });
+    }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['registrations$']) {
             this.registrations$.subscribe((data) => {
                 this.dataSource.data = data;
-                if (this.paginator) {
-                    this.dataSource.paginator = this.paginator;
-                }
-                if (this.sort) {
-                    this.dataSource.sort = this.sort;
-                }
             });
         }
-        if (changes['totalItems']) {
-            if (this.paginator) {
-                this.paginator.length = this.totalItems;
-            }
-        }
     }
 
-    ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        this.sort.sortChange.subscribe((sort) => this.sortChange.emit(sort));
-        this.paginator.page.subscribe((page) => this.pageChange.emit(page));
+    onSort(sort: Sort): void {
+        this.sortChange.emit(sort);
     }
 
-    applyFilter(event: Event): void {
+    onFilter(event: Event): void {
         const filterValue = (event.target as HTMLInputElement).value;
         this.filterChange.emit(filterValue.trim().toLowerCase());
+    }
+
+    onPage(page: PageEvent): void {
+        this.pageChange.emit(page);
     }
 }

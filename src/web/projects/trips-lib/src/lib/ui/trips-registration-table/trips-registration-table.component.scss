@@ -20,6 +20,7 @@ table {
 }
 
 mat-paginator {
+    border-top: 4px solid #e0e0e0;
     flex-shrink: 0; /* Ensure paginator does not shrink and stays at the bottom */
 }
 

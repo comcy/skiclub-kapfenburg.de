@@ -11,7 +11,11 @@
 <lib-courses-registration-table
     [registrations$]="registrations$"
     [totalItems]="totalItems"
-    [pageSize]="initialPageSize"
+    [pageIndex]="page - 1"
+    [limit]="limit"
+    [filter]="filter"
+    [sortColumn]="sortColumn"
+    [sortDirection]="sortDirection"
     (sortChange)="onSortChange($event)"
     (pageChange)="onPageChange($event)"
     (filterChange)="onFilterChange($event)"

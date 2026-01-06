@@ -1,10 +1,14 @@
 <shared-lib-site-header [title]="title"></shared-lib-site-header>
 
-<div *ngIf="registrations$ | async; else loading" class="content">
+<div class="content">
     <lib-trips-registration-table
         [registrations$]="registrations$"
         [totalItems]="totalItems"
-        [pageSize]="initialPageSize"
+        [pageIndex]="page - 1"
+        [limit]="limit"
+        [filter]="filter"
+        [sortColumn]="sortColumn"
+        [sortDirection]="sortDirection"
         (sortChange)="onSortChange($event)"
         (filterChange)="onFilterChange($event)"
         (pageChange)="onPageChange($event)"
