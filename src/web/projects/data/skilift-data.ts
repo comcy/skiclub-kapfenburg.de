@@ -16,10 +16,10 @@ export const SKILIFT_STATUS: SkiliftSnowStatus = {
 };
 
 export const SKILIFT_OPENING_HOURS: SkiliftOpeningHours[] = [
-    { day: 'ab 8. Januar 2026', time: 'ab 15:00 Uhr' },
-    { day: 'ab 9. Januar 2026', time: 'ab 15:00 Uhr' },
-    { day: 'ab 10. Januar 2026', time: 'ab 10:00 Uhr' },
-    { day: 'ab 11. Januar 2026', time: 'ab 10:00 Uhr' },
+    { day: 'am 8. Januar 2026', time: 'ab 15:00 Uhr' },
+    { day: 'am 9. Januar 2026', time: 'ab 15:00 Uhr' },
+    { day: 'am 10. Januar 2026', time: 'ab 10:00 Uhr' },
+    { day: 'am 11. Januar 2026', time: 'ab 10:00 Uhr' },
 ];
 
 export const SKILIFT_CONDITIONS: string[] = [
