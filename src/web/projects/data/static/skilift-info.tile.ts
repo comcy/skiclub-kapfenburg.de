@@ -4,13 +4,13 @@
 
 import { Tile, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist geöffnet.
+const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist aktuell (9. Januar) geschlossen.
 
 **Öffnungszeiten**
 - am 8. Januar 2026: ab 15:00 Uhr
-- am 9. Januar 2026: ab 15:00 Uhr
-- am 10. Januar 2026: ab 10:00 Uhr
-- am 11. Januar 2026: ab 10:00 Uhr
+- am 9. Januar 2026: geschlossen, zu wenig Schnee
+- am 10. Januar 2026: geplant ab 10:00 Uhr
+- am 11. Januar 2026: geplant ab 10:00 Uhr
 
 **Preise 10er Karte**
 - Kinder: 6€
@@ -27,7 +27,7 @@ export const SKILIFT_INFO_TILE: Tile = {
     type: TileType.Info,
     behavior: TileBehavior.Click,
     title: 'Betrieb ab 10 Uhr an Wochenenden',
-    date: 'SKILIFT KAPFENBURG GEÖFFNET',
+    date: 'SKILIFT KAPFENBURG GESCHLOSSEN',
     subTitle: 'Januar 2026',
     image: '../../../../assets/img/cards/skilift_nacht.jpeg',
     imageDescription: 'Skilift',
