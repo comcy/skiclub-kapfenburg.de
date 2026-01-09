@@ -11,8 +11,8 @@ import {
 
 export const SKILIFT_STATUS: SkiliftSnowStatus = {
     state: SkiliftState.CLOSED, // OPEN | CLOSED
-    text: 'Skilift in Betrieb',
-    lastUpdate: '7. Januar 2026 (im Falle von Fragen, nehmt gerne mit uns Kontakt auf.) ',
+    text: 'Skilift NICHT in Betrieb',
+    lastUpdate: '9. Januar 2026 (im Falle von Fragen, nehmt gerne mit uns Kontakt auf.) ',
 };
 
 export const SKILIFT_OPENING_HOURS: SkiliftOpeningHours[] = [
