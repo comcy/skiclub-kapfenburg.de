@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SkiliftOpeningHours, SkiliftPrices, SkiliftSnowStatus } from './skilift-info.interfaces';
+import { LoipenSnowStatus, SkiliftOpeningHours, SkiliftPrices, SkiliftSnowStatus } from './skilift-info.interfaces';
 import { SKILIFT_CONDITIONS, SKILIFT_OPENING_HOURS, SKILIFT_PRICES, SKILIFT_STATUS } from 'projects/data/skilift-data';
 import { MatIcon } from '@angular/material/icon';
 
@@ -16,4 +16,5 @@ export class SkiliftInfoComponent {
     public conditions: string[] = SKILIFT_CONDITIONS;
     public prices: SkiliftPrices[] = SKILIFT_PRICES;
     public snowStatus: SkiliftSnowStatus = SKILIFT_STATUS;
+    public loipenStatus: LoipenSnowStatus = SKILIFT_STATUS;
 }

@@ -1,3 +1,9 @@
+export interface LoipenSnowStatus {
+    state: LoipenState;
+    text: string;
+    lastUpdate: string;
+}
+
 export interface SkiliftSnowStatus {
     state: SkiliftState;
     text: string;
@@ -15,6 +21,11 @@ export interface SkiliftOpeningHours {
 }
 
 export enum SkiliftState {
+    CLOSED = 'closed',
+    OPEN = 'open',
+}
+
+export enum LoipenState {
     CLOSED = 'closed',
     OPEN = 'open',
 }

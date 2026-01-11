@@ -9,25 +9,25 @@ Pilates ist ein effektives Ganzkörpertraining zur Kräftigung von Bauch, Rücke
 Mit Fokus auf das „Powerhouse“, präzise Übungen und bewusste Atmung verbessert es Haltung und Körpergefühl.
 
 **Termine**
-- 10 x mittwochs 
-- Start am 14. Jan. 2026
-- Ende am 25. Mär. 2026
-- 8:30 Uhr - 09:30 Uhr 
+- 8 x donnerstags 
+- Start am 29. Jan. 2026
+- Ende am 26. Mär. 2026
+- 18:00 Uhr - 19:00 Uhr 
 - im "Alten Schulhaus" in Hülen (Aalener Gasse 12)
 
 **Kursgebühren**
-- Mitglieder: 40,00 € (4 € à Kurseinheit)
-- Nicht-Mtglieder: 60,00 € (6 € à Kurseinheit)
+- Mitglieder: 32,00 € (4 € à Kurseinheit)
+- Nicht-Mtglieder: 48,00 € (6 € à Kurseinheit)
 `;
 
-export const GYM_PILATES_TILE: Tile = {
+export const GYM_PILATES_THURSDAY_TILE: Tile = {
     order: 2,
     behavior: TileBehavior.View,
-    title: 'Pilates',
+    title: 'Pilates (Donnerstags)',
     type: TileType.Course,
-    date: '14.01.2026 bis 25.03.2026',
-    subTitle: 'Mittwochs, 8:30 Uhr - 09:30 Uhr (Altes Schulhaus Hülen)',
-    image: '../../../../assets/img/pilates/2026_01-03.png',
+    date: '29.01.2026 bis 26.03.2026',
+    subTitle: 'Donnerstags, 18:00 Uhr - 19:00 Uhr (Altes Schulhaus Hülen)',
+    image: '../../../../assets/img/pilates/2026_01-03-thursday.png',
     imageDescription: 'pilates',
     description: DESCRIPTION_TEXT,
     actions: [TileActions.Register],

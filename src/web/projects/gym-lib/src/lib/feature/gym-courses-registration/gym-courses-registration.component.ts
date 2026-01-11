@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { GymCoursesRegistrationFormComponent } from '../../ui/gym-courses-registration-form.component';
+import { GymCourse } from '../../domain';
 
 @Component({
     selector: 'lib-gym-courses-registration',
@@ -11,6 +12,16 @@ import { GymCoursesRegistrationFormComponent } from '../../ui/gym-courses-regist
 })
 export class GymCoursesRegistrationComponent {
     public email = new FormControl('', [Validators.required, Validators.email]);
+    public gymCourses: GymCourse[] = [
+        {
+            name: 'Pilates (Mittwoch)',
+            date: '14. Januar 2026 - 25. März 2026',
+        },
+        {
+            name: 'Pilates (Donnerstag)',
+            date: '29. Januar 2026 - 26. März 2026',
+        },
+    ];
 
     getErrorMessage() {
         if (this.email.hasError('required')) {
