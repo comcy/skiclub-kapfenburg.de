@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoipenSnowStatus, SkiliftOpeningHours, SkiliftPrices, SkiliftSnowStatus } from './skilift-info.interfaces';
+import { Component } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 import {
     LOIPEN_STATUS,
     SKILIFT_CONDITIONS,
@@ -8,7 +8,7 @@ import {
     SKILIFT_PRICES,
     SKILIFT_STATUS,
 } from 'projects/data/skilift-data';
-import { MatIcon } from '@angular/material/icon';
+import { LoipenSnowStatus, SkiliftOpeningHours, SkiliftPrices, SkiliftSnowStatus } from './skilift-info.interfaces';
 
 @Component({
     selector: 'lib-skilift-info',
