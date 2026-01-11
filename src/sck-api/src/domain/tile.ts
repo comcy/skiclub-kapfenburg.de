@@ -1,19 +1,18 @@
-/**
- * @copyright Copyright (c) 2025 Christian Silfang
- */
+import { TileActions, TileBehavior, TileStatus, TileType } from './tile-enums';
 
 export interface Tile {
-    id?: string; // Adding id for database persistence
+    id: string;
     order: number;
     type: TileType;
     title: string;
     date: string;
     subTitle: string;
     image: string;
+    imageId?: string; // Optional: reference to the Image ID
     imageDescription: string;
     description: string;
     status: TileStatus;
-    expiration: Date;
+    expiration: string;
     behavior: TileBehavior;
     boardings?: string[];
     actions?: TileActions[];
@@ -23,25 +22,4 @@ export interface Tile {
     expired?: boolean;
 }
 
-export enum TileType {
-    Info = 'info',
-    Event = 'event',
-    Course = 'course',
-}
-
-export enum TileActions {
-    Share = 'share',
-    Register = 'register',
-    Download = 'download',
-}
-
-export enum TileBehavior {
-    View = 'view',
-    Click = 'click',
-}
-
-export enum TileStatus {
-    Open = 'open',
-    Canceled = 'canceled',
-    BookedUp = 'bookedUp',
-}
+export type TileCreationParams = Omit<Tile, 'id'>;

@@ -7,5 +7,6 @@
  */
 
 export * from './lib/feature/trips-feature.module';
+export * from './lib/feature/trips-registration-list/trips-registration-list.component';
 export * from './lib/domain';
 export * from './lib/domain/models';

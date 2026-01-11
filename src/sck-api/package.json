@@ -11,20 +11,25 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "dev": "concurrently \"tsoa routes --watch\" \"tsoa spec --watch\" \"rollup -c -w\"",
+    "build": "tsoa routes && tsoa spec && rollup -c",
     "start": "node dist/index.js",
     "start:dev": "node --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
     "test": "jest"
   },
-  "type": "module",
+  "type": "commonjs",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/multer": "^2.0.0",
+    "@types/uuid": "^10.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
-    "nodemailer": "^6.9.16"
+    "multer": "^2.0.2",
+    "nodemailer": "^6.9.16",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.1",
@@ -37,6 +42,7 @@
     "@types/node": "^22.9.0",
     "@types/nodemailer": "^6.4.16",
     "@types/supertest": "^6.0.3",
+    "concurrently": "^9.2.1",
     "jest": "^30.2.0",
     "rollup": "^2.79.2",
     "rollup-plugin-terser": "^7.0.2",
@@ -44,6 +50,7 @@
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
+    "tsoa": "^7.0.0-alpha.0",
     "typescript": "^5.6.3"
   }
 }

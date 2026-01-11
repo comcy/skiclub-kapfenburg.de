@@ -6,7 +6,7 @@
             <mat-card appearance="outlined" *ngIf="t.visible" class="card" [ngClass]="{ expired: t.expired }">
                 <mat-card-header>
                     <div *ngIf="t.avatar" mat-card-avatar class="card-header-image">
-                        <img mat-card-avatar src="{{ t.avatar }}" />
+                        <img mat-card-avatar [src]="getImageUrl(t.avatar)" />
                     </div>
                     <mat-card-title class="card-date">{{ t.date }}</mat-card-title>
                     <mat-card-title
@@ -18,7 +18,7 @@
 
                 <span *ngIf="t.status === tileStatusEnum.Canceled" class="canceled-stamp">Abgesagt</span>
                 <span *ngIf="t.status === tileStatusEnum.BookedUp" class="booked-up-stamp">Warteliste</span>
-                <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
+                <img mat-card-image [src]="getImageUrl(t.image)" alt="{{ t.imageDescription }}" />
 
                 <mat-card-content class="mat-card-content">
                     <p [innerHTML]="this.markdown.render(t.description)"></p>

@@ -1,0 +1,17 @@
+.tile-management-container {
+    display: flex;
+    height: 100%;
+}
+
+.tile-list-container {
+    width: 30%;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.tile-editor-container {
+    width: 70%;
+    padding: 10px;
+    overflow-y: auto;
+}

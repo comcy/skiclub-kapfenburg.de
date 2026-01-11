@@ -1,0 +1,8 @@
+<div class="tile-management-container">
+    <div class="tile-list-container">
+        <app-tile-list (tileSelected)="onTileSelected($event)"></app-tile-list>
+    </div>
+    <div class="tile-editor-container">
+        <app-tile-editor [tile]="selectedTile"></app-tile-editor>
+    </div>
+</div>

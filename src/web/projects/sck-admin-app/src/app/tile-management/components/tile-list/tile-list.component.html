@@ -1,0 +1,54 @@
+<div class="container">
+    <button mat-raised-button color="primary" (click)="onCreate()">Create New Tile</button>
+    <table mat-table [dataSource]="(tiles$ | async) || []" class="mat-elevation-z8">
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Title</th>
+            <td mat-cell *matCellDef="let tile">{{ tile.title }}</td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let tile">{{ tile.type }}</td>
+        </ng-container>
+
+        <!-- Publication Date Column -->
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Publication Date</th>
+            <td mat-cell *matCellDef="let tile">{{ tile.date | date }}</td>
+        </ng-container>
+
+        <!-- Expiration Date Column -->
+        <ng-container matColumnDef="expiration">
+            <th mat-header-cell *matHeaderCellDef>Expiration Date</th>
+            <td mat-cell *matCellDef="let tile">{{ tile.expiration | date }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let tile">
+                <button mat-icon-button (click)="onEdit(tile)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="onDelete(tile)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="[5, 10, 20]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+    >
+    </mat-paginator>
+</div>

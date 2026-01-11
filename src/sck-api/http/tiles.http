@@ -1,0 +1,47 @@
+@api = http://localhost:3000/api
+
+### Get all tiles
+GET {{api}}/tiles
+
+### Get tile by id
+GET {{api}}/tiles/1
+
+### Create a new tile
+POST {{api}}/tiles
+Content-Type: application/json
+
+{
+    "order": 1,
+    "type": "info",
+    "title": "New Valid Tile",
+    "date": "2026-01-06T22:50:17Z",
+    "subTitle": "This is a subtitle",
+    "image": "images/logo.png",
+    "imageDescription": "Logo",
+    "description": "This is a valid tile created from a test.",
+    "status": "open",
+    "expiration": "2026-02-01T00:00:00Z",
+    "behavior": "view"
+}
+
+### Update a tile
+PUT {{api}}/tiles/1
+Content-Type: application/json
+
+{
+    "id": "1",
+    "order": 1,
+    "type": "info",
+    "title": "Updated Valid Tile asdasdasdasd",
+    "date": "2026-01-06T22:50:17Z",
+    "subTitle": "This is an updated subtitle",
+    "image": "images/logo.png",
+    "imageDescription": "Logo",
+    "description": "This is a valid tile updated from a test.",
+    "status": "open",
+    "expiration": "2026-02-01T00:00:00Z",
+    "behavior": "view"
+}
+
+### Delete a tile
+DELETE {{api}}/tiles/1

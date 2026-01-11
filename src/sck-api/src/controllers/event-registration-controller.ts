@@ -1,9 +1,18 @@
-/**
- * @copyright Copyright (c) 2025 Christian Silfang
- */
-
-import { RequestHandler } from 'express';
-import { saveEntity, getEntities, getEntityById } from '../services/data-service.js';
+import {
+    Body,
+    Controller,
+    Get,
+    Path,
+    Post,
+    Route,
+    Tags,
+    Query,
+} from 'tsoa';
+import {
+    saveEntity,
+    getEntities,
+    getEntityById,
+} from '../services/data-service.js';
 import { TripRegisterFormValue, SheetDbRow } from '../domain/trip-registration.js';
 
 const calculateAge = (birthday: string): number => {
@@ -17,15 +26,19 @@ const calculateAge = (birthday: string): number => {
     return age;
 };
 
-export const createEventRegistration: RequestHandler = async (req, res) => {
-    try {
-        const { eventId } = req.params;
-        const registrationData = req.body as TripRegisterFormValue;
+@Tags('Event Registrations')
+@Route('event-registrations')
+export class EventRegistrationController extends Controller {
+    @Post('/{eventId}')
+    public async createEventRegistration(
+        @Path() eventId: string,
+        @Body() registrationData: TripRegisterFormValue
+    ): Promise<{ message: string; data: any } | { error: string }> {
         const { trip, additionalText, participants } = registrationData;
 
         if (!trip || !participants || !Array.isArray(participants) || participants.length === 0) {
-            res.status(400).json({ error: 'Die Reise und mindestens ein Teilnehmer sind erforderlich.' });
-            return;
+            this.setStatus(400);
+            return { error: 'Die Reise und mindestens ein Teilnehmer sind erforderlich.' };
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -47,75 +60,44 @@ export const createEventRegistration: RequestHandler = async (req, res) => {
             savedRecords.push(savedRecord);
         }
 
-        res.status(201).json({ message: 'Registrierung erfolgreich gespeichert.', data: savedRecords });
-    } catch (error: any) {
-        console.error('Fehler bei der Erstellung der Registrierung:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
+        return { message: 'Registrierung erfolgreich gespeichert.', data: savedRecords };
     }
-};
 
-export const getEventRegistrations: RequestHandler = async (req, res) => {
-    try {
-        const { eventId } = req.params;
-        const page = parseInt(req.query.page as string, 10) || 1;
-        const limit = parseInt(req.query.limit as string, 10) || 10;
-        const sort = req.query.sort as string | undefined;
-        const filter = req.query.filter as string | undefined;
-        const sportTypeFilter = req.query.sportTypeFilter as string | undefined; 
-        const registrations = await getEntities('registrations', page, limit, sort, `${filter},eventId=${eventId}`, sportTypeFilter);
-        res.status(200).json(registrations);
-    } catch (error: any) {
-        console.error('Fehler beim Abrufen der Registrierungen:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
+    @Get('/{eventId}')
+    public async getEventRegistrations(
+        @Path() eventId: string,
+        @Query() page?: number,
+        @Query() limit?: number,
+        @Query() sort?: string,
+        @Query() filter?: string,
+        @Query() sportTypeFilter?: string
+    ): Promise<any> {
+        return getEntities('registrations', page, limit, sort, `${filter},eventId=${eventId}`, sportTypeFilter);
     }
-};
 
-export const getEventRegistrationById: RequestHandler = async (req, res) => {
-    try {
-        const { id } = req.params;
+    @Get('/by-id/{id}')
+    public async getEventRegistrationById(@Path() id: string): Promise<any> {
         const registration = await getEntityById('registrations', id);
         if (registration) {
-            res.status(200).json(registration);
+            return registration;
         } else {
-            res.status(404).json({ message: 'Registrierung nicht gefunden.' });
+            this.setStatus(404);
+            return { message: 'Registrierung nicht gefunden.' };
         }
-    } catch (error: any) {
-        console.error('Fehler beim Abrufen der Registrierung:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
     }
-};
+}
 
-export const getTripRegistrations: RequestHandler = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page as string, 10) || 1;
-        const limit = parseInt(req.query.limit as string, 10) || 10;
-        const sort = req.query.sort as string | undefined;
-        const filter = req.query.filter as string | undefined;
-        const sportTypeFilter = req.query.sportTypeFilter as string | undefined;
-        const registrations = await getEntities(
-            'registrations',
-            page,
-            limit,
-            sort,
-            filter,
-            sportTypeFilter,
-            'trip-registration',
-        );
-        res.status(200).json(registrations);
-    } catch (error: any) {
-        console.error('Fehler beim Abrufen der Registrierungen:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
+@Tags('Trip Registrations')
+@Route('trip-registrations')
+export class TripRegistrationController extends Controller {
+    @Get('/')
+    public async getTripRegistrations(
+        @Query() page?: number,
+        @Query() limit?: number,
+        @Query() sort?: string,
+        @Query() filter?: string,
+        @Query() sportTypeFilter?: string
+    ): Promise<any> {
+        return getEntities('registrations', page, limit, sort, filter, sportTypeFilter, 'trip-registration');
     }
-};
+}

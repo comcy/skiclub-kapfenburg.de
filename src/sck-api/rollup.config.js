@@ -9,22 +9,26 @@ export default {
   input: 'src/index.ts', 
   output: {
     file: 'dist/index.js', 
-    format: 'esm',         
+    format: 'cjs',         
     sourcemap: true,       
   },
   plugins: [
     resolve({
       preferBuiltins: true,
     }),
-    commonjs(),
+    commonjs({
+      include: 'node_modules/**', 
+      ignore: ['node_modules/@tsoa/cli/dist/cli.js'],
+    }),
     typescript({ tsconfig: './tsconfig.json' }),
     terser(), 
     json(),
   ],
   external: [
-    'express',
     'nodemailer',
     'cors',
-    'dotenv'
+    'dotenv',
+    '@tsoa/cli',
+    'multer'
   ],
 };

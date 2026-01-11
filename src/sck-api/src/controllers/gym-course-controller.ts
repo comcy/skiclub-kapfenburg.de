@@ -1,91 +1,71 @@
-/**
- * @copyright Copyright (c) 2025 Christian Silfang
- */
-
-import { RequestHandler } from 'express';
-import { saveEntity, getEntities, getEntityById, updateEntity, deleteEntity } from '../services/data-service.js';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Path,
+    Post,
+    Put,
+    Route,
+    Tags,
+    Query,
+} from 'tsoa';
+import {
+    saveEntity,
+    getEntities,
+    getEntityById,
+    updateEntity,
+    deleteEntity,
+} from '../services/data-service.js';
 import { Tile } from '../domain/tile.js';
 
-export const createGymCourse: RequestHandler = async (req, res) => {
-    try {
-        const courseData = req.body as Tile;
+@Tags('Gym Courses')
+@Route('gym-courses')
+export class GymCourseController extends Controller {
+    @Post('/')
+    public async createGymCourse(@Body() courseData: Tile): Promise<{ message: string; data: any }> {
         const savedCourse = await saveEntity('gym-courses', courseData);
-        res.status(201).json({ message: 'Gym course erfolgreich erstellt.', data: savedCourse });
-    } catch (error: any) {
-        console.error('Fehler bei der Erstellung des Gym course:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
+        return { message: 'Gym course erfolgreich erstellt.', data: savedCourse };
     }
-};
 
-export const getGymCourses: RequestHandler = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page as string, 10) || 1;
-        const limit = parseInt(req.query.limit as string, 10) || 10;
-        const courses = await getEntities<Tile>('gym-courses', page, limit);
-        res.status(200).json(courses);
-    } catch (error: any) {
-        console.error('Fehler beim Abrufen der Gym courses:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
+    @Get('/')
+    public async getGymCourses(@Query() page?: number, @Query() limit?: number): Promise<any> {
+        return getEntities<Tile>('gym-courses', page, limit);
     }
-};
 
-export const getGymCourseById: RequestHandler = async (req, res) => {
-    try {
-        const { id } = req.params;
+    @Get('/{id}')
+    public async getGymCourseById(@Path() id: string): Promise<any> {
         const course = await getEntityById<Tile>('gym-courses', id);
         if (course) {
-            res.status(200).json(course);
+            return course;
         } else {
-            res.status(404).json({ message: 'Gym course nicht gefunden.' });
+            this.setStatus(404);
+            return { message: 'Gym course nicht gefunden.' };
         }
-    } catch (error: any) {
-        console.error('Fehler beim Abrufen des Gym course:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
     }
-};
 
-export const updateGymCourse: RequestHandler = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const courseData = req.body as Partial<Tile>;
+    @Put('/{id}')
+    public async updateGymCourse(
+        @Path() id: string,
+        @Body() courseData: Partial<Tile>
+    ): Promise<{ message: string; data: any } | { message: string }> {
         const updatedCourse = await updateEntity<Tile>('gym-courses', id, courseData);
         if (updatedCourse) {
-            res.status(200).json({ message: 'Gym course erfolgreich aktualisiert.', data: updatedCourse });
+            return { message: 'Gym course erfolgreich aktualisiert.', data: updatedCourse };
         } else {
-            res.status(404).json({ message: 'Gym course nicht gefunden.' });
+            this.setStatus(404);
+            return { message: 'Gym course nicht gefunden.' };
         }
-    } catch (error: any) {
-        console.error('Fehler bei der Aktualisierung des Gym course:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
     }
-};
 
-export const deleteGymCourse: RequestHandler = async (req, res) => {
-    try {
-        const { id } = req.params;
+    @Delete('/{id}')
+    public async deleteGymCourse(@Path() id: string): Promise<{ message: string }> {
         const success = await deleteEntity('gym-courses', id);
         if (success) {
-            res.status(200).json({ message: 'Gym course erfolgreich gelöscht.' });
+            return { message: 'Gym course erfolgreich gelöscht.' };
         } else {
-            res.status(404).json({ message: 'Gym course nicht gefunden.' });
+            this.setStatus(404);
+            return { message: 'Gym course nicht gefunden.' };
         }
-    } catch (error: any) {
-        console.error('Fehler beim Löschen des Gym course:', error);
-        res.status(500).json({
-            error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-            details: error.message,
-        });
     }
-};
+}

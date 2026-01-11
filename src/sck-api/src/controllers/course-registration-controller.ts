@@ -1,221 +1,77 @@
-/**
- * @copyright Copyright (c) 2025 Christian Silfang
- */
-
-import { RequestHandler } from 'express';
-
 import {
-
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Path,
+    Post,
+    Put,
+    Route,
+    Tags,
+    Query,
+} from 'tsoa';
+import {
     saveEntity,
-
-    readEntities,
-
-    getEntityById,
-
-    updateEntity,
-
-    deleteEntity,
-
     getEntities,
-
+    getEntityById,
+    updateEntity,
+    deleteEntity,
 } from '../services/data-service.js';
-
 import { CourseRegisterFormFields } from '../domain/course-registration.js';
 
-
-
-export const createCourseRegistration: RequestHandler = async (req, res) => {
-
-    try {
-
-        const registrationData = req.body as CourseRegisterFormFields;
-
+@Tags('Course Registrations')
+@Route('course-registrations')
+export class CourseRegistrationController extends Controller {
+    @Post('/')
+    public async createCourseRegistration(@Body() registrationData: CourseRegisterFormFields): Promise<{ message: string; data: any }> {
         const savedRegistration = await saveEntity('registrations', { ...registrationData, type: 'course-registration' });
-
-        res.status(201).json({ message: 'Course registration successfully created.', data: savedRegistration });
-
-    } catch (error: any) {
-
-        console.error('Error creating course registration:', error);
-
-        res.status(500).json({
-
-            error: 'Error processing your request.',
-
-            details: error.message,
-
-        });
-
+        return { message: 'Course registration successfully created.', data: savedRegistration };
     }
 
-};
-
-
-
-export const getCourseRegistrations: RequestHandler = async (req, res) => {
-
-    try {
-
-        const page = parseInt(req.query.page as string, 10) || 1;
-
-        const limit = parseInt(req.query.limit as string, 10) || 10;
-
-        const sort = req.query.sort as string | undefined;
-
-        const filter = req.query.filter as string | undefined;
-
-        const sportTypeFilter = req.query.sportType as string | undefined;
-
-
-
-        const registrations = await getEntities(
-
-            'registrations',
-
-            page,
-
-            limit,
-
-            sort,
-
-            filter,
-
-            sportTypeFilter,
-
-            'course-registration',
-
-        );
-
-
-
-        res.status(200).json(registrations);
-
-    } catch (error: any) {
-
-        console.error('Error getting course registrations:', error);
-
-        res.status(500).json({
-
-            error: 'Error processing your request.',
-
-            details: error.message,
-
-        });
-
+    @Get('/')
+    public async getCourseRegistrations(
+        @Query() page?: number,
+        @Query() limit?: number,
+        @Query() sort?: string,
+        @Query() filter?: string,
+        @Query() sportType?: string
+    ): Promise<any> {
+        return getEntities('registrations', page, limit, sort, filter, sportType, 'course-registration');
     }
 
-};
-
-
-
-export const getCourseRegistrationById: RequestHandler = async (req, res) => {
-
-    try {
-
-        const { id } = req.params;
-
+    @Get('/{id}')
+    public async getCourseRegistrationById(@Path() id: string): Promise<any> {
         const registration = await getEntityById('registrations', id);
-
         if (registration && (registration as any).type === 'course-registration') {
-
-            res.status(200).json(registration);
-
+            return registration;
         } else {
-
-            res.status(404).json({ message: 'Course registration not found.' });
-
+            this.setStatus(404);
+            return { message: 'Course registration not found.' };
         }
-
-    } catch (error: any) {
-
-        console.error('Error getting course registration:', error);
-
-        res.status(500).json({
-
-            error: 'Error processing your request.',
-
-            details: error.message,
-
-        });
-
     }
 
-};
-
-
-
-export const updateCourseRegistration: RequestHandler = async (req, res) => {
-
-    try {
-
-        const { id } = req.params;
-
-        const registrationData = req.body as Partial<CourseRegisterFormFields>;
-
+    @Put('/{id}')
+    public async updateCourseRegistration(
+        @Path() id: string,
+        @Body() registrationData: Partial<CourseRegisterFormFields>
+    ): Promise<{ message: string; data: any } | { message: string }> {
         const updatedRegistration = await updateEntity('registrations', id, registrationData);
-
         if (updatedRegistration) {
-
-            res.status(200).json({ message: 'Course registration successfully updated.', data: updatedRegistration });
-
+            return { message: 'Course registration successfully updated.', data: updatedRegistration };
         } else {
-
-            res.status(404).json({ message: 'Course registration not found.' });
-
+            this.setStatus(404);
+            return { message: 'Course registration not found.' };
         }
-
-    } catch (error: any) {
-
-        console.error('Error updating course registration:', error);
-
-        res.status(500).json({
-
-            error: 'Error processing your request.',
-
-            details: error.message,
-
-        });
-
     }
 
-};
-
-
-
-export const deleteCourseRegistration: RequestHandler = async (req, res) => {
-
-    try {
-
-        const { id } = req.params;
-
+    @Delete('/{id}')
+    public async deleteCourseRegistration(@Path() id: string): Promise<{ message: string }> {
         const success = await deleteEntity('registrations', id);
-
         if (success) {
-
-            res.status(200).json({ message: 'Course registration successfully deleted.' });
-
+            return { message: 'Course registration successfully deleted.' };
+        } else {
+            this.setStatus(404);
+            return { message: 'Course registration not found.' };
         }
-
-        else {
-
-            res.status(404).json({ message: 'Course registration not found.' });
-
-        }
-
-    } catch (error: any) {
-
-        console.error('Error deleting course registration:', error);
-
-        res.status(500).json({
-
-            error: 'Error processing your request.',
-
-            details: error.message,
-
-        });
-
     }
-
-};
-
-
+}

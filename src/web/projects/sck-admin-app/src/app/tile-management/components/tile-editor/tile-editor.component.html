@@ -1,0 +1,91 @@
+<div *ngIf="tile" class="editor-container">
+    <div class="form-column">
+        <app-editable-image
+            [(value)]="tile.image"
+            (imageSelected)="onImageSelected($event)"
+            (imageRemoved)="onImageRemoved()"
+        >
+        </app-editable-image>
+
+        <app-editable-text label="Title" [(value)]="tile.title"></app-editable-text>
+        <app-editable-text label="Subtitle" [(value)]="tile.subTitle"></app-editable-text>
+        <app-editable-textarea label="Description" [(value)]="tile.description"></app-editable-textarea>
+        <app-editable-text label="Image Description (Alt-Text)" [(value)]="tile.imageDescription"></app-editable-text>
+
+        <div style="display: flex; gap: 16px">
+            <app-editable-date
+                label="Event Date"
+                [value]="tile.date"
+                (valueChange)="tile.date = $event"
+            ></app-editable-date>
+            <app-editable-date
+                label="Expiration Date"
+                [value]="tile.expiration"
+                (valueChange)="tile.expiration = $event"
+            ></app-editable-date>
+        </div>
+
+        <app-editable-link label="Download Link" [(link)]="tile.downloadActionLink"></app-editable-link>
+
+        <mat-form-field>
+            <mat-label>Order</mat-label>
+            <input matInput type="number" [(ngModel)]="tile.order" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Type</mat-label>
+            <mat-select [(ngModel)]="tile.type">
+                <mat-option *ngFor="let type of tileTypes" [value]="type">
+                    {{ type }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="tile.status">
+                <mat-option *ngFor="let status of tileStatus" [value]="status">
+                    {{ status }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Behavior</mat-label>
+            <mat-select [(ngModel)]="tile.behavior">
+                <mat-option *ngFor="let behavior of tileBehaviors" [value]="behavior">
+                    {{ behavior }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Actions</mat-label>
+            <mat-select [(ngModel)]="tile.actions" multiple>
+                <mat-option *ngFor="let action of tileActions" [value]="action">
+                    {{ action }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Boardings</mat-label>
+            <mat-select [(ngModel)]="tile.boardings" multiple>
+                <mat-option *ngFor="let boarding of availableBoardings$ | async" [value]="boarding.name">
+                    {{ boarding.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="tile.visible">Visible</mat-checkbox>
+
+        <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!tile" style="margin-top: 16px">
+            Save Changes
+        </button>
+    </div>
+
+    <div class="preview-column">
+        <div class="preview-header">Live Preview</div>
+        <app-tile-preview [tile]="tile"></app-tile-preview>
+    </div>
+</div>

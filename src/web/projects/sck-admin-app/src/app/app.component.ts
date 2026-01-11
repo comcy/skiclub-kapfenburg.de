@@ -33,9 +33,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class AppComponent {
     title = 'SCK Admin';
     navItems: NavigationItem[] = [
-        { name: 'Dashboard', route: '/dashboard' },
-        { name: 'Events', route: '/events' },
         { name: 'Kurse', route: '/courses' },
         { name: 'Registrierungen', route: '/registrations' },
+        { name: 'Event Management', route: '/event-management' },
     ];
 }
