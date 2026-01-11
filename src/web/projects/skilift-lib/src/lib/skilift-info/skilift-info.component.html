@@ -4,21 +4,21 @@
         <p>Willkommen am Skihang bei der Kapfenburg</p>
     </header>
 
-    <section class="snow-banner" [ngClass]="snowStatus.state">
+    <section class="snow-banner" [ngClass]="loipenStatus.state">
         <div class="snow-left">
-            @if (snowStatus.state === 'open') {
+            @if (loipenStatus.state === 'open') {
                 <mat-icon>check</mat-icon>
             } @else {
                 <mat-icon>block</mat-icon>
             }
             <div>
-                <h3>{{ snowStatus.text }}</h3>
+                <h3>{{ loipenStatus.text }}</h3>
             </div>
         </div>
 
         <div class="snow-right">
             <span>Letztes Update</span>
-            <strong>{{ snowStatus.lastUpdate }}</strong>
+            <strong>{{ loipenStatus.lastUpdate }}</strong>
         </div>
     </section>
 
