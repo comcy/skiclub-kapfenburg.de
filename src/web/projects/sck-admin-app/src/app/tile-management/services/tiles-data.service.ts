@@ -15,11 +15,10 @@ export class TilesDataService {
 
     getAbsoluteUrl(path: string | undefined): string {
         if (!path) return '';
-        if (path.startsWith('http')) return path;
+        if (path.startsWith('http') || path.startsWith('data:')) return path;
         const baseUrl = this.apiUrl.replace(/\/api$/, '');
         return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
     }
-
     getTiles(page: number = 1, limit: number = 100): Observable<PaginatedResponse<Tile>> {
         return this.http.get<PaginatedResponse<Tile>>(`${this.apiUrl}/${this.endpoint}`, {
             params: {

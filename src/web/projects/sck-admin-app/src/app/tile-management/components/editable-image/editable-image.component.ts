@@ -125,18 +125,10 @@ export class EditableImageComponent {
             const file = target.files[0];
             this.imageSelected.emit(file);
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                this.value = reader.result as string;
-                this.valueChange.emit(this.value);
-            };
-            reader.readAsDataURL(file);
-
             // Reset input value so change event triggers even if same file is selected again
             target.value = '';
         }
     }
-
     onRemove(event: Event): void {
         event.stopPropagation(); // Prevent triggering the upload click
         this.value = '';
