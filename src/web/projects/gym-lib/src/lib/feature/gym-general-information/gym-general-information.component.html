@@ -65,8 +65,8 @@
 
 <ng-container *ngIf="gymState.gymOffers$ | async as gymOffers">
     <div class="info-page" *ngFor="let g of gymOffers">
-        <h3>{{ g.title }}</h3>
-        <h2>{{ g.appointment }}</h2>
+        <h3>{{ g.name }}</h3>
+        <h2>{{ g.date }} - {{ g.location }}</h2>
         <p>
             {{ g.description }}
         </p>

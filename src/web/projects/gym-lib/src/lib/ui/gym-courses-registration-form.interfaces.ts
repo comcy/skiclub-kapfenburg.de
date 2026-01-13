@@ -6,20 +6,16 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseFormElements } from 'projects/shared-lib/src/lib/components/forms';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { GymCourseInformation } from '../domain';
 
 export interface GymCoursesRegisterFormFields {
     firstName: string;
     lastName: string;
-    course: CourseInformation;
     email: string;
     phone: string;
     birthday: string;
     additionalText: string;
-}
-
-export interface CourseInformation {
-    name: string;
-    date: string;
+    course: GymCourseInformation;
 }
 
 export interface GymCoursesRegisterForm {

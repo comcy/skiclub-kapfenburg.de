@@ -5,18 +5,19 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, take, tap } from 'rxjs';
 import { GymInformationProviderServiceInterface } from '../../api/provider-services/gym-provider-service.interface';
-import { GymInformation } from '../models';
+import { GymCourseInformation } from '../models';
 import { GymInformationCoreServiceInterface } from './gym-information-core-service.interface';
 
 @Injectable()
 export class GymInformationCoreService implements GymInformationCoreServiceInterface {
     private gymInformationProviderService = inject(GymInformationProviderServiceInterface);
 
-    public gymOffers$: BehaviorSubject<GymInformation[]> = new BehaviorSubject<GymInformation[]>([
+    public gymOffers$: BehaviorSubject<GymCourseInformation[]> = new BehaviorSubject<GymCourseInformation[]>([
         {
-            title: 'TEST',
-            appointment: 'TEST',
+            name: 'TEST',
             description: 'TEST',
+            time: 'TEST',
+            location: 'TEST',
             contact: 'TEST',
         },
     ]);

@@ -7,10 +7,7 @@ import { Tile, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist aktuell (10. Januar) geöffnet.
 
 **Öffnungszeiten**
-- am 8. Januar 2026: ab 15:00 Uhr
-- am 9. Januar 2026: geschlossen, zu wenig Schnee
-- am 10. Januar 2026: geplant ab 14:00 Uhr
-- am 11. Januar 2026: geplant ab 10:00 Uhr
+- ab 12. Januar 2026: geschlossen
 
 **Preise 10er Karte**
 - Kinder: 6€

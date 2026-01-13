@@ -23,15 +23,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BreakpointObserverService } from '@shared/ui-common';
+import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
-import { TripRegistrationFormServiceInterface } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
-import { GymCourse } from '../domain';
+import { GymCourseInformation } from '../domain';
 import { GYM_COURSES_REGISTRATION_FORM_ELEMENTS } from './gym-courses-registration-form-fields';
 import {
     GymCoursesRegisterFormFields,
     GymCoursesRegistrationFormServiceInterface,
 } from './gym-courses-registration-form.interfaces';
-import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
 
 @Component({
     selector: 'lib-gym-courses-registration-form',
@@ -59,7 +58,7 @@ import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
-    @Input() public additionalData!: GymCourse[];
+    @Input() public additionalData!: GymCourseInformation[];
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public breakpointObserver = inject(BreakpointObserverService);
@@ -68,7 +67,6 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
 
     private formBuilder = inject(FormBuilder);
     private gymCoursesRegistrationFormService = inject(GymCoursesRegistrationFormServiceInterface);
-    private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
     private cdr = inject(ChangeDetectorRef);
 
     ngOnInit(): void {
@@ -131,7 +129,6 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
 
             if (formData) {
                 this.submitForm.emit(true);
-                // this.tripRegistrationFormService.sendFormToSheetsIo(formData);
 
                 const mailToFormData: FormToMailInformation<GymCoursesRegisterFormFields> = {
                     receiver: this.gymCoursesRegisterForm.controls['email'].getRawValue(),
