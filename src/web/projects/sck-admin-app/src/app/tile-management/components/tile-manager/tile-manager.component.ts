@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TileListComponent } from '../tile-list/tile-list.component';
@@ -19,11 +19,16 @@ export class TileManagerComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     private readonly dataService = inject(TilesDataService);
 
+    @ViewChild(TileListComponent) tileList!: TileListComponent;
+
     ngOnInit(): void {
         // Check for ID parameter
         this.route.paramMap.subscribe((params) => {
             const id = params.get('id');
             if (id) {
+                if (this.selectedTile?.id === id) {
+                    return;
+                }
                 this.loadTile(id);
             } else {
                 // Select first tile if no ID is present
@@ -50,5 +55,9 @@ export class TileManagerComponent implements OnInit {
         this.selectedTile = tile;
         // Update URL without reloading
         this.router.navigate(['event-management', 'tiles', tile.id], { replaceUrl: true });
+    }
+
+    onTileSaved(): void {
+        this.tileList.loadTiles();
     }
 }

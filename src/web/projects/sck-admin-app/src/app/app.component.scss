@@ -1,3 +1,18 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#navigation {
+    flex: 0 0 auto;
+    z-index: 100;
+}
+
 .content {
-    padding-top: 64px;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
 }

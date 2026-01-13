@@ -2,20 +2,24 @@ import { Component, EventEmitter, Input, Output, ViewChild, ElementRef, inject }
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TilesDataService } from '../../services/tiles-data.service';
 
 @Component({
     selector: 'app-editable-image',
     standalone: true,
-    imports: [CommonModule, MatIconModule, MatButtonModule],
+    imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule],
     template: `
         <div class="image-wrapper">
-            <div class="image-container" (click)="onClick()" [class.has-image]="!!value">
-                <img [src]="resolvedUrl" *ngIf="value" />
-                <div class="placeholder" *ngIf="!value">
-                    <mat-icon class="upload-icon">add_a_photo</mat-icon>
-                    <span>Click to upload image</span>
-                </div>
+            <div class="image-container" (click)="!loading && onClick()" [class.has-image]="!!value">
+                <mat-spinner *ngIf="loading" diameter="40"></mat-spinner>
+                <ng-container *ngIf="!loading">
+                    <img [src]="resolvedUrl" *ngIf="value" />
+                    <div class="placeholder" *ngIf="!value">
+                        <mat-icon class="upload-icon">add_a_photo</mat-icon>
+                        <span>Click to upload image</span>
+                    </div>
+                </ng-container>
                 <input
                     type="file"
                     #fileInput
@@ -25,7 +29,7 @@ import { TilesDataService } from '../../services/tiles-data.service';
                 />
             </div>
             <button
-                *ngIf="value"
+                *ngIf="value && !loading"
                 mat-icon-button
                 color="warn"
                 class="remove-btn"
@@ -103,6 +107,7 @@ import { TilesDataService } from '../../services/tiles-data.service';
 })
 export class EditableImageComponent {
     @Input() value: string | undefined;
+    @Input() loading = false;
     @Output() valueChange = new EventEmitter<string>();
     @Output() imageSelected = new EventEmitter<File>();
     @Output() imageRemoved = new EventEmitter<void>();

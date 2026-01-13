@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -22,6 +22,7 @@ export class TileListComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
 
     @Output() tileSelected = new EventEmitter<Tile>();
+    @Input() selectedTileId: string | undefined;
 
     public tiles$!: Observable<Tile[]>;
     public totalItems = 0;

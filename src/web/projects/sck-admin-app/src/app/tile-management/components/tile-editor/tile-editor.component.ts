@@ -1,4 +1,4 @@
-import { Component, Input, inject, OnInit } from '@angular/core';
+import { Component, Input, inject, OnInit, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -43,8 +43,10 @@ import { Boarding } from '../../../boardings-management/domain/boarding';
 })
 export class TileEditorComponent implements OnInit {
     @Input() tile: Tile | null = null;
+    @Output() tileSaved = new EventEmitter<void>();
     private readonly dataService = inject(TilesDataService);
     private readonly boardingsService = inject(BoardingsDataService);
+    private readonly cdr = inject(ChangeDetectorRef);
 
     public tileTypes = Object.values(TileType);
     public tileStatus = Object.values(TileStatus);
@@ -52,6 +54,7 @@ export class TileEditorComponent implements OnInit {
     public tileActions = Object.values(TileActions);
 
     public availableBoardings$!: Observable<Boarding[]>;
+    public isUploadingImage = false;
 
     ngOnInit(): void {
         // Load all boardings for the dropdown (up to 1000)
@@ -70,14 +73,21 @@ export class TileEditorComponent implements OnInit {
 
     onImageSelected(file: File): void {
         if (this.tile) {
+            this.isUploadingImage = true;
             this.dataService.uploadImage(file).subscribe({
                 next: (image) => {
+                    this.isUploadingImage = false;
                     if (this.tile) {
                         this.tile.image = image.url;
                         this.tile.imageId = image.id;
+                        this.cdr.detectChanges();
                     }
                 },
-                error: (err) => console.error('uploadImage error:', err),
+                error: (err) => {
+                    this.isUploadingImage = false;
+                    console.error('uploadImage error:', err);
+                    this.cdr.detectChanges();
+                },
             });
         }
     }
@@ -96,10 +106,15 @@ export class TileEditorComponent implements OnInit {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { id, ...tile } = this.tile;
                 this.dataService.createTile(tile as TileCreationParams).subscribe({
+                    next: (savedTile) => {
+                        this.tile = savedTile;
+                        this.tileSaved.emit();
+                    },
                     error: (err) => console.error('createTile error:', err),
                 });
             } else {
                 this.dataService.updateTile(this.tile.id, this.tile).subscribe({
+                    next: () => this.tileSaved.emit(),
                     error: (err) => console.error('updateTile error:', err),
                 });
             }
