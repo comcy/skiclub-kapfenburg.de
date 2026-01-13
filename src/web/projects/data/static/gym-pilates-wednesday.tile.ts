@@ -29,8 +29,8 @@ export const GYM_PILATES_COURSE_INFORMATION_WED: GymCourseInformation = {
     location: 'Altes Schulhaus Hülen',
     contact: 'Mascha Welk',
     prices: {
-        member: '32 EUR',
-        nonMember: '48 EUR',
+        member: '40 EUR',
+        nonMember: '60 EUR',
     },
 };
 
