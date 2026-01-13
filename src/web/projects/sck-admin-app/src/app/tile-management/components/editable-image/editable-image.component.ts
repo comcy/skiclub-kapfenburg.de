@@ -102,7 +102,7 @@ import { TilesDataService } from '../../services/tiles-data.service';
     ],
 })
 export class EditableImageComponent {
-    @Input() value: string | undefined = '';
+    @Input() value: string | undefined;
     @Output() valueChange = new EventEmitter<string>();
     @Output() imageSelected = new EventEmitter<File>();
     @Output() imageRemoved = new EventEmitter<void>();

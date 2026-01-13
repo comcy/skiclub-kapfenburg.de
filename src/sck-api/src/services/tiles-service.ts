@@ -6,13 +6,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dataFilePath = path.join(__dirname, '..', 'data', 'tiles.json');
+const dataFilePath = path.join(__dirname, '..', 'data', 'tiles.ndjson');
 
 async function readTiles(): Promise<Tile[]> {
   try {
     const data = await fs.readFile(dataFilePath, 'utf-8');
-    const tiles = JSON.parse(data);
-    return tiles.map((tile: any) => {
+    const lines = data.split('\n').filter((line) => line.trim().length > 0);
+    return lines.map((line) => {
+      const tile = JSON.parse(line);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { publicationDate, expirationDate, ...rest } = tile;
       return rest;
@@ -27,7 +28,8 @@ async function readTiles(): Promise<Tile[]> {
 }
 
 async function writeTiles(tiles: Tile[]): Promise<void> {
-  await fs.writeFile(dataFilePath, JSON.stringify(tiles, null, 2), 'utf-8');
+  const data = tiles.map((tile) => JSON.stringify(tile)).join('\n');
+  await fs.writeFile(dataFilePath, data, 'utf-8');
 }
 
 import { PaginatedResponse } from '../domain/paginated-response';
