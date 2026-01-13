@@ -2,6 +2,8 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
+import { GymCourseInformation } from 'projects/gym-lib/src/lib/domain';
+
 export interface Tile {
     order: number;
     type: TileType;
@@ -20,6 +22,7 @@ export interface Tile {
     avatar?: string;
     visible?: boolean;
     expired?: boolean;
+    course?: GymCourseInformation;
 }
 
 export enum TileType {
