@@ -4,9 +4,9 @@
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GymInformation } from '../../domain';
+import { GymCourseInformation } from '../../domain';
 
 @Injectable()
 export abstract class GymInformationProviderServiceInterface {
-    public abstract getGymOffers(): Observable<GymInformation[]>;
+    public abstract getGymOffers(): Observable<GymCourseInformation[]>;
 }

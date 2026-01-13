@@ -3,23 +3,27 @@
  */
 
 import {
+    LoipenSnowStatus,
+    LoipenState,
     SkiliftOpeningHours,
     SkiliftPrices,
     SkiliftSnowStatus,
     SkiliftState,
 } from 'projects/skilift-lib/src/lib/skilift-info/skilift-info.interfaces';
 
-export const SKILIFT_STATUS: SkiliftSnowStatus = {
-    state: SkiliftState.OPEN, // good | limited | closed
-    text: 'Skilift in Betrieb',
-    lastUpdate: '5. Januar 2026',
+export const LOIPEN_STATUS: LoipenSnowStatus = {
+    state: LoipenState.CLOSED, // OPEN | CLOSED
+    text: 'Loipen sind NICHT gespurt',
+    lastUpdate: '13. Januar 2026',
 };
 
-export const SKILIFT_OPENING_HOURS: SkiliftOpeningHours[] = [
-    { day: '4. Januar 2026', time: 'ab 10:00 Uhr' },
-    { day: '5. Januar 2026', time: 'ab 10:00 Uhr' },
-    { day: '6. Januar 2026', time: 'ab 10:00 Uhr' },
-];
+export const SKILIFT_STATUS: SkiliftSnowStatus = {
+    state: SkiliftState.CLOSED, // OPEN | CLOSED
+    text: 'Skilift NICHT in Betrieb',
+    lastUpdate: '13. Januar 2026',
+};
+
+export const SKILIFT_OPENING_HOURS: SkiliftOpeningHours[] = [{ day: 'ab 12. Januar 2026', time: 'geschlossen' }];
 
 export const SKILIFT_CONDITIONS: string[] = [
     'Betrieb nur bei ausreichender Schneelage',

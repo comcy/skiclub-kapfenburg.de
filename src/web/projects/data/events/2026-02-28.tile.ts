@@ -56,5 +56,5 @@ export const TAGESAUSFAHRT_MELLAU_DAMUELS: Tile = {
     actions: [TileActions.Register],
     expiration: new Date('2026-02-29'),
     boardings: BOARDING_LIST,
-    status: TileStatus.Open,
+    status: TileStatus.BookedUp,
 };

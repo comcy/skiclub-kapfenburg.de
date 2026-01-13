@@ -7,7 +7,7 @@ import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
 import { BehaviorSubject } from 'rxjs';
-import { GymCourse } from '../../domain/models/gym-course';
+import { GymCourseInformation } from '../../domain/models/gym-course-information';
 import { GymCoursesRegistrationFormComponent } from '../../ui/gym-courses-registration-form.component';
 import { GymCourseDialogData } from './gym-course-register-dialog.interfaces';
 
@@ -22,36 +22,38 @@ export class GymCoursesRegisterDialogComponent implements OnInit {
     @Output() public handleConfirmClicked: EventEmitter<boolean> = new EventEmitter<boolean>(false);
     public dialogTitle!: string;
     public eventDate!: string;
-    public gymCourseDetails$: BehaviorSubject<GymCourse[]> = new BehaviorSubject([
+    public gymCourseDetails$: BehaviorSubject<GymCourseInformation[]> = new BehaviorSubject([
         {
             name: '',
-            date: '',
+            description: '',
+            time: '',
+            location: '',
+            contact: '',
         },
     ]);
-    public gymCourseDetails!: GymCourse[];
+    public gymCourseDetails!: GymCourseInformation[];
     public data = inject<GymCourseDialogData>(MAT_DIALOG_DATA);
 
     private dialogRef = inject(MatDialogRef<GymCoursesRegisterDialogComponent>);
 
     ngOnInit(): void {
         const tile = this.data.tile;
-
         this.dialogTitle = `${tile.title}`;
         this.eventDate = `${tile.date}`;
-
         this.gymCourseDetails$.next([
             {
-                name: tile.title,
-                date: tile.date,
+                name: tile.course.name,
+                description: tile.course.description,
+                date: tile.course.date,
+                time: tile.course.time,
+                location: tile.course.location,
+                prices: {
+                    member: tile.course.prices?.member ?? '',
+                    nonMember: tile.course.prices?.nonMember ?? '',
+                },
+                contact: tile.course.contact,
             },
         ]);
-
-        this.gymCourseDetails = [
-            {
-                name: tile.title,
-                date: tile.date,
-            },
-        ];
     }
 
     public onGymCourseRegistrationFormSubmit(success: boolean): void {

@@ -57,5 +57,5 @@ export const TRAININGSTAG_OBERJOCH_TILE: Tile = {
     actions: [TileActions.Register],
     expiration: new Date('2026-01-11'),
     boardings: BOARDING_LIST,
-    status: TileStatus.Open,
+    status: TileStatus.BookedUp,
 };

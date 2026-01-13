@@ -4,9 +4,9 @@
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { GymInformation } from '../models';
+import { GymCourseInformation } from '../models';
 
 @Injectable()
 export abstract class GymInformationCoreServiceInterface {
-    public abstract gymOffers$: BehaviorSubject<GymInformation[]>;
+    public abstract gymOffers$: BehaviorSubject<GymCourseInformation[]>;
 }
