@@ -1,54 +1,77 @@
 :host {
-    display: block;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .editor-container {
-    display: flex;
-    gap: 32px;
-    height: 100%;
-}
-
-.form-column {
     flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    /* Main column doesn't scroll */
-    border-right: 1px solid #eee;
 }
 
-.form-content {
+.view-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.scrollable-content {
     flex: 1;
     overflow-y: auto;
-    /* Content scrolls */
-    padding-right: 16px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 16px;
 }
 
-.form-actions {
-    padding: 16px 16px 52px 16px;
+.preview-content {
+    align-items: center;
+    background-color: #fafafa;
+}
+
+.preview-toolbar {
+    padding: 8px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: white;
+    flex-shrink: 0;
+}
+
+.footer-actions {
+    padding-right: 16px;
+    padding-left: 16px;
+    padding-bottom: 10px;
+    padding-top: 10px;
     border-top: 1px solid #e0e0e0;
     background-color: white;
-    z-index: 10;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
 
-    button {
-        min-height: 8px;
-        font-size: 1.1em;
+.form-row {
+    display: flex;
+    gap: 16px;
+
+    .half-width {
+        flex: 1;
     }
 }
 
-.preview-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-left: 16px;
-    overflow-y: auto;
-    /* Preview scrolls independently */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    /* Compact columns */
+    gap: 16px;
+
+    &.two-columns {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
 }
 
 .preview-header {

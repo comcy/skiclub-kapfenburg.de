@@ -1,4 +1,24 @@
-.content-area {
-    height: calc(100vh - 100px); /* Adjust based on header/tabs height */
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     overflow: hidden;
+}
+
+shared-lib-site-header {
+    padding-top: 64px;
+    flex-shrink: 0;
+}
+
+mat-tab-group {
+    flex-shrink: 0;
+}
+
+.content-area {
+    flex: 1;
+    min-height: 0;
+    /* Critical for nested flex scrolling */
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }

@@ -1,5 +1,7 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TileListComponent } from '../tile-list/tile-list.component';
 import { TileEditorComponent } from '../tile-editor/tile-editor.component';
@@ -9,12 +11,14 @@ import { TilesDataService } from '../../services/tiles-data.service';
 @Component({
     selector: 'app-tile-manager',
     standalone: true,
-    imports: [CommonModule, TileListComponent, TileEditorComponent],
+    imports: [CommonModule, MatButtonModule, MatIconModule, TileListComponent, TileEditorComponent],
     templateUrl: './tile-manager.component.html',
     styleUrls: ['./tile-manager.component.scss'],
 })
 export class TileManagerComponent implements OnInit {
     public selectedTile: Tile | null = null;
+    public isEditorOpen = false;
+
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     private readonly dataService = inject(TilesDataService);
@@ -30,9 +34,17 @@ export class TileManagerComponent implements OnInit {
                     return;
                 }
                 this.loadTile(id);
+                this.isEditorOpen = true;
             } else {
                 // Select first tile if no ID is present
-                this.selectFirstTile();
+                // But don't open editor automatically unless you want to?
+                // User said "einblenden wenn man ein item aus der liste editieren möchte".
+                // So maybe don't select first tile automatically? Or select it but keep editor closed?
+                // Let's select it but keep editor closed, OR just don't select.
+                // If I select it, `selectedTile` is set.
+                // If `isEditorOpen` is false, editor is hidden.
+                // Let's NOT select first tile automatically for now, to support "Empty" state.
+                // this.selectFirstTile();
             }
         });
     }
@@ -43,21 +55,29 @@ export class TileManagerComponent implements OnInit {
         });
     }
 
-    selectFirstTile(): void {
-        this.dataService.getTiles().subscribe((response) => {
-            if (response.items.length > 0) {
-                this.onTileSelected(response.items[0]);
-            }
-        });
-    }
-
     onTileSelected(tile: Tile): void {
         this.selectedTile = tile;
-        // Update URL without reloading
-        this.router.navigate(['event-management', 'tiles', tile.id], { replaceUrl: true });
+        this.isEditorOpen = true;
+
+        // Update URL without reloading, preserving query params
+        this.router.navigate(['event-management', 'tiles', tile.id], {
+            queryParamsHandling: 'preserve',
+            replaceUrl: true,
+        });
     }
 
     onTileSaved(): void {
         this.tileList.loadTiles();
+        // Keep editor open or close? Usually keep open to see result.
+    }
+
+    closeEditor(): void {
+        this.isEditorOpen = false;
+        // Optionally clear selection in URL?
+        this.router.navigate(['event-management', 'tiles'], {
+            queryParamsHandling: 'preserve',
+            replaceUrl: true,
+        });
+        // Clear selected tile logic if needed, but keeping it is fine.
     }
 }

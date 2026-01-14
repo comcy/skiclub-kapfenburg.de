@@ -46,6 +46,9 @@ export class TileManagementComponent implements OnInit {
 
     onTabChange(index: number): void {
         const path = this.tabMap[index];
-        this.router.navigate([path], { relativeTo: this.route });
+        this.router.navigate([path], {
+            relativeTo: this.route,
+            queryParamsHandling: 'preserve',
+        });
     }
 }

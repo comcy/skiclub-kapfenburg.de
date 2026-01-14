@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Tile, TileCreationParams } from '../../domain/tile';
+import { Image } from '../../domain/image';
 import { TileActions, TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { EditableDateComponent } from '../editable-date/editable-date.component';
@@ -36,6 +38,7 @@ import { Boarding } from '../../../boardings-management/domain/boarding';
         MatSelectModule,
         MatInputModule,
         MatCheckboxModule,
+        MatIconModule,
         TilePreviewComponent,
     ],
     templateUrl: './tile-editor.component.html',
@@ -44,17 +47,19 @@ import { Boarding } from '../../../boardings-management/domain/boarding';
 export class TileEditorComponent implements OnInit {
     @Input() tile: Tile | null = null;
     @Output() tileSaved = new EventEmitter<void>();
+
     private readonly dataService = inject(TilesDataService);
     private readonly boardingsService = inject(BoardingsDataService);
     private readonly cdr = inject(ChangeDetectorRef);
 
-    public tileTypes = Object.values(TileType);
-    public tileStatus = Object.values(TileStatus);
-    public tileBehaviors = Object.values(TileBehavior);
-    public tileActions = Object.values(TileActions);
-
-    public availableBoardings$!: Observable<Boarding[]>;
     public isUploadingImage = false;
+    public availableBoardings$: Observable<Boarding[]> | undefined;
+    public isShowingPreview = false;
+
+    public readonly tileTypes = Object.values(TileType);
+    public readonly tileStatus = Object.values(TileStatus);
+    public readonly tileBehaviors = Object.values(TileBehavior);
+    public readonly tileActions = Object.values(TileActions);
 
     ngOnInit(): void {
         // Load all boardings for the dropdown (up to 1000)
@@ -71,11 +76,15 @@ export class TileEditorComponent implements OnInit {
         }
     }
 
+    togglePreview(): void {
+        this.isShowingPreview = !this.isShowingPreview;
+    }
+
     onImageSelected(file: File): void {
         if (this.tile) {
             this.isUploadingImage = true;
             this.dataService.uploadImage(file).subscribe({
-                next: (image) => {
+                next: (image: Image) => {
                     this.isUploadingImage = false;
                     if (this.tile) {
                         this.tile.image = image.url;
@@ -83,7 +92,7 @@ export class TileEditorComponent implements OnInit {
                         this.cdr.detectChanges();
                     }
                 },
-                error: (err) => {
+                error: (err: unknown) => {
                     this.isUploadingImage = false;
                     console.error('uploadImage error:', err);
                     this.cdr.detectChanges();
@@ -91,14 +100,12 @@ export class TileEditorComponent implements OnInit {
             });
         }
     }
-
     onImageRemoved(): void {
         if (this.tile) {
             this.tile.image = '';
             this.tile.imageId = undefined;
         }
     }
-
     onSave(): void {
         if (this.tile) {
             console.log('tile before save:', JSON.stringify(this.tile, null, 2));
@@ -106,16 +113,16 @@ export class TileEditorComponent implements OnInit {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { id, ...tile } = this.tile;
                 this.dataService.createTile(tile as TileCreationParams).subscribe({
-                    next: (savedTile) => {
+                    next: (savedTile: Tile) => {
                         this.tile = savedTile;
                         this.tileSaved.emit();
                     },
-                    error: (err) => console.error('createTile error:', err),
+                    error: (err: unknown) => console.error('createTile error:', err),
                 });
             } else {
                 this.dataService.updateTile(this.tile.id, this.tile).subscribe({
                     next: () => this.tileSaved.emit(),
-                    error: (err) => console.error('updateTile error:', err),
+                    error: (err: unknown) => console.error('updateTile error:', err),
                 });
             }
         }

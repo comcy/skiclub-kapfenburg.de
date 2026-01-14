@@ -11,9 +11,14 @@ export class TilesController extends Controller {
   @Get('/')
   public async getTiles(
     @Query() page: number = 1,
-    @Query() limit: number = 100
+    @Query() limit: number = 100,
+    @Query() sort: string = 'order',
+    @Query() direction: 'asc' | 'desc' = 'asc',
+    @Query() search?: string,
+    @Query() type?: string,
+    @Query() status?: string
   ): Promise<PaginatedResponse<Tile>> {
-    return this.service.getTiles(page, limit);
+    return this.service.getTiles(page, limit, sort, direction, search, type, status);
   }
 
   @Get('/{id}')

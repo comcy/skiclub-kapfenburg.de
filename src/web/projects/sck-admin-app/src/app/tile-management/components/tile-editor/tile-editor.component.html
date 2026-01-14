@@ -1,6 +1,7 @@
 <div *ngIf="tile" class="editor-container">
-    <div class="form-column">
-        <div class="form-content">
+    <!-- Form View -->
+    <div class="view-container" *ngIf="!isShowingPreview">
+        <div class="scrollable-content form-content">
             <app-editable-image
                 [(value)]="tile.image"
                 [loading]="isUploadingImage"
@@ -17,13 +18,15 @@
                 [(value)]="tile.imageDescription"
             ></app-editable-text>
 
-            <div style="display: flex; gap: 16px">
+            <div class="form-row">
                 <app-editable-date
+                    class="half-width"
                     label="Event Date"
                     [value]="tile.date"
                     (valueChange)="tile.date = $event"
                 ></app-editable-date>
                 <app-editable-date
+                    class="half-width"
                     label="Expiration Date"
                     [value]="tile.expiration"
                     (valueChange)="tile.expiration = $event"
@@ -32,68 +35,77 @@
 
             <app-editable-link label="Download Link" [(link)]="tile.downloadActionLink"></app-editable-link>
 
-            <mat-form-field>
-                <mat-label>Order</mat-label>
-                <input matInput type="number" [(ngModel)]="tile.order" />
-            </mat-form-field>
+            <div class="form-grid">
+                <mat-form-field>
+                    <mat-label>Order</mat-label>
+                    <input matInput type="number" [(ngModel)]="tile.order" />
+                </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Type</mat-label>
-                <mat-select [(ngModel)]="tile.type">
-                    <mat-option *ngFor="let type of tileTypes" [value]="type">
-                        {{ type }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Type</mat-label>
+                    <mat-select [(ngModel)]="tile.type">
+                        <mat-option *ngFor="let type of tileTypes" [value]="type">
+                            {{ type }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Status</mat-label>
-                <mat-select [(ngModel)]="tile.status">
-                    <mat-option *ngFor="let status of tileStatus" [value]="status">
-                        {{ status }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Status</mat-label>
+                    <mat-select [(ngModel)]="tile.status">
+                        <mat-option *ngFor="let status of tileStatus" [value]="status">
+                            {{ status }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Behavior</mat-label>
-                <mat-select [(ngModel)]="tile.behavior">
-                    <mat-option *ngFor="let behavior of tileBehaviors" [value]="behavior">
-                        {{ behavior }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Behavior</mat-label>
+                    <mat-select [(ngModel)]="tile.behavior">
+                        <mat-option *ngFor="let behavior of tileBehaviors" [value]="behavior">
+                            {{ behavior }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
 
-            <mat-form-field>
-                <mat-label>Actions</mat-label>
-                <mat-select [(ngModel)]="tile.actions" multiple>
-                    <mat-option *ngFor="let action of tileActions" [value]="action">
-                        {{ action }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <div class="form-grid two-columns">
+                <mat-form-field>
+                    <mat-label>Actions</mat-label>
+                    <mat-select [(ngModel)]="tile.actions" multiple>
+                        <mat-option *ngFor="let action of tileActions" [value]="action">
+                            {{ action }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Boardings</mat-label>
-                <mat-select [(ngModel)]="tile.boardings" multiple>
-                    <mat-option *ngFor="let boarding of availableBoardings$ | async" [value]="boarding.name">
-                        {{ boarding.name }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Boardings</mat-label>
+                    <mat-select [(ngModel)]="tile.boardings" multiple>
+                        <mat-option *ngFor="let boarding of availableBoardings$ | async" [value]="boarding.name">
+                            {{ boarding.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
 
             <mat-checkbox [(ngModel)]="tile.visible">Visible</mat-checkbox>
         </div>
 
-        <div class="form-actions">
-            <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!tile" style="width: 100%">
-                Save Changes
-            </button>
+        <div class="footer-actions">
+            <button mat-button (click)="togglePreview()">Preview</button>
+            <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!tile">Save Changes</button>
         </div>
     </div>
 
-    <div class="preview-column">
-        <div class="preview-header">Live Preview</div>
-        <app-tile-preview [tile]="tile"></app-tile-preview>
+    <!-- Preview View -->
+    <div class="view-container preview-container" *ngIf="isShowingPreview">
+        <div class="preview-toolbar">
+            <button mat-button (click)="togglePreview()"><mat-icon>arrow_back</mat-icon> Back to Editor</button>
+        </div>
+        <div class="scrollable-content preview-content">
+            <div class="preview-header">Live Preview</div>
+            <app-tile-preview [tile]="tile"></app-tile-preview>
+        </div>
     </div>
 </div>

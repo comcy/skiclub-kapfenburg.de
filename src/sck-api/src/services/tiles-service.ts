@@ -37,19 +37,56 @@ import { PaginatedResponse } from '../domain/paginated-response';
 // ... imports
 
 export class TilesService {
-  public async getTiles(page: number = 1, limit: number = 100): Promise<PaginatedResponse<Tile>> {
-    const tiles = await readTiles();
-    
-    // Sort by order by default
-    tiles.sort((a, b) => (a.order > b.order ? 1 : -1));
+  public async getTiles(
+    page: number = 1,
+    limit: number = 100,
+    sort: string = 'order',
+    direction: 'asc' | 'desc' = 'asc',
+    search?: string,
+    type?: string,
+    status?: string
+  ): Promise<PaginatedResponse<Tile>> {
+    let tiles = await readTiles();
+
+    // Filtering
+    if (search) {
+      const searchLower = search.toLowerCase();
+      tiles = tiles.filter(
+        (t) =>
+          t.title?.toLowerCase().includes(searchLower) ||
+          t.subTitle?.toLowerCase().includes(searchLower)
+      );
+    }
+
+    if (type) {
+      tiles = tiles.filter((t) => t.type === type);
+    }
+
+    if (status) {
+      tiles = tiles.filter((t) => t.status === status);
+    }
+
+    // Sorting
+    tiles.sort((a, b) => {
+      const valA = (a as any)[sort];
+      const valB = (b as any)[sort];
+
+      if (valA < valB) {
+        return direction === 'asc' ? -1 : 1;
+      }
+      if (valA > valB) {
+        return direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const paginatedTiles = tiles.slice(startIndex, endIndex);
 
     return {
-        items: paginatedTiles,
-        total: tiles.length
+      items: paginatedTiles,
+      total: tiles.length,
     };
   }
 // ...

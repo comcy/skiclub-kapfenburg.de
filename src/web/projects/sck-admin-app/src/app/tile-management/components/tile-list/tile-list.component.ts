@@ -1,10 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Tile } from '../../domain/tile';
@@ -14,12 +19,25 @@ import { TilesDataService } from '../../services/tiles-data.service';
 @Component({
     selector: 'app-tile-list',
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatIconModule],
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        FormsModule,
+    ],
     templateUrl: './tile-list.component.html',
     styleUrls: ['./tile-list.component.scss'],
 })
 export class TileListComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
 
     @Output() tileSelected = new EventEmitter<Tile>();
     @Input() selectedTileId: string | undefined;
@@ -29,27 +47,90 @@ export class TileListComponent implements OnInit {
     public pageSize = 10;
     public pageIndex = 0;
 
-    public displayedColumns: string[] = ['title', 'type', 'date', 'expiration', 'actions'];
+    public sortField = 'order';
+    public sortDirection: 'asc' | 'desc' = 'asc';
+    public filterSearch = '';
+    public filterType: string = '';
+    public filterStatus: string = '';
+
+    public readonly tileTypes = Object.values(TileType);
+    public readonly tileStatuses = Object.values(TileStatus);
+
+    public displayedColumns: string[] = [
+        'order',
+        'title',
+        'subTitle',
+        'type',
+        'status',
+        'behavior',
+        'date',
+        'expiration',
+        'actions',
+    ];
 
     ngOnInit(): void {
-        this.loadTiles();
+        this.route.queryParams.subscribe((params) => {
+            this.pageIndex = params['page'] ? +params['page'] - 1 : 0;
+            this.pageSize = params['limit'] ? +params['limit'] : 10;
+            this.sortField = params['sort'] || 'order';
+            this.sortDirection = params['direction'] || 'asc';
+            this.filterSearch = params['search'] || '';
+            this.filterType = params['type'] || '';
+            this.filterStatus = params['status'] || '';
+            this.loadTiles();
+        });
     }
 
     loadTiles(): void {
-        this.tiles$ = this.dataService.getTiles(this.pageIndex + 1, this.pageSize).pipe(
-            tap((response) => (this.totalItems = response.total)),
-            map((response) => response.items),
-        );
+        this.tiles$ = this.dataService
+            .getTiles(
+                this.pageIndex + 1,
+                this.pageSize,
+                this.sortField,
+                this.sortDirection,
+                this.filterSearch,
+                this.filterType,
+                this.filterStatus,
+            )
+            .pipe(
+                tap((response) => (this.totalItems = response.total)),
+                map((response) => response.items),
+            );
     }
 
     onPageChange(event: PageEvent): void {
-        this.pageIndex = event.pageIndex;
-        this.pageSize = event.pageSize;
-        this.loadTiles();
+        this.updateUrl({
+            page: event.pageIndex + 1,
+            limit: event.pageSize,
+        });
+    }
+
+    onSortChange(sort: Sort): void {
+        this.updateUrl({
+            sort: sort.active,
+            direction: sort.direction,
+        });
+    }
+
+    onFilterChange(): void {
+        // Reset to first page on filter change
+        this.updateUrl({
+            page: 1,
+            search: this.filterSearch || null,
+            type: this.filterType || null,
+            status: this.filterStatus || null,
+        });
+    }
+
+    private updateUrl(queryParams: Record<string, unknown>): void {
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: queryParams,
+            queryParamsHandling: 'merge',
+        });
     }
 
     onEdit(tile: Tile): void {
-        // ...
         this.tileSelected.emit(tile);
     }
 

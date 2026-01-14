@@ -206,6 +206,11 @@ export function RegisterRoutes(app: Router) {
         const argsTilesController_getTiles: Record<string, TsoaRoute.ParameterSchema> = {
                 page: {"default":1,"in":"query","name":"page","dataType":"double"},
                 limit: {"default":100,"in":"query","name":"limit","dataType":"double"},
+                sort: {"default":"order","in":"query","name":"sort","dataType":"string"},
+                direction: {"default":"asc","in":"query","name":"direction","dataType":"union","subSchemas":[{"dataType":"enum","enums":["asc"]},{"dataType":"enum","enums":["desc"]}]},
+                search: {"in":"query","name":"search","dataType":"string"},
+                type: {"in":"query","name":"type","dataType":"string"},
+                status: {"in":"query","name":"status","dataType":"string"},
         };
         app.get('/tiles',
             ...(fetchMiddlewares<RequestHandler>(TilesController)),

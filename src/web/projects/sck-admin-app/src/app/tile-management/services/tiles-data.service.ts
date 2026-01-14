@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Tile, TileCreationParams } from '../domain/tile';
 import { Image } from '../domain/image';
 import { PaginatedResponse } from '../domain/paginated-response';
+import { Tile, TileCreationParams } from '../domain/tile';
 
 @Injectable({
     providedIn: 'root',
@@ -19,12 +19,28 @@ export class TilesDataService {
         const baseUrl = this.apiUrl.replace(/\/api$/, '');
         return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
     }
-    getTiles(page: number = 1, limit: number = 100): Observable<PaginatedResponse<Tile>> {
+    getTiles(
+        page: number = 1,
+        limit: number = 100,
+        sort?: string,
+        direction?: 'asc' | 'desc',
+        search?: string,
+        type?: string,
+        status?: string,
+    ): Observable<PaginatedResponse<Tile>> {
+        const params: Record<string, string> = {
+            page: page.toString(),
+            limit: limit.toString(),
+        };
+
+        if (sort) params['sort'] = sort;
+        if (direction) params['direction'] = direction;
+        if (search) params['search'] = search;
+        if (type) params['type'] = type;
+        if (status) params['status'] = status;
+
         return this.http.get<PaginatedResponse<Tile>>(`${this.apiUrl}/${this.endpoint}`, {
-            params: {
-                page: page.toString(),
-                limit: limit.toString(),
-            },
+            params,
         });
     }
 
