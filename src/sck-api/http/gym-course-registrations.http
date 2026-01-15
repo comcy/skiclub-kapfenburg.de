@@ -1,0 +1,46 @@
+@baseUrl = http://localhost:3000/api
+
+# @name createGymCourseRegistration
+POST {{baseUrl}}/gym-course-registrations
+Content-Type: application/json
+
+{
+    "firstName": "Max",
+    "lastName": "Mustermann",
+    "email": "max.mustermann@example.com",
+    "phone": "0123456789",
+    "birthday": "1990-01-01",
+    "additionalText": "Bitte um Rückruf",
+    "course": {
+        "name": "Fitness Cocktail",
+        "description": "Fitness / Gymnastik für Jedermann - findet ganzjährig statt, ausser in den Ferien",
+        "time": "Montags, 19:00 – 20:00 Uhr",
+        "location": "Schulturnhalle Lauchheim",
+        "contact": "Katharina Sachs und Anna Klein, Tel: 07363/3492"
+    }
+}
+
+###
+
+# @name getGymCourseRegistrations
+GET {{baseUrl}}/gym-course-registrations
+
+###
+
+# @name getGymCourseRegistrationById
+GET {{baseUrl}}/gym-course-registrations/{{createGymCourseRegistration.response.body.data.id}}
+
+###
+
+# @name updateGymCourseRegistration
+PUT {{baseUrl}}/gym-course-registrations/{{createGymCourseRegistration.response.body.data.id}}
+Content-Type: application/json
+
+{
+    "additionalText": "Hat sich erledigt."
+}
+
+###
+
+# @name deleteGymCourseRegistration
+DELETE {{baseUrl}}/gym-course-registrations/{{createGymCourseRegistration.response.body.data.id}}

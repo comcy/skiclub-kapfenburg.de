@@ -6,6 +6,8 @@ import {  fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TilesController } from './../controllers/tiles-controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { GymCourseRegistrationController } from './../controllers/gym-course-registration-controller';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { GymCourseController } from './../controllers/gym-course-controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { EventRegistrationController } from './../controllers/event-registration-controller';
@@ -92,6 +94,49 @@ const models: TsoaRoute.Models = {
     "TileCreationParams": {
         "dataType": "refAlias",
         "type": {"ref":"Omit_Tile.id_","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GymCoursePrice": {
+        "dataType": "refObject",
+        "properties": {
+            "member": {"dataType":"string","required":true},
+            "nonMember": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GymCourseInformation": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "description": {"dataType":"string","required":true},
+            "time": {"dataType":"string","required":true},
+            "location": {"dataType":"string","required":true},
+            "contact": {"dataType":"string","required":true},
+            "prices": {"ref":"GymCoursePrice"},
+            "date": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GymCoursesRegisterFormFields": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"string"},
+            "firstName": {"dataType":"string","required":true},
+            "lastName": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "phone": {"dataType":"string","required":true},
+            "birthday": {"dataType":"string","required":true},
+            "additionalText": {"dataType":"string","required":true},
+            "course": {"ref":"GymCourseInformation","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Partial_GymCoursesRegisterFormFields_": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"string"},"firstName":{"dataType":"string"},"lastName":{"dataType":"string"},"email":{"dataType":"string"},"phone":{"dataType":"string"},"birthday":{"dataType":"string"},"additionalText":{"dataType":"string"},"course":{"ref":"GymCourseInformation"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Partial_Tile_": {
@@ -349,6 +394,160 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'deleteTile',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsGymCourseRegistrationController_createGymCourseRegistration: Record<string, TsoaRoute.ParameterSchema> = {
+                registrationData: {"in":"body","name":"registrationData","required":true,"ref":"GymCoursesRegisterFormFields"},
+        };
+        app.post('/gym-course-registrations',
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController)),
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController.prototype.createGymCourseRegistration)),
+
+            async function GymCourseRegistrationController_createGymCourseRegistration(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsGymCourseRegistrationController_createGymCourseRegistration, request, response });
+
+                const controller = new GymCourseRegistrationController();
+
+              await templateService.apiHandler({
+                methodName: 'createGymCourseRegistration',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsGymCourseRegistrationController_getGymCourseRegistrations: Record<string, TsoaRoute.ParameterSchema> = {
+                page: {"in":"query","name":"page","dataType":"double"},
+                limit: {"in":"query","name":"limit","dataType":"double"},
+                sort: {"in":"query","name":"sort","dataType":"string"},
+                filter: {"in":"query","name":"filter","dataType":"string"},
+        };
+        app.get('/gym-course-registrations',
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController)),
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController.prototype.getGymCourseRegistrations)),
+
+            async function GymCourseRegistrationController_getGymCourseRegistrations(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsGymCourseRegistrationController_getGymCourseRegistrations, request, response });
+
+                const controller = new GymCourseRegistrationController();
+
+              await templateService.apiHandler({
+                methodName: 'getGymCourseRegistrations',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsGymCourseRegistrationController_getGymCourseRegistrationById: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+        };
+        app.get('/gym-course-registrations/:id',
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController)),
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController.prototype.getGymCourseRegistrationById)),
+
+            async function GymCourseRegistrationController_getGymCourseRegistrationById(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsGymCourseRegistrationController_getGymCourseRegistrationById, request, response });
+
+                const controller = new GymCourseRegistrationController();
+
+              await templateService.apiHandler({
+                methodName: 'getGymCourseRegistrationById',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsGymCourseRegistrationController_updateGymCourseRegistration: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                registrationData: {"in":"body","name":"registrationData","required":true,"ref":"Partial_GymCoursesRegisterFormFields_"},
+        };
+        app.put('/gym-course-registrations/:id',
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController)),
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController.prototype.updateGymCourseRegistration)),
+
+            async function GymCourseRegistrationController_updateGymCourseRegistration(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsGymCourseRegistrationController_updateGymCourseRegistration, request, response });
+
+                const controller = new GymCourseRegistrationController();
+
+              await templateService.apiHandler({
+                methodName: 'updateGymCourseRegistration',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsGymCourseRegistrationController_deleteGymCourseRegistration: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+        };
+        app.delete('/gym-course-registrations/:id',
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController)),
+            ...(fetchMiddlewares<RequestHandler>(GymCourseRegistrationController.prototype.deleteGymCourseRegistration)),
+
+            async function GymCourseRegistrationController_deleteGymCourseRegistration(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsGymCourseRegistrationController_deleteGymCourseRegistration, request, response });
+
+                const controller = new GymCourseRegistrationController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteGymCourseRegistration',
                 controller,
                 response,
                 next,
