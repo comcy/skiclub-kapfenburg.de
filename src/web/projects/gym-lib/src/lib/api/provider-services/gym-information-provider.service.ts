@@ -20,11 +20,11 @@ export class GymInformationProviderService implements GymInformationProviderServ
                 contact: 'Katharina Sachs und Anna Klein, Tel: 07363/3492',
             },
             {
-                name: 'Pilates',
-                time: 'Mittwochs, 18:30 – 19:30 Uhr',
+                name: 'Vitalgymnastik 50 Plus',
+                time: 'Mittwochs, 19:00 – 20:00 Uhr',
                 location: 'Altes Schulhaus Hülen',
                 description:
-                    'Pilates ist ein effektives Ganzkörpertraining zur Kräftigung von Bauch, Rücken und Beckenboden. Mit Fokus auf das „Powerhouse“, präzise Übungen und bewusste Atmung verbessert es Haltung und Körpergefühl.',
+                    '(gemischte Gruppe) Funktionelle Gymnastik zur Stabilisierung des Rückens, vielseitige körperliche Bewegungsübungen sowie Entspannung stärken die Leistungsfähigkeit.',
                 contact: 'Monika Mayer, Tel: 07363/4432',
             },
             {
