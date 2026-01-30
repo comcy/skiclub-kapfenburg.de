@@ -28,8 +28,8 @@ Almbahn loslegen: Von dort aus starten zwei schöne Winterwanderwege und Schnees
 |                             |              |                   |
 |                             |              |                   |
 |  Anfängerkurse              |   35,00 €    |  40,00 €          |
-|  Techniktraining 1/2 Tag    |   35,00 €    |  30,00 €          |
-|  Techniktraining            |   60,00 €    |  55,00 €          |
+|  Techniktraining 1/2 Tag    |   35,00 €    |  40,00 €          |
+|  Techniktraining            |   60,00 €    |  65,00 €          |
 |  Schneeschuhe               |   5,00 €     |  5,00 €           |
 |  Nur Busfahrt               |   30,00 €    |  30,00 €          |
 
