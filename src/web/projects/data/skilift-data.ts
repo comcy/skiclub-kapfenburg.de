@@ -14,16 +14,16 @@ import {
 export const LOIPEN_STATUS: LoipenSnowStatus = {
     state: LoipenState.OPEN, // OPEN | CLOSED
     text: 'Loipen sind gespurt',
-    lastUpdate: '31. Januar 2026',
+    lastUpdate: '02. Februar 2026',
 };
 
 export const SKILIFT_STATUS: SkiliftSnowStatus = {
     state: SkiliftState.OPEN, // OPEN | CLOSED
     text: 'Skilift in Betrieb',
-    lastUpdate: '31. Januar 2026',
+    lastUpdate: '02. Februar 2026',
 };
 
-export const SKILIFT_OPENING_HOURS: SkiliftOpeningHours[] = [{ day: 'ab 31. Januar 2026', time: 'ab 10 Uhr' }];
+export const SKILIFT_OPENING_HOURS: SkiliftOpeningHours[] = [{ day: 'ab 02. Februar 2026', time: 'ab 16 Uhr geöffnet' }];
 
 export const SKILIFT_CONDITIONS: string[] = [
     'Betrieb nur bei ausreichender Schneelage',
