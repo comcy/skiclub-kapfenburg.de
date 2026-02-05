@@ -1,3 +1,9 @@
+mat-hint {
+    &.disabled {
+        color: rgba(0, 0, 0, 0.38); /* Material Design disabled text color */
+    }
+}
+
 .content-container {
     display: flex;
     flex-direction: row;
@@ -77,6 +83,19 @@ td {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    h4 {
+        display: flex;
+        align-items: center;
+
+        &.disabled {
+            color: rgba(0, 0, 0, 0.38); /* Material Design disabled text color */
+        }
+    }
+
+    .user-icon {
+        margin-right: 8px;
+    }
 }
 
 .add-participant-btn {
@@ -107,4 +126,69 @@ td {
     bottom: 2rem;
     right: 2rem;
     z-index: 1000;
+}
+
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.checkbox-break {
+    flex-basis: 100%;
+    height: 0;
+}
+
+.info-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+    margin-left: 5px;
+    color: #666;
+    cursor: help;
+}
+
+.checkbox-alignment {
+    vertical-align: middle;
+    padding-top: 1rem;
+}
+
+.snowshoes-toggle {
+    margin-left: 2rem;
+    width: 100%;
+
+    ::ng-deep .mat-mdc-slide-toggle {
+        /* Unchecked state (False) - Red */
+        --mdc-switch-unselected-handle-color: #f44336;
+        --mdc-switch-unselected-track-color: #ffcdd2;
+        --mdc-switch-unselected-hover-handle-color: #f44336;
+        --mdc-switch-unselected-hover-track-color: #ffcdd2;
+        --mdc-switch-unselected-focus-handle-color: #f44336;
+        --mdc-switch-unselected-focus-track-color: #ffcdd2;
+        --mdc-switch-unselected-pressed-handle-color: #f44336;
+        --mdc-switch-unselected-pressed-track-color: #ffcdd2;
+
+        /* Checked state (True) - Green */
+        --mdc-switch-selected-handle-color: #4caf50;
+        --mdc-switch-selected-track-color: #c8e6c9;
+        --mdc-switch-selected-hover-handle-color: #4caf50;
+        --mdc-switch-selected-hover-track-color: #c8e6c9;
+        --mdc-switch-selected-focus-handle-color: #4caf50;
+        --mdc-switch-selected-focus-track-color: #c8e6c9;
+        --mdc-switch-selected-pressed-handle-color: #4caf50;
+        --mdc-switch-selected-pressed-track-color: #c8e6c9;
+    }
+}
+
+.member-checkbox-container {
+    margin-bottom: 1rem;
+}
+
+.large-checkbox {
+    transform: scale(1.15);
+    transform-origin: left center;
 }

@@ -13,6 +13,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {
     calculateAge,
     formatDateByLocale,
@@ -45,6 +48,9 @@ import {
         MatSelectModule,
         MatProgressSpinnerModule,
         MatDatepickerModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
     ],
     providers: [
         provideNativeDateAdapter(),
@@ -66,6 +72,9 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     public firstPartSelected = false;
     public tripRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
+
+    public sportTypeList = ['Ski Alpin', 'Snowboard'];
+    public levelList = ['Anfänger', 'Könner', 'Fortgeschritten'];
 
     private formBuilder = inject(FormBuilder);
     private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
@@ -133,15 +142,52 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     newParticipant(): FormGroup {
-        return this.formBuilder.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
-            birthday: ['', Validators.required],
-            phone: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            boarding: ['', Validators.required],
+        const isDisabled = !(this.firstPartSelected || this.hasPreselectedData);
+        const group = this.formBuilder.group({
+            firstName: [{ value: '', disabled: isDisabled }, Validators.required],
+            lastName: [{ value: '', disabled: isDisabled }, Validators.required],
+            birthday: [{ value: '', disabled: isDisabled }, Validators.required],
+            phone: [{ value: '', disabled: isDisabled }, Validators.required],
+            email: [{ value: '', disabled: isDisabled }, [Validators.required, Validators.email]],
+            boarding: [{ value: '', disabled: isDisabled }, Validators.required],
             isCollapsed: [false],
+            isMember: [{ value: false, disabled: isDisabled }],
+            busOnly: [{ value: false, disabled: isDisabled }],
+            courseRequested: [{ value: false, disabled: isDisabled }],
+            snowshoes: [{ value: false, disabled: isDisabled }],
+            sportType: [{ value: '', disabled: isDisabled }],
+            level: [{ value: '', disabled: isDisabled }],
         });
+
+        group
+            .get('busOnly')
+            ?.valueChanges.pipe(takeUntil(this.toDestroy$))
+            .subscribe((checked) => {
+                if (!checked) {
+                    group.get('snowshoes')?.setValue(false);
+                }
+            });
+
+        group
+            .get('courseRequested')
+            ?.valueChanges.pipe(takeUntil(this.toDestroy$))
+            .subscribe((checked) => {
+                const sportControl = group.get('sportType');
+                const levelControl = group.get('level');
+                if (checked) {
+                    sportControl?.setValidators(Validators.required);
+                    levelControl?.setValidators(Validators.required);
+                } else {
+                    sportControl?.clearValidators();
+                    levelControl?.clearValidators();
+                    sportControl?.setValue('');
+                    levelControl?.setValue('');
+                }
+                sportControl?.updateValueAndValidity();
+                levelControl?.updateValueAndValidity();
+            });
+
+        return group;
     }
 
     addParticipant() {
@@ -165,6 +211,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     private enableFormFields() {
         this.tripRegisterForm.get('additionalText')?.enable();
+        this.participants().enable();
     }
 
     private updateBoardingList(trip: Trip) {
@@ -218,6 +265,12 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 date: rawValue.trip.date,
                 birthday: `${formatDateByLocale(participant.birthday)} (${calculateAge(participant.birthday)})`,
                 timestamp: formatDateTime(timestamp),
+                isMember: participant.isMember,
+                busOnly: participant.busOnly,
+                snowshoes: participant.snowshoes,
+                courseRequested: participant.courseRequested,
+                sportType: participant.sportType,
+                level: participant.level,
             };
         });
 

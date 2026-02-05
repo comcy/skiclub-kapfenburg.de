@@ -40,6 +40,18 @@ const renderParticipant = (participant: TripParticipant, title?: string): string
         <p style="margin: 4px 0;">
             Zugstieg: <strong>${participant.boarding}</strong>
         </p>
+        ${participant.isMember ? '<p style="margin: 4px 0;"><strong>Ist Mitglied</strong></p>' : ''}
+        ${participant.busOnly ? '<p style="margin: 4px 0;"><strong>Nur Busfahrt (ohne Skipass)</strong></p>' : ''}
+        ${
+            participant.busOnly && participant.snowshoes
+                ? '<p style="margin: 4px 0;"><strong>Schneeschuhe reserviert (5€ Leihgebühr)</strong></p>'
+                : ''
+        }
+        ${
+            participant.courseRequested
+                ? `<p style="margin: 4px 0;"><strong>Kurs gewünscht:</strong> ${participant.sportType} - ${participant.level}</p>`
+                : ''
+        }
     </div>
 `;
 

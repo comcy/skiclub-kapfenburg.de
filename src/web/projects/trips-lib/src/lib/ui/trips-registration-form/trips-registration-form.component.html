@@ -31,7 +31,8 @@
                 @for (participant of participants().controls; track $index; let i = $index) {
                     <div [formGroupName]="i" class="participant-group">
                         <div class="participant-header">
-                            <h4>
+                            <h4 [class.disabled]="!(firstPartSelected || hasPreselectedData)">
+                                <mat-icon class="user-icon">person</mat-icon>
                                 Teilnehmer {{ i + 1 }}
                                 @if (i === 0) {
                                     (Ansprechpartner)
@@ -67,6 +68,17 @@
                             </div>
                         </div>
                         <div class="participant-form" [class.collapsed]="isParticipantCollapsed(i)">
+                            <div class="member-checkbox-container">
+                                <mat-checkbox formControlName="isMember" class="large-checkbox">
+                                    Mitglied
+                                    <mat-icon
+                                        class="info-icon"
+                                        matTooltip="Bitte ankreuzen, wenn du Mitglied im Skiclub Kapfenburg bist."
+                                        >info</mat-icon
+                                    >
+                                </mat-checkbox>
+                            </div>
+
                             @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
                                 <div>
                                     <table class="full-width" cellspacing="0">
@@ -103,7 +115,9 @@
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Geburtstag</mat-label>
                                 <input matInput [matDatepicker]="picker" formControlName="birthday" />
-                                <mat-hint>DD.MM.YYYY</mat-hint>
+                                <mat-hint [class.disabled]="!(firstPartSelected || hasPreselectedData)"
+                                    >DD.MM.YYYY</mat-hint
+                                >
                                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                                 <mat-datepicker #picker></mat-datepicker>
                             </mat-form-field>
@@ -128,6 +142,55 @@
                                     </mat-select>
                                 }
                             </mat-form-field>
+
+                            <div class="checkbox-container">
+                                <mat-checkbox formControlName="busOnly" class="large-checkbox">
+                                    Nur Busfahrt (ohne Skipass)
+                                    <mat-icon
+                                        class="info-icon"
+                                        matTooltip="Bitte ankreuzen, wenn du keinen Skipass benötigst."
+                                        >info</mat-icon
+                                    >
+                                </mat-checkbox>
+                                @if (participant.get('busOnly')?.value) {
+                                    <div class="snowshoes-toggle">
+                                        <mat-slide-toggle formControlName="snowshoes">
+                                            Schneeschuhe (für 5€ Leihgebühr)
+                                        </mat-slide-toggle>
+                                    </div>
+                                }
+                                <div class="checkbox-break"></div>
+                                <mat-checkbox formControlName="courseRequested" class="large-checkbox">
+                                    Kurs gewünscht
+                                    <mat-icon
+                                        class="info-icon"
+                                        matTooltip="Bitte ankreuzen, wenn du einen Ski- oder Snowboardkurs buchen möchtest."
+                                        >info</mat-icon
+                                    >
+                                </mat-checkbox>
+                            </div>
+
+                            @if (participant.get('courseRequested')?.value) {
+                                <div class="course-selection">
+                                    <mat-form-field class="full-width" appearance="fill">
+                                        <mat-label>Sportart</mat-label>
+                                        <mat-select formControlName="sportType">
+                                            @for (sport of sportTypeList; track $index) {
+                                                <mat-option [value]="sport">{{ sport }}</mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+
+                                    <mat-form-field class="full-width" appearance="fill">
+                                        <mat-label>Könnerstufe</mat-label>
+                                        <mat-select formControlName="level">
+                                            @for (level of levelList; track $index) {
+                                                <mat-option [value]="level">{{ level }}</mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            }
                         </div>
                     </div>
                 }
