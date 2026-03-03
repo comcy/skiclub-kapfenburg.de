@@ -12,9 +12,9 @@ import {
 } from 'projects/skilift-lib/src/lib/skilift-info/skilift-info.interfaces';
 
 export const LOIPEN_STATUS: LoipenSnowStatus = {
-    state: LoipenState.OPEN, // OPEN | CLOSED
-    text: 'Loipen sind gespurt',
-    lastUpdate: '02. Februar 2026',
+    state: LoipenState.CLOSED, // OPEN | CLOSED
+    text: 'Loipen sind nicht gespurt',
+    lastUpdate: '08. Februar 2026',
 };
 
 export const SKILIFT_STATUS: SkiliftSnowStatus = {
