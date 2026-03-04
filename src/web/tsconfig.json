@@ -82,6 +82,9 @@
       },
       {
         "path": "./projects/skilift-lib/tsconfig.spec.json"
+      },
+      {
+        "path": "./projects/sck-public-app/tsconfig.app.json"
       }
     ]
 }
