@@ -27,6 +27,7 @@ import { MarkdownRenderService } from '@shared/util-markdown';
 import { TripsFeatureModule } from '@trips-lib';
 import {
     EventTile,
+    InfoTile,
     Tile,
     TileActions,
     TileBehavior,
@@ -114,6 +115,21 @@ export class HomeComponent implements OnInit {
     }
 
     public getTileDescription(tile: Tile): string {
+        if (tile.type === TileType.Info) {
+            const infoTile = tile as InfoTile;
+            let content = tile.description || '';
+            if (infoTile.location) {
+                content += `\n\n**Ort:** ${infoTile.location}\n`;
+            }
+            if (infoTile.timeData && infoTile.timeData.length > 0) {
+                content += '\n\n**Zeiten**\n\n';
+                infoTile.timeData.forEach((time) => {
+                    content += `- ${time}\n`;
+                });
+            }
+            return content;
+        }
+
         if (tile.type !== TileType.Event) {
             return tile.description;
         }
@@ -122,10 +138,11 @@ export class HomeComponent implements OnInit {
         let dynamicContent = tile.description || '';
 
         // 1. Destination / Location
-        if (eventTile.destination || eventTile.location) {
-            dynamicContent += '\n\n**Ziel / Ort**\n';
-            if (eventTile.destination) dynamicContent += ` - ${eventTile.destination}\n`;
-            if (eventTile.location) dynamicContent += ` - ${eventTile.location}\n`;
+        if (eventTile.destination) {
+            dynamicContent += `\n\n**Ziel:** ${eventTile.destination}\n`;
+        }
+        if (eventTile.location) {
+            dynamicContent += `\n\n**Ort:** ${eventTile.location}\n`;
         }
 
         // 2. Boarding List (Abfahrtszeiten)
@@ -177,6 +194,11 @@ export class HomeComponent implements OnInit {
                     dynamicContent += `| Schneeschuhe | ${addons.snowshoes.member},00 € | ${addons.snowshoes.nonMember},00 € |\n`;
                 }
             }
+        }
+
+        // 4. Additional Information
+        if (eventTile.additionalInformation) {
+            dynamicContent += `\n---\n_*${eventTile.additionalInformation}_`;
         }
 
         return dynamicContent;

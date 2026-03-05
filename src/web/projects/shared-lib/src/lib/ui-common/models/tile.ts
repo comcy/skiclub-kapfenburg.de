@@ -46,11 +46,11 @@ export interface BaseTile {
     avatar?: string;
     visible?: boolean;
     expired?: boolean;
-    additionalInformation?: string;
 }
-
 export interface InfoTile extends BaseTile {
     type: TileType.Info;
+    location?: string;
+    timeData?: string[];
 }
 
 export interface CourseTile extends BaseTile {
@@ -58,12 +58,12 @@ export interface CourseTile extends BaseTile {
     course: GymCourseInformation;
     location: string;
 }
-
 export interface EventTile extends BaseTile {
     type: TileType.Event;
     tripConfig: TripConfig;
     destination?: string;
     location?: string;
+    additionalInformation?: string;
 }
 
 export type Tile = InfoTile | CourseTile | EventTile;

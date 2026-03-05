@@ -34,6 +34,8 @@ export const MONTAGSAUSFAHRT_FELLHORN: EventTile = {
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
     destination: 'Skigebiet Fellhorn (Oberstdorf)',
+    additionalInformation:
+        'Im Preis enthalten ist die Busfahrt mit Vesper, 2-Tages-Skipass und eine Überachtung inklusive Halbpension',
     tripConfig: {
         pricing: {
             busLift: {
