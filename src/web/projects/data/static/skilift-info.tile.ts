@@ -20,6 +20,7 @@ _*Betrieb nur bei ausreichender Schneelage._
 `;
 
 export const SKILIFT_INFO_TILE: Tile = {
+    id: 'skilift-info',
     order: 1,
     type: TileType.Info,
     behavior: TileBehavior.Click,

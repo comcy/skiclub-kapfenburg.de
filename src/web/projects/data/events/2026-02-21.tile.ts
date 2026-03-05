@@ -3,7 +3,6 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `Kommt mit uns in die Tiroler Zugspitz-Arena nach Lermoos. Im Skigebiet Grubigstein steht auf 1000 - 2100m Höhe wintersportlicher Spaß auf dem Programm. Zwölf 
 Abfahrten bringen Abwechslung. Auch für das leibliche Wohl ist gesorgt: Zahlreiche 
@@ -37,6 +36,7 @@ const BOARDING_LIST = [
 ];
 
 export const PARTYAUSFAHRT_LERMOOS: EventTile = {
+    id: 'partyausfahrt-lermoos-2026',
     order: 6,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -67,22 +67,12 @@ export const PARTYAUSFAHRT_LERMOOS: EventTile = {
                 },
             },
 
-            busOnly: {
-                member: 0,
-                nonMember: 0,
-            },
-
             addons: {
                 snowshoes: {
                     member: 5,
                     nonMember: 5,
                 },
             },
-        },
-        options: {
-            ...DEFAULT_TRIP_OPTIONS,
-            allowBusOnly: false,
-            allowTechnikTraining: false,
         },
     },
 };

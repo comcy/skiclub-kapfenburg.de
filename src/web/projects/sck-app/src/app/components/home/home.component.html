@@ -22,7 +22,7 @@
                     <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
 
                     <mat-card-content class="mat-card-content">
-                        <p [innerHTML]="this.markdown.render(t.description)"></p>
+                        <p [innerHTML]="this.markdown.render(getTileDescription(t))"></p>
                     </mat-card-content>
                     <mat-card-actions class="actions">
                         <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">

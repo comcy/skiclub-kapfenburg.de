@@ -3,7 +3,6 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem Freizeitclub La-Oele geht es wieder nach Vorarlberg ins Skigebiet Golm mit Übernachtung im Hotel „Weisses Kreuz“ in Feldkirch.
 
@@ -31,6 +30,7 @@ const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem F
 const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
 export const LA_OELE_AUSFAHRT: EventTile = {
+    id: 'la-oele-ausfahrt-2026',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -61,18 +61,7 @@ export const LA_OELE_AUSFAHRT: EventTile = {
                 },
             },
 
-            busOnly: {
-                member: 0,
-                nonMember: 0,
-            },
-
             addons: {},
-        },
-        options: {
-            ...DEFAULT_TRIP_OPTIONS,
-            allowBusOnly: false,
-            allowSnowshoes: false,
-            allowTechnikTraining: false,
         },
     },
 };

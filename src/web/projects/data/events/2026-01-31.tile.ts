@@ -3,7 +3,6 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `Auch in dieser Saison darf unser Klassiker, die Ausfahrt nach Ehrwald, nicht fehlen. 
 Dieses Gebiet verfügt über wunderschöne, leichte bis mittelschwere Waldpisten. 
@@ -43,6 +42,7 @@ const BOARDING_LIST = [
 ];
 
 export const TAGESAUSFAHRT_EHRWALD: EventTile = {
+    id: 'tagesausfahrt-ehrwald-2026',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -99,7 +99,5 @@ export const TAGESAUSFAHRT_EHRWALD: EventTile = {
                 },
             },
         },
-        options: DEFAULT_TRIP_OPTIONS,
-        availableCourses: ['courseBeginner'],
     },
 };

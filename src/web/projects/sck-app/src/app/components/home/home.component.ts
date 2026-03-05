@@ -3,10 +3,10 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, Type } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,14 +18,21 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import { CoursesFeatureModule } from '@courses-lib';
 import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
 import { GymFeatureModule } from '@gym-lib';
 import { SiteHeaderComponent } from '@shared/ui-common';
 import { MarkdownRenderService } from '@shared/util-markdown';
-import { TripsFeatureModule, TripsRegisterDialogComponent } from '@trips-lib';
-import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feature/gym-courses-register-dialog/gym-courses-register-dialog.component';
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { TripsFeatureModule } from '@trips-lib';
+import {
+    EventTile,
+    Tile,
+    TileActions,
+    TileBehavior,
+    TileStatus,
+    TileType,
+} from 'projects/shared-lib/src/lib/ui-common/models';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
 
 @Component({
@@ -69,7 +76,7 @@ export class HomeComponent implements OnInit {
     private courses = COURSE_DATA;
     private staticData = STATIC_DATA;
 
-    public dialog = inject(MatDialog);
+    public router = inject(Router);
     public markdown = inject(MarkdownRenderService);
 
     ngOnInit(): void {
@@ -97,26 +104,81 @@ export class HomeComponent implements OnInit {
     }
 
     public openRegisterDialog(tile: Tile) {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.autoFocus = true;
-        dialogConfig.data = {
-            tile,
-        };
-        dialogConfig.width = '90vw';
-        dialogConfig.maxWidth = '600px';
-        const comp = this.resolveRegisterDialogComponent(tile);
-        const dialogRef = this.dialog.open(comp, dialogConfig);
-
-        dialogRef.afterClosed().subscribe();
-    }
-
-    public resolveRegisterDialogComponent(tile: Tile): Type<unknown> {
-        return tile.type === TileType.Course ? GymCoursesRegisterDialogComponent : TripsRegisterDialogComponent;
+        this.router.navigate([{ outlets: { modal: ['register', tile.id] } }]);
     }
 
     public openLink(link: string | undefined) {
         if (link) {
             window.open(link, '_blank');
         }
+    }
+
+    public getTileDescription(tile: Tile): string {
+        if (tile.type !== TileType.Event) {
+            return tile.description;
+        }
+
+        const eventTile = tile as EventTile;
+        let dynamicContent = tile.description || '';
+
+        // 1. Destination / Location
+        if (eventTile.destination || eventTile.location) {
+            dynamicContent += '\n\n**Ziel / Ort**\n';
+            if (eventTile.destination) dynamicContent += ` - ${eventTile.destination}\n`;
+            if (eventTile.location) dynamicContent += ` - ${eventTile.location}\n`;
+        }
+
+        // 2. Boarding List (Abfahrtszeiten)
+        if (eventTile.boardings && eventTile.boardings.length > 0) {
+            dynamicContent += '\n **Abfahrtszeiten**\n';
+            eventTile.boardings.forEach((b: string) => {
+                dynamicContent += ` - ${b}\n`;
+            });
+        }
+
+        // 3. Pricing Table
+        const pricing = eventTile.tripConfig?.pricing;
+        if (pricing) {
+            dynamicContent += '\n**Kosten**\n\n';
+            dynamicContent += '| Bus + Liftkarte + Optionen | Mitglieder | Nicht-Mitglieder |\n';
+            dynamicContent += '|:---|---:|---:|\n';
+
+            // Bus + Lift
+            if (pricing.busLift) {
+                dynamicContent += `| Erwachsene | ${pricing.busLift.adult.member},00 € | ${pricing.busLift.adult.nonMember},00 € |\n`;
+                dynamicContent += `| Jugendliche (bis 16 J.) | ${pricing.busLift.youthUntil16.member},00 € | ${pricing.busLift.youthUntil16.nonMember},00 € |\n`;
+                dynamicContent += `| Kinder (bis 6 J.) | ${pricing.busLift.childUntil6.member},00 € | ${pricing.busLift.childUntil6.nonMember},00 € |\n`;
+            }
+
+            // Bus Only
+            if (pricing.busOnly) {
+                dynamicContent += `| Nur Busfahrt | ${pricing.busOnly.member},00 € | ${pricing.busOnly.nonMember},00 € |\n`;
+            }
+
+            // Addons
+            const addons = pricing.addons;
+            if (addons && Object.keys(addons).length > 0) {
+                // Visual separator line
+                dynamicContent += `| -------------------------- | ---------- | ---------- |\n`;
+
+                if (addons.courseBeginner) {
+                    dynamicContent += `| Anfängerkurs | ${addons.courseBeginner.member},00 € | ${addons.courseBeginner.nonMember},00 € |\n`;
+                }
+                if (addons.courseAdvanced) {
+                    dynamicContent += `| Fortgeschrittenenkurs | ${addons.courseAdvanced.member},00 € | ${addons.courseAdvanced.nonMember},00 € |\n`;
+                }
+                if (addons.technikHalf) {
+                    dynamicContent += `| Techniktraining (1/2 Tag) | ${addons.technikHalf.member},00 € | ${addons.technikHalf.nonMember},00 € |\n`;
+                }
+                if (addons.technikFull) {
+                    dynamicContent += `| Techniktraining (ganzer Tag) | ${addons.technikFull.member},00 € | ${addons.technikFull.nonMember},00 € |\n`;
+                }
+                if (addons.snowshoes) {
+                    dynamicContent += `| Schneeschuhe | ${addons.snowshoes.member},00 € | ${addons.snowshoes.nonMember},00 € |\n`;
+                }
+            }
+        }
+
+        return dynamicContent;
     }
 }

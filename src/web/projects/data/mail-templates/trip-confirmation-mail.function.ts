@@ -15,12 +15,69 @@ export const getTripConfirmationMailSubject = (values: TripRegisterFormValue): s
     return `SC-Kapfenburg Anmeldung: ${values.participants[0].firstName}`;
 };
 
-export const getTripConfirmationMailBcc = (): string => {
+export const getTripConfirmationMailBcc = (values: TripRegisterFormValue): string => {
+    const customList = values.trip.tripConfig?.customBccList;
+    if (customList && customList.length > 0) {
+        return customList.join(',');
+    }
+    // Default BCC List
     return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
-    //return 'christian.silfang@gmail.com';
 };
 
-const renderParticipant = (participant: TripParticipant, title?: string): string => `
+const calculateParticipantPrice = (participant: TripParticipant, values: TripRegisterFormValue): number => {
+    const pricing = values.trip.tripConfig?.pricing;
+    if (!pricing) return 0;
+
+    const isMember = participant.isMember;
+    let totalPrice = 0;
+
+    // 1. Bus + Lift or Bus Only
+    if (participant.busOnly) {
+        if (pricing.busOnly) {
+            totalPrice += isMember ? pricing.busOnly.member : pricing.busOnly.nonMember;
+        }
+    } else if (pricing.busLift && participant.birthday) {
+        const age = calculateAge(participant.birthday);
+        let ageGroup: 'adult' | 'youthUntil16' | 'childUntil6' = 'adult';
+
+        if (age < 6) ageGroup = 'childUntil6';
+        else if (age < 16) ageGroup = 'youthUntil16';
+
+        const groupPricing = pricing.busLift[ageGroup];
+        totalPrice += isMember ? groupPricing.member : groupPricing.nonMember;
+    }
+
+    // 2. Addons: Snowshoes
+    if (participant.snowshoes && pricing.addons?.snowshoes) {
+        totalPrice += isMember ? pricing.addons.snowshoes.member : pricing.addons.snowshoes.nonMember;
+    }
+
+    // 3. Addons: Course / Technik
+    if (participant.courseRequested && pricing.addons && participant.level) {
+        const level = participant.level;
+        let coursePricing = null;
+
+        if (level === 'Anfängerkurs') coursePricing = pricing.addons.courseBeginner;
+        else if (level === 'Fortgeschrittenenkurs') coursePricing = pricing.addons.courseAdvanced;
+        else if (level === 'Techniktraining (1/2 Tag)') coursePricing = pricing.addons.technikHalf;
+        else if (level === 'Techniktraining (ganzer Tag)') coursePricing = pricing.addons.technikFull;
+
+        if (coursePricing) {
+            totalPrice += isMember ? coursePricing.member : coursePricing.nonMember;
+        }
+    }
+
+    return totalPrice;
+};
+
+const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
+};
+
+const renderParticipant = (participant: TripParticipant, values: TripRegisterFormValue, title?: string): string => {
+    const price = calculateParticipantPrice(participant, values);
+
+    return `
     <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #eee;">
         ${title ? `<h3 style="margin-bottom: 8px; color: #0073e6;">${title}</h3>` : ''}
 
@@ -29,7 +86,7 @@ const renderParticipant = (participant: TripParticipant, title?: string): string
         </p>
 
         <p style="margin: 4px 0;">
-            Geburtstdatum: <strong>${formatDateByLocale(participant.birthday)} (${calculateAge(participant.birthday)})</strong>
+            Geburtsdatum: <strong>${formatDateByLocale(participant.birthday)} (${calculateAge(participant.birthday)})</strong>
         </p>
         <p style="margin: 4px 0;">
             E-Mail: <strong>${participant.email}</strong>
@@ -38,25 +95,33 @@ const renderParticipant = (participant: TripParticipant, title?: string): string
             Telefon: <strong>${participant.phone}</strong>
         </p>
         <p style="margin: 4px 0;">
-            Zugstieg: <strong>${participant.boarding}</strong>
+            Zustieg: <strong>${participant.boarding}</strong>
         </p>
-        ${participant.isMember ? '<p style="margin: 4px 0;"><strong>Ist Mitglied</strong></p>' : ''}
-        ${participant.busOnly ? '<p style="margin: 4px 0;"><strong>Nur Busfahrt (ohne Skipass)</strong></p>' : ''}
-        ${
-            participant.busOnly && participant.snowshoes
-                ? '<p style="margin: 4px 0;"><strong>Schneeschuhe reserviert (5€ Leihgebühr)</strong></p>'
-                : ''
-        }
-        ${
-            participant.courseRequested
-                ? `<p style="margin: 4px 0;"><strong>Kurs gewünscht:</strong> ${participant.sportType} - ${participant.level}</p>`
-                : ''
-        }
+        
+        <div style="margin-top: 8px; font-size: 0.95em; color: #555;">
+            <strong>Gewählte Optionen:</strong>
+            <ul style="margin: 4px 0; padding-left: 20px;">
+                ${participant.busOnly ? '<li>Nur Busfahrt (ohne Skipass)</li>' : '<li>Bus + Lift (Skipass)</li>'}
+                ${participant.isMember ? '<li>Mitglied</li>' : '<li>Nicht-Mitglied</li>'}
+                ${participant.snowshoes ? '<li>Schneeschuhe reserviert</li>' : ''}
+                ${participant.courseRequested ? `<li>${participant.level} (${participant.sportType})</li>` : ''}
+            </ul>
+        </div>
+
+        <p style="margin: 8px 0 0 0; color: #2e7d32; font-weight: bold;">
+            Einzelpreis: ${formatCurrency(price)}
+        </p>
     </div>
-`;
+    `;
+};
 
 export const getTripConfirmationMailText = (values: TripRegisterFormValue): string => {
     const [contactPerson, ...additionalParticipants] = values.participants;
+
+    let totalPrice = 0;
+    values.participants.forEach((p) => {
+        totalPrice += calculateParticipantPrice(p, values);
+    });
 
     return `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding-top: 8px; padding-bottom: 16px;">
@@ -78,7 +143,7 @@ export const getTripConfirmationMailText = (values: TripRegisterFormValue): stri
             <div style="border-left: 4px solid #ac1dee; padding-left: 16px;">
                 
                 <!-- Ansprechpartner -->
-                ${renderParticipant(contactPerson, 'Ansprechpartner')}
+                ${renderParticipant(contactPerson, values, 'Ansprechpartner')}
 
                 <!-- Zusatzpersonen -->
                 ${
@@ -87,10 +152,20 @@ export const getTripConfirmationMailText = (values: TripRegisterFormValue): stri
                             <h3 style="margin-top: 24px; color: #0073e6;">
                                 Zusatzpersonen
                             </h3>
-                            ${additionalParticipants.map((p) => renderParticipant(p)).join('')}
+                            ${additionalParticipants.map((p) => renderParticipant(p, values)).join('')}
                           `
                         : ''
                 }
+            </div>
+
+            <!-- Gesamtsumme -->
+            <div style="margin-top: 32px; padding: 16px; background-color: #f5f5f5; border-radius: 8px; border: 1px solid #e0e0e0;">
+                <table style="width: 100%; font-size: 1.2em;">
+                    <tr>
+                        <td><strong>Gesamtsumme der Anmeldung</strong></td>
+                        <td style="text-align: right; color: #2e7d32;"><strong>${formatCurrency(totalPrice)}</strong></td>
+                    </tr>
+                </table>
             </div>
 
             ${

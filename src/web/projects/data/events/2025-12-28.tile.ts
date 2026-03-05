@@ -3,7 +3,6 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `Gemeinsam mit euch wollen wir die Pisten auf über 2000m Höhe unsicher machen. 
 Es gibt hier familienfreundliche Abfahrten bei tollem Panorama, aber auch herausfordernde, steile Pisten wie die „Bäraloch-Piste“. 
@@ -28,6 +27,7 @@ Nach einem erfolgreichen Schneetag lassen wir den Tag in der „KELO-Bar“ ausk
 const BOARDING_LIST = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
 export const PARTYAUSFAHRT_SONNENKOPF_TILE: EventTile = {
+    id: 'partyausfahrt-sonnenkopf-2025',
     order: 3,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -58,23 +58,7 @@ export const PARTYAUSFAHRT_SONNENKOPF_TILE: EventTile = {
                 },
             },
 
-            busOnly: {
-                member: 0,
-                nonMember: 0,
-            },
-
-            addons: {
-                snowshoes: {
-                    member: 5,
-                    nonMember: 5,
-                },
-            },
-        },
-        options: {
-            ...DEFAULT_TRIP_OPTIONS,
-            allowBusOnly: false,
-            allowSnowshoes: true,
-            allowTechnikTraining: false,
+            addons: {},
         },
     },
 };

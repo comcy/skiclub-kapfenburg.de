@@ -3,9 +3,8 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Price } from '@courses-lib';
-import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
-import { BaseTile, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
+import { TRIP_DATA } from '@data';
+import { TileActions, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 import { BehaviorSubject } from 'rxjs';
 import { Trip } from '../../domain/models';
 import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form/trips-registration-form.component';
@@ -14,25 +13,25 @@ import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form
     selector: 'lib-trips-registration',
     templateUrl: './trips-registration.component.html',
     styleUrls: ['./trips-registration.component.scss'],
+    standalone: true,
     imports: [TripsRegistrationFormComponent],
 })
 export class TripsRegistrationComponent implements OnInit {
     @Input() public additionalData$!: BehaviorSubject<Trip[]>;
     @Input() public additionalData!: Trip[];
 
-    public tripData: BaseTile[] = TRIP_DATA;
     public trips: Trip[] = [];
-    public busOnlyPrice: Price = BUS_ONLY_PRICE_DATA;
-    public busAndPassPrice: Price[] = BUS_AND_PASS_PRICE_DATA;
-    public boardings: string[] = BOARDING_LIST;
 
     ngOnInit(): void {
-        for (const t of this.tripData) {
+        const events = TRIP_DATA.filter((t) => t.type === TileType.Event);
+
+        for (const t of events) {
             if (t.actions?.includes(TileActions.Register)) {
                 this.trips.push({
-                    destination: t.title,
+                    destination: t.destination || t.title,
                     date: t.date,
                     availableBoardings: t.boardings as string[],
+                    tripConfig: t.tripConfig,
                 });
             }
         }

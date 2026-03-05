@@ -3,7 +3,6 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `
 Eine Ausfahrt für alle, die unter der Woche Zeit haben und freie Pisten lieben.
@@ -34,6 +33,7 @@ Neben Skifahren kann man auch Rodeln und Winterwandern genießen. Die gemütiche
 const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
 export const FREIE_PISTENAUSFAHRT: EventTile = {
+    id: 'freie-pistenausfahrt-2026',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -64,18 +64,7 @@ export const FREIE_PISTENAUSFAHRT: EventTile = {
                 },
             },
 
-            busOnly: {
-                member: 0,
-                nonMember: 0,
-            },
-
             addons: {},
-        },
-        options: {
-            ...DEFAULT_TRIP_OPTIONS,
-            allowBusOnly: false,
-            allowSnowshoes: false,
-            allowTechnikTraining: false,
         },
     },
 };

@@ -3,7 +3,6 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `Bei dieser Ausfahrt geht es in das Traumskigebiet Mellau-Damüls. Dieses befindet 
 sich mitten im Bregenzerwald und ist das größte Gebiet in der Region. Es bietet über 
@@ -45,6 +44,7 @@ const BOARDING_LIST = [
 ];
 
 export const TAGESAUSFAHRT_MELLAU_DAMUELS: EventTile = {
+    id: 'tagesausfahrt-mellau-damuels-2026',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -97,6 +97,5 @@ export const TAGESAUSFAHRT_MELLAU_DAMUELS: EventTile = {
                 },
             },
         },
-        options: DEFAULT_TRIP_OPTIONS,
     },
 };

@@ -3,7 +3,6 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `Wie könnte das Wochenende besser beginnen als mit Skifahren/Snowboarden? 
 Getreu nach diesem Motto fahren wir am Freitag zur Ehrwalder Almbahn und genießen die tolle Landschaft mit leeren Pisten. 
@@ -37,6 +36,7 @@ const BOARDING_LIST = [
 ];
 
 export const FREITAGSAUSFAHRT_EHRWALD: EventTile = {
+    id: 'freitagsausfahrt-ehrwald-2026',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -78,10 +78,6 @@ export const FREITAGSAUSFAHRT_EHRWALD: EventTile = {
                     nonMember: 5,
                 },
             },
-        },
-        options: {
-            ...DEFAULT_TRIP_OPTIONS,
-            allowTechnikTraining: false,
         },
     },
 };

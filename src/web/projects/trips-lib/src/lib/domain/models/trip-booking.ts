@@ -2,14 +2,14 @@
  * @copyright Copyright (c) 2026 Christian Silfang
  */
 
-import { BusLiftAddon, BusOnlyAddon } from './trip-addon';
+import { BusLiftFullAddon, BusOnlyAddon } from './trip-addon';
 import { MembershipType } from './trip-base';
 import { BusLiftBase, BusOnlyBase } from './trip-product';
 
 export interface BusLiftBooking {
     base: BusLiftBase;
     membership: MembershipType;
-    addons?: BusLiftAddon[];
+    addons?: BusLiftFullAddon[];
 }
 
 export interface BusOnlyBooking {

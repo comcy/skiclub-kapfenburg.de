@@ -5,27 +5,6 @@
 import { GymCourseInformation } from 'projects/gym-lib/src/lib/domain';
 import { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-config';
 
-// export interface Tile {
-//     order: number;
-//     type: TileType;
-//     title: string;
-//     date: string;
-//     subTitle: string;
-//     image: string;
-//     imageDescription: string;
-//     description: string;
-//     status: TileStatus;
-//     expiration: Date;
-//     behavior: TileBehavior;
-//     boardings?: string[];
-//     actions?: TileActions[];
-//     downloadActionLink?: string;
-//     avatar?: string;
-//     visible?: boolean;
-//     expired?: boolean;
-//     course?: GymCourseInformation;
-// }
-
 export enum TileType {
     Info = 'info',
     Event = 'event',
@@ -50,6 +29,7 @@ export enum TileStatus {
 }
 
 export interface BaseTile {
+    id: string;
     order: number;
     title: string;
     date: string;
@@ -66,6 +46,7 @@ export interface BaseTile {
     avatar?: string;
     visible?: boolean;
     expired?: boolean;
+    additionalInformation?: string;
 }
 
 export interface InfoTile extends BaseTile {
@@ -75,11 +56,14 @@ export interface InfoTile extends BaseTile {
 export interface CourseTile extends BaseTile {
     type: TileType.Course;
     course: GymCourseInformation;
+    location: string;
 }
 
 export interface EventTile extends BaseTile {
     type: TileType.Event;
     tripConfig: TripConfig;
+    destination?: string;
+    location?: string;
 }
 
 export type Tile = InfoTile | CourseTile | EventTile;

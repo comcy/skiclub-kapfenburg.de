@@ -3,7 +3,6 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `Diese Ausfahrt eignet sich sowohl für reine Anfänger als auch für Fortgeschrittene. 
 Egal ob ihr das erste Mal auf Skiern oder dem Board steht oder einfach eure Technik 
@@ -46,6 +45,7 @@ const BOARDING_LIST = [
 ];
 
 export const TRAININGSTAG_OBERJOCH_TILE: EventTile = {
+    id: 'trainingstag-oberjoch-2026',
     order: 4,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -102,7 +102,5 @@ export const TRAININGSTAG_OBERJOCH_TILE: EventTile = {
                 },
             },
         },
-        options: DEFAULT_TRIP_OPTIONS,
-        availableCourses: ['courseBeginner'],
     },
 };

@@ -55,7 +55,7 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
             to: formToMailData.receiver,
             subject: this.getSubjectText(formToMailData.formValues),
             text: this.getMailText(formToMailData.formValues),
-            bcc: this.getBccReceivers(),
+            bcc: this.getBccReceivers(formToMailData.formValues),
         };
 
         this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
@@ -73,8 +73,8 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
         return getTripConfirmationMailSubject(values);
     }
 
-    private getBccReceivers(): string {
-        return getTripConfirmationMailBcc();
+    private getBccReceivers(values: TripRegisterFormValue): string {
+        return getTripConfirmationMailBcc(values);
     }
 
     private getMailText(values: TripRegisterFormValue): string {
