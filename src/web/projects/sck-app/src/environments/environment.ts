@@ -8,8 +8,7 @@
 
 export const environment = {
     production: false,
-    // sckApiUrl: 'http://localhost:3000/api',
-    sckApiUrl: 'https://sck-api.5i1f4ng.de',
+    sckApiUrl: 'http://localhost:3000/api',
     courseSheetUrl: '',
     tripSheetUrl: '',
     buildDate: '2025-06-24T12:34:56Z',

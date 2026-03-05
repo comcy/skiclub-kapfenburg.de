@@ -284,10 +284,14 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public getParticipantPrice(index: number): number {
-        if (!this.tripConfig) return 0;
+        const selectedTrip = this.tripRegisterForm.get('trip')?.value as Trip;
+        const pricing = selectedTrip?.tripConfig?.pricing;
+        if (!pricing) return 0;
 
-        const participant = this.participants().at(index).value;
-        const pricing = this.tripConfig.pricing;
+        const participantGroup = this.participants().at(index);
+        if (!participantGroup) return 0;
+
+        const participant = participantGroup.value;
         const isMember = participant.isMember;
 
         let totalPrice = 0;
@@ -298,16 +302,29 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 totalPrice += isMember ? pricing.busOnly.member : pricing.busOnly.nonMember;
             }
         } else if (pricing.busLift && participant.birthday) {
-            const age = calculateAge(participant.birthday);
-            if (isNaN(age)) return 0;
+            // Reference date from trip year
+            let refDate = new Date();
+            if (selectedTrip.date) {
+                const yearMatch = selectedTrip.date.match(/\d{4}/);
+                if (yearMatch) {
+                    refDate = new Date(parseInt(yearMatch[0]), 5, 1); // June 1st of trip year
+                }
+            }
+
+            const age = calculateAge(participant.birthday, refDate);
+            if (isNaN(age) || age < 0) return 0;
 
             let ageGroup: 'adult' | 'youthUntil16' | 'childUntil6' = 'adult';
-
-            if (age < 6) ageGroup = 'childUntil6';
-            else if (age < 16) ageGroup = 'youthUntil16';
+            if (age <= 6) ageGroup = 'childUntil6';
+            else if (age <= 16) ageGroup = 'youthUntil16';
 
             const groupPricing = pricing.busLift[ageGroup];
-            totalPrice += isMember ? groupPricing.member : groupPricing.nonMember;
+            if (groupPricing) {
+                totalPrice += isMember ? groupPricing.member : groupPricing.nonMember;
+            } else {
+                // Fallback to adult if specific group is missing
+                totalPrice += isMember ? pricing.busLift.adult.member : pricing.busLift.adult.nonMember;
+            }
         } else {
             // No base price can be determined yet
             return 0;
@@ -321,15 +338,15 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         // 3. Addons: Course / Technik
         if (participant.courseRequested && pricing.addons && participant.level) {
             const level = participant.level;
-            let coursePricing = null;
+            let addonPricing = null;
 
-            if (level === 'Anfängerkurs') coursePricing = pricing.addons.courseBeginner;
-            else if (level === 'Fortgeschrittenenkurs') coursePricing = pricing.addons.courseAdvanced;
-            else if (level === 'Techniktraining (1/2 Tag)') coursePricing = pricing.addons.technikHalf;
-            else if (level === 'Techniktraining (ganzer Tag)') coursePricing = pricing.addons.technikFull;
+            if (level === 'Anfängerkurs') addonPricing = pricing.addons.courseBeginner;
+            else if (level === 'Fortgeschrittenenkurs') addonPricing = pricing.addons.courseAdvanced;
+            else if (level === 'Techniktraining (1/2 Tag)') addonPricing = pricing.addons.technikHalf;
+            else if (level === 'Techniktraining (ganzer Tag)') addonPricing = pricing.addons.technikFull;
 
-            if (coursePricing) {
-                totalPrice += isMember ? coursePricing.member : coursePricing.nonMember;
+            if (addonPricing) {
+                totalPrice += isMember ? addonPricing.member : addonPricing.nonMember;
             }
         }
 
