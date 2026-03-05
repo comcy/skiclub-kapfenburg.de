@@ -3,7 +3,7 @@
  */
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/shared-lib/src/lib/models/trip-options';
+import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `
 Eine Ausfahrt für alle, die unter der Woche Zeit haben und freie Pisten lieben.

@@ -3,7 +3,7 @@
  */
 
 import { GymCourseInformation } from 'projects/gym-lib/src/lib/domain';
-import { TripConfig } from '../../models/trip-config';
+import { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-config';
 
 // export interface Tile {
 //     order: number;

@@ -144,15 +144,17 @@
                             </mat-form-field>
 
                             <div class="checkbox-container">
-                                <mat-checkbox formControlName="busOnly" class="large-checkbox">
-                                    Nur Busfahrt (ohne Skipass)
-                                    <mat-icon
-                                        class="info-icon"
-                                        matTooltip="Bitte ankreuzen, wenn du keinen Skipass benötigst."
-                                        >info</mat-icon
-                                    >
-                                </mat-checkbox>
-                                @if (participant.get('busOnly')?.value) {
+                                @if (tripConfig?.options?.allowBusOnly) {
+                                    <mat-checkbox formControlName="busOnly" class="large-checkbox">
+                                        Nur Busfahrt (ohne Skipass)
+                                        <mat-icon
+                                            class="info-icon"
+                                            matTooltip="Bitte ankreuzen, wenn du keinen Skipass benötigst."
+                                            >info</mat-icon
+                                        >
+                                    </mat-checkbox>
+                                }
+                                @if (participant.get('busOnly')?.value && tripConfig?.options?.allowSnowshoes) {
                                     <div class="snowshoes-toggle">
                                         <mat-slide-toggle formControlName="snowshoes">
                                             Schneeschuhe (für 5€ Leihgebühr)
@@ -160,32 +162,62 @@
                                     </div>
                                 }
                                 <div class="checkbox-break"></div>
-                                <mat-checkbox formControlName="courseRequested" class="large-checkbox">
-                                    Kurs gewünscht
-                                    <mat-icon
-                                        class="info-icon"
-                                        matTooltip="Bitte ankreuzen, wenn du einen Ski- oder Snowboardkurs buchen möchtest."
-                                        >info</mat-icon
-                                    >
-                                </mat-checkbox>
+                                @if (
+                                    tripConfig?.options?.allowTechnikTraining || tripConfig?.availableCourses?.length
+                                ) {
+                                    <mat-checkbox formControlName="courseRequested" class="large-checkbox">
+                                        {{
+                                            tripConfig?.availableCourses?.length
+                                                ? 'Kurs / Techniktraining gewünscht'
+                                                : 'Techniktraining gewünscht'
+                                        }}
+                                        <mat-icon
+                                            class="info-icon"
+                                            matTooltip="Bitte ankreuzen, wenn du einen Kurs oder Techniktraining buchen möchtest."
+                                            >info</mat-icon
+                                        >
+                                    </mat-checkbox>
+                                }
                             </div>
 
                             @if (participant.get('courseRequested')?.value) {
                                 <div class="course-selection">
-                                    <mat-form-field class="full-width" appearance="fill">
-                                        <mat-label>Sportart</mat-label>
-                                        <mat-select formControlName="sportType">
-                                            @for (sport of sportTypeList; track $index) {
-                                                <mat-option [value]="sport">{{ sport }}</mat-option>
-                                            }
-                                        </mat-select>
-                                    </mat-form-field>
+                                    @if (tripConfig?.availableCourses?.length) {
+                                        <mat-form-field class="full-width" appearance="fill">
+                                            <mat-label>Sportart</mat-label>
+                                            <mat-select formControlName="sportType">
+                                                @for (sport of sportTypeList; track $index) {
+                                                    <mat-option [value]="sport">{{ sport }}</mat-option>
+                                                }
+                                            </mat-select>
+                                        </mat-form-field>
+                                    }
 
                                     <mat-form-field class="full-width" appearance="fill">
-                                        <mat-label>Könnerstufe</mat-label>
+                                        <mat-label>Könnerstufe / Option</mat-label>
                                         <mat-select formControlName="level">
-                                            @for (level of levelList; track $index) {
-                                                <mat-option [value]="level">{{ level }}</mat-option>
+                                            @if (tripConfig?.options?.allowTechnikTraining) {
+                                                <mat-option value="Techniktraining (1/2 Tag)"
+                                                    >Techniktraining (1/2 Tag)</mat-option
+                                                >
+                                                <mat-option value="Techniktraining (ganzer Tag)"
+                                                    >Techniktraining (ganzer Tag)</mat-option
+                                                >
+                                            }
+                                            @for (course of tripConfig?.availableCourses; track $index) {
+                                                <mat-option
+                                                    [value]="
+                                                        course === 'courseBeginner'
+                                                            ? 'Anfängerkurs'
+                                                            : 'Fortgeschrittenenkurs'
+                                                    "
+                                                >
+                                                    {{
+                                                        course === 'courseBeginner'
+                                                            ? 'Anfängerkurs'
+                                                            : 'Fortgeschrittenenkurs'
+                                                    }}
+                                                </mat-option>
                                             }
                                         </mat-select>
                                     </mat-form-field>

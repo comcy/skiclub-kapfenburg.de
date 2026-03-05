@@ -6,7 +6,8 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseFormElements } from 'projects/shared-lib/src/lib/components';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
-import { Trip, TripParticipant } from '../../domain/models';
+import { TripParticipant } from '../../domain/models';
+import { Trip } from '../../domain/models/trip-base';
 
 export interface TripRegisterForm {
     tripRegisterForm: FormGroup;

@@ -3,7 +3,7 @@
  */
 
 import { EventTile, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { DEFAULT_TRIP_OPTIONS } from 'projects/shared-lib/src/lib/models/trip-options';
+import { DEFAULT_TRIP_OPTIONS } from 'projects/trips-lib/src/lib/domain/models/trip-options';
 
 const DESCRIPTION_TEXT = `Ihr habt Zuhause ausgemistet, eure Kinder sind wieder gewachsen oder ihr möchtet einfach schauen, was es so gibt?
 Dann kommt vorbei und beginnt gemeinsam mit uns die neue Wintersaison.

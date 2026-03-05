@@ -25,12 +25,13 @@ import {
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { Trip, TripParticipant } from '../../domain/models';
+import { TripConfig, TripParticipant } from '../../domain/models';
 import {
     SheetDbRow,
     TripRegisterFormValue,
     TripRegistrationFormServiceInterface,
 } from './trips-registration-form.interfaces';
+import { Trip } from '../../domain/models/trip-base';
 
 @Component({
     selector: 'lib-trips-registration-form',
@@ -74,7 +75,8 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     public toDestroy$: Subject<void> = new Subject<void>();
 
     public sportTypeList = ['Ski Alpin', 'Snowboard'];
-    public levelList = ['Anfänger', 'Könner', 'Fortgeschritten'];
+
+    public tripConfig: TripConfig | undefined;
 
     private formBuilder = inject(FormBuilder);
     private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
@@ -93,6 +95,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
             // When seleced via tile
             this.updateBoardingList(this.additionalData[0]);
+            this.tripConfig = this.additionalData[0].tripConfig;
             this.tripRegisterForm.patchValue({
                 trip: this.additionalData[0],
             });
@@ -100,7 +103,10 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         }
 
         this.tripRegisterForm.valueChanges.pipe(takeUntil(this.toDestroy$)).subscribe((formChanges) => {
-            this.updateBoardingList(formChanges.trip);
+            if (formChanges.trip) {
+                this.updateBoardingList(formChanges.trip);
+                this.tripConfig = formChanges.trip.tripConfig;
+            }
 
             if (formChanges.trip && this.isTripChanged) {
                 this.firstPartSelected = true;
@@ -175,7 +181,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 const sportControl = group.get('sportType');
                 const levelControl = group.get('level');
                 if (checked) {
-                    sportControl?.setValidators(Validators.required);
+                    if (this.tripConfig?.availableCourses?.length) {
+                        sportControl?.setValidators(Validators.required);
+                    } else {
+                        sportControl?.clearValidators();
+                    }
                     levelControl?.setValidators(Validators.required);
                 } else {
                     sportControl?.clearValidators();
@@ -221,13 +231,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public hasError(field: string): boolean {
-        // TODO Generalize error messages
-        // const foundField = this.tripRegisterFormElements.find((f) => {
-        //   return field === f.id;
-        // })?.validation;
-
         const emailError = this.tripRegisterForm.get(field)?.hasError('email') as boolean;
-
         const requiredError = this.tripRegisterForm.get(field)?.value;
 
         return emailError && requiredError;
