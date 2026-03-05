@@ -2,7 +2,8 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { DEFAULT_TRIP_OPTIONS } from 'projects/shared-lib/src/lib/models/trip-options';
 
 const DESCRIPTION_TEXT = `An unserer Montagsausfahrt geht es traditionell nach Oberstdorf zum Skigebiet Fellhorn/Kanzelwand. Hier erwartet euch ein abwechslungsreiches Skigebiet mit 36 bestens präparierten Pisten für jedes Level. 
 Das Gebiet verfügt über eine der modernsten Beschneiungsanlagen in Deutschland, womit dem Schneevergnügen nichts mehr im Wege steht. 
@@ -38,7 +39,7 @@ const BOARDING_LIST = [
     'Hülen Bushaltestelle (5:30 Uhr)',
 ];
 
-export const MONTAGSAUSFAHRT_FELLHORN: Tile = {
+export const MONTAGSAUSFAHRT_FELLHORN: EventTile = {
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -52,4 +53,49 @@ export const MONTAGSAUSFAHRT_FELLHORN: Tile = {
     expiration: new Date('2026-03-10'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
+    tripConfig: {
+        pricing: {
+            busLift: {
+                adult: {
+                    member: 80,
+                    nonMember: 90,
+                },
+                youthUntil16: {
+                    member: 70,
+                    nonMember: 80,
+                },
+                childUntil6: {
+                    member: 55,
+                    nonMember: 60,
+                },
+            },
+
+            busOnly: {
+                member: 30,
+                nonMember: 30,
+            },
+
+            addons: {
+                snowshoes: {
+                    member: 5,
+                    nonMember: 5,
+                },
+
+                technikHalf: {
+                    member: 35,
+                    nonMember: 40,
+                },
+
+                technikFull: {
+                    member: 60,
+                    nonMember: 65,
+                },
+                courseAdvanced: {
+                    member: 25,
+                    nonMember: 30,
+                },
+            },
+        },
+        options: DEFAULT_TRIP_OPTIONS,
+    },
 };

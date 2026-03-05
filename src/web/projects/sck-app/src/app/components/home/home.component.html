@@ -2,70 +2,72 @@
 
 <div class="content-container">
     <div class="cards-grid">
-        <ng-container *ngFor="let t of tiles">
-            <mat-card appearance="outlined" *ngIf="t.visible" class="card" [ngClass]="{ expired: t.expired }">
-                <mat-card-header>
-                    <div *ngIf="t.avatar" mat-card-avatar class="card-header-image">
-                        <img mat-card-avatar src="{{ t.avatar }}" />
-                    </div>
-                    <mat-card-title class="card-date">{{ t.date }}</mat-card-title>
-                    <mat-card-title
-                        style="white-space: pre-wrap"
-                        [innerHTML]="this.markdown.render(t.title)"
-                    ></mat-card-title>
-                    <mat-card-subtitle class="mat-card-content">{{ t.subTitle }}</mat-card-subtitle>
-                </mat-card-header>
+        <ng-container>
+            @for (t of tiles; track $index) {
+                <mat-card appearance="outlined" *ngIf="t.visible" class="card" [ngClass]="{ expired: t.expired }">
+                    <mat-card-header>
+                        <div *ngIf="t.avatar" mat-card-avatar class="card-header-image">
+                            <img mat-card-avatar src="{{ t.avatar }}" />
+                        </div>
+                        <mat-card-title class="card-date">{{ t.date }}</mat-card-title>
+                        <mat-card-title
+                            style="white-space: pre-wrap"
+                            [innerHTML]="this.markdown.render(t.title)"
+                        ></mat-card-title>
+                        <mat-card-subtitle class="mat-card-content">{{ t.subTitle }}</mat-card-subtitle>
+                    </mat-card-header>
 
-                <span *ngIf="t.status === tileStatusEnum.Canceled" class="canceled-stamp">Abgesagt</span>
-                <span *ngIf="t.status === tileStatusEnum.BookedUp" class="booked-up-stamp">Warteliste</span>
-                <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
+                    <span *ngIf="t.status === tileStatusEnum.Canceled" class="canceled-stamp">Abgesagt</span>
+                    <span *ngIf="t.status === tileStatusEnum.BookedUp" class="booked-up-stamp">Warteliste</span>
+                    <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
 
-                <mat-card-content class="mat-card-content">
-                    <p [innerHTML]="this.markdown.render(t.description)"></p>
-                </mat-card-content>
-                <mat-card-actions class="actions">
-                    <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
-                        <button
-                            *ngSwitchCase="tileActionsEnum.Download"
-                            mat-fab
-                            extended
-                            class="card-button"
-                            color="primary"
-                            (click)="openLink(t.downloadActionLink)"
-                            matTooltip="Öffnen"
-                        >
-                            <mat-icon>download</mat-icon>
-                            Öffnen
-                        </button>
-                        <button
-                            *ngSwitchCase="tileActionsEnum.Register"
-                            class="card-button"
-                            mat-fab
-                            extended
-                            color="primary"
-                            (click)="openRegisterDialog(t)"
-                            matTooltip="Anmelden"
-                        >
-                            <mat-icon>event_note</mat-icon>
-                            Anmelden
-                        </button>
-                        <div class="secondary-action-buttons">
-                            <!-- <button *ngSwitchCase="tileActionsEnum.Share" class="card-button" mat-mini-fab
+                    <mat-card-content class="mat-card-content">
+                        <p [innerHTML]="this.markdown.render(t.description)"></p>
+                    </mat-card-content>
+                    <mat-card-actions class="actions">
+                        <ng-container *ngFor="let action of t.actions" [ngSwitch]="action">
+                            <button
+                                *ngSwitchCase="tileActionsEnum.Download"
+                                mat-fab
+                                extended
+                                class="card-button"
+                                color="primary"
+                                (click)="openLink(t.downloadActionLink)"
+                                matTooltip="Öffnen"
+                            >
+                                <mat-icon>download</mat-icon>
+                                Öffnen
+                            </button>
+                            <button
+                                *ngSwitchCase="tileActionsEnum.Register"
+                                class="card-button"
+                                mat-fab
+                                extended
+                                color="primary"
+                                (click)="openRegisterDialog(t)"
+                                matTooltip="Anmelden"
+                            >
+                                <mat-icon>event_note</mat-icon>
+                                Anmelden
+                            </button>
+                            <div class="secondary-action-buttons">
+                                <!-- <button *ngSwitchCase="tileActionsEnum.Share" class="card-button" mat-mini-fab
                                 (click)="openDetailDialog(t)" matTooltip="Informationen">
                                 <mat-icon>info_outline</mat-icon>
                             </button> -->
-                            <button
-                                *ngSwitchCase="tileActionsEnum.Share"
-                                mat-mini-fab
-                                matTooltip="Teilen"
-                                class="card-button"
-                            >
-                                <mat-icon>share</mat-icon>
-                            </button>
-                        </div>
-                    </ng-container>
-                </mat-card-actions>
-            </mat-card>
+                                <button
+                                    *ngSwitchCase="tileActionsEnum.Share"
+                                    mat-mini-fab
+                                    matTooltip="Teilen"
+                                    class="card-button"
+                                >
+                                    <mat-icon>share</mat-icon>
+                                </button>
+                            </div>
+                        </ng-container>
+                    </mat-card-actions>
+                </mat-card>
+            }
         </ng-container>
     </div>
 </div>

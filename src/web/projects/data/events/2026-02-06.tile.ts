@@ -2,7 +2,8 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { DEFAULT_TRIP_OPTIONS } from 'projects/shared-lib/src/lib/models/trip-options';
 
 const DESCRIPTION_TEXT = `Wie könnte das Wochenende besser beginnen als mit Skifahren/Snowboarden? 
 Getreu nach diesem Motto fahren wir am Freitag zur Ehrwalder Almbahn und genießen die tolle Landschaft mit leeren Pisten. 
@@ -35,7 +36,7 @@ const BOARDING_LIST = [
     'Ebnat Jurahalle (5:40 Uhr)',
 ];
 
-export const FREITAGSAUSFAHRT_EHRWALD: Tile = {
+export const FREITAGSAUSFAHRT_EHRWALD: EventTile = {
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -49,4 +50,38 @@ export const FREITAGSAUSFAHRT_EHRWALD: Tile = {
     expiration: new Date('2026-02-07'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
+    tripConfig: {
+        pricing: {
+            busLift: {
+                adult: {
+                    member: 85,
+                    nonMember: 95,
+                },
+                youthUntil16: {
+                    member: 85,
+                    nonMember: 95,
+                },
+                childUntil6: {
+                    member: 85,
+                    nonMember: 95,
+                },
+            },
+
+            busOnly: {
+                member: 30,
+                nonMember: 30,
+            },
+
+            addons: {
+                snowshoes: {
+                    member: 5,
+                    nonMember: 5,
+                },
+            },
+        },
+        options: {
+            ...DEFAULT_TRIP_OPTIONS,
+            allowTechnikTraining: false,
+        },
+    },
 };

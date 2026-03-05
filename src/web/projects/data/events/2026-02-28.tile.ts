@@ -2,7 +2,8 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { DEFAULT_TRIP_OPTIONS } from 'projects/shared-lib/src/lib/models/trip-options';
 
 const DESCRIPTION_TEXT = `Bei dieser Ausfahrt geht es in das Traumskigebiet Mellau-Damüls. Dieses befindet 
 sich mitten im Bregenzerwald und ist das größte Gebiet in der Region. Es bietet über 
@@ -43,7 +44,7 @@ const BOARDING_LIST = [
     'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
 ];
 
-export const TAGESAUSFAHRT_MELLAU_DAMUELS: Tile = {
+export const TAGESAUSFAHRT_MELLAU_DAMUELS: EventTile = {
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -57,4 +58,45 @@ export const TAGESAUSFAHRT_MELLAU_DAMUELS: Tile = {
     expiration: new Date('2026-02-29'),
     boardings: BOARDING_LIST,
     status: TileStatus.BookedUp,
+    tripConfig: {
+        pricing: {
+            busLift: {
+                adult: {
+                    member: 90,
+                    nonMember: 100,
+                },
+                youthUntil16: {
+                    member: 80,
+                    nonMember: 90,
+                },
+                childUntil6: {
+                    member: 65,
+                    nonMember: 70,
+                },
+            },
+
+            busOnly: {
+                member: 30,
+                nonMember: 30,
+            },
+
+            addons: {
+                snowshoes: {
+                    member: 5,
+                    nonMember: 5,
+                },
+
+                technikHalf: {
+                    member: 25,
+                    nonMember: 30,
+                },
+
+                technikFull: {
+                    member: 50,
+                    nonMember: 55,
+                },
+            },
+        },
+        options: DEFAULT_TRIP_OPTIONS,
+    },
 };
