@@ -7,6 +7,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GymCoursesRegistrationFormService } from './gym-courses-registration-form.service';
 import { environment } from 'projects/sck-app/src/environments/environment';
 import { SnackbarComponent } from 'projects/shared-lib/src/lib/ui-common/components/snackbar/snackbar.component';
+import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-courses-registration-form.interfaces';
+import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { GymCourseInformation } from 'projects/gym-lib/src/lib/domain';
 
 describe('GymCoursesRegistrationFormService', () => {
     let service: GymCoursesRegistrationFormService;
@@ -36,9 +39,9 @@ describe('GymCoursesRegistrationFormService', () => {
         lastName: string;
         email: string;
         phone: string;
-        course: string;
-        age: string;
+        birthday: string;
         additionalText: string;
+        course: GymCourseInformation;
     }
 
     it('should POST confirmation mail payload and open custom snackbar on success', () => {
@@ -48,11 +51,14 @@ describe('GymCoursesRegistrationFormService', () => {
             lastName: 'B',
             email: 'a@b.c',
             phone: '1',
-            course: 'Pilates',
-            age: '10',
+            birthday: '01.01.2000',
+            course: { title: 'Pilates' },
             additionalText: 'x',
         };
-        const payload = { receiver: 'x@y.z', formValues } as const;
+        const payload: FormToMailInformation<GymCoursesRegisterFormFields> = {
+            receiver: 'x@y.z',
+            formValues: formValues as unknown as GymCoursesRegisterFormFields,
+        };
         service.sendConfirmationMail(payload);
         const req = httpMock.expectOne(environment.sckApiUrl + '/send_email');
         expect(req.request.method).toBe('POST');
@@ -70,11 +76,14 @@ describe('GymCoursesRegistrationFormService', () => {
             lastName: 'B',
             email: 'a@b.c',
             phone: '1',
-            course: 'Pilates',
-            age: '10',
+            birthday: '01.01.2000',
+            course: { title: 'Pilates' },
             additionalText: 'x',
         };
-        const payload = { receiver: 'x@y.z', formValues } as const;
+        const payload: FormToMailInformation<GymCoursesRegisterFormFields> = {
+            receiver: 'x@y.z',
+            formValues: formValues as unknown as GymCoursesRegisterFormFields,
+        };
         service.sendConfirmationMail(payload);
         const req = httpMock.expectOne(environment.sckApiUrl + '/send_email');
         expect(req.request.method).toBe('POST');

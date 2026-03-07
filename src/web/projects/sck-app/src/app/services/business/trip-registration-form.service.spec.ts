@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TripRegistrationFormService } from './trip-registration-form.service';
 import { environment } from 'projects/sck-app/src/environments/environment';
 import { getTripConfirmationSuccessMessage } from 'projects/data/mail-templates';
+import { SheetDbRow } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
 
 describe('TripRegistrationFormService', () => {
     let service: TripRegistrationFormService;
@@ -32,7 +33,7 @@ describe('TripRegistrationFormService', () => {
     });
 
     it('should POST to tripSheetUrl and open success snackbar', () => {
-        const formData = new FormData();
+        const formData: SheetDbRow[] = [];
         (environment as unknown as { tripSheetUrl: string }).tripSheetUrl = 'https://example.com/trip-sheet';
 
         service.sendFormToSheetsIo(formData);
@@ -43,7 +44,7 @@ describe('TripRegistrationFormService', () => {
     });
 
     it('should POST and not open snackbar on error', () => {
-        const formData = new FormData();
+        const formData: SheetDbRow[] = [];
         (environment as unknown as { tripSheetUrl: string }).tripSheetUrl = 'https://example.com/trip-sheet-error';
 
         service.sendFormToSheetsIo(formData);
