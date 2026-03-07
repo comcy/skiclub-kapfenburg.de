@@ -436,7 +436,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
         const contactPerson = rawValue.participants[0];
 
-        const rows: SheetDbRow[] = rawValue.participants.map((participant: TripParticipant) => {
+        const rows: SheetDbRow[] = rawValue.participants.map((participant: TripParticipant, index: number) => {
             return {
                 firstName: participant.firstName,
                 lastName: participant.lastName,
@@ -454,6 +454,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 courseRequested: participant.courseRequested,
                 sportType: participant.sportType,
                 level: participant.level,
+                price: this.getParticipantPrice(index),
             };
         });
 

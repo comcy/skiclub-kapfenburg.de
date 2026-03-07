@@ -25,6 +25,7 @@ export type SheetDbRow = Omit<Trip, 'availableBoardings'> &
         age?: number;
         additionalText: string;
         timestamp?: string;
+        price?: number;
     };
 
 @Injectable()

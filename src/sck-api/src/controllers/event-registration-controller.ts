@@ -51,6 +51,7 @@ export class EventRegistrationController extends Controller {
                 age: calculateAge(participant.birthday),
                 additionalText: additionalText,
                 eventId: eventId,
+                timestamp: new Date().toISOString(), // Optional: adding a timestamp if not provided
             };
         });
 

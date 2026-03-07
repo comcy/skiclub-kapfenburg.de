@@ -1,3 +1,9 @@
+/**
+ * @copyright Copyright (c) 2025 Christian Silfang
+ */
+
+import { TripConfig } from './trip-config';
+import { GymCourseInformation } from './gym-course-information';
 import { TileActions, TileBehavior, TileStatus, TileType } from './tile-enums';
 
 export interface Tile {
@@ -20,6 +26,15 @@ export interface Tile {
     avatar?: string;
     visible?: boolean;
     expired?: boolean;
+
+    // Event specific fields (from EventTile in web)
+    tripConfig?: TripConfig;
+    destination?: string;
+    location?: string;
+    additionalInformation?: string;
+
+    // Course specific fields (from CourseTile in web)
+    course?: GymCourseInformation;
 }
 
 export type TileCreationParams = Omit<Tile, 'id'>;

@@ -1,17 +1,8 @@
-export interface GymCoursePrice {
-    member: string;
-    nonMember: string;
-}
+/**
+ * @copyright Copyright (c) 2025 Christian Silfang
+ */
 
-export interface GymCourseInformation {
-    name: string;
-    description: string;
-    time: string;
-    location: string;
-    contact: string;
-    prices?: GymCoursePrice;
-    date?: string;
-}
+import { GymCourseInformation } from './gym-course-information';
 
 export interface GymCoursesRegisterFormFields {
     id?: string;
@@ -22,4 +13,5 @@ export interface GymCoursesRegisterFormFields {
     birthday: string;
     additionalText: string;
     course: GymCourseInformation;
+    price?: number;
 }

@@ -2,11 +2,26 @@
  * @copyright Copyright (c) 2025 Christian Silfang
  */
 
-export interface RegistrationRequestBody {
+export interface Trip {
+    destination: string;
+    date: string;
+    availableBoardings: string[];
+}
+
+export interface TripParticipant {
     firstName: string;
     lastName: string;
     birthday: string;
     email: string;
+    phone: string;
+    boarding: string;
+    isMember?: boolean;
+    busOnly?: boolean;
+    courseRequested?: boolean;
+    snowshoes?: boolean;
+    sportType?: string;
+    level?: string;
+    price?: number;
 }
 
 export interface TripRegisterFormValue {
@@ -21,18 +36,5 @@ export type SheetDbRow = Omit<Trip, 'availableBoardings'> &
         age?: number;
         additionalText: string;
         timestamp?: string;
+        eventId?: string;
     };
-export interface Trip {
-    destination: string;
-    date: string;
-    availableBoardings: string[];
-}
-
-export interface TripParticipant {
-    firstName: string;
-    lastName: string;
-    birthday: string;
-    email: string;
-    phone: string;
-    boarding: string;
-}
