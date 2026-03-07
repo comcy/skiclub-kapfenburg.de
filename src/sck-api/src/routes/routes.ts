@@ -46,54 +46,49 @@ const models: TsoaRoute.Models = {
         "enums": ["share","register","download"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Tile": {
+    "PriceByMembership": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"string","required":true},
-            "order": {"dataType":"double","required":true},
-            "type": {"ref":"TileType","required":true},
-            "title": {"dataType":"string","required":true},
-            "date": {"dataType":"string","required":true},
-            "subTitle": {"dataType":"string","required":true},
-            "image": {"dataType":"string","required":true},
-            "imageId": {"dataType":"string"},
-            "imageDescription": {"dataType":"string","required":true},
-            "description": {"dataType":"string","required":true},
-            "status": {"ref":"TileStatus","required":true},
-            "expiration": {"dataType":"string","required":true},
-            "behavior": {"ref":"TileBehavior","required":true},
-            "boardings": {"dataType":"array","array":{"dataType":"string"}},
-            "actions": {"dataType":"array","array":{"dataType":"refEnum","ref":"TileActions"}},
-            "downloadActionLink": {"dataType":"string"},
-            "avatar": {"dataType":"string"},
-            "visible": {"dataType":"boolean"},
-            "expired": {"dataType":"boolean"},
+            "member": {"dataType":"double","required":true},
+            "nonMember": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "PaginatedResponse_Tile_": {
+    "Record_AgeCategory.PriceByMembership_": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"adult":{"ref":"PriceByMembership","required":true},"youthUntil16":{"ref":"PriceByMembership","required":true},"childUntil6":{"ref":"PriceByMembership","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TripAddons": {
         "dataType": "refObject",
         "properties": {
-            "items": {"dataType":"array","array":{"dataType":"refObject","ref":"Tile"},"required":true},
-            "total": {"dataType":"double","required":true},
+            "snowshoes": {"ref":"PriceByMembership"},
+            "technikHalf": {"ref":"PriceByMembership"},
+            "technikFull": {"ref":"PriceByMembership"},
+            "courseBeginner": {"ref":"PriceByMembership"},
+            "courseAdvanced": {"ref":"PriceByMembership"},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Pick_Tile.Exclude_keyofTile.id__": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"order":{"dataType":"double","required":true},"type":{"ref":"TileType","required":true},"title":{"dataType":"string","required":true},"date":{"dataType":"string","required":true},"subTitle":{"dataType":"string","required":true},"image":{"dataType":"string","required":true},"imageId":{"dataType":"string"},"imageDescription":{"dataType":"string","required":true},"description":{"dataType":"string","required":true},"status":{"ref":"TileStatus","required":true},"expiration":{"dataType":"string","required":true},"behavior":{"ref":"TileBehavior","required":true},"boardings":{"dataType":"array","array":{"dataType":"string"}},"actions":{"dataType":"array","array":{"dataType":"refEnum","ref":"TileActions"}},"downloadActionLink":{"dataType":"string"},"avatar":{"dataType":"string"},"visible":{"dataType":"boolean"},"expired":{"dataType":"boolean"}},"validators":{}},
+    "TripPricing": {
+        "dataType": "refObject",
+        "properties": {
+            "busLift": {"ref":"Record_AgeCategory.PriceByMembership_"},
+            "busOnly": {"ref":"PriceByMembership"},
+            "addons": {"ref":"TripAddons"},
+        },
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Omit_Tile.id_": {
-        "dataType": "refAlias",
-        "type": {"ref":"Pick_Tile.Exclude_keyofTile.id__","validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "TileCreationParams": {
-        "dataType": "refAlias",
-        "type": {"ref":"Omit_Tile.id_","validators":{}},
+    "TripConfig": {
+        "dataType": "refObject",
+        "properties": {
+            "pricing": {"ref":"TripPricing","required":true},
+            "customBccList": {"dataType":"array","array":{"dataType":"string"}},
+        },
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "GymCoursePrice": {
@@ -119,6 +114,61 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Tile": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"string","required":true},
+            "order": {"dataType":"double","required":true},
+            "type": {"ref":"TileType","required":true},
+            "title": {"dataType":"string","required":true},
+            "date": {"dataType":"string","required":true},
+            "subTitle": {"dataType":"string","required":true},
+            "image": {"dataType":"string","required":true},
+            "imageId": {"dataType":"string"},
+            "imageDescription": {"dataType":"string","required":true},
+            "description": {"dataType":"string","required":true},
+            "status": {"ref":"TileStatus","required":true},
+            "expiration": {"dataType":"string","required":true},
+            "behavior": {"ref":"TileBehavior","required":true},
+            "boardings": {"dataType":"array","array":{"dataType":"string"}},
+            "actions": {"dataType":"array","array":{"dataType":"refEnum","ref":"TileActions"}},
+            "downloadActionLink": {"dataType":"string"},
+            "avatar": {"dataType":"string"},
+            "visible": {"dataType":"boolean"},
+            "expired": {"dataType":"boolean"},
+            "tripConfig": {"ref":"TripConfig"},
+            "destination": {"dataType":"string"},
+            "location": {"dataType":"string"},
+            "additionalInformation": {"dataType":"string"},
+            "course": {"ref":"GymCourseInformation"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "PaginatedResponse_Tile_": {
+        "dataType": "refObject",
+        "properties": {
+            "items": {"dataType":"array","array":{"dataType":"refObject","ref":"Tile"},"required":true},
+            "total": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Pick_Tile.Exclude_keyofTile.id__": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"order":{"dataType":"double","required":true},"type":{"ref":"TileType","required":true},"title":{"dataType":"string","required":true},"date":{"dataType":"string","required":true},"subTitle":{"dataType":"string","required":true},"image":{"dataType":"string","required":true},"imageId":{"dataType":"string"},"imageDescription":{"dataType":"string","required":true},"description":{"dataType":"string","required":true},"status":{"ref":"TileStatus","required":true},"expiration":{"dataType":"string","required":true},"behavior":{"ref":"TileBehavior","required":true},"boardings":{"dataType":"array","array":{"dataType":"string"}},"actions":{"dataType":"array","array":{"dataType":"refEnum","ref":"TileActions"}},"downloadActionLink":{"dataType":"string"},"avatar":{"dataType":"string"},"visible":{"dataType":"boolean"},"expired":{"dataType":"boolean"},"tripConfig":{"ref":"TripConfig"},"destination":{"dataType":"string"},"location":{"dataType":"string"},"additionalInformation":{"dataType":"string"},"course":{"ref":"GymCourseInformation"}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Omit_Tile.id_": {
+        "dataType": "refAlias",
+        "type": {"ref":"Pick_Tile.Exclude_keyofTile.id__","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TileCreationParams": {
+        "dataType": "refAlias",
+        "type": {"ref":"Omit_Tile.id_","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "GymCoursesRegisterFormFields": {
         "dataType": "refObject",
         "properties": {
@@ -130,18 +180,19 @@ const models: TsoaRoute.Models = {
             "birthday": {"dataType":"string","required":true},
             "additionalText": {"dataType":"string","required":true},
             "course": {"ref":"GymCourseInformation","required":true},
+            "price": {"dataType":"double"},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Partial_GymCoursesRegisterFormFields_": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"string"},"firstName":{"dataType":"string"},"lastName":{"dataType":"string"},"email":{"dataType":"string"},"phone":{"dataType":"string"},"birthday":{"dataType":"string"},"additionalText":{"dataType":"string"},"course":{"ref":"GymCourseInformation"}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"string"},"firstName":{"dataType":"string"},"lastName":{"dataType":"string"},"email":{"dataType":"string"},"phone":{"dataType":"string"},"birthday":{"dataType":"string"},"additionalText":{"dataType":"string"},"course":{"ref":"GymCourseInformation"},"price":{"dataType":"double"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Partial_Tile_": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"string"},"order":{"dataType":"double"},"type":{"ref":"TileType"},"title":{"dataType":"string"},"date":{"dataType":"string"},"subTitle":{"dataType":"string"},"image":{"dataType":"string"},"imageId":{"dataType":"string"},"imageDescription":{"dataType":"string"},"description":{"dataType":"string"},"status":{"ref":"TileStatus"},"expiration":{"dataType":"string"},"behavior":{"ref":"TileBehavior"},"boardings":{"dataType":"array","array":{"dataType":"string"}},"actions":{"dataType":"array","array":{"dataType":"refEnum","ref":"TileActions"}},"downloadActionLink":{"dataType":"string"},"avatar":{"dataType":"string"},"visible":{"dataType":"boolean"},"expired":{"dataType":"boolean"}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"string"},"order":{"dataType":"double"},"type":{"ref":"TileType"},"title":{"dataType":"string"},"date":{"dataType":"string"},"subTitle":{"dataType":"string"},"image":{"dataType":"string"},"imageId":{"dataType":"string"},"imageDescription":{"dataType":"string"},"description":{"dataType":"string"},"status":{"ref":"TileStatus"},"expiration":{"dataType":"string"},"behavior":{"ref":"TileBehavior"},"boardings":{"dataType":"array","array":{"dataType":"string"}},"actions":{"dataType":"array","array":{"dataType":"refEnum","ref":"TileActions"}},"downloadActionLink":{"dataType":"string"},"avatar":{"dataType":"string"},"visible":{"dataType":"boolean"},"expired":{"dataType":"boolean"},"tripConfig":{"ref":"TripConfig"},"destination":{"dataType":"string"},"location":{"dataType":"string"},"additionalInformation":{"dataType":"string"},"course":{"ref":"GymCourseInformation"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Trip": {
@@ -163,6 +214,13 @@ const models: TsoaRoute.Models = {
             "email": {"dataType":"string","required":true},
             "phone": {"dataType":"string","required":true},
             "boarding": {"dataType":"string","required":true},
+            "isMember": {"dataType":"boolean"},
+            "busOnly": {"dataType":"boolean"},
+            "courseRequested": {"dataType":"boolean"},
+            "snowshoes": {"dataType":"boolean"},
+            "sportType": {"dataType":"string"},
+            "level": {"dataType":"string"},
+            "price": {"dataType":"double"},
         },
         "additionalProperties": false,
     },
@@ -183,19 +241,22 @@ const models: TsoaRoute.Models = {
             "id": {"dataType":"string"},
             "firstName": {"dataType":"string","required":true},
             "lastName": {"dataType":"string","required":true},
-            "sportType": {"dataType":"string","required":true},
             "email": {"dataType":"string","required":true},
             "phone": {"dataType":"string","required":true},
-            "age": {"dataType":"string","required":true},
+            "birthday": {"dataType":"string","required":true},
             "additionalText": {"dataType":"string","required":true},
-            "level": {"dataType":"string","required":true},
+            "course": {"ref":"GymCourseInformation","required":true},
+            "price": {"dataType":"double"},
+            "sportType": {"dataType":"string"},
+            "age": {"dataType":"string"},
+            "level": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Partial_CourseRegisterFormFields_": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"string"},"firstName":{"dataType":"string"},"lastName":{"dataType":"string"},"sportType":{"dataType":"string"},"email":{"dataType":"string"},"phone":{"dataType":"string"},"age":{"dataType":"string"},"additionalText":{"dataType":"string"},"level":{"dataType":"string"}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"string"},"firstName":{"dataType":"string"},"lastName":{"dataType":"string"},"email":{"dataType":"string"},"phone":{"dataType":"string"},"birthday":{"dataType":"string"},"additionalText":{"dataType":"string"},"course":{"ref":"GymCourseInformation"},"price":{"dataType":"double"},"sportType":{"dataType":"string"},"age":{"dataType":"string"},"level":{"dataType":"string"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Boarding": {
