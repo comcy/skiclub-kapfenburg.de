@@ -12,6 +12,7 @@ import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feat
 import { Tile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 import { AgbDialogComponent } from 'projects/trips-lib/src/lib/ui/agb-dialog/agb-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
+import { TilesDataService } from '../../services/tiles-data.service';
 
 @Component({
     selector: 'app-routing-dialog',
@@ -22,16 +23,20 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
     private route = inject(ActivatedRoute);
     private router = inject(Router);
     private dialog = inject(MatDialog);
+    private tilesDataService = inject(TilesDataService);
     private destroy$ = new Subject<void>();
 
     ngOnInit(): void {
+        const type = this.route.snapshot.data['dialogType'];
+
+        if (type === 'agb') {
+            this.openAgbDialog();
+            return;
+        }
+
         this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             const id = params['id'];
-            const type = this.route.snapshot.data['dialogType'];
-
-            if (type === 'agb') {
-                this.openAgbDialog();
-            } else if (id) {
+            if (id) {
                 this.openRegisterDialog(id);
             }
         });
@@ -43,24 +48,30 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
     }
 
     private openRegisterDialog(id: string): void {
-        const allTiles: Tile[] = [...COURSE_DATA, ...STATIC_DATA, ...TRIP_DATA];
-        const tile = allTiles.find((t) => t.id === id);
+        this.tilesDataService
+            .getTiles()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((apiTiles) => {
+                const allTiles: Tile[] = [...apiTiles, ...COURSE_DATA, ...STATIC_DATA, ...TRIP_DATA];
+                const tile = allTiles.find((t) => t.id === id);
 
-        if (!tile) {
-            this.close();
-            return;
-        }
+                if (!tile) {
+                    console.error('Tile not found for id:', id);
+                    this.close();
+                    return;
+                }
 
-        const component: ComponentType<unknown> =
-            tile.type === TileType.Course ? GymCoursesRegisterDialogComponent : TripsRegisterDialogComponent;
+                const component: ComponentType<unknown> =
+                    tile.type === TileType.Course ? GymCoursesRegisterDialogComponent : TripsRegisterDialogComponent;
 
-        const dialogRef = this.dialog.open(component, {
-            data: { tile },
-            width: '90vw',
-            maxWidth: '600px',
-        });
+                const dialogRef = this.dialog.open(component, {
+                    data: { tile },
+                    width: '90vw',
+                    maxWidth: '600px',
+                });
 
-        dialogRef.afterClosed().subscribe(() => this.close());
+                dialogRef.afterClosed().subscribe(() => this.close());
+            });
     }
 
     private openAgbDialog(): void {
