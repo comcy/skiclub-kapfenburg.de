@@ -7,7 +7,8 @@ import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { BaseDialogComponent } from '../../../../../shared-lib/src/lib/components/dialogs/base-dialog/base-dialog.component';
-import { Trip } from '../../domain/models';
+import { EventTile, TileType } from '../../../../../shared-lib/src/lib/ui-common/models';
+import { Trip } from '../../domain/models/trip-base';
 import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form/trips-registration-form.component';
 import { DialogData } from './trip-register-dialog.interfaces';
 
@@ -15,6 +16,7 @@ import { DialogData } from './trip-register-dialog.interfaces';
     selector: 'lib-trips-register-dialog',
     templateUrl: './trips-register-dialog.component.html',
     styleUrls: ['./trips-register-dialog.component.scss'],
+    standalone: true,
     imports: [NgIf, BaseDialogComponent, TripsRegistrationFormComponent, AsyncPipe],
 })
 export class TripsRegisterDialogComponent implements OnInit {
@@ -40,21 +42,18 @@ export class TripsRegisterDialogComponent implements OnInit {
         this.dialogTitle = `${tile.title}`;
         this.tripDate = `${tile.date}`;
 
-        this.tripDetails$.next([
-            {
-                destination: tile.title,
-                date: tile.date,
-                availableBoardings: tile.boardings,
-            },
-        ]);
-
-        this.tripDetails = [
-            {
-                destination: tile.title,
-                date: tile.date,
-                availableBoardings: tile.boardings,
-            },
-        ];
+        if (tile.type === TileType.Event) {
+            const eventTile = tile as EventTile;
+            this.tripDetails = [
+                {
+                    destination: eventTile.title,
+                    date: eventTile.date,
+                    availableBoardings: eventTile.boardings ?? [],
+                    tripConfig: eventTile.tripConfig,
+                },
+            ];
+            this.tripDetails$.next(this.tripDetails);
+        }
     }
 
     public onTripRegistrationFormSubmit(success: boolean): void {

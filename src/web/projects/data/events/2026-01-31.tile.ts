@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Auch in dieser Saison darf unser Klassiker, die Ausfahrt nach Ehrwald, nicht fehlen. 
 Dieses Gebiet verfügt über wunderschöne, leichte bis mittelschwere Waldpisten. 
@@ -28,8 +28,8 @@ Almbahn loslegen: Von dort aus starten zwei schöne Winterwanderwege und Schnees
 |                             |              |                   |
 |                             |              |                   |
 |  Anfängerkurse              |   35,00 €    |  40,00 €          |
-|  Techniktraining 1/2 Tag    |   35,00 €    |  30,00 €          |
-|  Techniktraining            |   60,00 €    |  55,00 €          |
+|  Techniktraining 1/2 Tag    |   35,00 €    |  40,00 €          |
+|  Techniktraining            |   60,00 €    |  65,00 €          |
 |  Schneeschuhe               |   5,00 €     |  5,00 €           |
 |  Nur Busfahrt               |   30,00 €    |  30,00 €          |
 
@@ -41,7 +41,8 @@ const BOARDING_LIST = [
     'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
 ];
 
-export const TAGESAUSFAHRT_EHRWALD: Tile = {
+export const TAGESAUSFAHRT_EHRWALD: EventTile = {
+    id: 'tagesausfahrt-ehrwald-2026',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -55,4 +56,48 @@ export const TAGESAUSFAHRT_EHRWALD: Tile = {
     expiration: new Date('2026-02-01'),
     boardings: BOARDING_LIST,
     status: TileStatus.BookedUp,
+    tripConfig: {
+        pricing: {
+            busLift: {
+                adult: {
+                    member: 90,
+                    nonMember: 100,
+                },
+                youthUntil16: {
+                    member: 65,
+                    nonMember: 75,
+                },
+                childUntil6: {
+                    member: 50,
+                    nonMember: 55,
+                },
+            },
+
+            busOnly: {
+                member: 30,
+                nonMember: 30,
+            },
+
+            addons: {
+                snowshoes: {
+                    member: 5,
+                    nonMember: 5,
+                },
+
+                technikHalf: {
+                    member: 35,
+                    nonMember: 40,
+                },
+
+                technikFull: {
+                    member: 60,
+                    nonMember: 65,
+                },
+                courseBeginner: {
+                    member: 35,
+                    nonMember: 40,
+                },
+            },
+        },
+    },
 };

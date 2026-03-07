@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Gemeinsam mit euch wollen wir die Pisten auf über 2000m Höhe unsicher machen. 
 Es gibt hier familienfreundliche Abfahrten bei tollem Panorama, aber auch herausfordernde, steile Pisten wie die „Bäraloch-Piste“. 
@@ -26,7 +26,8 @@ Nach einem erfolgreichen Schneetag lassen wir den Tag in der „KELO-Bar“ ausk
 
 const BOARDING_LIST = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
-export const PARTYAUSFAHRT_SONNENKOPF_TILE: Tile = {
+export const PARTYAUSFAHRT_SONNENKOPF_TILE: EventTile = {
+    id: 'partyausfahrt-sonnenkopf-2025',
     order: 3,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -40,4 +41,24 @@ export const PARTYAUSFAHRT_SONNENKOPF_TILE: Tile = {
     expiration: new Date('2025-12-28'),
     boardings: BOARDING_LIST,
     status: TileStatus.BookedUp,
+    tripConfig: {
+        pricing: {
+            busLift: {
+                adult: {
+                    member: 100,
+                    nonMember: 100,
+                },
+                youthUntil16: {
+                    member: 100,
+                    nonMember: 100,
+                },
+                childUntil6: {
+                    member: 100,
+                    nonMember: 100,
+                },
+            },
+
+            addons: {},
+        },
+    },
 };

@@ -5,8 +5,8 @@
 import { NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
-import { Price, Tile, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
-import { Trip } from '../../domain/models';
+import { BaseTile, Price, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
+import { Trip } from '../../domain/models/trip-base';
 
 @Component({
     selector: 'lib-trips-prices',
@@ -15,7 +15,7 @@ import { Trip } from '../../domain/models';
     imports: [NgFor],
 })
 export class TripsPricesComponent implements OnInit {
-    public tripData: Tile[] = TRIP_DATA;
+    public tripData: BaseTile[] = TRIP_DATA;
     public trips: Trip[] = [];
 
     public busOnlyPrice: Price = BUS_ONLY_PRICE_DATA;

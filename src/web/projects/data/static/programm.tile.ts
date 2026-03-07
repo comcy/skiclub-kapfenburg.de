@@ -5,6 +5,7 @@
 import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 export const PROGRAM_TILE: Tile = {
+    id: 'programm',
     order: 1,
     type: TileType.Info,
     behavior: TileBehavior.Click,

@@ -15,82 +15,201 @@ export const getTripConfirmationMailSubject = (values: TripRegisterFormValue): s
     return `SC-Kapfenburg Anmeldung: ${values.participants[0].firstName}`;
 };
 
-export const getTripConfirmationMailBcc = (): string => {
+export const getTripConfirmationMailBcc = (values: TripRegisterFormValue): string => {
+    const customList = values.trip.tripConfig?.customBccList;
+    if (customList && customList.length > 0) {
+        return customList.join(',');
+    }
+    // Default BCC List
     return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
-    //return 'christian.silfang@gmail.com';
 };
 
-const renderParticipant = (participant: TripParticipant, title?: string): string => `
-    <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #eee;">
-        ${title ? `<h3 style="margin-bottom: 8px; color: #0073e6;">${title}</h3>` : ''}
+const calculateParticipantPrice = (participant: TripParticipant, values: TripRegisterFormValue): number => {
+    const pricing = values.trip.tripConfig?.pricing;
+    if (!pricing) return 0;
 
-        <p style="margin: 0; font-weight: bold; font-size: 1.1em;">
-            ${participant.firstName} ${participant.lastName}
-        </p>
+    const isMember = participant.isMember;
+    let totalPrice = 0;
 
-        <p style="margin: 4px 0;">
-            Geburtstdatum: <strong>${formatDateByLocale(participant.birthday)} (${calculateAge(participant.birthday)})</strong>
-        </p>
-        <p style="margin: 4px 0;">
-            E-Mail: <strong>${participant.email}</strong>
-        </p>
-        <p style="margin: 4px 0;">
-            Telefon: <strong>${participant.phone}</strong>
-        </p>
-        <p style="margin: 4px 0;">
-            Zugstieg: <strong>${participant.boarding}</strong>
-        </p>
+    // 1. Bus + Lift or Bus Only
+    if (participant.busOnly) {
+        if (pricing.busOnly) {
+            totalPrice += isMember ? pricing.busOnly.member : pricing.busOnly.nonMember;
+        }
+    } else if (pricing.busLift && participant.birthday) {
+        // Use trip date as reference if possible, otherwise use today
+        let refDate = new Date();
+        if (values.trip.date) {
+            const yearMatch = values.trip.date.match(/\d{4}/);
+            if (yearMatch) {
+                refDate = new Date(parseInt(yearMatch[0]), 5, 1);
+            }
+        }
+
+        const age = calculateAge(participant.birthday, refDate);
+        if (isNaN(age) || age < 0) return 0;
+
+        let ageGroup: 'adult' | 'youthUntil16' | 'childUntil6' = 'adult';
+
+        if (age <= 6) ageGroup = 'childUntil6';
+        else if (age <= 16) ageGroup = 'youthUntil16';
+
+        const groupPricing = pricing.busLift[ageGroup];
+        if (groupPricing) {
+            totalPrice += isMember ? groupPricing.member : groupPricing.nonMember;
+        }
+    } else {
+        return 0;
+    }
+
+    // 2. Addons: Snowshoes
+    if (participant.snowshoes && pricing.addons?.snowshoes) {
+        totalPrice += isMember ? pricing.addons.snowshoes.member : pricing.addons.snowshoes.nonMember;
+    }
+
+    // 3. Addons: Course / Technik
+    if (participant.courseRequested && pricing.addons && participant.level) {
+        const level = participant.level;
+        let coursePricing = null;
+
+        if (level === 'Anfängerkurs') coursePricing = pricing.addons.courseBeginner;
+        else if (level === 'Fortgeschrittenenkurs') coursePricing = pricing.addons.courseAdvanced;
+        else if (level === 'Techniktraining (1/2 Tag)') coursePricing = pricing.addons.technikHalf;
+        else if (level === 'Techniktraining (ganzer Tag)') coursePricing = pricing.addons.technikFull;
+
+        if (coursePricing) {
+            totalPrice += isMember ? coursePricing.member : coursePricing.nonMember;
+        }
+    }
+
+    return totalPrice;
+};
+
+const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
+};
+
+const renderParticipant = (participant: TripParticipant, values: TripRegisterFormValue, title?: string): string => {
+    const price = calculateParticipantPrice(participant, values);
+    const options = [];
+    if (participant.busOnly) {
+        options.push('Nur Busfahrt (ohne Skipass)');
+    } else {
+        // Reference date logic same as in price calculation for consistent display
+        let refDate = new Date();
+        if (values.trip.date) {
+            const yearMatch = values.trip.date.match(/\d{4}/);
+            if (yearMatch) {
+                refDate = new Date(parseInt(yearMatch[0]), 5, 1);
+            }
+        }
+        const age = calculateAge(participant.birthday, refDate);
+        if (age <= 6) options.push('Bus + Lift (Kind)');
+        else if (age <= 16) options.push('Bus + Lift (Jugend)');
+        else options.push('Bus + Lift (Erwachsen)');
+    }
+    options.push(participant.isMember ? 'Mitglied' : 'Nicht-Mitglied');
+    if (participant.snowshoes) options.push('Schneeschuhe');
+    if (participant.courseRequested) options.push(`${participant.level} (${participant.sportType})`);
+
+    return `
+    <div style="margin-bottom: 24px; padding: 16px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff;">
+        ${title ? `<h3 style="margin-top: 0; margin-bottom: 12px; color: #3f51b5; border-bottom: 1px solid #3f51b5; padding-bottom: 4px;">${title}</h3>` : ''}
+
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding-bottom: 8px;">
+                    <span style="font-weight: bold; font-size: 1.1em; color: #333;">${participant.firstName} ${participant.lastName}</span>
+                </td>
+                <td style="text-align: right; padding-bottom: 8px;">
+                    <span style="color: #666; font-size: 0.9em;">Geb.: ${formatDateByLocale(participant.birthday)} (${calculateAge(participant.birthday)} J.)</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="color: #555; font-size: 0.95em; padding-bottom: 12px;">
+                    E-Mail: ${participant.email} <br>
+                    Tel: ${participant.phone} | Zustieg: ${participant.boarding}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="background-color: #f9f9f9; padding: 12px; border-radius: 4px; border: 1px solid #eeeeee;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="font-size: 0.9em; color: #555; line-height: 1.4;">
+                                ${options.join('<br>')}
+                            </td>
+                            <td style="text-align: right; font-weight: bold; color: #2e7d32; white-space: nowrap; vertical-align: bottom;">
+                                ${formatCurrency(price)}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </div>
-`;
+    `;
+};
 
 export const getTripConfirmationMailText = (values: TripRegisterFormValue): string => {
     const [contactPerson, ...additionalParticipants] = values.participants;
 
+    let totalPrice = 0;
+    values.participants.forEach((p) => {
+        totalPrice += calculateParticipantPrice(p, values);
+    });
+
     return `
-        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding-top: 8px; padding-bottom: 16px;">
+        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding: 20px; background-color: #f4f4f4;">
             
-            <h1 style="color: #0073e6;">
-                Anmeldung beim Skiclub Kapfenburg e.V. zur Ausfahrt
-                "${values.trip.destination}" am ${values.trip.date}
-            </h1>
-
-            <p>Hallo ${contactPerson.firstName},</p>
-
-            <p>
-                wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit eure Anmeldung.
-                Bitte prüfe die folgenden Daten auf Richtigkeit.
-            </p>
-
-            <p>Wir haben folgende Teilnehmer registriert:</p>
-
-            <div style="border-left: 4px solid #ac1dee; padding-left: 16px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #dddddd;">
                 
-                <!-- Ansprechpartner -->
-                ${renderParticipant(contactPerson, 'Ansprechpartner')}
+                <h1 style="color: #3f51b5; font-size: 22px; margin-top: 0;">
+                    Anmeldebestätigung
+                </h1>
+                <p style="font-size: 16px; font-weight: bold; color: #555;">
+                    Ausfahrt: ${values.trip.destination} <br>
+                    Datum: ${values.trip.date}
+                </p>
 
-                <!-- Zusatzpersonen -->
+                <p>Hallo ${contactPerson.firstName},</p>
+
+                <p>
+                    wir freuen uns über eure Anmeldung! Bitte prüfe die folgenden Daten auf Richtigkeit.
+                </p>
+
+                <div style="margin-top: 20px;">
+                    ${renderParticipant(contactPerson, values, 'Ansprechpartner')}
+
+                    ${
+                        additionalParticipants.length > 0
+                            ? `
+                                <h3 style="margin: 24px 0 16px 0; color: #3f51b5;">Zusatzpersonen</h3>
+                                ${additionalParticipants.map((p) => renderParticipant(p, values)).join('')}
+                              `
+                            : ''
+                    }
+                </div>
+
+                <!-- Gesamtsumme -->
+                <div style="margin-top: 32px; padding: 20px; background-color: #fafafa; border: 2px solid #3f51b5; border-radius: 8px;">
+                    <table style="width: 100%; font-size: 1.2em;">
+                        <tr>
+                            <td><strong>Gesamtsumme</strong></td>
+                            <td style="text-align: right; color: #2e7d32;"><strong>${formatCurrency(totalPrice)}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+
                 ${
-                    additionalParticipants.length > 0
+                    values.additionalText
                         ? `
-                            <h3 style="margin-top: 24px; color: #0073e6;">
-                                Zusatzpersonen
-                            </h3>
-                            ${additionalParticipants.map((p) => renderParticipant(p)).join('')}
+                            <div style="margin-top: 24px; padding: 12px; border-left: 4px solid #3f51b5; background-color: #f0f2f9;">
+                                <strong>Zusatzangaben:</strong><br>
+                                ${values.additionalText}
+                            </div>
                           `
                         : ''
                 }
-            </div>
-
-            ${
-                values.additionalText
-                    ? `
-                        <p style="margin-top: 16px;">Zusatzangaben:</p>
-                        <div style="padding: 8px; background-color: #0073e610; border-radius: 4px; border: 1px solid #ddd;">
-                            <p style="margin: 0;">${values.additionalText}</p>
-                        </div>
-                      `
-                    : ''
-            }
 
         <div style="background-color: #f7f7f7; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0;">
 
@@ -127,22 +246,12 @@ export const getTripConfirmationMailText = (values: TripRegisterFormValue): stri
                 <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/trips/information" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Ausfahrten</a>
                 </p>
             </div>
-            
 
-            <p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
-            <p style="margin: 0; font-weight: bold; font-size: 16px;">Das Team des Skiclub Kapfenburg e.V.</p>
-            
-            <div style="font-size: 14px;"></div>
-            <p style="margin: 15px 0 0 0;">Unseren Mitgliedsantrag findest du unter:</p>
-            <p style="margin: 0;">
-                <a href="https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA" style="color: #0073e6; text-decoration: none;">
-                    > Mitglied werden
-                </a>
-            </p>
-
-
-            <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
-            <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert. Solltest du Fragen oder Probleme mit der Darstellung dieser E-Mail haben, nehme bitte baldmöglichst Kontakt mit uns auf.</small>
+                <p style="margin-top: 30px;">Schöne Grüße,<br><strong>Dein Team vom Skiclub Kapfenburg e.V.</strong></p>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #999;">Diese E-Mail wurde automatisch erstellt.</p>
+            </div>
         </div>
     `;
 };

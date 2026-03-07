@@ -31,7 +31,8 @@
                 @for (participant of participants().controls; track $index; let i = $index) {
                     <div [formGroupName]="i" class="participant-group">
                         <div class="participant-header">
-                            <h4>
+                            <h4 [class.disabled]="!(firstPartSelected || hasPreselectedData)">
+                                <mat-icon class="user-icon">person</mat-icon>
                                 Teilnehmer {{ i + 1 }}
                                 @if (i === 0) {
                                     (Ansprechpartner)
@@ -51,11 +52,12 @@
                                         mat-icon-button
                                         (click)="removeParticipant(i)"
                                         class="remove-participant-btn"
+                                        type="button"
                                     >
                                         <mat-icon>delete</mat-icon>
                                     </button>
                                 }
-                                <button mat-icon-button (click)="toggleCollapse(i)">
+                                <button mat-icon-button (click)="toggleCollapse(i)" type="button">
                                     <mat-icon>
                                         {{
                                             participant.get('isCollapsed')?.value
@@ -67,6 +69,17 @@
                             </div>
                         </div>
                         <div class="participant-form" [class.collapsed]="isParticipantCollapsed(i)">
+                            <div class="member-checkbox-container">
+                                <mat-checkbox formControlName="isMember" class="large-checkbox">
+                                    Mitglied
+                                    <mat-icon
+                                        class="info-icon"
+                                        matTooltip="Bitte ankreuzen, wenn du Mitglied im Skiclub Kapfenburg bist."
+                                        >info</mat-icon
+                                    >
+                                </mat-checkbox>
+                            </div>
+
                             @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
                                 <div>
                                     <table class="full-width" cellspacing="0">
@@ -103,7 +116,9 @@
                             <mat-form-field class="full-width" appearance="fill">
                                 <mat-label>Geburtstag</mat-label>
                                 <input matInput [matDatepicker]="picker" formControlName="birthday" />
-                                <mat-hint>DD.MM.YYYY</mat-hint>
+                                <mat-hint [class.disabled]="!(firstPartSelected || hasPreselectedData)"
+                                    >DD.MM.YYYY</mat-hint
+                                >
                                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                                 <mat-datepicker #picker></mat-datepicker>
                             </mat-form-field>
@@ -128,13 +143,78 @@
                                     </mat-select>
                                 }
                             </mat-form-field>
+
+                            <div class="checkbox-container">
+                                @if (tripConfig?.pricing?.busOnly) {
+                                    <mat-checkbox formControlName="busOnly" class="large-checkbox">
+                                        Nur Busfahrt (ohne Skipass)
+                                        <mat-icon
+                                            class="info-icon"
+                                            matTooltip="Bitte ankreuzen, wenn du keinen Skipass benötigst."
+                                            >info</mat-icon
+                                        >
+                                    </mat-checkbox>
+                                }
+                                @if (participant.get('busOnly')?.value && tripConfig?.pricing?.addons?.snowshoes) {
+                                    <div class="snowshoes-toggle">
+                                        <mat-slide-toggle formControlName="snowshoes">
+                                            Schneeschuhe (für 5€ Leihgebühr)
+                                        </mat-slide-toggle>
+                                    </div>
+                                }
+                                <div class="checkbox-break"></div>
+                                @if (availableLevelOptions.length > 0) {
+                                    <mat-checkbox formControlName="courseRequested" class="large-checkbox">
+                                        {{ getCourseCheckboxLabel() }}
+                                        <mat-icon
+                                            class="info-icon"
+                                            matTooltip="Bitte ankreuzen, wenn du einen Kurs oder Techniktraining buchen möchtest."
+                                            >info</mat-icon
+                                        >
+                                    </mat-checkbox>
+                                    @if (participant.get('courseRequested')?.value) {
+                                        <div class="pricing-link-container">
+                                            <a (click)="openPricingDialog()" class="pricing-link"
+                                                >Preisliste anzeigen</a
+                                            >
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                            @if (participant.get('courseRequested')?.value) {
+                                <div class="course-selection">
+                                    <mat-form-field class="full-width" appearance="fill">
+                                        <mat-label>Auswahl Option</mat-label>
+                                        <mat-select formControlName="level">
+                                            @for (option of availableLevelOptions; track $index) {
+                                                <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+
+                                    <mat-form-field class="full-width" appearance="fill">
+                                        <mat-label>Sportart</mat-label>
+                                        <mat-select formControlName="sportType">
+                                            @for (sport of sportTypeList; track $index) {
+                                                <mat-option [value]="sport">{{ sport }}</mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            }
+
+                            <div class="participant-total" *ngIf="getParticipantPrice(i) > 0">
+                                <span>Kosten für Teilnehmer {{ i + 1 }}:</span>
+                                <strong>{{ getParticipantPrice(i) | currency: 'EUR' }}</strong>
+                            </div>
                         </div>
                     </div>
                 }
             </div>
 
             <div class="button-wrapper">
-                <button matFab (click)="addParticipant()">
+                <button matFab (click)="addParticipant()" type="button" matTooltip="Weiteren Teilnehmer hinzufügen">
                     <mat-icon>person_add</mat-icon>
                 </button>
             </div>
@@ -144,6 +224,42 @@
             <mat-label>Zusatzinformationen</mat-label>
             <textarea matInput formControlName="additionalText" rows="8"></textarea>
         </mat-form-field>
+
+        <div class="summary-container" *ngIf="participants().length > 0 && getTotalPrice() > 0">
+            <h3>Zusammenfassung der Kosten</h3>
+            <div class="summary-list">
+                <div *ngFor="let participant of participants().controls; let i = index" class="summary-item">
+                    <div class="summary-participant-info">
+                        <strong
+                            >{{ participant.get('firstName')?.value || 'Teilnehmer ' + (i + 1) }}
+                            {{ participant.get('lastName')?.value }}</strong
+                        >
+                        <div class="summary-options">
+                            <span *ngFor="let option of getParticipantOptionsSummary(i); let last = last">
+                                {{ option }}{{ last ? '' : ', ' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="summary-price">
+                        {{ getParticipantPrice(i) | currency: 'EUR' }}
+                    </div>
+                </div>
+            </div>
+            <div class="summary-total">
+                <strong>Gesamtsumme</strong>
+                <strong class="total-amount">{{ getTotalPrice() | currency: 'EUR' }}</strong>
+            </div>
+        </div>
+
+        <div class="agb-container">
+            <mat-checkbox formControlName="agbAccepted">
+                Ich akzeptiere die
+                <a (click)="openAgbDialog(); $event.stopPropagation()" class="agb-link"
+                    >Allgemeinen Geschäftsbedingungen (AGB)</a
+                >
+                des Skiclub Kapfenburg.
+            </mat-checkbox>
+        </div>
 
         @if (!tripRegisterForm.valid && tripRegisterForm.touched) {
             <mat-error> Bitte alle erfordelichen Felder (*) ausfüllen. </mat-error>

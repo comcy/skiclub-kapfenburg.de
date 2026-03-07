@@ -52,6 +52,20 @@ const routes: Routes = [
         path: DSGVO_ROUTE,
         component: DatenschutzComponent,
     },
+    // Auxiliary Routes for Dialogs
+    {
+        path: 'register/:id',
+        loadComponent: () =>
+            import('./components/routing-dialog/routing-dialog.component').then((m) => m.RoutingDialogComponent),
+        outlet: 'modal',
+    },
+    {
+        path: 'agb',
+        loadComponent: () =>
+            import('./components/routing-dialog/routing-dialog.component').then((m) => m.RoutingDialogComponent),
+        outlet: 'modal',
+        data: { dialogType: 'agb' },
+    },
     {
         path: EMPTY_ROUTE,
         pathMatch: 'full',

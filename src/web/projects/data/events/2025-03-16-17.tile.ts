@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `
 Eine Ausfahrt für alle, die unter der Woche Zeit haben und freie Pisten lieben.
@@ -32,7 +32,8 @@ Neben Skifahren kann man auch Rodeln und Winterwandern genießen. Die gemütiche
 
 const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
-export const FREIE_PISTENAUSFAHRT: Tile = {
+export const FREIE_PISTENAUSFAHRT: EventTile = {
+    id: 'freie-pistenausfahrt-2026',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -46,4 +47,24 @@ export const FREIE_PISTENAUSFAHRT: Tile = {
     expiration: new Date('2026-03-17'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
+    tripConfig: {
+        pricing: {
+            busLift: {
+                adult: {
+                    member: 260,
+                    nonMember: 260,
+                },
+                youthUntil16: {
+                    member: 260,
+                    nonMember: 260,
+                },
+                childUntil6: {
+                    member: 260,
+                    nonMember: 260,
+                },
+            },
+
+            addons: {},
+        },
+    },
 };

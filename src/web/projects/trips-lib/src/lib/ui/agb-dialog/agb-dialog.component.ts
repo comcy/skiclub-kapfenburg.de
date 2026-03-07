@@ -1,0 +1,85 @@
+/**
+ * @copyright Copyright (c) 2026 Christian Silfang
+ */
+
+import { Component } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+
+@Component({
+    selector: 'lib-agb-dialog',
+    standalone: true,
+    imports: [MatDialogModule, MatButtonModule],
+    template: `
+        <h2 mat-dialog-title>Allgemeine Geschäftsbedingungen (AGB)</h2>
+        <mat-dialog-content class="mat-typography">
+            <h3>1. Geltungsbereich</h3>
+            <p>Diese AGB gelten für alle Anmeldungen zu Skiausfahrten und Kursen des Skiclub Kapfenburg e.V.</p>
+
+            <h3>2. Anmeldung und Vertragsabschluss</h3>
+            <p>
+                Die Anmeldung erfolgt online über unsere Webseite. Mit dem Absenden des Formulars gibst du ein
+                verbindliches Angebot ab. Der Vertrag kommt mit der Bestätigung durch den Skiclub zustande.
+            </p>
+
+            <h3>3. Zahlungsbedingungen</h3>
+            <p>
+                Die Kosten für die Ausfahrt sind, sofern nicht anders angegeben, bar im Bus zu entrichten oder werden
+                vorab überwiesen.
+            </p>
+
+            <h3>4. Rücktritt und Stornierung</h3>
+            <p>
+                Ein Rücktritt ist bis zu 3 Tage vor Abfahrt kostenfrei möglich. Bei späterem Rücktritt behalten wir uns
+                vor, die Buskosten in Rechnung zu stellen, sofern kein Ersatzteilnehmer gefunden wird.
+            </p>
+
+            <h3>5. Teilnahmebedingungen</h3>
+            <p>
+                Die Teilnahme an unseren Ausfahrten erfolgt auf eigene Gefahr. Den Anweisungen der Reiseleiter und
+                Skilehrer ist Folge zu leisten. Eine private Unfall- sowie Auslandskrankenversicherung wird dringend
+                empfohlen.
+            </p>
+
+            <h3>6. Ausfall von Fahrten</h3>
+            <p>
+                Der Skiclub behält sich vor, Fahrten bei zu geringer Teilnehmerzahl oder extremen Wetterbedingungen
+                abzusagen. In diesem Fall werden bereits geleistete Zahlungen vollständig erstattet.
+            </p>
+
+            <h3>7. Datenschutz</h3>
+            <p>
+                Deine Daten werden ausschließlich zur Organisation der Ausfahrt verwendet und nicht an Dritte
+                weitergegeben.
+            </p>
+
+            <h3>Allgemeine Hinweise</h3>
+            <ul>
+                <li>Anmeldeschluss: Dienstag vor der Ausfahrt</li>
+                <li>Anmeldung gültig bei Anzahlung von 30 EUR Busgebühr</li>
+                <li>Teilnahme auf eigene Gefahr</li>
+                <li>Für minderjährige Teilnehmer besteht Helmpflicht</li>
+                <li>
+                    Minderjährige Teilnehmer müssen ohne erziehungsberechtigte Begleitung die Einverständniserklärung
+                    der Eltern vor Reiseantritt vorlegen (am besten vorab per E-Mail)
+                </li>
+                <li>Bei kurzfristiger Absage behalten wir uns vor, den Buspreis in Rechnung zu stellen</li>
+                <li>Alle Ausfahrten werden mit dem Busunternehmen "OK.go" (ehemals Mack) durchgeführt</li>
+            </ul>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-button mat-dialog-close color="primary">Schließen</button>
+        </mat-dialog-actions>
+    `,
+    styles: [
+        `
+            mat-dialog-content {
+                max-height: 60vh;
+            }
+            h3 {
+                margin-top: 20px;
+            }
+        `,
+    ],
+})
+export class AgbDialogComponent {}

@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem Freizeitclub La-Oele geht es wieder nach Vorarlberg ins Skigebiet Golm mit Übernachtung im Hotel „Weisses Kreuz“ in Feldkirch.
 
@@ -29,7 +29,8 @@ const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem F
 
 const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
-export const LA_OELE_AUSFAHRT: Tile = {
+export const LA_OELE_AUSFAHRT: EventTile = {
+    id: 'la-oele-ausfahrt-2026',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -43,4 +44,24 @@ export const LA_OELE_AUSFAHRT: Tile = {
     expiration: new Date('2026-01-18'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
+    tripConfig: {
+        pricing: {
+            busLift: {
+                adult: {
+                    member: 245,
+                    nonMember: 245,
+                },
+                youthUntil16: {
+                    member: 180,
+                    nonMember: 180,
+                },
+                childUntil6: {
+                    member: 85,
+                    nonMember: 85,
+                },
+            },
+
+            addons: {},
+        },
+    },
 };
