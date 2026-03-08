@@ -61,6 +61,7 @@ testem.log
 Thumbs.db
 src/.styles.scss.swp
 
+src/sck-api/data
 src/sck-api/data/*.ndjson
 src/sck-api/data/media
 src/sck-api/dist/**/*

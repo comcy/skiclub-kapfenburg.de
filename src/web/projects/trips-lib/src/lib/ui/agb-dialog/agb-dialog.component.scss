@@ -1,5 +1,7 @@
 h2[mat-dialog-title] {
-    color: var(--mat-sys-secondary, #ffc107); /* Dynamic fallback for older themes */
+    // TODO: SET BACKGROUND CORRECTLY -> APPLYING NEW MATERIAL STYLE MECHANISM AND USING CUSTOM THEMES
+    // background-color: var(--mat-sys-secondary, #ffc107);
+    /* Dynamic fallback for older themes */
 }
 
 mat-dialog-content {
