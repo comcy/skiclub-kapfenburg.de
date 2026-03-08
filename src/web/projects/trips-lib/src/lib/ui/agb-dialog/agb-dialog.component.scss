@@ -1,9 +1,11 @@
 .mat-mdc-dialog-title {
-    color: #ffc107; /* Material Amber 500 (Accent for deeppurple-amber) */
+    color: var(--mat-sys-secondary); /* Dynamic Accent Color from Material Theme Tokens */
 }
+
 mat-dialog-content {
     max-height: 60vh;
 }
+
 h3 {
     margin-top: 20px;
 }
