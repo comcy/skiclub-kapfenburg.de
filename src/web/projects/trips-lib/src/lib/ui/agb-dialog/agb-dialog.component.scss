@@ -1,5 +1,5 @@
-.mat-mdc-dialog-title {
-    color: var(--mat-sys-secondary); /* Dynamic Accent Color from Material Theme Tokens */
+h2[mat-dialog-title] {
+    color: var(--mat-sys-secondary, #ffc107); /* Dynamic fallback for older themes */
 }
 
 mat-dialog-content {
