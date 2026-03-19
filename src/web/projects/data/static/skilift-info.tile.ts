@@ -4,8 +4,9 @@
 
 import { Tile, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist geschlossen.
+const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist geschlossen.`;
 
+const DETAILS_TEXT = `
 **Öffnungszeiten**
 Aktuell ist der Liftbetrieb nicht möglich
 
@@ -29,6 +30,7 @@ export const SKILIFT_INFO_TILE: Tile = {
     image: '../../../../assets/img/cards/skilift_nacht.jpeg',
     imageDescription: 'Skilift',
     description: DESCRIPTION_TEXT,
+    details: DETAILS_TEXT,
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2026-03-31'),

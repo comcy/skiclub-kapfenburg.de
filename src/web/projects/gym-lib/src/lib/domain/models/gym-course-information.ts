@@ -10,6 +10,7 @@ export interface GymCoursePrice {
 export interface GymCourseInformation {
     name: string;
     description: string;
+    details: string;
     time: string;
     location: string;
     contact: string;

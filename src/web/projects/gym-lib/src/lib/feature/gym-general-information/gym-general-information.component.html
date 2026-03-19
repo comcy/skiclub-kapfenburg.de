@@ -19,30 +19,16 @@
     <br />
     <br />
 
-    <div class="info-box">
-        <h2>Mittwochs 08:30 – 09.30 Uhr - Altes Schulhaus Hülen (10 Kurseinheiten)</h2>
-        <h3>Kursgebühren</h3>
-        <ul>
-            <li>Start: 14. Januar 2026</li>
-            <li>Ende am 25. März 2026</li>
-            <li>Mitglieder: 40,00 € (4€ / Kurseinheit)</li>
-            <li>Nicht-Mtglieder: 60,00 € (6€ / Kurseinheit)</li>
-        </ul>
-    </div>
-
-    <br />
-    <br />
-
-    <div class="info-box">
-        <h2>Donnerstags 18:00 – 19.00 Uhr - Altes Schulhaus Hülen (8 Kurseinheiten)</h2>
-        <h3>Kursgebühren</h3>
-        <ul>
-            <li>Start: 29. Januar 2026</li>
-            <li>Ende am 26. März 2026</li>
-            <li>Mitglieder: 32,00 € (4€ / Kurseinheit)</li>
-            <li>Nicht-Mtglieder: 48,00 € (6€ / Kurseinheit)</li>
-        </ul>
-    </div>
+    <ng-container *ngIf="gymState.pilatesOffers$ | async as pilatesOffers">
+        @for (p of pilatesOffers; track $index) {
+            <div class="asd">
+                <h2>{{ p.name }} - {{ p.location }}</h2>
+                <div class="info-box">
+                    <div [innerHTML]="markdown.render(p.details)"></div>
+                </div>
+            </div>
+        }
+    </ng-container>
 
     <br />
     <br />
@@ -67,9 +53,7 @@
     <div class="info-page" *ngFor="let g of gymOffers">
         <h3>{{ g.name }}</h3>
         <h2>{{ g.time }} - {{ g.location }}</h2>
-        <p>
-            {{ g.description }}
-        </p>
+        <div [innerHTML]="markdown.render(g.description)"></div>
         <p>
             <i>{{ g.contact }}</i>
         </p>

@@ -14,6 +14,7 @@ export const OVERVIEW_TILE: Tile = {
     image: '../../../../assets/img/cards/overview_2324.png',
     imageDescription: 'Themenübersicht',
     description: '',
+    details: '',
     actions: [TileActions.Download, TileActions.Share],
     downloadActionLink: 'https://1drv.ms/b/s!AlpybhuWN2nhgfBbPVscUktQZMLNPQ?e=4HybnO',
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',

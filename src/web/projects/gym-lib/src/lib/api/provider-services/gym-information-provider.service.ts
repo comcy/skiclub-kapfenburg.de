@@ -17,6 +17,7 @@ export class GymInformationProviderService implements GymInformationProviderServ
                 time: 'Montags, 19:00 – 20:00 Uhr',
                 location: 'Schulturnhalle Lauchheim',
                 description: 'Fitness / Gymnastik für Jedermann - findet ganzjährig statt, ausser in den Ferien',
+                details: '',
                 contact: 'Katharina Sachs und Anna Klein, Tel: 07363/3492',
             },
             {
@@ -25,6 +26,7 @@ export class GymInformationProviderService implements GymInformationProviderServ
                 location: 'Altes Schulhaus Hülen',
                 description:
                     '(gemischte Gruppe) Funktionelle Gymnastik zur Stabilisierung des Rückens, vielseitige körperliche Bewegungsübungen sowie Entspannung stärken die Leistungsfähigkeit.',
+                details: '',
                 contact: 'Monika Mayer, Tel: 07363/4432',
             },
             {
@@ -33,6 +35,7 @@ export class GymInformationProviderService implements GymInformationProviderServ
                 location: 'Altes Schulhaus Hülen',
                 description:
                     'Ein Mix aus Kräftigung und Ausdauer mit und ohne Handgeräte; Tiefenmuskel- und Koordinationstraining sowie Haltungsstabilisation',
+                details: '',
                 contact: 'Monika Mayer, Tel: 07363/4432',
             },
         ]);

@@ -13,6 +13,7 @@ export interface Tile {
     image: string;
     imageDescription: string;
     description: string;
+    details: string;
     status: TileStatus;
     expiration: Date;
     behavior: TileBehavior;

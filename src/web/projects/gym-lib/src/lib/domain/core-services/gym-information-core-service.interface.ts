@@ -9,4 +9,5 @@ import { GymCourseInformation } from '../models';
 @Injectable()
 export abstract class GymInformationCoreServiceInterface {
     public abstract gymOffers$: BehaviorSubject<GymCourseInformation[]>;
+    public abstract pilatesOffers$: BehaviorSubject<GymCourseInformation[]>;
 }
