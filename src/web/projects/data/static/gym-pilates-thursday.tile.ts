@@ -51,6 +51,6 @@ export const GYM_PILATES_THURSDAY_TILE: Tile = {
     details: DETAILS_TEXT,
     actions: [TileActions.Register],
     expiration: new Date('2027-12-31'),
-    status: TileStatus.Open,
+    status: TileStatus.BookedUp,
     course: GYM_PILATES_COURSE_INFORMATION_THU,
 };
