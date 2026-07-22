@@ -69,7 +69,7 @@ export const getGymConfirmationMailText = (values: Partial<GymCoursesRegisterFor
                             <p style="margin: 0; font-weight: bold; font-size: 14px;">Skiclub Kapfenburg e.V.</p>
                             <p style="margin: 0;">BIC: <span style="font-weight: bold;">GENODES1AAV</span></p>
                             <p style="margin: 0;">IBAN: <span style="font-weight: bold;">DE61 6149 0150 0131 4700 00</span></p>
-                            <p style="margin: 0;">Verwendungszweck: <em>Kurs + Monat / Jahr</em></p>
+                            <p style="margin: 0;">Verwendungszweck: <em>Kurs-WOchentag + "Herbst 2026"</em></p>
                         </div>
 
                     </li>

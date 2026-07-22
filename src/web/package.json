@@ -1,73 +1,73 @@
 {
-  "name": "web",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build sck-app",
-    "watch": "ng build --watch --configuration development",
-  "test": "ng test --project sck-app --watch=false --browsers=ChromeHeadless",
-  "test:coverage": "ng test --project sck-app --watch=false --browsers=ChromeHeadless --code-coverage",
-    "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
-    "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
-    "prepare": "cd ../.. && husky install src/web/.husky",
-    "lint": "ng lint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run test"
+    "name": "web",
+    "version": "0.0.0",
+    "scripts": {
+        "ng": "ng",
+        "start": "ng serve",
+        "build": "ng build sck-app",
+        "watch": "ng build --watch --configuration development",
+        "test": "ng test --project sck-app --watch=false --browsers=ChromeHeadless",
+        "test:coverage": "ng test --project sck-app --watch=false --browsers=ChromeHeadless --code-coverage",
+        "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
+        "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
+        "prepare": "cd ../.. && husky install src/web/.husky",
+        "lint": "ng lint"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "pre-push": "npm run test"
+        }
+    },
+    "lint-staged": {
+        "projects/**/*.{ts,scss,html}": [
+            "npm run prettier:fix"
+        ]
+    },
+    "private": true,
+    "dependencies": {
+        "@angular/animations": "^20.3.16",
+        "@angular/cdk": "^20.0.3",
+        "@angular/core": "^20.3.16",
+        "@angular/material": "^20.0.3",
+        "@angular/common": "^20.3.16",
+        "@angular/compiler": "^20.3.16",
+        "@angular/forms": "^20.3.16",
+        "@angular/platform-browser": "^20.3.16",
+        "@angular/platform-browser-dynamic": "^20.3.16",
+        "@angular/router": "^20.3.16",
+        "@types/showdown": "^2.0.6",
+        "date-fns": "^4.1.0",
+        "marked": "^15.0.12",
+        "rxjs": "~7.8.0",
+        "showdown": "^2.1.0",
+        "tslib": "^2.3.0",
+        "zone.js": "~0.15.1"
+    },
+    "devDependencies": {
+        "@angular-devkit/build-angular": "^20.0.3",
+        "@angular-eslint/builder": "20.1.1",
+        "@angular-eslint/eslint-plugin": "20.1.1",
+        "@angular-eslint/eslint-plugin-template": "20.1.1",
+        "@angular-eslint/schematics": "20.1.1",
+        "@angular-eslint/template-parser": "20.1.1",
+        "@angular/build": "^20.0.3",
+        "@angular/cli": "^20.3.15",
+        "@angular/compiler-cli": "^20.0.4",
+        "@types/jasmine": "~5.1.0",
+        "@typescript-eslint/eslint-plugin": "7.11.0",
+        "@typescript-eslint/parser": "7.11.0",
+        "eslint": "8.57.0",
+        "husky": "^8.0.0",
+        "jasmine-core": "~5.2.0",
+        "karma": "~6.4.0",
+        "karma-chrome-launcher": "~3.2.0",
+        "karma-coverage": "~2.2.0",
+        "karma-jasmine": "~5.1.0",
+        "karma-jasmine-html-reporter": "~2.1.0",
+        "lint-staged": "^15.2.10",
+        "ng-packagr": "^20.0.1",
+        "prettier": "^3.0.3",
+        "typescript": "~5.8.3"
     }
-  },
-  "lint-staged": {
-    "projects/**/*.{ts,scss,html}": [
-      "npm run prettier:fix"
-    ]
-  },
-  "private": true,
-  "dependencies": {
-    "@angular/animations": "^20.0.4",
-    "@angular/cdk": "^20.0.3",
-    "@angular/common": "^20.0.4",
-    "@angular/compiler": "^20.0.4",
-    "@angular/core": "^20.3.16",
-    "@angular/forms": "^20.0.4",
-    "@angular/material": "^20.0.3",
-    "@angular/platform-browser": "^20.0.4",
-    "@angular/platform-browser-dynamic": "^20.0.4",
-    "@angular/router": "^20.0.4",
-    "@types/showdown": "^2.0.6",
-    "date-fns": "^4.1.0",
-    "marked": "^15.0.12",
-    "rxjs": "~7.8.0",
-    "showdown": "^2.1.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.15.1"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^20.0.3",
-    "@angular-eslint/builder": "20.1.1",
-    "@angular-eslint/eslint-plugin": "20.1.1",
-    "@angular-eslint/eslint-plugin-template": "20.1.1",
-    "@angular-eslint/schematics": "20.1.1",
-    "@angular-eslint/template-parser": "20.1.1",
-    "@angular/build": "^20.0.3",
-    "@angular/cli": "^20.3.15",
-    "@angular/compiler-cli": "^20.0.4",
-    "@types/jasmine": "~5.1.0",
-    "@typescript-eslint/eslint-plugin": "7.11.0",
-    "@typescript-eslint/parser": "7.11.0",
-    "eslint": "8.57.0",
-    "husky": "^8.0.0",
-    "jasmine-core": "~5.2.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "lint-staged": "^15.2.10",
-    "ng-packagr": "^20.0.1",
-    "prettier": "^3.0.3",
-    "typescript": "~5.8.3"
-  }
 }
