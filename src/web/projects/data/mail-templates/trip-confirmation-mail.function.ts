@@ -215,20 +215,11 @@ export const getTripConfirmationMailText = (values: TripRegisterFormValue): stri
 
                 <h2>Aktuelle Teilnahmebedingungen</h2>
                 
-                <h3>Gültigkeit der Anmeldung, Anzahlung und Stornierung</h3>
+                <h3>Gültigkeit der Anmeldung und Stornierung</h3>
                 <ul>
-                    <li>Die Anmeldung ist erst gültig bei einer Anzahlung von 30 EUR pro Person (entspricht der Busgebühr). Der restliche Betrag wird üblicherweise in Bar am Tag der Reise kassiert, andernfalls sind Vollzahlungen vorab ebenfalls möglich.
-                        
-                        <div style="padding-left: 8px; border-left: 4px solid#ac1dee; margin-top: 16px; margin-bottom: 16px;">
-                            <p style="margin: 0; font-weight: bold; font-size: 14px;">Skiclub Kapfenburg e.V.</p>
-                            <p style="margin: 0;">BIC: <span style="font-weight: bold;">GENODES1AAV</span></p>
-                            <p style="margin: 0;">IBAN: <span style="font-weight: bold;">DE61 6149 0150 0131 4700 00</span></p>
-                            <p style="margin: 0;">Verwendungszweck: <em>Name auf der Anmeldung + Name der Ausfahrt</em></p>
-                        </div>
-
-                    </li>
-                    <li>Anmeldeschluss sowie die Möglichkeit zur Stornierung der Anmeldung besteht bis zum Dienstag vor der Ausfahrt. Die geleistete Zahlung wird dir in diesem Fall zurück erstattet</li>
-                    <li>Im Falle einer kurzfristigen Absage oder eines Nichterscheinens behalten wir uns vor, den Buspreis in Rechnung zu stellen bzw. die Anzahlung einzubehalten</li>
+                    <li>Die Anmeldung ist mit dem Absenden dieses Formulars gültig. Die Kosten werden vollständig bar im Bus am Tag der Ausfahrt eingesammelt.</li>
+                    <li>Anmeldeschluss sowie die Möglichkeit zur Stornierung der Anmeldung besteht bis zum Dienstag vor der Ausfahrt.</li>
+                    <li>Im Falle einer kurzfristigen Absage oder eines Nichterscheinens behalten wir uns vor, den Buspreis in Rechnung zu stellen</li>
                 </ul>
                     
                 <h3>Teilnahme von Minderjährigen</h3>

@@ -291,7 +291,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         const participantGroup = this.participants().at(index);
         if (!participantGroup) return 0;
 
-        const participant = participantGroup.value;
+        const participant = participantGroup.getRawValue();
         const isMember = participant.isMember;
 
         let totalPrice = 0;
@@ -364,7 +364,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     public getParticipantOptionsSummary(index: number): string[] {
         if (!this.tripConfig) return [];
 
-        const participant = this.participants().at(index).value;
+        const participant = this.participants().at(index).getRawValue();
         const options: string[] = [];
 
         // Base

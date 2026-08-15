@@ -23,10 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
             </p>
 
             <h3>3. Zahlungsbedingungen</h3>
-            <p>
-                Die Kosten für die Ausfahrt sind, sofern nicht anders angegeben, bar im Bus zu entrichten oder werden
-                vorab überwiesen.
-            </p>
+            <p>Die Kosten für die Ausfahrt werden vollständig bar im Bus am Tag der Ausfahrt eingesammelt.</p>
 
             <h3>4. Rücktritt und Stornierung</h3>
             <p>
@@ -56,7 +53,7 @@ import { MatButtonModule } from '@angular/material/button';
             <h3>Allgemeine Hinweise</h3>
             <ul>
                 <li>Anmeldeschluss: Dienstag vor der Ausfahrt</li>
-                <li>Anmeldung gültig bei Anzahlung von 30 EUR Busgebühr</li>
+                <li>Die Kosten werden bar im Bus am Tag der Ausfahrt eingesammelt</li>
                 <li>Teilnahme auf eigene Gefahr</li>
                 <li>Für minderjährige Teilnehmer besteht Helmpflicht</li>
                 <li>

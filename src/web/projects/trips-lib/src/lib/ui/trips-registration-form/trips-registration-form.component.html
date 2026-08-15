@@ -203,11 +203,6 @@
                                     </mat-form-field>
                                 </div>
                             }
-
-                            <div class="participant-total" *ngIf="getParticipantPrice(i) > 0">
-                                <span>Kosten für Teilnehmer {{ i + 1 }}:</span>
-                                <strong>{{ getParticipantPrice(i) | currency: 'EUR' }}</strong>
-                            </div>
                         </div>
                     </div>
                 }
@@ -225,7 +220,7 @@
             <textarea matInput formControlName="additionalText" rows="8"></textarea>
         </mat-form-field>
 
-        <div class="summary-container" *ngIf="participants().length > 0 && getTotalPrice() > 0">
+        <div class="summary-container" *ngIf="tripConfig && participants().length > 0">
             <h3>Zusammenfassung der Kosten</h3>
             <div class="summary-list">
                 <div *ngFor="let participant of participants().controls; let i = index" class="summary-item">
