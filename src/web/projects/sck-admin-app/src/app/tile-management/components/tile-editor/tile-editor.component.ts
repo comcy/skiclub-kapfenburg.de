@@ -100,7 +100,6 @@ export class TileEditorComponent implements OnInit {
     }
     onSave(): void {
         if (this.tile) {
-            console.log('tile before save:', JSON.stringify(this.tile, null, 2));
             if (this.tile.id.startsWith('new-')) {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { id, ...tile } = this.tile;
