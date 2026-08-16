@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Image } from '../domain/image';
 import { PaginatedResponse } from '../domain/paginated-response';
 import { Tile, TileCreationParams } from '../domain/tile';
@@ -10,7 +11,7 @@ import { Tile, TileCreationParams } from '../domain/tile';
 })
 export class TilesDataService {
     private readonly http = inject(HttpClient);
-    public readonly apiUrl = 'http://localhost:3000/api';
+    public readonly apiUrl = environment.sckApiUrl;
     private readonly endpoint = 'tiles';
 
     getAbsoluteUrl(path: string | undefined): string {
