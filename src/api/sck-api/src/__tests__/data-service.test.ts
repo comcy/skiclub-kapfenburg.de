@@ -1,36 +1,41 @@
-import fs from 'fs';
-import { saveData } from '../services/data-service';
+import { jest } from '@jest/globals';
 
-jest.mock('fs', () => ({
-  ...jest.requireActual('fs'),
-  promises: {
-    appendFile: jest.fn(),
+const mockAppendFile = jest.fn();
+const mockExistsSync = jest.fn();
+const mockMkdirSync = jest.fn();
+
+jest.unstable_mockModule('fs', () => ({
+  __esModule: true,
+  default: {
+    promises: { appendFile: mockAppendFile },
+    existsSync: mockExistsSync,
+    mkdirSync: mockMkdirSync,
   },
-  existsSync: jest.fn(),
-  mkdirSync: jest.fn(),
 }));
 
-describe('DataService', () => {
-  const mockedFs = fs as jest.Mocked<typeof fs>;
+mockExistsSync.mockReturnValue(true);
 
+const { saveData } = await import('../services/data-service');
+
+describe('DataService', () => {
   beforeEach(() => {
-    (fs.promises.appendFile as jest.Mock).mockClear();
-    (fs.existsSync as jest.Mock).mockClear();
-    (fs.mkdirSync as jest.Mock).mockClear();
+    mockAppendFile.mockClear();
+    mockExistsSync.mockClear();
+    mockMkdirSync.mockClear();
   });
 
   it('sollte Daten korrekt in eine Zeile umwandeln und speichern', async () => {
     const type = 'test-type';
     const data = { name: 'Test', value: 123 };
 
-    (fs.existsSync as jest.Mock).mockReturnValue(true);
-    (fs.promises.appendFile as jest.Mock).mockResolvedValue(undefined);
+    mockExistsSync.mockReturnValue(true);
+    mockAppendFile.mockResolvedValue(undefined);
 
     await saveData(type, data);
 
-    expect(fs.promises.appendFile).toHaveBeenCalledTimes(1);
+    expect(mockAppendFile).toHaveBeenCalledTimes(1);
 
-    const writtenData = (fs.promises.appendFile as jest.Mock).mock.calls[0][1];
+    const writtenData = mockAppendFile.mock.calls[0][1];
     const parsedData = JSON.parse(writtenData as string);
 
     expect(parsedData.type).toBe(type);
@@ -41,8 +46,8 @@ describe('DataService', () => {
 
   it('sollte einen Fehler werfen, wenn das Speichern fehlschlägt', async () => {
     const errorMessage = 'Speicherfehler';
-    (fs.existsSync as jest.Mock).mockReturnValue(true);
-    (fs.promises.appendFile as jest.Mock).mockRejectedValue(new Error(errorMessage));
+    mockExistsSync.mockReturnValue(true);
+    mockAppendFile.mockRejectedValue(new Error(errorMessage));
 
     const type = 'test-type';
     const data = { name: 'Test' };
@@ -54,11 +59,11 @@ describe('DataService', () => {
     const type = 'test-type';
     const data = { name: 'Test' };
 
-    (fs.existsSync as jest.Mock).mockReturnValue(false);
-    (fs.promises.appendFile as jest.Mock).mockResolvedValue(undefined);
+    mockExistsSync.mockReturnValue(false);
+    mockAppendFile.mockResolvedValue(undefined);
 
     await saveData(type, data);
 
-    expect(fs.promises.appendFile).toHaveBeenCalledTimes(1);
+    expect(mockAppendFile).toHaveBeenCalledTimes(1);
   });
 });
