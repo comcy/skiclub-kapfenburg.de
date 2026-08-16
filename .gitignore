@@ -61,3 +61,10 @@ testem.log
 Thumbs.db
 src/.styles.scss.swp
 src/api/sck-api/data/*.ndjson
+
+# Stray local-test path (unrelated to src/api/sck-api) from an old, never
+# merged branch experiment — prevents accidentally re-tracking local test
+# uploads made against it.
+src/sck-api/data/*.ndjson
+src/sck-api/data/*.json
+src/sck-api/data/media/
