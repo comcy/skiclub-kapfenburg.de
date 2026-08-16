@@ -42,6 +42,13 @@ const routes: Routes = [
             },
         ],
     },
+    // Standalone trip detail page (/trips/:id) - not part of the tabbed
+    // shell above, only tried once none of its fixed child paths match.
+    {
+        path: ':id',
+        loadComponent: () =>
+            import('./components/trip-detail/trip-detail.component').then((mod) => mod.TripDetailComponent),
+    },
 ];
 
 @NgModule({

@@ -4,7 +4,12 @@
     <div class="cards-grid">
         @for (t of tiles; track $index) {
             @if (t.visible) {
-                <mat-card appearance="outlined" class="card" [ngClass]="{ expired: t.expired }">
+                <mat-card
+                    appearance="outlined"
+                    class="card"
+                    [ngClass]="{ expired: t.expired, clickable: t.type === tileTypeEnum.Event }"
+                    (click)="t.type === tileTypeEnum.Event ? openTripDetail(t) : null"
+                >
                     <mat-card-header>
                         @if (t.avatar) {
                             <div mat-card-avatar class="card-header-image">
@@ -27,10 +32,12 @@
                     }
                     <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
 
-                    <mat-card-content class="mat-card-content">
-                        <p [innerHTML]="this.markdown.render(getTileDescription(t))"></p>
-                        <p [innerHTML]="this.markdown.render(t.details)"></p>
-                    </mat-card-content>
+                    @if (t.type !== tileTypeEnum.Event) {
+                        <mat-card-content class="mat-card-content">
+                            <p [innerHTML]="this.markdown.render(getTileDescription(t))"></p>
+                            <p [innerHTML]="this.markdown.render(t.details)"></p>
+                        </mat-card-content>
+                    }
                     <mat-card-actions class="actions">
                         @for (action of t.actions; track action) {
                             @switch (action) {
@@ -48,24 +55,22 @@
                                     </button>
                                 }
                                 @case (tileActionsEnum.Register) {
-                                    <button
-                                        class="card-button"
-                                        mat-fab
-                                        extended
-                                        color="primary"
-                                        (click)="openRegisterDialog(t)"
-                                        matTooltip="Anmelden"
-                                    >
-                                        <mat-icon>event_note</mat-icon>
-                                        Anmelden
-                                    </button>
+                                    @if (t.type !== tileTypeEnum.Event) {
+                                        <button
+                                            class="card-button"
+                                            mat-fab
+                                            extended
+                                            color="primary"
+                                            (click)="openRegisterDialog(t)"
+                                            matTooltip="Anmelden"
+                                        >
+                                            <mat-icon>event_note</mat-icon>
+                                            Anmelden
+                                        </button>
+                                    }
                                 }
                                 @case (tileActionsEnum.Share) {
                                     <div class="secondary-action-buttons">
-                                        <!-- <button class="card-button" mat-mini-fab
-                                        (click)="openDetailDialog(t)" matTooltip="Informationen">
-                                        <mat-icon>info_outline</mat-icon>
-                                    </button> -->
                                         <button mat-mini-fab matTooltip="Teilen" class="card-button">
                                             <mat-icon>share</mat-icon>
                                         </button>
