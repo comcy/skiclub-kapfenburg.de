@@ -4,14 +4,14 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build sck-app",
+    "build": "ng build sck-app && ng build sck-admin-app",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --project sck-app --watch=false --browsers=ChromeHeadless",
+    "test": "ng test --project sck-app --watch=false --browsers=ChromeHeadless && ng test --project sck-admin-app --watch=false --browsers=ChromeHeadless",
     "test:coverage": "ng test --project sck-app --watch=false --browsers=ChromeHeadless --code-coverage",
     "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
     "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
     "prepare": "cd ../.. && husky install src/web/.husky",
-    "lint": "ng lint"
+    "lint": "eslint \"projects/**/*.ts\" \"projects/**/*.html\""
   },
   "husky": {
     "hooks": {
