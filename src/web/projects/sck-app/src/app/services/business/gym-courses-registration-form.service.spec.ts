@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GymCoursesRegistrationFormService } from './gym-courses-registration-form.service';
 import { environment } from 'projects/sck-app/src/environments/environment';
 import { SnackbarComponent } from 'projects/shared-lib/src/lib/ui-common/components/snackbar/snackbar.component';
+import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-courses-registration-form.interfaces';
 
 describe('GymCoursesRegistrationFormService', () => {
     let service: GymCoursesRegistrationFormService;
@@ -31,25 +32,24 @@ describe('GymCoursesRegistrationFormService', () => {
         expect(service).toBeTruthy();
     });
 
-    interface TestFormValues {
-        firstName: string;
-        lastName: string;
-        email: string;
-        phone: string;
-        course: string;
-        age: string;
-        additionalText: string;
-    }
+    const testCourse = {
+        name: 'Pilates',
+        description: '',
+        details: '',
+        time: '',
+        location: '',
+        contact: '',
+    };
 
     it('should POST confirmation mail payload and open custom snackbar on success', () => {
         (environment as unknown as { sckApiUrl: string }).sckApiUrl = 'https://api.example.com';
-        const formValues: TestFormValues = {
+        const formValues: GymCoursesRegisterFormFields = {
             firstName: 'A',
             lastName: 'B',
+            birthday: '2000-01-01',
             email: 'a@b.c',
             phone: '1',
-            course: 'Pilates',
-            age: '10',
+            course: testCourse,
             additionalText: 'x',
         };
         const payload = { receiver: 'x@y.z', formValues } as const;
@@ -65,13 +65,13 @@ describe('GymCoursesRegistrationFormService', () => {
 
     it('should not open snackbar on error', () => {
         (environment as unknown as { sckApiUrl: string }).sckApiUrl = 'https://api.example.com';
-        const formValues: TestFormValues = {
+        const formValues: GymCoursesRegisterFormFields = {
             firstName: 'A',
             lastName: 'B',
+            birthday: '2000-01-01',
             email: 'a@b.c',
             phone: '1',
-            course: 'Pilates',
-            age: '10',
+            course: testCourse,
             additionalText: 'x',
         };
         const payload = { receiver: 'x@y.z', formValues } as const;

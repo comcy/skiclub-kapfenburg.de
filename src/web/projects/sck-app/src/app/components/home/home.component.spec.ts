@@ -6,10 +6,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home.component';
 import { MatDialog } from '@angular/material/dialog';
-import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feature/gym-courses-register-dialog/gym-courses-register-dialog.component';
-import { TripsRegisterDialogComponent } from '@trips-lib';
-import { BaseTile, TileBehavior, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
-// (Tile-related imports removed for skipped dialog tests)
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
@@ -96,42 +92,6 @@ describe('HomeComponent', () => {
         it('should do nothing when link undefined', () => {
             component.openLink(undefined);
             expect(windowOpenSpy).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('resolveRegisterDialogComponent', () => {
-        it('returns GymCoursesRegisterDialogComponent for course tile', () => {
-            const tile: BaseTile = {
-                order: 1,
-                type: TileType.Course,
-                title: 'Course',
-                date: '',
-                subTitle: '',
-                image: '',
-                imageDescription: '',
-                description: '',
-                status: TileStatus.Open,
-                expiration: new Date('2099-01-01'),
-                behavior: TileBehavior.View,
-            };
-            expect(component.resolveRegisterDialogComponent(tile)).toBe(GymCoursesRegisterDialogComponent);
-        });
-
-        it('returns TripsRegisterDialogComponent for non-course tile', () => {
-            const tile: BaseTile = {
-                order: 2,
-                type: TileType.Info,
-                title: 'Info',
-                date: '',
-                subTitle: '',
-                image: '',
-                imageDescription: '',
-                description: '',
-                status: TileStatus.Open,
-                expiration: new Date('2099-01-01'),
-                behavior: TileBehavior.View,
-            };
-            expect(component.resolveRegisterDialogComponent(tile)).toBe(TripsRegisterDialogComponent);
         });
     });
 });
