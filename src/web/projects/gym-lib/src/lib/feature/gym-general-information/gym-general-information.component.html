@@ -63,15 +63,17 @@
     <i>Kursleitung: Mascha Welk</i>
 </div>
 
-<ng-container *ngIf="gymState.gymOffers$ | async as gymOffers">
-    <div class="info-page" *ngFor="let g of gymOffers">
-        <h3>{{ g.name }}</h3>
-        <h2>{{ g.time }} - {{ g.location }}</h2>
-        <p>
-            {{ g.description }}
-        </p>
-        <p>
-            <i>{{ g.contact }}</i>
-        </p>
-    </div>
-</ng-container>
+@if (gymState.gymOffers$ | async; as gymOffers) {
+    @for (g of gymOffers; track g) {
+        <div class="info-page">
+            <h3>{{ g.name }}</h3>
+            <h2>{{ g.time }} - {{ g.location }}</h2>
+            <p>
+                {{ g.description }}
+            </p>
+            <p>
+                <i>{{ g.contact }}</i>
+            </p>
+        </div>
+    }
+}

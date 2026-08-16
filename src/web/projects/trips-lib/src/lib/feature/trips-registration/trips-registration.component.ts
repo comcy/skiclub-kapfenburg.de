@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TRIP_DATA } from '@data';
 import { TileActions, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 import { BehaviorSubject } from 'rxjs';
@@ -14,6 +14,7 @@ import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form
     templateUrl: './trips-registration.component.html',
     styleUrls: ['./trips-registration.component.scss'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [TripsRegistrationFormComponent],
 })
 export class TripsRegistrationComponent implements OnInit {

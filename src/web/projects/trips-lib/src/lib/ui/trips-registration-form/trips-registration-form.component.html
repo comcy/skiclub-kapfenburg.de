@@ -220,31 +220,35 @@
             <textarea matInput formControlName="additionalText" rows="8"></textarea>
         </mat-form-field>
 
-        <div class="summary-container" *ngIf="tripConfig && participants().length > 0">
-            <h3>Zusammenfassung der Kosten</h3>
-            <div class="summary-list">
-                <div *ngFor="let participant of participants().controls; let i = index" class="summary-item">
-                    <div class="summary-participant-info">
-                        <strong
-                            >{{ participant.get('firstName')?.value || 'Teilnehmer ' + (i + 1) }}
-                            {{ participant.get('lastName')?.value }}</strong
-                        >
-                        <div class="summary-options">
-                            <span *ngFor="let option of getParticipantOptionsSummary(i); let last = last">
-                                {{ option }}{{ last ? '' : ', ' }}
-                            </span>
+        @if (tripConfig && participants().length > 0) {
+            <div class="summary-container">
+                <h3>Zusammenfassung der Kosten</h3>
+                <div class="summary-list">
+                    @for (participant of participants().controls; track participant; let i = $index) {
+                        <div class="summary-item">
+                            <div class="summary-participant-info">
+                                <strong
+                                    >{{ participant.get('firstName')?.value || 'Teilnehmer ' + (i + 1) }}
+                                    {{ participant.get('lastName')?.value }}</strong
+                                >
+                                <div class="summary-options">
+                                    @for (option of getParticipantOptionsSummary(i); track option; let last = $last) {
+                                        <span> {{ option }}{{ last ? '' : ', ' }} </span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="summary-price">
+                                {{ getParticipantPrice(i) | currency: 'EUR' }}
+                            </div>
                         </div>
-                    </div>
-                    <div class="summary-price">
-                        {{ getParticipantPrice(i) | currency: 'EUR' }}
-                    </div>
+                    }
+                </div>
+                <div class="summary-total">
+                    <strong>Gesamtsumme</strong>
+                    <strong class="total-amount">{{ getTotalPrice() | currency: 'EUR' }}</strong>
                 </div>
             </div>
-            <div class="summary-total">
-                <strong>Gesamtsumme</strong>
-                <strong class="total-amount">{{ getTotalPrice() | currency: 'EUR' }}</strong>
-            </div>
-        </div>
+        }
 
         <div class="agb-container">
             <mat-checkbox formControlName="agbAccepted">

@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
 import { BehaviorSubject } from 'rxjs';
@@ -16,6 +16,7 @@ import { GymCourseDialogData } from './gym-course-register-dialog.interfaces';
     imports: [CommonModule, ComponentsModule, GymCoursesRegistrationFormComponent],
     templateUrl: './gym-courses-register-dialog.component.html',
     styleUrl: './gym-courses-register-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true,
 })
 export class GymCoursesRegisterDialogComponent implements OnInit {

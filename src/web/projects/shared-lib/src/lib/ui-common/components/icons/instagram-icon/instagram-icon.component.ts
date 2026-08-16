@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { BASE_ICON_PROPERTIES, BaseIconComponent } from '../base-icon';
 import { MATERIAL_COLOR } from '../../../enums';
@@ -14,6 +14,7 @@ import { MATERIAL_COLOR } from '../../../enums';
     templateUrl: '../base-icon/base-icon.component.html',
     styleUrls: ['../base-icon/base-icon.component.scss'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     providers: [
         {
             provide: BASE_ICON_PROPERTIES,

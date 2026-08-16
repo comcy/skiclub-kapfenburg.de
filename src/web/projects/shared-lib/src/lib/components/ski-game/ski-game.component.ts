@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 interface Tree {
     x: number;
@@ -9,8 +8,9 @@ interface Tree {
 @Component({
     selector: 'app-ski-game',
     standalone: true,
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './ski-game.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./ski-game.component.scss'],
 })
 export class SkiGameComponent implements OnInit {

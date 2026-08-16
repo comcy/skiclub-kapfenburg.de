@@ -2,8 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TRIP_DATA } from '@data';
 import { TripsFeatureModule } from '@trips-lib';
 import { TileActions, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
@@ -12,7 +11,8 @@ import { Trip } from 'projects/trips-lib/src/lib/domain/models';
 @Component({
     selector: 'app-registration',
     templateUrl: './registration.component.html',
-    imports: [CommonModule, TripsFeatureModule],
+    imports: [TripsFeatureModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true,
 })
 export class RegistrationComponent implements OnInit {

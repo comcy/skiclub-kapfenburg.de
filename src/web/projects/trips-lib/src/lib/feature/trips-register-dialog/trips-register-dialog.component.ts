@@ -2,8 +2,8 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, EventEmitter, OnInit, Output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { BaseDialogComponent } from '../../../../../shared-lib/src/lib/components/dialogs/base-dialog/base-dialog.component';
@@ -17,7 +17,8 @@ import { DialogData } from './trip-register-dialog.interfaces';
     templateUrl: './trips-register-dialog.component.html',
     styleUrls: ['./trips-register-dialog.component.scss'],
     standalone: true,
-    imports: [NgIf, BaseDialogComponent, TripsRegistrationFormComponent, AsyncPipe],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [BaseDialogComponent, TripsRegistrationFormComponent, AsyncPipe],
 })
 export class TripsRegisterDialogComponent implements OnInit {
     @Output() public handleConfirmClicked: EventEmitter<boolean> = new EventEmitter<boolean>(false);

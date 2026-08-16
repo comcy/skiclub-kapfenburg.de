@@ -1,4 +1,8 @@
 <button mat-icon-button [color]="color" [matTooltip]="tooltip" type="button" (click)="openLink()">
-    <mat-icon *ngIf="!isSvg">{{ icon }}</mat-icon>
-    <mat-icon *ngIf="isSvg" [svgIcon]="icon"></mat-icon>
+    @if (!isSvg) {
+        <mat-icon>{{ icon }}</mat-icon>
+    }
+    @if (isSvg) {
+        <mat-icon [svgIcon]="icon"></mat-icon>
+    }
 </button>

@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input, computed, inject } from '@angular/core';
+import { Component, Input, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ANGULAR_MATERIAL_MODULES, ANGULAR_MODULES, NavigationItem } from 'projects/shared-lib/src/public-api';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
@@ -12,6 +12,7 @@ import { SHARED_LIB_ICONS } from '../icons';
     imports: [ANGULAR_MODULES, ANGULAR_MATERIAL_MODULES, SHARED_LIB_ICONS],
     selector: 'shared-lib-site-navigation',
     templateUrl: './site-navigation.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./site-navigation.component.scss'],
 })
 export class SiteNavigationComponent {

@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationItem, NavigationItemTypes } from 'projects/shared-lib/src/lib/components';
 import { environment } from '../environments/environment';
 import {
@@ -19,6 +19,7 @@ import {
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     // eslint-disable-next-line @angular-eslint/prefer-standalone
     standalone: false,
 })

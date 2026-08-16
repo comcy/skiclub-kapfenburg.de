@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MATERIAL_COLOR } from '../../../enums';
 import { BaseButtonComponent } from '../base-button/base-button.component';
 
@@ -7,6 +7,7 @@ import { BaseButtonComponent } from '../base-button/base-button.component';
     standalone: true,
     imports: [BaseButtonComponent],
     templateUrl: './facebook-button.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./facebook-button.component.scss'],
 })
 export class FacebookButtonComponent {

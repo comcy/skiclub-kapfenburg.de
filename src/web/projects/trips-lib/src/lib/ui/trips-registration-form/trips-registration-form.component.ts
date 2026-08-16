@@ -3,7 +3,16 @@
  */
 
 import { AsyncPipe, CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -64,6 +73,7 @@ interface CourseOption {
         MatSlideToggleModule,
         MatDialogModule,
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     providers: [
         provideNativeDateAdapter(),
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },

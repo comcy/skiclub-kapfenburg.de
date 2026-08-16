@@ -2,13 +2,14 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { getYear } from 'date-fns';
 
 @Component({
     selector: 'shared-lib-footer',
     templateUrl: './footer.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent {

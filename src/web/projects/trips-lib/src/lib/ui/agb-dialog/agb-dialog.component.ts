@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2026 Christian Silfang
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -68,6 +68,7 @@ import { MatButtonModule } from '@angular/material/button';
             <button mat-button mat-dialog-close color="primary">Schließen</button>
         </mat-dialog-actions>
     `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     styles: [
         `
             mat-dialog-content {

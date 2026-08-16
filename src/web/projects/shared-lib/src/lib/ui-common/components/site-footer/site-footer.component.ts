@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ANGULAR_MATERIAL_MODULES, ANGULAR_MODULES, NavigationItem } from '../../../components';
 
@@ -10,6 +10,7 @@ import { ANGULAR_MATERIAL_MODULES, ANGULAR_MODULES, NavigationItem } from '../..
     selector: 'shared-lib-site-footer',
     imports: [ANGULAR_MODULES, ANGULAR_MATERIAL_MODULES],
     templateUrl: './site-footer.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./site-footer.component.scss'],
 })
 export class SiteFooterComponent {

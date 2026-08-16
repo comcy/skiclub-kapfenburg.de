@@ -2,18 +2,18 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BASE_ICON_PROPERTIES } from './base-icon.interfaces';
 
 @Component({
     selector: 'shared-lib-base-icon',
-    imports: [CommonModule, MatIconModule],
+    imports: [MatIconModule],
     providers: [MatIconRegistry],
     templateUrl: './base-icon.component.html',
     styleUrls: ['./base-icon.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true,
 })
 export class BaseIconComponent {

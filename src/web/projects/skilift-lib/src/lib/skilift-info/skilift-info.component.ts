@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
     LOIPEN_STATUS,
@@ -15,6 +15,7 @@ import { LoipenSnowStatus, SkiliftOpeningHours, SkiliftPrices, SkiliftSnowStatus
     standalone: true,
     imports: [CommonModule, MatIcon],
     templateUrl: './skilift-info.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./skilift-info.component.scss'],
 })
 export class SkiliftInfoComponent {

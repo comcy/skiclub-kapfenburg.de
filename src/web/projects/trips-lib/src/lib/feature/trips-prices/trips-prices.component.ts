@@ -2,8 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { NgFor } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BOARDING_LIST, BUS_AND_PASS_PRICE_DATA, BUS_ONLY_PRICE_DATA, TRIP_DATA } from '@data';
 import { BaseTile, Price, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
 import { Trip } from '../../domain/models/trip-base';
@@ -12,7 +11,8 @@ import { Trip } from '../../domain/models/trip-base';
     selector: 'lib-trips-prices',
     templateUrl: './trips-prices.component.html',
     styleUrls: ['./trips-prices.component.scss'],
-    imports: [NgFor],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [],
 })
 export class TripsPricesComponent implements OnInit {
     public tripData: BaseTile[] = TRIP_DATA;

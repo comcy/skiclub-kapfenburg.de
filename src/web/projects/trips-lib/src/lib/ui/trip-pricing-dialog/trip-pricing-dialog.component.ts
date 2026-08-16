@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -20,6 +20,7 @@ interface PriceRow {
     standalone: true,
     imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule],
     templateUrl: './trip-pricing-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./trip-pricing-dialog.component.scss'],
 })
 export class TripPricingDialogComponent {

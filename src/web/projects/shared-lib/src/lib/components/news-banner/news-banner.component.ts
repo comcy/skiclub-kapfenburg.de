@@ -2,16 +2,17 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { NewsCardItem } from '../news-card/news-card.interfaces';
-import { NgFor } from '@angular/common';
+
 import { NewsCardComponent } from '../news-card/news-card.component';
 
 @Component({
     selector: 'lib-news-banner',
     templateUrl: './news-banner.component.html',
     styleUrls: ['./news-banner.component.scss'],
-    imports: [NgFor, NewsCardComponent],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NewsCardComponent],
 })
 export class NewsBannerComponent {
     public title = 'Termine';

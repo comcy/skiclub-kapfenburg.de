@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2026 Christian Silfang
  */
 
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,6 +16,7 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'app-routing-dialog',
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: '',
 })
 export class RoutingDialogComponent implements OnInit, OnDestroy {

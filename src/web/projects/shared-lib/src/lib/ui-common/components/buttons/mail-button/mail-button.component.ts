@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MATERIAL_COLOR } from '../../../enums';
 import { BaseButtonComponent } from '../base-button/base-button.component';
 
@@ -10,6 +10,7 @@ import { BaseButtonComponent } from '../base-button/base-button.component';
     selector: 'shared-lib-mail-button',
     imports: [BaseButtonComponent],
     templateUrl: './mail-button.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./mail-button.component.scss'],
 })
 export class MailButtonComponent {

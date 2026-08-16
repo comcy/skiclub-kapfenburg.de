@@ -2,12 +2,13 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NewsCardItem } from './news-card.interfaces';
 
 @Component({
     selector: 'lib-news-card',
     templateUrl: './news-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./news-card.component.scss'],
 })
 export class NewsCardComponent implements OnInit {

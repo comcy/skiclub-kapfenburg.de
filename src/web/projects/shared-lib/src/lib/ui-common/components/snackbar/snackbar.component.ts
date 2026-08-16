@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 
 @Component({
@@ -6,6 +6,7 @@ import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar'
     imports: [],
     templateUrl: './snackbar.component.html',
     styleUrl: './snackbar.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true,
 })
 export class SnackbarComponent {

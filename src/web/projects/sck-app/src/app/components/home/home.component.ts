@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -41,6 +41,7 @@ import { ComponentsModule } from 'projects/shared-lib/src/public-api';
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         CommonModule,
         ComponentsModule,
@@ -86,7 +87,7 @@ export class HomeComponent implements OnInit {
         homeTiles.sort((a, b) => {
             return a.order > b.order // Handle order
                 ? -1
-                : 1 && b.expiration.getTime() - a.expiration.getTime(); // Handle expiration
+                : b.expiration.getTime() - a.expiration.getTime(); // Handle expiration
         });
 
         // then place expired events at the end
