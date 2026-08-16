@@ -20,7 +20,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { CoursesFeatureModule } from '@courses-lib';
-import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
+import { PROGRAMM_DOWNLOAD_LINK } from '@data';
 import { GymFeatureModule } from '@gym-lib';
 import { SiteHeaderComponent } from '@shared/ui-common';
 import { MarkdownRenderService } from '@shared/util-markdown';
@@ -35,6 +35,7 @@ import {
     TileType,
 } from 'projects/shared-lib/src/lib/ui-common/models';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
+import { TilesApiService } from '../../services/tiles/tiles-api.service';
 
 @Component({
     selector: 'app-home',
@@ -74,16 +75,15 @@ export class HomeComponent implements OnInit {
     public tiles: Tile[] = [];
     public programmDownloadLink = PROGRAMM_DOWNLOAD_LINK;
 
-    private trips = TRIP_DATA;
-    private courses = COURSE_DATA;
-    private staticData = STATIC_DATA;
-
     public router = inject(Router);
     public markdown = inject(MarkdownRenderService);
+    private readonly tilesApi = inject(TilesApiService);
 
     ngOnInit(): void {
-        const homeTiles: Tile[] = [...this.courses, ...this.staticData, ...this.trips];
+        this.tilesApi.getTiles().subscribe((homeTiles) => this.applyTiles(homeTiles));
+    }
 
+    private applyTiles(homeTiles: Tile[]): void {
         homeTiles.sort((a, b) => {
             return a.order > b.order // Handle order
                 ? -1

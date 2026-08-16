@@ -3,3 +3,4 @@
  */
 
 export * from './business';
+export * from './tiles/tiles-api.service';

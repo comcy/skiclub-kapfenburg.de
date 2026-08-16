@@ -2,18 +2,92 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home.component';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from 'projects/sck-app/src/environments/environment';
+
+// Fixture tiles as returned by GET {sckApiUrl}/tiles, standing in for the sck-api
+// backend. Home used to read these straight out of `projects/data` at compile
+// time; it now fetches them at runtime (see TilesApiService), so tests flush this
+// through HttpTestingController instead of relying on static imports.
+const API_TILES_RESPONSE = {
+    total: 4,
+    items: [
+        {
+            id: 'expired-event',
+            order: 0,
+            type: 'event',
+            title: 'Alte Ausfahrt',
+            date: '2000-01-01',
+            subTitle: '',
+            image: '',
+            imageDescription: '',
+            description: '',
+            status: 'open',
+            expiration: '2000-01-02',
+            behavior: 'view',
+            actions: ['register'],
+        },
+        {
+            id: 'course-1',
+            order: 1,
+            type: 'course',
+            title: 'Pilates',
+            date: '2099-01-01',
+            subTitle: '',
+            image: '',
+            imageDescription: '',
+            description: '',
+            status: 'open',
+            expiration: '2099-01-02',
+            behavior: 'view',
+            actions: ['register'],
+        },
+        {
+            id: 'info-1',
+            order: 2,
+            type: 'info',
+            title: 'Infoseite',
+            date: '2099-01-01',
+            subTitle: '',
+            image: '',
+            imageDescription: '',
+            description: '',
+            status: 'open',
+            expiration: '2099-01-02',
+            behavior: 'view',
+            actions: [],
+        },
+        {
+            id: 'membership-1',
+            order: 3,
+            type: 'info',
+            title: 'Mitgliedschaft',
+            date: '2099-01-01',
+            subTitle: '',
+            image: '',
+            imageDescription: '',
+            description: '',
+            status: 'open',
+            expiration: '2099-01-02',
+            behavior: 'click',
+            actions: ['download'],
+            downloadActionLink: 'assets/downloads/Mitgliedsantrag_SCK.pdf',
+        },
+    ],
+};
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
     let fixture: ComponentFixture<HomeComponent>;
+    let httpMock: HttpTestingController;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [HomeComponent, NoopAnimationsModule],
+            imports: [HomeComponent, NoopAnimationsModule, HttpClientTestingModule],
             providers: [
                 {
                     provide: MatDialog,
@@ -32,43 +106,50 @@ describe('HomeComponent', () => {
         fixture = TestBed.createComponent(HomeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+
+        httpMock = TestBed.inject(HttpTestingController);
+        httpMock.expectOne((req) => req.url === `${environment.sckApiUrl}/tiles`).flush(API_TILES_RESPONSE);
+    });
+
+    afterEach(() => {
+        httpMock.verify();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should build tiles list on init with expired + visible flags set', () => {
-        // Arrange done in lifecycle
-        const anyExpired = component.tiles.some((t) => t.expired === true);
-        // Expired flag should be boolean for all
+    it('should build tiles list from the API response with expired + visible flags set', () => {
+        expect(component.tiles.length).toBe(API_TILES_RESPONSE.items.length);
         expect(component.tiles.every((t) => typeof t.expired === 'boolean')).toBeTrue();
-        // At least one tile should be present
-        expect(component.tiles.length).toBeGreaterThan(0);
-        // Visible defaults to true unless explicitly set to false
-        expect(component.tiles.every((t) => t.visible !== undefined)).toBeTrue();
-        // There may or may not be expired tiles depending on current date, but check property reliability
-        expect(anyExpired || !anyExpired).toBeTrue();
+        expect(component.tiles.every((t) => t.visible === true)).toBeTrue();
+        expect(component.tiles.some((t) => t.expired === true)).toBeTrue();
     });
 
     it('should place all non-expired tiles before any expired tiles and not lose tiles', () => {
         const now = new Date().getTime();
-        const nonExpired = component.tiles.filter((t) => t.expiration.getTime() >= now);
-        const expired = component.tiles.filter((t) => t.expiration.getTime() < now);
-
-        // Check cluster ordering (all non-expired appear before any expired)
         const firstExpiredIndex = component.tiles.findIndex((t) => t.expiration.getTime() < now);
-        if (firstExpiredIndex !== -1) {
-            const hasNonExpiredAfter = component.tiles
-                .slice(firstExpiredIndex)
-                .some((t) => t.expiration.getTime() >= now);
-            expect(hasNonExpiredAfter).toBeFalse();
-        }
+        expect(firstExpiredIndex).toBeGreaterThan(-1);
 
-        // Validate no tile loss and same multiset of orders
-        const allOrders = component.tiles.map((t) => t.order).sort();
-        const recombinedOrders = [...nonExpired, ...expired].map((t) => t.order).sort();
-        expect(allOrders).toEqual(recombinedOrders);
+        const hasNonExpiredAfter = component.tiles.slice(firstExpiredIndex).some((t) => t.expiration.getTime() >= now);
+        expect(hasNonExpiredAfter).toBeFalse();
+
+        expect(component.tiles.map((t) => t.id).sort()).toEqual(API_TILES_RESPONSE.items.map((t) => t.id).sort());
+    });
+
+    it('course tile should carry the Register action', () => {
+        const courseTile = component.tiles.find((t) => t.id === 'course-1');
+        expect(courseTile?.actions).toContain('register' as never);
+    });
+
+    it('info tile without actions should not have the Register action', () => {
+        const infoTile = component.tiles.find((t) => t.id === 'info-1');
+        expect(infoTile?.actions ?? []).not.toContain('register' as never);
+    });
+
+    it('click-behavior download tile should carry its download link', () => {
+        const membershipTile = component.tiles.find((t) => t.id === 'membership-1');
+        expect(membershipTile?.downloadActionLink).toBe('assets/downloads/Mitgliedsantrag_SCK.pdf');
     });
 
     describe('openLink', () => {
