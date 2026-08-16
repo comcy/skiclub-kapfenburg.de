@@ -1,0 +1,129 @@
+@if (tile) {
+    <div class="editor-container">
+        <!-- Form View -->
+        @if (!isShowingPreview) {
+            <div class="view-container">
+                <div class="scrollable-content form-content">
+                    <app-editable-image
+                        [(value)]="tile.image"
+                        [loading]="isUploadingImage"
+                        (imageSelected)="onImageSelected($event)"
+                        (imageRemoved)="onImageRemoved()"
+                    >
+                    </app-editable-image>
+
+                    <app-editable-text label="Title" [(value)]="tile.title"></app-editable-text>
+                    <app-editable-text label="Subtitle" [(value)]="tile.subTitle"></app-editable-text>
+                    <app-editable-textarea label="Description" [(value)]="tile.description"></app-editable-textarea>
+                    <app-editable-text
+                        label="Image Description (Alt-Text)"
+                        [(value)]="tile.imageDescription"
+                    ></app-editable-text>
+
+                    <div class="form-row">
+                        <app-editable-date
+                            class="half-width"
+                            label="Event Date"
+                            [value]="tile.date"
+                            (valueChange)="tile.date = $event"
+                        ></app-editable-date>
+                        <app-editable-date
+                            class="half-width"
+                            label="Expiration Date"
+                            [value]="tile.expiration"
+                            (valueChange)="tile.expiration = $event"
+                        ></app-editable-date>
+                    </div>
+
+                    <app-editable-link label="Download Link" [(link)]="tile.downloadActionLink"></app-editable-link>
+
+                    <div class="form-grid">
+                        <mat-form-field>
+                            <mat-label>Order</mat-label>
+                            <input matInput type="number" [(ngModel)]="tile.order" />
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Type</mat-label>
+                            <mat-select [(ngModel)]="tile.type">
+                                @for (type of tileTypes; track type) {
+                                    <mat-option [value]="type">
+                                        {{ type }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Status</mat-label>
+                            <mat-select [(ngModel)]="tile.status">
+                                @for (status of tileStatus; track status) {
+                                    <mat-option [value]="status">
+                                        {{ status }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Behavior</mat-label>
+                            <mat-select [(ngModel)]="tile.behavior">
+                                @for (behavior of tileBehaviors; track behavior) {
+                                    <mat-option [value]="behavior">
+                                        {{ behavior }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-grid two-columns">
+                        <mat-form-field>
+                            <mat-label>Actions</mat-label>
+                            <mat-select [(ngModel)]="tile.actions" multiple>
+                                @for (action of tileActions; track action) {
+                                    <mat-option [value]="action">
+                                        {{ action }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Boardings</mat-label>
+                            <mat-select [(ngModel)]="tile.boardings" multiple>
+                                @for (boarding of availableBoardings$ | async; track boarding.id) {
+                                    <mat-option [value]="boarding.name">
+                                        {{ boarding.name }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-checkbox [(ngModel)]="tile.visible">Visible</mat-checkbox>
+                </div>
+
+                <div class="footer-actions">
+                    <button mat-button (click)="togglePreview()">Preview</button>
+                    <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!tile">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        }
+
+        <!-- Preview View -->
+        @if (isShowingPreview) {
+            <div class="view-container preview-container">
+                <div class="preview-toolbar">
+                    <button mat-button (click)="togglePreview()"><mat-icon>arrow_back</mat-icon> Back to Editor</button>
+                </div>
+                <div class="scrollable-content preview-content">
+                    <div class="preview-header">Live Preview</div>
+                    <app-tile-preview [tile]="tile"></app-tile-preview>
+                </div>
+            </div>
+        }
+    </div>
+}

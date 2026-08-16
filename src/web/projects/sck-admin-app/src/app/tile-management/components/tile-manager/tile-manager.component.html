@@ -1,0 +1,16 @@
+<div class="tile-management-container" [class.editor-open]="isEditorOpen">
+    <div class="tile-list-container">
+        <app-tile-list (tileSelected)="onTileSelected($event)" [selectedTileId]="selectedTile?.id"> </app-tile-list>
+    </div>
+
+    @if (isEditorOpen) {
+        <div class="tile-editor-container">
+            <div class="editor-toolbar">
+                <button mat-icon-button (click)="closeEditor()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            <app-tile-editor [tile]="selectedTile" (tileSaved)="onTileSaved()"></app-tile-editor>
+        </div>
+    }
+</div>

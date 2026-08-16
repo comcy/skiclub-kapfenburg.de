@@ -1,0 +1,11 @@
+<shared-lib-site-header title="Event Konfiguration"></shared-lib-site-header>
+
+<mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
+    <mat-tab label="Tiles"></mat-tab>
+    <mat-tab label="Boardings"></mat-tab>
+    <mat-tab label="Media"></mat-tab>
+</mat-tab-group>
+
+<div class="content-area">
+    <router-outlet></router-outlet>
+</div>

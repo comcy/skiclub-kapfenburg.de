@@ -1,0 +1,55 @@
+@if (tile) {
+    <mat-card appearance="outlined" class="card" [ngClass]="{ expired: tile.expired }">
+        <mat-card-header>
+            @if (tile.avatar) {
+                <div mat-card-avatar class="card-header-image">
+                    <img mat-card-avatar [src]="getImageUrl(tile.avatar)" />
+                </div>
+            }
+            <mat-card-title class="card-date">{{ tile.date | date: 'dd.MM.yyyy' }}</mat-card-title>
+            <mat-card-title style="white-space: pre-wrap" [innerHTML]="renderMarkdown(tile.title)"></mat-card-title>
+            <mat-card-subtitle class="mat-card-content">{{ tile.subTitle }}</mat-card-subtitle>
+        </mat-card-header>
+
+        @if (tile.status === tileStatusEnum.Canceled) {
+            <span class="canceled-stamp">Abgesagt</span>
+        }
+        @if (tile.status === tileStatusEnum.BookedUp) {
+            <span class="booked-up-stamp">Warteliste</span>
+        }
+
+        @if (tile.image) {
+            <img mat-card-image [src]="getImageUrl(tile.image)" [alt]="tile.imageDescription" />
+        }
+
+        <mat-card-content class="mat-card-content">
+            <p [innerHTML]="renderMarkdown(tile.description)"></p>
+        </mat-card-content>
+
+        <mat-card-actions class="actions">
+            @for (action of tile.actions; track action) {
+                @switch (action) {
+                    @case (tileActionsEnum.Download) {
+                        <button mat-fab extended class="card-button" color="primary" matTooltip="Öffnen">
+                            <mat-icon>download</mat-icon>
+                            Öffnen
+                        </button>
+                    }
+                    @case (tileActionsEnum.Register) {
+                        <button mat-fab extended class="card-button" color="primary" matTooltip="Anmelden">
+                            <mat-icon>event_note</mat-icon>
+                            Anmelden
+                        </button>
+                    }
+                    @case (tileActionsEnum.Share) {
+                        <div class="secondary-action-buttons">
+                            <button mat-mini-fab matTooltip="Teilen" class="card-button">
+                                <mat-icon>share</mat-icon>
+                            </button>
+                        </div>
+                    }
+                }
+            }
+        </mat-card-actions>
+    </mat-card>
+}
