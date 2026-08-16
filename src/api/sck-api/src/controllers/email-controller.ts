@@ -3,17 +3,9 @@
  */
 
 import { RequestHandler } from "express";
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
 import { EmailRequestBody } from "../domain/email.js";
 import { saveData } from "../services/data-service.js";
-
-dotenv.config();
-
-const SMTP_SERVER = process.env.SMTP_SERVER || "";
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || "465", 10);
-const SENDER_MAIL = process.env.SENDER_MAIL || "";
-const SENDER_PW = process.env.SENDER_PW || "";
+import { createMailTransporter, defaultSender } from "../services/mailer.js";
 
 const parseEmailList = (value?: string): string[] => {
   if (!value) return [];
@@ -53,21 +45,10 @@ export const sendEmail: RequestHandler = async (req, res) => {
       return;
     }
 
-    const transporter = nodemailer.createTransport({
-      host: SMTP_SERVER,
-      port: SMTP_PORT,
-      secure: true,
-      auth: {
-        user: SENDER_MAIL,
-        pass: SENDER_PW,
-      },
-      tls: { rejectUnauthorized: false },
-      socketTimeout: 10000,
-      connectionTimeout: 10000,
-    });
+    const transporter = createMailTransporter();
 
     const mailOptions = {
-      from: from || SENDER_MAIL,
+      from: from || defaultSender(),
       to: toList.join(","),
       cc: ccList.length ? ccList.join(",") : undefined,
       bcc: bccList.length ? bccList.join(",") : undefined,
