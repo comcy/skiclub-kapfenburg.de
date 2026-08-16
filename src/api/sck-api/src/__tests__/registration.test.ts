@@ -1,18 +1,20 @@
+import { jest } from '@jest/globals';
 import request from 'supertest';
 import express from 'express';
-import registrationRoutes from '../routes/registration-route';
-import { saveData } from '../services/data-service';
 
-jest.mock('../services/data-service');
+const mockedSaveData = jest.fn();
+
+jest.unstable_mockModule('../services/data-service', () => ({
+  saveData: mockedSaveData,
+}));
+
+const { default: registrationRoutes } = await import('../routes/registration-route');
 
 const app = express();
 app.use(express.json());
 app.use('/api', registrationRoutes);
 
-
 describe('Registration Routes', () => {
-  const mockedSaveData = saveData as jest.Mock;
-
   beforeEach(() => {
     mockedSaveData.mockClear();
   });
@@ -22,14 +24,12 @@ describe('Registration Routes', () => {
       firstName: 'Max',
       lastName: 'Mustermann',
       email: 'max@test.com',
-      birthday: '2000-01-01'
+      birthday: '2000-01-01',
     };
 
     mockedSaveData.mockResolvedValue(undefined);
 
-    const response = await request(app)
-      .post('/api/register')
-      .send(registrationData);
+    const response = await request(app).post('/api/register').send(registrationData);
 
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('Registrierung erfolgreich gespeichert.');
@@ -38,12 +38,10 @@ describe('Registration Routes', () => {
 
   it('POST /api/register - sollte einen Fehler zurückgeben, wenn Felder fehlen', async () => {
     const registrationData = {
-      firstName: 'Max'
+      firstName: 'Max',
     };
 
-    const response = await request(app)
-      .post('/api/register')
-      .send(registrationData);
+    const response = await request(app).post('/api/register').send(registrationData);
 
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('Vorname, Nachname und E-Mail sind erforderlich.');
@@ -55,14 +53,12 @@ describe('Registration Routes', () => {
       firstName: 'Max',
       lastName: 'Mustermann',
       email: 'max@test.com',
-      birthday: '2000-01-01'
+      birthday: '2000-01-01',
     };
 
     mockedSaveData.mockRejectedValue(new Error('Speicherfehler'));
 
-    const response = await request(app)
-      .post('/api/register')
-      .send(registrationData);
+    const response = await request(app).post('/api/register').send(registrationData);
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBe('Fehler bei der Verarbeitung Ihrer Anfrage.');

@@ -1,0 +1,80 @@
+<h2 mat-dialog-title>Preisliste: {{ data.title }}</h2>
+
+<mat-dialog-content>
+    @if (transportEquipmentDataSource) {
+        <h3>Fahrt & Equipment</h3>
+        <table mat-table [dataSource]="transportEquipmentDataSource" class="mat-elevation-z1 pricing-table">
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef>Option</th>
+                <td mat-cell *matCellDef="let element">{{ element.category }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="member">
+                <th mat-header-cell *matHeaderCellDef>Mitglied</th>
+                <td mat-cell *matCellDef="let element">{{ element.member | currency: 'EUR' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="nonMember">
+                <th mat-header-cell *matHeaderCellDef>Nicht-Mitglied</th>
+                <td mat-cell *matCellDef="let element">{{ element.nonMember | currency: 'EUR' }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+    }
+
+    @if (busLiftDataSource) {
+        <div class="pricing-section">
+            <h3>Bus + Lift (Skipass)</h3>
+            <table mat-table [dataSource]="busLiftDataSource" class="mat-elevation-z1 pricing-table">
+                <ng-container matColumnDef="category">
+                    <th mat-header-cell *matHeaderCellDef>Altersgruppe</th>
+                    <td mat-cell *matCellDef="let element">{{ element.category }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="member">
+                    <th mat-header-cell *matHeaderCellDef>Mitglied</th>
+                    <td mat-cell *matCellDef="let element">{{ element.member | currency: 'EUR' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="nonMember">
+                    <th mat-header-cell *matHeaderCellDef>Nicht-Mitglied</th>
+                    <td mat-cell *matCellDef="let element">{{ element.nonMember | currency: 'EUR' }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+        </div>
+    }
+
+    @if (coursesDataSource) {
+        <div class="pricing-section">
+            <h3>Kurse & Training</h3>
+            <table mat-table [dataSource]="coursesDataSource" class="mat-elevation-z1 pricing-table">
+                <ng-container matColumnDef="category">
+                    <th mat-header-cell *matHeaderCellDef>Kursart</th>
+                    <td mat-cell *matCellDef="let element">{{ element.category }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="member">
+                    <th mat-header-cell *matHeaderCellDef>Mitglied</th>
+                    <td mat-cell *matCellDef="let element">{{ element.member | currency: 'EUR' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="nonMember">
+                    <th mat-header-cell *matHeaderCellDef>Nicht-Mitglied</th>
+                    <td mat-cell *matCellDef="let element">{{ element.nonMember | currency: 'EUR' }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+        </div>
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close color="primary">Schließen</button>
+</mat-dialog-actions>

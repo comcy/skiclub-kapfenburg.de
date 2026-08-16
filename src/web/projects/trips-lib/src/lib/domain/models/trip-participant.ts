@@ -9,4 +9,10 @@ export interface TripParticipant {
     email: string;
     phone: string;
     boarding: string;
+    isMember?: boolean;
+    busOnly?: boolean;
+    courseRequested?: boolean;
+    snowshoes?: boolean;
+    sportType?: string;
+    level?: string;
 }

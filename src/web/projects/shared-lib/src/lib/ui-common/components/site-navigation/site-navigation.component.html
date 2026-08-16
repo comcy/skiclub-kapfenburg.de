@@ -7,37 +7,39 @@
     <span class="spacer"></span>
 
     <!-- Desktop view: Highlited items -->
-    <ng-container *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false">
-        <div *ngFor="let n of highlightedNavItems" class="highlight-container">
-            <a mat-button (click)="routeTo(n.route)">
-                <mat-icon>check</mat-icon>
-                {{ n.name }}
-            </a>
-        </div>
-    </ng-container>
+    @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+        @for (n of highlightedNavItems; track n) {
+            <div class="highlight-container">
+                <a mat-button (click)="routeTo(n.route)">
+                    <mat-icon>check</mat-icon>
+                    {{ n.name }}
+                </a>
+            </div>
+        }
+    }
 
     <span class="spacer"></span>
 
     <!-- Desktop view -->
-    <div *ngIf="(breakpointObserver.handsetBreakpoint$ | async) === false" class="navitems-container">
-        <a *ngFor="let n of navItems" mat-flat-button [color]="resolveColor(n)()" (click)="routeTo(n.route)">
-            @if (logo) {
-                <mat-icon>{{ n.icon }}</mat-icon>
+    @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+        <div class="navitems-container">
+            @for (n of navItems; track n) {
+                <a mat-flat-button [color]="resolveColor(n)()" (click)="routeTo(n.route)">
+                    @if (logo) {
+                        <mat-icon>{{ n.icon }}</mat-icon>
+                    }
+                    {{ n.name }}
+                </a>
             }
-            {{ n.name }}
-        </a>
-    </div>
+        </div>
+    }
 
     <!-- Mobile View -->
-    <button
-        *ngIf="breakpointObserver.handsetBreakpoint$ | async"
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-    >
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-    </button>
+    @if (breakpointObserver.handsetBreakpoint$ | async) {
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+    }
 </mat-toolbar>
 
 <!-- Mobile view: Side navigation container -->
@@ -50,10 +52,12 @@
         [mode]="(breakpointObserver.handsetBreakpoint$ | async) ? 'over' : 'side'"
         [opened]="false"
     >
-        <mat-nav-list *ngFor="let n of navItems">
-            <a mat-list-item (click)="drawer.close()" [routerLink]="[n.route]" routerLinkActive="list-item-active">
-                {{ n.name }}
-            </a>
-        </mat-nav-list>
+        @for (n of navItems; track n) {
+            <mat-nav-list>
+                <a mat-list-item (click)="drawer.close()" [routerLink]="[n.route]" routerLinkActive="list-item-active">
+                    {{ n.name }}
+                </a>
+            </mat-nav-list>
+        }
     </mat-sidenav>
 </mat-sidenav-container>

@@ -2,8 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { CoursesFeatureModule, CoursesUiModule, Price } from '@courses-lib';
 import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
@@ -11,7 +10,8 @@ import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
 @Component({
     selector: 'app-registration',
     templateUrl: './registration.component.html',
-    imports: [CommonModule, CoursesFeatureModule, CoursesUiModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [CoursesFeatureModule, CoursesUiModule],
 })
 export class RegistrationComponent {
     public courseAtTravelPrice: Price[] = COURSE_ON_TRAVEL_PRICE_DATA;

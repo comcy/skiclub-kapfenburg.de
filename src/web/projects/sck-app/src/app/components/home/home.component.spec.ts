@@ -8,7 +8,7 @@ import { HomeComponent } from './home.component';
 import { MatDialog } from '@angular/material/dialog';
 import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feature/gym-courses-register-dialog/gym-courses-register-dialog.component';
 import { TripsRegisterDialogComponent } from '@trips-lib';
-import { Tile, TileBehavior, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { BaseTile, TileBehavior, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 // (Tile-related imports removed for skipped dialog tests)
 
 describe('HomeComponent', () => {
@@ -101,7 +101,7 @@ describe('HomeComponent', () => {
 
     describe('resolveRegisterDialogComponent', () => {
         it('returns GymCoursesRegisterDialogComponent for course tile', () => {
-            const tile: Tile = {
+            const tile: BaseTile = {
                 order: 1,
                 type: TileType.Course,
                 title: 'Course',
@@ -118,7 +118,7 @@ describe('HomeComponent', () => {
         });
 
         it('returns TripsRegisterDialogComponent for non-course tile', () => {
-            const tile: Tile = {
+            const tile: BaseTile = {
                 order: 2,
                 type: TileType.Info,
                 title: 'Info',

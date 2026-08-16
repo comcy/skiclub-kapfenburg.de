@@ -4,15 +4,19 @@
     <div class="game" #gameArea>
         <div class="player" [style.left.px]="playerX"></div>
 
-        <div class="tree" *ngFor="let tree of trees" [style.top.px]="tree.y" [style.left.px]="tree.x"></div>
+        @for (tree of trees; track tree) {
+            <div class="tree" [style.top.px]="tree.y" [style.left.px]="tree.x"></div>
+        }
 
         <div class="score">Punkte: {{ score }}</div>
 
-        <div *ngIf="gameOver" class="game-over">
-            <h3>💥 Sturz!</h3>
-            <p>Punkte: {{ score }}</p>
-            <button (click)="restart()">Neu starten</button>
-        </div>
+        @if (gameOver) {
+            <div class="game-over">
+                <h3>💥 Sturz!</h3>
+                <p>Punkte: {{ score }}</p>
+                <button (click)="restart()">Neu starten</button>
+            </div>
+        }
     </div>
 
     <div class="controls">

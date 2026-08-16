@@ -1,116 +1,115 @@
 <div class="content-container">
-  <form class="form" [formGroup]="courseRegisterForm" (submit)="submit()">
-    <mat-form-field class="full-width" appearance="fill">
-      <mat-label>Sportart</mat-label>
-      <mat-select formControlName="sportType">
-        <mat-option *ngFor="let type of sportTypeList" [value]="type"
-          >{{ type }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <form class="form" [formGroup]="courseRegisterForm" (submit)="submit()">
+        <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Sportart</mat-label>
+            <mat-select formControlName="sportType">
+                @for (type of sportTypeList; track type) {
+                    <mat-option [value]="type">{{ type }} </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
 
-    <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
-      <table class="full-width" cellspacing="0">
-        <tr>
-          <td>
+        @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+            <div>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Vorname</mat-label>
+                                <input matInput formControlName="firstName" />
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Nachname</mat-label>
+                                <input matInput formControlName="lastName" />
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
+
+        @if (breakpointObserver.handsetBreakpoint$ | async) {
+            <div>
+                <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>Vorname</mat-label>
+                    <input matInput formControlName="firstName" />
+                </mat-form-field>
+                <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>Nachname</mat-label>
+                    <input matInput formControlName="lastName" />
+                </mat-form-field>
+            </div>
+        }
+
+        <p>
             <mat-form-field class="full-width" appearance="fill">
-              <mat-label>Vorname</mat-label>
-              <input matInput formControlName="firstName" />
+                <mat-label>E-Mail</mat-label>
+                <input matInput formControlName="email" />
+                @if (hasError('email')) {
+                    <mat-error> Bitte geben Sie eine korrekte E-Mail Adresse an. </mat-error>
+                }
             </mat-form-field>
-          </td>
-          <td>
+
             <mat-form-field class="full-width" appearance="fill">
-              <mat-label>Nachname</mat-label>
-              <input matInput formControlName="lastName" />
+                <mat-label>Telefonnummer</mat-label>
+                <input matInput formControlName="phone" />
             </mat-form-field>
-          </td>
-        </tr>
-      </table>
-    </div>
+        </p>
 
-    <div *ngIf="breakpointObserver.handsetBreakpoint$ | async">
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Vorname</mat-label>
-        <input matInput formControlName="firstName" />
-      </mat-form-field>
+        @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+            <div>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Alter</mat-label>
+                                <input matInput formControlName="age" value="1" />
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Könnerstufe</mat-label>
+                                <mat-select formControlName="level">
+                                    @for (level of levelList; track level) {
+                                        <mat-option [value]="level">{{ level }} </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
 
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Nachname</mat-label>
-        <input matInput formControlName="lastName" />
-      </mat-form-field>
-    </div>
+        @if (breakpointObserver.handsetBreakpoint$ | async) {
+            <div>
+                <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>Alter</mat-label>
+                    <input matInput formControlName="age" value="1" />
+                </mat-form-field>
+                <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>Könnerstufe</mat-label>
+                    <mat-select formControlName="level">
+                        @for (level of levelList; track level) {
+                            <mat-option [value]="level">{{ level }} </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        }
 
-    <p>
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>E-Mail</mat-label>
-        <input matInput formControlName="email" />
-        <mat-error *ngIf="hasError('email')">
-          Bitte geben Sie eine korrekte E-Mail Adresse an.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Telefonnummer</mat-label>
-        <input matInput formControlName="phone" />
-      </mat-form-field>
-    </p>
-
-    <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
-      <table class="full-width" cellspacing="0">
-        <tr>
-          <td>
+        <p>
             <mat-form-field class="full-width" appearance="fill">
-              <mat-label>Alter</mat-label>
-              <input matInput formControlName="age" value="1" />
+                <mat-label>Zusatzinformationen</mat-label>
+                <textarea matInput formControlName="additionalText" rows="8"></textarea>
             </mat-form-field>
-          </td>
-          <td>
-            <mat-form-field class="full-width" appearance="fill">
-              <mat-label>Könnerstufe</mat-label>
-              <mat-select formControlName="level">
-                <mat-option *ngFor="let level of levelList" [value]="level"
-                  >{{ level }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </td>
-        </tr>
-      </table>
-    </div>
+        </p>
+        @if (!courseRegisterForm.valid && courseRegisterForm.touched) {
+            <mat-error> Bitte alle erfordelichen Felder (*) ausfüllen. </mat-error>
+        }
 
-    <div *ngIf="breakpointObserver.handsetBreakpoint$ | async">
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Alter</mat-label>
-        <input matInput formControlName="age" value="1" />
-      </mat-form-field>
-
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Könnerstufe</mat-label>
-        <mat-select formControlName="level">
-          <mat-option *ngFor="let level of levelList" [value]="level"
-            >{{ level }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-
-    <p>
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Zusatzinformationen</mat-label>
-        <textarea matInput formControlName="additionalText" rows="8"></textarea>
-      </mat-form-field>
-    </p>
-    <mat-error *ngIf="!courseRegisterForm.valid && courseRegisterForm.touched">
-      Bitte alle erfordelichen Felder (*) ausfüllen.
-    </mat-error>
-
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="isSubmitDisabled()"
-    >
-      Absenden
-    </button>
-  </form>
+        <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
+    </form>
 </div>

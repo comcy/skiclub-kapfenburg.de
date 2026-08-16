@@ -2,16 +2,17 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+
 import { ANGULAR_MATERIAL_MODULES } from '../../../components';
 import { MaterialColor } from '../../enums';
 
 @Component({
     selector: 'shared-lib-site-header',
-    imports: [CommonModule, ANGULAR_MATERIAL_MODULES],
+    imports: [ANGULAR_MATERIAL_MODULES],
     templateUrl: './site-header.component.html',
     styleUrls: ['./site-header.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true,
 })
 export class SiteHeaderComponent {

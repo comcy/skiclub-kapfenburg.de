@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { GYM_PILATES_COURSE_INFORMATION_THU, GYM_PILATES_COURSE_INFORMATION_WED } from 'projects/data/static';
 import { GymCourseInformation } from '../../domain';
@@ -9,6 +9,7 @@ import { GymCoursesRegistrationFormComponent } from '../../ui/gym-courses-regist
     imports: [GymCoursesRegistrationFormComponent],
     templateUrl: './gym-courses-registration.component.html',
     styleUrl: './gym-courses-registration.component.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true,
 })
 export class GymCoursesRegistrationComponent {

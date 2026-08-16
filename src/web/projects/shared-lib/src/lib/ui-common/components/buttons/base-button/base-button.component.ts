@@ -1,13 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
 import { MATERIAL_COLOR, MaterialColor } from '../../../enums';
 
 @Component({
     selector: 'shared-lib-base-button',
     standalone: true,
-    imports: [CommonModule, SHARED_LIB_BUTTONS_NG_MAT_MODULES],
+    imports: [SHARED_LIB_BUTTONS_NG_MAT_MODULES],
     templateUrl: './base-button.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./base-button.component.scss'],
 })
 export class BaseButtonComponent {

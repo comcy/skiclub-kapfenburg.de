@@ -1,57 +1,57 @@
-  name: SCK-API CI
+name: SCK-API CI
 
-  on:
-    push:
-      branches:
-         - "master"
-      paths:
-         - "src/api/sck-api/**/*"
-         - ".github/workflows/sck-api-*"
-    pull_request:
-      branches:
-         - "master"
-      paths:
-         - "src/api/sck-api/**/*"
-         - ".github/workflows/sck-api-*"
+on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - "src/api/sck-api/**/*"
+      - ".github/workflows/sck-api-*"
+  pull_request:
+    branches:
+      - "master"
+    paths:
+      - "src/api/sck-api/**/*"
+      - ".github/workflows/sck-api-*"
 
-  env:
-    PROJECT_PATH: "src/api/sck-api/"
+env:
+  PROJECT_PATH: "src/api/sck-api/"
 
-  jobs:
-    build:
-      runs-on: ubuntu-latest
-      steps:
-         - name: Checkout code
-          uses: actions/checkout@v4
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-         - name: Set up Node.js 20.x
-          uses: actions/setup-node@v4
-          with:
-            node-version: "20.x"
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
 
-  PREPARE
-         - name: Install dependencies
-          run: |
-            cd ${{ env.PROJECT_PATH }}
-            npm ci
+      - name: Set up Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
 
-  QA
-         - name: Run linting and tests
-          run: |
-            cd ${{ env.PROJECT_PATH }}
-            npm test
+      # PREPARE
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-  BUILD
-         - name: Build project
-          run: |
-            cd ${{ env.PROJECT_PATH }}
-            npm run build
+      # QA
+      - name: Run linting and tests
+        run: pnpm --filter sck-api test
 
-  Build-Artefakte für Deployment bereitstellen
-         - name: Upload build artifacts
-          if: github.ref == 'refs/heads/master'
-          uses: actions/upload-artifact@v4
-          with:
-            name: sck-api-build
-            path: ${{ env.PROJECT_PATH }}dist/
-            retention-days: 1
+      # BUILD
+      - name: Build project
+        run: pnpm --filter sck-api run build
+
+      # Build-Artefakte für Deployment bereitstellen
+      - name: Upload build artifacts
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sck-api-build
+          path: ${{ env.PROJECT_PATH }}dist/
+          retention-days: 1

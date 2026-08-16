@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 const DESCRIPTION_TEXT = `Kommt mit uns in die Tiroler Zugspitz-Arena nach Lermoos. Im Skigebiet Grubigstein steht auf 1000 - 2100m Höhe wintersportlicher Spaß auf dem Programm. Zwölf 
 Abfahrten bringen Abwechslung. Auch für das leibliche Wohl ist gesorgt: Zahlreiche 
@@ -35,7 +35,8 @@ const BOARDING_LIST = [
     'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
 ];
 
-export const PARTYAUSFAHRT_LERMOOS: Tile = {
+export const PARTYAUSFAHRT_LERMOOS: EventTile = {
+    id: 'partyausfahrt-lermoos-2026',
     order: 6,
     type: TileType.Event,
     behavior: TileBehavior.View,
@@ -45,8 +46,34 @@ export const PARTYAUSFAHRT_LERMOOS: Tile = {
     image: '../../../../assets/img/cards/lift.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
+    details: '',
     actions: [TileActions.Register],
     expiration: new Date('2026-02-22'),
     boardings: BOARDING_LIST,
     status: TileStatus.BookedUp,
+    tripConfig: {
+        pricing: {
+            busLift: {
+                adult: {
+                    member: 95,
+                    nonMember: 95,
+                },
+                youthUntil16: {
+                    member: 95,
+                    nonMember: 95,
+                },
+                childUntil6: {
+                    member: 95,
+                    nonMember: 95,
+                },
+            },
+
+            addons: {
+                snowshoes: {
+                    member: 5,
+                    nonMember: 5,
+                },
+            },
+        },
+    },
 };

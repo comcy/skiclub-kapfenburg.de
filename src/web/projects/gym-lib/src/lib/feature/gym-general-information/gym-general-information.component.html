@@ -19,7 +19,7 @@
     <br />
     <br />
 
-    <ng-container *ngIf="gymState.pilatesOffers$ | async as pilatesOffers">
+    @if (gymState.pilatesOffers$ | async; as pilatesOffers) {
         @for (p of pilatesOffers; track $index) {
             <div class="asd">
                 <h2>{{ p.name }} - {{ p.location }}</h2>
@@ -28,7 +28,7 @@
                 </div>
             </div>
         }
-    </ng-container>
+    }
 
     <br />
     <br />
@@ -49,13 +49,15 @@
     <i>Kursleitung: Mascha Welk</i>
 </div>
 
-<ng-container *ngIf="gymState.gymOffers$ | async as gymOffers">
-    <div class="info-page" *ngFor="let g of gymOffers">
-        <h3>{{ g.name }}</h3>
-        <h2>{{ g.time }} - {{ g.location }}</h2>
-        <div [innerHTML]="markdown.render(g.description)"></div>
-        <p>
-            <i>{{ g.contact }}</i>
-        </p>
-    </div>
-</ng-container>
+@if (gymState.gymOffers$ | async; as gymOffers) {
+    @for (g of gymOffers; track g.name) {
+        <div class="info-page">
+            <h3>{{ g.name }}</h3>
+            <h2>{{ g.time }} - {{ g.location }}</h2>
+            <div [innerHTML]="markdown.render(g.description)"></div>
+            <p>
+                <i>{{ g.contact }}</i>
+            </p>
+        </div>
+    }
+}

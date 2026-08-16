@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2023 Christian Silfang
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MATERIAL_COLOR } from '../../../enums';
 import { InstagramIconComponent } from '../../icons/instagram-icon';
 import { BaseButtonComponent } from '../base-button/base-button.component';
@@ -12,6 +12,7 @@ import { BaseButtonComponent } from '../base-button/base-button.component';
     imports: [BaseButtonComponent, InstagramIconComponent],
     templateUrl: './instagram-button.component.html',
     styleUrls: ['./instagram-button.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true,
 })
 export class InstagramButtonComponent {

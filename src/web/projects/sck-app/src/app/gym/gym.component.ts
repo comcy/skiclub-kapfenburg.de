@@ -2,8 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
@@ -14,8 +13,8 @@ import { MaterialColor, SiteHeaderComponent } from '@shared/ui-common';
     selector: 'app-gym',
     templateUrl: './gym.component.html',
     styleUrls: ['./gym.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
-        CommonModule,
         RouterModule,
         MatTabsModule,
         MatToolbarModule,

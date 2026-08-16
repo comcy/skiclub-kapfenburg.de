@@ -39,6 +39,7 @@ export const GYM_PILATES_COURSE_INFORMATION_THU: GymCourseInformation = {
 };
 
 export const GYM_PILATES_THURSDAY_TILE: Tile = {
+    id: 'pilates-thu',
     order: 2,
     behavior: TileBehavior.View,
     title: GYM_PILATES_COURSE_INFORMATION_THU.name,
@@ -53,4 +54,5 @@ export const GYM_PILATES_THURSDAY_TILE: Tile = {
     expiration: new Date('2027-12-31'),
     status: TileStatus.Open,
     course: GYM_PILATES_COURSE_INFORMATION_THU,
+    location: 'Altes Schulhaus Hülen',
 };

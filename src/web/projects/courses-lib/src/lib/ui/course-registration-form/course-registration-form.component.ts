@@ -2,8 +2,8 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, EventEmitter, OnInit, Output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -21,14 +21,13 @@ import {
     selector: 'lib-course-registration-form',
     templateUrl: './course-registration-form.component.html',
     styleUrls: ['./course-registration-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         ReactiveFormsModule,
         MatFormField,
         MatLabel,
         MatSelect,
-        NgFor,
         MatOption,
-        NgIf,
         MatInput,
         MatError,
         MatButton,

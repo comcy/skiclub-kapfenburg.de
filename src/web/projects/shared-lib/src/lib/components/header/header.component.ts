@@ -2,16 +2,16 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationItem } from './header.interfaces';
-import { NgFor } from '@angular/common';
 
 @Component({
     selector: 'shared-lib-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
-    imports: [NgFor],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [],
 })
 export class HeaderComponent {
     private router = inject(Router);

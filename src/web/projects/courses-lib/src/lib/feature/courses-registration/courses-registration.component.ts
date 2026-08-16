@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { COURSE_AT_HOME_PRICE_DATA, COURSE_ON_TRAVEL_PRICE_DATA } from '@data';
 import { Price } from '../../domain/models';
@@ -12,6 +12,7 @@ import { CourseRegistrationFormComponent } from '../../ui/course-registration-fo
     selector: 'lib-courses-registration',
     templateUrl: './courses-registration.component.html',
     styleUrls: ['./courses-registration.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [CourseRegistrationFormComponent],
 })
 export class CoursesRegistrationComponent {

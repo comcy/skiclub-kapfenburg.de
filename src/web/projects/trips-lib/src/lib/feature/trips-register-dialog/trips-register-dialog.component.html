@@ -1,8 +1,10 @@
-<lib-base-dialog *ngIf="tripDetails$ | async as trips" [title]="dialogTitle" [date]="tripDate" [registerForm]="true">
-    <lib-trips-registration-form
-        registerForm
-        [additionalData]="trips"
-        (submitForm)="onTripRegistrationFormSubmit($event)"
-    >
-    </lib-trips-registration-form>
-</lib-base-dialog>
+@if (tripDetails$ | async; as trips) {
+    <lib-base-dialog [title]="dialogTitle" [date]="tripDate" [registerForm]="true">
+        <lib-trips-registration-form
+            registerForm
+            [additionalData]="trips"
+            (submitForm)="onTripRegistrationFormSubmit($event)"
+        >
+        </lib-trips-registration-form>
+    </lib-base-dialog>
+}

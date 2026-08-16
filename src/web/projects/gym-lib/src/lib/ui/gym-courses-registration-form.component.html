@@ -9,42 +9,47 @@
             </mat-select>
         </mat-form-field>
 
-        <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
-            <table class="full-width" cellspacing="0">
-                <tr>
-                    <td>
-                        <mat-form-field class="full-width" appearance="fill">
-                            <mat-label>Vorname</mat-label>
-                            <input matInput formControlName="firstName" />
-                        </mat-form-field>
-                    </td>
-                    <td>
-                        <mat-form-field class="full-width" appearance="fill">
-                            <mat-label>Nachname</mat-label>
-                            <input matInput formControlName="lastName" />
-                        </mat-form-field>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+            <div>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Vorname</mat-label>
+                                <input matInput formControlName="firstName" />
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Nachname</mat-label>
+                                <input matInput formControlName="lastName" />
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
 
-        <div *ngIf="breakpointObserver.handsetBreakpoint$ | async">
-            <mat-form-field class="full-width" appearance="fill">
-                <mat-label>Vorname</mat-label>
-                <input matInput formControlName="firstName" />
-            </mat-form-field>
-
-            <mat-form-field class="full-width" appearance="fill">
-                <mat-label>Nachname</mat-label>
-                <input matInput formControlName="lastName" />
-            </mat-form-field>
-        </div>
+        @if (breakpointObserver.handsetBreakpoint$ | async) {
+            <div>
+                <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>Vorname</mat-label>
+                    <input matInput formControlName="firstName" />
+                </mat-form-field>
+                <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>Nachname</mat-label>
+                    <input matInput formControlName="lastName" />
+                </mat-form-field>
+            </div>
+        }
 
         <p>
             <mat-form-field class="full-width" appearance="fill">
                 <mat-label>E-Mail</mat-label>
                 <input matInput formControlName="email" />
-                <mat-error *ngIf="hasError('email')"> Bitte geben Sie eine korrekte E-Mail Adresse an. </mat-error>
+                @if (hasError('email')) {
+                    <mat-error> Bitte geben Sie eine korrekte E-Mail Adresse an. </mat-error>
+                }
             </mat-form-field>
 
             <mat-form-field class="full-width" appearance="fill">
@@ -53,31 +58,35 @@
             </mat-form-field>
         </p>
 
-        <div *ngIf="!(breakpointObserver.handsetBreakpoint$ | async)">
-            <table class="full-width" cellspacing="0">
-                <tr>
-                    <td>
-                        <mat-form-field class="full-width" appearance="fill">
-                            <mat-label>Geburtstag</mat-label>
-                            <input matInput [matDatepicker]="picker" formControlName="birthday" />
-                            <mat-hint>DD.MM.YYYY</mat-hint>
-                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+            <div>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Geburtstag</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="birthday" />
+                                <mat-hint>DD.MM.YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
 
-        <div *ngIf="breakpointObserver.handsetBreakpoint$ | async">
-            <mat-form-field class="full-width" appearance="fill">
-                <mat-label>Geburtstag</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="birthday" />
-                <mat-hint>DD/MM/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-        </div>
+        @if (breakpointObserver.handsetBreakpoint$ | async) {
+            <div>
+                <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>Geburtstag</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="birthday" />
+                    <mat-hint>DD/MM/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+        }
 
         <p>
             <mat-form-field class="full-width" appearance="fill">
@@ -85,9 +94,9 @@
                 <textarea matInput formControlName="additionalText" rows="8"></textarea>
             </mat-form-field>
         </p>
-        <mat-error *ngIf="!gymCoursesRegisterForm.valid && gymCoursesRegisterForm.touched">
-            Bitte alle erfordelichen Felder (*) ausfüllen.
-        </mat-error>
+        @if (!gymCoursesRegisterForm.valid && gymCoursesRegisterForm.touched) {
+            <mat-error> Bitte alle erfordelichen Felder (*) ausfüllen. </mat-error>
+        }
 
         <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
     </form>

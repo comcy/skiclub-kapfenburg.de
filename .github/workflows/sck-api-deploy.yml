@@ -67,14 +67,19 @@ jobs:
             
             # Ownership setzen
             sudo chown -R ${{ env.APP_USER }}:${{ env.APP_USER }} ${{ env.APP_DIR }}
-            
-            # Dependencies installieren und builden
+
+            # pnpm über Corepack bereitstellen
+            echo "📦 Preparing pnpm..."
+            sudo corepack enable
+            sudo corepack prepare pnpm@11.22.0 --activate
+
+            # Dependencies installieren und builden (nur sck-api, nicht den ganzen Workspace)
             echo "📦 Installing dependencies..."
-            cd ${{ env.APP_DIR }}/${{ env.PROJECT_PATH }}
-            sudo -u ${{ env.APP_USER }} npm ci --production
-            
+            cd ${{ env.APP_DIR }}
+            sudo -u ${{ env.APP_USER }} pnpm install --frozen-lockfile --filter sck-api --prod
+
             echo "🔨 Building application..."
-            sudo -u ${{ env.APP_USER }} npm run build
+            sudo -u ${{ env.APP_USER }} pnpm --filter sck-api run build
             
             # SystemD Service aus Template generieren
             echo "⚙️  Creating systemd service from template..."
