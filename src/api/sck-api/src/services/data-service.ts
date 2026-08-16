@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dataDir = path.join(__dirname, '..', 'data');
+export const dataDir = path.join(__dirname, '..', 'data');
 const dataFile = path.join(dataDir, 'registrations.ndjson');
 
 if (!fs.existsSync(dataDir)) {
