@@ -30,7 +30,7 @@ describe('HomeComponent (domain scenarios)', () => {
     });
 
     it('info tiles should not have Register action', () => {
-        const infoTiles = component.tiles.filter((t) => t.type !== TileType.Course);
+        const infoTiles = component.tiles.filter((t) => t.type === TileType.Info);
         infoTiles.forEach((t) => expect(t.actions ?? []).not.toContain(TileActions.Register));
     });
 

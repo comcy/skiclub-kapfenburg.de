@@ -90,11 +90,13 @@ export class HomeComponent implements OnInit {
                 : b.expiration.getTime() - a.expiration.getTime(); // Handle expiration
         });
 
-        // then place expired events at the end
+        // then place expired events at the end (stable: keeps the previous ordering within each group)
+        const now = new Date().getTime();
         homeTiles.sort((a, b) => {
-            if (a.expiration.getTime() < new Date().getTime()) return 1;
-            else if (b.expiration.getTime() > new Date().getTime()) return -1;
-            else return a.expiration.valueOf() - b.expiration.valueOf();
+            const aExpired = a.expiration.getTime() < now;
+            const bExpired = b.expiration.getTime() < now;
+            if (aExpired === bExpired) return 0;
+            return aExpired ? 1 : -1;
         });
 
         homeTiles.map((t) => {
