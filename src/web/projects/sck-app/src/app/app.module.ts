@@ -39,6 +39,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
 import { gymCoursesRegisterFormServiceProvider } from './services/business/gym-courses-registration-form.service';
+import { membershipRegistrationServiceProvider } from './services/business/membership-registration-form.service';
 import { tripRegistrationServiceProvider } from './services/business/trip-registration-form.service';
 
 @NgModule({
@@ -83,6 +84,7 @@ import { tripRegistrationServiceProvider } from './services/business/trip-regist
         tripRegistrationServiceProvider,
         courseRegistrationServiceProvider,
         gymCoursesRegisterFormServiceProvider,
+        membershipRegistrationServiceProvider,
         {
             provide: MAT_DIALOG_DEFAULT_OPTIONS,
             useValue: { maxWidth: '90vw', hasBackdrop: true },

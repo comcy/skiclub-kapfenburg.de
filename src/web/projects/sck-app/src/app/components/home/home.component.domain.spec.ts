@@ -29,12 +29,18 @@ describe('HomeComponent (domain scenarios)', () => {
         courseTiles.forEach((t) => expect(t.actions).toContain(TileActions.Register));
     });
 
-    it('info tiles should not have Register action', () => {
-        const infoTiles = component.tiles.filter((t) => t.type !== TileType.Course);
+    it('info tiles should not have Register action, except the membership application tile', () => {
+        const infoTiles = component.tiles.filter((t) => t.type !== TileType.Course && t.id !== 'membership');
         infoTiles.forEach((t) => expect(t.actions ?? []).not.toContain(TileActions.Register));
     });
 
-    it('click behavior tiles (membership) have a download link when action is Download', () => {
+    it('the membership tile registers online instead of downloading a PDF', () => {
+        const membershipTile = component.tiles.find((t) => t.id === 'membership');
+        expect(membershipTile?.actions).toContain(TileActions.Register);
+        expect(membershipTile?.downloadActionLink).toBeUndefined();
+    });
+
+    it('click behavior tiles have a download link when action is Download', () => {
         const clickTiles = component.tiles.filter((t) => t.behavior === TileBehavior.Click);
         clickTiles.forEach((t) => {
             if ((t.actions ?? []).includes(TileActions.Download)) {

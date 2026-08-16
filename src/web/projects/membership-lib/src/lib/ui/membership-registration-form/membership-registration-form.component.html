@@ -1,0 +1,161 @@
+<div class="content-container">
+    <form class="form" [formGroup]="membershipRegisterForm" (submit)="submit()">
+        @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+            <table class="full-width" cellspacing="0">
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Vorname</mat-label>
+                            <input matInput formControlName="firstName" />
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field class="full-width" appearance="fill">
+                            <mat-label>Nachname</mat-label>
+                            <input matInput formControlName="lastName" />
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+        } @else {
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Vorname</mat-label>
+                <input matInput formControlName="firstName" />
+            </mat-form-field>
+
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Nachname</mat-label>
+                <input matInput formControlName="lastName" />
+            </mat-form-field>
+        }
+
+        <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Geburtstag</mat-label>
+            <input matInput [matDatepicker]="birthdayPicker" formControlName="birthday" />
+            <mat-hint>DD.MM.YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="birthdayPicker"></mat-datepicker-toggle>
+            <mat-datepicker #birthdayPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Adresse</mat-label>
+            <input matInput formControlName="address" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="fill">
+            <mat-label>E-Mail</mat-label>
+            <input matInput formControlName="email" />
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Telefonnummer</mat-label>
+            <input matInput formControlName="phone" />
+        </mat-form-field>
+
+        <div class="family-membership-container">
+            <mat-checkbox formControlName="isFamilyMembership" class="large-checkbox">
+                Familienmitgliedschaft
+                <mat-icon class="info-icon" matTooltip="Weitere Personen deiner Familie mit anmelden.">info</mat-icon>
+            </mat-checkbox>
+
+            @if (membershipRegisterForm.get('isFamilyMembership')?.value) {
+                <div formArrayName="familyMembers" class="family-members-container">
+                    @for (familyMember of familyMembers().controls; track $index; let i = $index) {
+                        <div [formGroupName]="i" class="family-member-group">
+                            <div class="family-member-header">
+                                <h4><mat-icon class="user-icon">person</mat-icon> Person {{ i + 1 }}</h4>
+                                <button
+                                    mat-icon-button
+                                    (click)="removeFamilyMember(i)"
+                                    class="remove-family-member-btn"
+                                    type="button"
+                                >
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Vorname</mat-label>
+                                <input matInput formControlName="firstName" />
+                            </mat-form-field>
+
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Nachname</mat-label>
+                                <input matInput formControlName="lastName" />
+                            </mat-form-field>
+
+                            <mat-form-field class="full-width" appearance="fill">
+                                <mat-label>Geburtstag</mat-label>
+                                <input matInput [matDatepicker]="memberPicker" formControlName="birthday" />
+                                <mat-hint>DD.MM.YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="memberPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #memberPicker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    }
+
+                    <div class="button-wrapper">
+                        <button
+                            mat-fab
+                            extended
+                            (click)="addFamilyMember()"
+                            type="button"
+                            matTooltip="Weitere Person hinzufügen"
+                        >
+                            <mat-icon>person_add</mat-icon>
+                            Person hinzufügen
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <mat-form-field class="full-width" appearance="fill">
+            <mat-label>IBAN</mat-label>
+            <input matInput formControlName="iban" placeholder="DE12 3456 7890 1234 5678 90" />
+            <mat-hint>Für den Einzug des jährlichen Mitgliedsbeitrags</mat-hint>
+        </mat-form-field>
+
+        <div class="declaration-container">
+            <mat-checkbox formControlName="sepaMandateAccepted">
+                Hiermit erteile ich das Lastschriftmandat für den Einzug meines Mitgliedsbeitrags vom oben angegebenen
+                Konto.
+            </mat-checkbox>
+        </div>
+
+        <div class="declaration-container">
+            <mat-checkbox formControlName="declarationAccepted">
+                Ich habe die
+                <a (click)="openDeclarationDialog(); $event.stopPropagation()" class="declaration-link"
+                    >Beitrittserklärung</a
+                >
+                gelesen und akzeptiere sie.
+            </mat-checkbox>
+        </div>
+
+        <div class="declaration-container">
+            <mat-checkbox formControlName="privacyAccepted">
+                Ich habe die
+                <a
+                    href="/datenschutz"
+                    target="_blank"
+                    rel="noopener"
+                    class="declaration-link"
+                    (click)="$event.stopPropagation()"
+                    >Datenschutzerklärung</a
+                >
+                gelesen.
+            </mat-checkbox>
+        </div>
+
+        @if (!membershipRegisterForm.valid && membershipRegisterForm.touched) {
+            <mat-error> Bitte alle erfordelichen Felder (*) ausfüllen. </mat-error>
+        }
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
+
+        @if (isSending) {
+            <mat-progress-spinner class="example-margin" color="primary"> </mat-progress-spinner>
+        }
+    </form>
+</div>
