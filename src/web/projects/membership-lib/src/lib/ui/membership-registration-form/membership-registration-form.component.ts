@@ -16,13 +16,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
-import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { Subject, takeUntil } from 'rxjs';
 import {
     MembershipRegisterFormValue,
     MembershipRegistrationFormServiceInterface,
-    MembershipRegistrationPayload,
 } from './membership-registration-form.interfaces';
 
 // Loose IBAN shape check (country code + check digits + BBAN), spaces allowed for readability.
@@ -78,7 +76,7 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
             familyMembers: this.formBuilder.array([]),
             iban: [null, [Validators.required, Validators.pattern(IBAN_PATTERN)]],
             sepaMandateAccepted: [false, Validators.requiredTrue],
-            declarationAccepted: [false, Validators.requiredTrue],
+            termsAccepted: [false, Validators.requiredTrue],
             privacyAccepted: [false, Validators.requiredTrue],
         });
 
@@ -141,20 +139,8 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
         }
 
         const formValues = this.membershipRegisterForm.getRawValue() as MembershipRegisterFormValue;
-        const payload: MembershipRegistrationPayload = {
-            ...formValues,
-            timestamp: new Date().toISOString(),
-        };
 
-        this.membershipRegistrationFormService.submitRegistration(payload);
-
-        const mailToFormData: FormToMailInformation<MembershipRegisterFormValue> = {
-            receiver: formValues.email,
-            formValues,
-        };
-
-        this.membershipRegistrationFormService.sendConfirmationMail(mailToFormData);
-        this.membershipRegistrationFormService.sendBoardNotificationMail(mailToFormData);
+        this.membershipRegistrationFormService.submitRegistration(formValues);
 
         this.submitForm.emit(true);
         this.isSending = false;

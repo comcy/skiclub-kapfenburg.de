@@ -2,27 +2,17 @@
  * @copyright Copyright (c) 2026 Christian Silfang
  */
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-    getMembershipConfirmationMailSubject,
-    getMembershipConfirmationMailText,
-    getMembershipConfirmationSuccessMessage,
-    getMembershipNotificationMailRecipients,
-    getMembershipNotificationMailSubject,
-    getMembershipNotificationMailText,
-} from 'projects/data/mail-templates';
-import {
     MembershipRegisterFormValue,
     MembershipRegistrationFormServiceInterface,
-    MembershipRegistrationPayload,
 } from 'projects/membership-lib/src/lib/ui/membership-registration-form/membership-registration-form.interfaces';
 import { environment } from 'projects/sck-app/src/environments/environment';
-import {
-    FormToMailInformation,
-    MailInformation,
-} from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+
+const SUCCESS_MESSAGE = `Dein Mitgliedsantrag wurde übermittelt. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
+    Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über: registration@skiclub-kapfenburg.de`;
 
 @Injectable()
 export class MembershipRegistrationFormService implements MembershipRegistrationFormServiceInterface {
@@ -32,52 +22,18 @@ export class MembershipRegistrationFormService implements MembershipRegistration
     private snackAction = 'Ok';
 
     /**
-     * Persists the registration (incl. SEPA/IBAN data) via sck-api. The API is responsible for
-     * storing the IBAN field-encrypted and separate from the remaining registration data.
+     * Submits the registration to sck-api, which persists it (IBAN field-encrypted, stored
+     * separate from the rest) and sends both the applicant confirmation and the board
+     * notification mail itself - see membership-controller.ts / membership-mail-service.ts.
      */
-    public submitRegistration(payload: MembershipRegistrationPayload): void {
-        this.http.post(`${environment.sckApiUrl}/register/membership`, payload).subscribe({
+    public submitRegistration(formValue: MembershipRegisterFormValue): void {
+        this.http.post(`${environment.sckApiUrl}/membership/register`, formValue).subscribe({
             next: () => {
-                this.snackBar.open(getMembershipConfirmationSuccessMessage(), this.snackAction);
+                this.snackBar.open(SUCCESS_MESSAGE, this.snackAction);
             },
             error: (error) => {
                 console.error('Fehler beim Speichern des Mitgliedsantrags:', error);
                 this.snackBar.open('Fehler beim Speichern des Mitgliedsantrags', this.snackAction);
-            },
-        });
-    }
-
-    public sendConfirmationMail(mailData: FormToMailInformation<MembershipRegisterFormValue>): void {
-        this.postMail({
-            to: mailData.receiver,
-            subject: getMembershipConfirmationMailSubject(mailData.formValues),
-            text: getMembershipConfirmationMailText(mailData.formValues),
-        });
-    }
-
-    /**
-     * Separate notification mail to the board/treasurer - deliberately a distinct send (not bcc)
-     * because its content omits the IBAN that the applicant's confirmation mail includes.
-     */
-    public sendBoardNotificationMail(mailData: FormToMailInformation<MembershipRegisterFormValue>): void {
-        this.postMail({
-            to: getMembershipNotificationMailRecipients(),
-            subject: getMembershipNotificationMailSubject(mailData.formValues),
-            text: getMembershipNotificationMailText(mailData.formValues),
-        });
-    }
-
-    private postMail(mailData: MailInformation): void {
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-
-        this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
-            next: (response) => {
-                console.log(response);
-            },
-            error: (error) => {
-                console.error(error);
             },
         });
     }

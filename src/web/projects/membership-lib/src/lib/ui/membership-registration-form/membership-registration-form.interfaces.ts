@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 
 export interface FamilyMember {
     firstName: string;
@@ -11,6 +10,8 @@ export interface FamilyMember {
     birthday: string;
 }
 
+// Mirrors MembershipRegistrationRequestBody in sck-api's domain/membership.ts.
+// termsAccepted is named to match the API contract (it covers the "Beitrittserklärung" checkbox).
 export interface MembershipRegisterFormValue {
     firstName: string;
     lastName: string;
@@ -22,17 +23,13 @@ export interface MembershipRegisterFormValue {
     familyMembers: FamilyMember[];
     iban: string;
     sepaMandateAccepted: boolean;
-    declarationAccepted: boolean;
+    termsAccepted: boolean;
     privacyAccepted: boolean;
 }
 
-export type MembershipRegistrationPayload = MembershipRegisterFormValue & {
-    timestamp: string;
-};
-
+// sck-api persists the registration (SEPA/IBAN field-encrypted, separate from the rest) and sends
+// both the applicant confirmation and board notification mails itself - the frontend only submits.
 @Injectable()
 export abstract class MembershipRegistrationFormServiceInterface {
-    public abstract submitRegistration(payload: MembershipRegistrationPayload): void;
-    public abstract sendConfirmationMail(mailData: FormToMailInformation<MembershipRegisterFormValue>): void;
-    public abstract sendBoardNotificationMail(mailData: FormToMailInformation<MembershipRegisterFormValue>): void;
+    public abstract submitRegistration(formValue: MembershipRegisterFormValue): void;
 }
