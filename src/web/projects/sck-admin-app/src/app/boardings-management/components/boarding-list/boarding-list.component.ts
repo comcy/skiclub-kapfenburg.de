@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { AuthService } from '../../../auth/services/auth.service';
 import { Boarding } from '../../domain/boarding';
 import { BoardingsDataService } from '../../services/boardings-data.service';
 
@@ -16,9 +17,11 @@ import { BoardingsDataService } from '../../services/boardings-data.service';
     template: `
         <div class="header">
             <h2>Boardings</h2>
-            <button mat-raised-button color="primary" (click)="onCreate()">
-                <mat-icon>add</mat-icon> Create New Boarding
-            </button>
+            @if (auth.hasPermission('boardings:write')) {
+                <button mat-raised-button color="primary" (click)="onCreate()">
+                    <mat-icon>add</mat-icon> Create New Boarding
+                </button>
+            }
         </div>
 
         <table mat-table [dataSource]="(boardings$ | async) || []" class="mat-elevation-z8">
@@ -30,12 +33,14 @@ import { BoardingsDataService } from '../../services/boardings-data.service';
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let boarding">
-                    <button mat-icon-button color="primary" (click)="onEdit(boarding)">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button color="warn" (click)="onDelete(boarding)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
+                    @if (auth.hasPermission('boardings:write')) {
+                        <button mat-icon-button color="primary" (click)="onEdit(boarding)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="onDelete(boarding)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    }
                 </td>
             </ng-container>
 
@@ -69,6 +74,7 @@ import { BoardingsDataService } from '../../services/boardings-data.service';
 })
 export class BoardingListComponent implements OnInit {
     private readonly dataService = inject(BoardingsDataService);
+    public readonly auth = inject(AuthService);
 
     @Output() boardingSelected = new EventEmitter<Boarding>();
 
@@ -95,7 +101,6 @@ export class BoardingListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.refresh();
     }
-    // ...
 
     onCreate(): void {
         const newBoarding: Boarding = { id: '', name: '' };

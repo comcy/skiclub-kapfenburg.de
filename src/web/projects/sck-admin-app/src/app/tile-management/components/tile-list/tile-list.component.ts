@@ -12,6 +12,7 @@ import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { AuthService } from '../../../auth/services/auth.service';
 import { Tile } from '../../domain/tile';
 import { TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
@@ -38,6 +39,7 @@ export class TileListComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
+    public readonly auth = inject(AuthService);
 
     @Output() tileSelected = new EventEmitter<Tile>();
     @Input() selectedTileId: string | undefined;

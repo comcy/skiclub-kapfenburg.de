@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { SiteNavigationComponent } from 'projects/shared-lib/src/lib/ui-common/components/site-navigation/site-navigation.component';
 import { NavigationItem } from 'projects/shared-lib/src/public-api';
+import { AuthService } from './auth/services/auth.service';
 
 // From shared-lib dependencies
 import { LayoutModule } from '@angular/cdk/layout';
@@ -30,11 +31,23 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+    public readonly auth = inject(AuthService);
+    private readonly router = inject(Router);
+
     title = 'SCK Admin';
     navItems: NavigationItem[] = [
-        { name: 'Kurse', route: '/courses' },
-        { name: 'Registrierungen', route: '/registrations' },
-        { name: 'Event Management', route: '/event-management' },
+        { name: 'Tiles', route: '/event-management/tiles' },
+        { name: 'Boardings', route: '/event-management/boardings' },
     ];
+
+    ngOnInit(): void {
+        // Populate the session signal so the user bar / permission-gated actions
+        // render correctly even when landing on a route the auth guard doesn't cover.
+        this.auth.checkSession().subscribe();
+    }
+
+    logout(): void {
+        this.auth.logout().subscribe(() => this.router.navigateByUrl('/login'));
+    }
 }

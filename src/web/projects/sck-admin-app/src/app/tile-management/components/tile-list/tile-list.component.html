@@ -1,6 +1,8 @@
 <div class="container">
     <div class="header">
-        <button mat-raised-button color="primary" (click)="onCreate()">Create New Tile</button>
+        @if (auth.hasPermission('tiles:write')) {
+            <button mat-raised-button color="primary" (click)="onCreate()">Create New Tile</button>
+        }
     </div>
 
     <div class="filters">
@@ -99,9 +101,11 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let tile" (click)="$event.stopPropagation()">
-                    <button mat-icon-button (click)="onDelete(tile)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
+                    @if (auth.hasPermission('tiles:write')) {
+                        <button mat-icon-button (click)="onDelete(tile)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    }
                 </td>
             </ng-container>
 

@@ -1,0 +1,47 @@
+import { Component, OnInit, inject } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+
+/**
+ * Landing page for both auth methods: the magic-link email points here with
+ * ?token=..., and the backend's Google OAuth callback redirects here after
+ * setting the session cookie (no token param in that case).
+ */
+@Component({
+    selector: 'app-auth-callback',
+    standalone: true,
+    imports: [MatProgressSpinnerModule],
+    template: `<div class="callback-container"><mat-spinner diameter="40"></mat-spinner></div>`,
+    styles: [
+        `
+            .callback-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 80vh;
+            }
+        `,
+    ],
+})
+export class AuthCallbackComponent implements OnInit {
+    private readonly auth = inject(AuthService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
+
+    ngOnInit(): void {
+        const token = this.route.snapshot.queryParamMap.get('token');
+        const result$ = token ? this.auth.verifyMagicLink(token) : this.auth.checkSession();
+
+        result$.subscribe({
+            next: (session) => {
+                if (session) {
+                    this.router.navigateByUrl('/event-management');
+                } else {
+                    this.router.navigate(['/login'], { queryParams: { error: 'auth-failed' } });
+                }
+            },
+            error: () => this.router.navigate(['/login'], { queryParams: { error: 'auth-failed' } }),
+        });
+    }
+}

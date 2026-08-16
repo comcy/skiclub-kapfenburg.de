@@ -21,6 +21,7 @@ import { EditableTextComponent } from '../editable-text/editable-text.component'
 import { TilePreviewComponent } from '../tile-preview/tile-preview.component';
 import { BoardingsDataService } from '../../../boardings-management/services/boardings-data.service';
 import { Boarding } from '../../../boardings-management/domain/boarding';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
     selector: 'app-tile-editor',
@@ -51,6 +52,7 @@ export class TileEditorComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
     private readonly boardingsService = inject(BoardingsDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    public readonly auth = inject(AuthService);
 
     public isUploadingImage = false;
     public availableBoardings$: Observable<Boarding[]> | undefined;
@@ -64,16 +66,6 @@ export class TileEditorComponent implements OnInit {
     ngOnInit(): void {
         // Load all boardings for the dropdown (up to 1000)
         this.availableBoardings$ = this.boardingsService.getBoardings(1, 1000).pipe(map((response) => response.items));
-    }
-
-    public get boardingsAsString(): string {
-        return this.tile?.boardings?.join('\n') ?? '';
-    }
-
-    public set boardingsAsString(value: string) {
-        if (this.tile) {
-            this.tile.boardings = value.split('\n');
-        }
     }
 
     togglePreview(): void {

@@ -1,4 +1,8 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth/auth.guard';
+import { AuthCallbackComponent } from './auth/auth-callback/auth-callback.component';
+import { InviteAcceptComponent } from './auth/invite-accept/invite-accept.component';
+import { LoginComponent } from './auth/login/login.component';
 import { BoardingManagementComponent } from './boardings-management/boarding-management.component';
 import { MediaPlaceholderComponent } from './tile-management/components/media-placeholder.component';
 import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
@@ -14,8 +18,21 @@ export const routes: Routes = [
         redirectTo: 'event-management',
     },
     {
+        path: 'login',
+        component: LoginComponent,
+    },
+    {
+        path: 'invite/:token',
+        component: InviteAcceptComponent,
+    },
+    {
+        path: 'auth/callback',
+        component: AuthCallbackComponent,
+    },
+    {
         path: 'event-management',
         component: TileManagementComponent,
+        canActivate: [authGuard],
         children: [
             {
                 path: 'tiles',

@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../../../auth/services/auth.service';
 import { Boarding, BoardingCreationParams } from '../../domain/boarding';
 import { BoardingsDataService } from '../../services/boardings-data.service';
 
@@ -21,9 +22,11 @@ import { BoardingsDataService } from '../../services/boardings-data.service';
                 </mat-form-field>
 
                 <div class="actions">
-                    <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!boarding.name">
-                        Save
-                    </button>
+                    @if (auth.hasPermission('boardings:write')) {
+                        <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!boarding.name">
+                            Save
+                        </button>
+                    }
                     <button mat-button (click)="onCancel()">Cancel</button>
                 </div>
             </div>
@@ -48,6 +51,7 @@ export class BoardingEditorComponent {
     @Output() cancelled = new EventEmitter<void>();
 
     private readonly dataService = inject(BoardingsDataService);
+    public readonly auth = inject(AuthService);
 
     onSave(): void {
         if (!this.boarding) return;
