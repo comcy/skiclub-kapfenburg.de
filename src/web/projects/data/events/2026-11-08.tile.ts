@@ -20,6 +20,7 @@ export const SKIBOERSE_TILE: InfoTile = {
     image: '../../../../assets/img/cards/skiboers.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
+    details: '',
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2026-11-10'),
     status: TileStatus.Open,

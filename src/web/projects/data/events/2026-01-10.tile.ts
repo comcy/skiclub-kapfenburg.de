@@ -55,6 +55,7 @@ export const TRAININGSTAG_OBERJOCH_TILE: EventTile = {
     image: '../../../../assets/img/cards/piste2.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
+    details: '',
     actions: [TileActions.Register],
     expiration: new Date('2026-01-11'),
     boardings: BOARDING_LIST,

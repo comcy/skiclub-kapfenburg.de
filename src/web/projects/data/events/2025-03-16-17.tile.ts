@@ -43,6 +43,7 @@ export const FREIE_PISTENAUSFAHRT: EventTile = {
     image: '../../../../assets/img/cards/ski.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
+    details: '',
     actions: [TileActions.Register],
     expiration: new Date('2026-03-17'),
     boardings: BOARDING_LIST,

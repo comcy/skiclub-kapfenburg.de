@@ -29,6 +29,7 @@ export const MONTAGSAUSFAHRT_FELLHORN: EventTile = {
     image: '../../../../assets/img/cards/skiing.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
+    details: '',
     actions: [TileActions.Register],
     expiration: new Date('2026-03-10'),
     boardings: BOARDING_LIST,

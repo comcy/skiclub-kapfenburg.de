@@ -37,6 +37,7 @@ export interface BaseTile {
     image: string;
     imageDescription: string;
     description: string;
+    details: string;
     status: TileStatus;
     expiration: Date;
     behavior: TileBehavior;

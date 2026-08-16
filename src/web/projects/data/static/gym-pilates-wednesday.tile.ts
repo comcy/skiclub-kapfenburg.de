@@ -8,29 +8,33 @@ import { GymCourseInformation } from 'projects/gym-lib/src/lib/domain';
 const DESCRIPTION_TEXT = `
 Pilates ist ein effektives Ganzkörpertraining zur Kräftigung von Bauch, Rücken und Beckenboden.
 Mit Fokus auf das „Powerhouse“, präzise Übungen und bewusste Atmung verbessert es Haltung und Körpergefühl.
+`;
 
+const DETAILS_TEXT = `
 **Termine**
-- 10 x mittwochs 
-- Start am 14. Jan. 2026
-- Ende am 25. Mär. 2026
+- 12 x mittwochs 
+- Start am 23. Sep. 2026
+- Ende am (einschl.) 16. Dez. 2026
 - 8:30 Uhr - 09:30 Uhr 
 - im "Alten Schulhaus" in Hülen (Aalener Gasse 12)
+- Kurs pausiert in den Herbstferien
 
 **Kursgebühren**
-- Mitglieder: 40,00 € (4 € à Kurseinheit)
-- Nicht-Mtglieder: 60,00 € (6 € à Kurseinheit)
+- Mitglieder: 48,00 € (4 € à Kurseinheit)
+- Nicht-Mtglieder: 72,00 € (6 € à Kurseinheit)
 `;
 
 export const GYM_PILATES_COURSE_INFORMATION_WED: GymCourseInformation = {
     name: 'Pilates (Mittwochs)',
     description: DESCRIPTION_TEXT,
-    date: '14.01.2026 bis 25.03.2026',
+    details: DETAILS_TEXT,
+    date: '23.09.2026 bis (einschl.) 16.12.2026',
     time: 'Mittwochs, 8:30 Uhr - 09:30 Uhr',
     location: 'Altes Schulhaus Hülen',
     contact: 'Mascha Welk',
     prices: {
-        member: '40 EUR',
-        nonMember: '60 EUR',
+        member: '48 EUR',
+        nonMember: '72 EUR',
     },
 };
 
@@ -42,9 +46,10 @@ export const GYM_PILATES_WEDNESDAY_TILE: Tile = {
     type: TileType.Course,
     date: GYM_PILATES_COURSE_INFORMATION_WED.date ?? '',
     subTitle: `${GYM_PILATES_COURSE_INFORMATION_WED.time} (${GYM_PILATES_COURSE_INFORMATION_WED.location})`,
-    image: '../../../../assets/img/pilates/2026_01-03.png',
+    image: '../../../../assets/img/pilates/2026_07-03_wednesday.png',
     imageDescription: 'pilates',
     description: DESCRIPTION_TEXT,
+    details: DETAILS_TEXT,
     actions: [TileActions.Register],
     expiration: new Date('2027-12-31'),
     status: TileStatus.Open,

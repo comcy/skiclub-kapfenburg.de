@@ -7,19 +7,16 @@ import { BehaviorSubject, take, tap } from 'rxjs';
 import { GymInformationProviderServiceInterface } from '../../api/provider-services/gym-provider-service.interface';
 import { GymCourseInformation } from '../models';
 import { GymInformationCoreServiceInterface } from './gym-information-core-service.interface';
+import { GYM_PILATES_COURSE_INFORMATION_WED, GYM_PILATES_COURSE_INFORMATION_THU } from 'projects/data/static';
 
 @Injectable()
 export class GymInformationCoreService implements GymInformationCoreServiceInterface {
     private gymInformationProviderService = inject(GymInformationProviderServiceInterface);
 
-    public gymOffers$: BehaviorSubject<GymCourseInformation[]> = new BehaviorSubject<GymCourseInformation[]>([
-        {
-            name: 'TEST',
-            description: 'TEST',
-            time: 'TEST',
-            location: 'TEST',
-            contact: 'TEST',
-        },
+    public gymOffers$: BehaviorSubject<GymCourseInformation[]> = new BehaviorSubject<GymCourseInformation[]>([]);
+    public pilatesOffers$: BehaviorSubject<GymCourseInformation[]> = new BehaviorSubject<GymCourseInformation[]>([
+        GYM_PILATES_COURSE_INFORMATION_WED,
+        GYM_PILATES_COURSE_INFORMATION_THU,
     ]);
 
     constructor() {

@@ -37,6 +37,7 @@ export const PARTYAUSFAHRT_SONNENKOPF_TILE: EventTile = {
     image: 'https://cdn.pixabay.com/photo/2014/10/22/18/04/man-498473_960_720.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
+    details: '',
     actions: [TileActions.Register],
     expiration: new Date('2025-12-28'),
     boardings: BOARDING_LIST,

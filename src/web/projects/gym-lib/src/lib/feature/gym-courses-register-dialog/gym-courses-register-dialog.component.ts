@@ -27,6 +27,7 @@ export class GymCoursesRegisterDialogComponent implements OnInit {
         {
             name: '',
             description: '',
+            details: '',
             time: '',
             location: '',
             contact: '',
@@ -45,6 +46,7 @@ export class GymCoursesRegisterDialogComponent implements OnInit {
             {
                 name: tile.course.name,
                 description: tile.course.description,
+                details: tile.course.details,
                 date: tile.course.date,
                 time: tile.course.time,
                 location: tile.course.location,

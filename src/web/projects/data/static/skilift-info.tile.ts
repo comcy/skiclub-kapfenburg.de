@@ -4,10 +4,11 @@
 
 import { Tile, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist ab dem 31. Januar geöffnet.
+const DESCRIPTION_TEXT = `Der Skilift an der Kapfenburg ist geschlossen.`;
 
+const DETAILS_TEXT = `
 **Öffnungszeiten**
-- ab 31. Januar 2026: ab 10 Uhr geöffnet
+Aktuell ist der Liftbetrieb nicht möglich
 
 **Preise 10er Karte**
 - Kinder: 6€
@@ -24,14 +25,15 @@ export const SKILIFT_INFO_TILE: Tile = {
     order: 1,
     type: TileType.Info,
     behavior: TileBehavior.Click,
-    title: 'Betrieb am Wochenende ab 10 Uhr',
+    title: 'Kein Betrieb',
     date: 'SKILIFT KAPFENBURG GEÖFFNET',
-    subTitle: '31. Januar 2026, ab 10 Uhr',
+    subTitle: 'ab 05. Februar 2026 geschlossen',
     image: '../../../../assets/img/cards/skilift_nacht.jpeg',
     imageDescription: 'Skilift',
     description: DESCRIPTION_TEXT,
+    details: DETAILS_TEXT,
     actions: [],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
-    expiration: new Date('2026-12-31'),
+    expiration: new Date('2026-03-31'),
     status: TileStatus.Open,
 };

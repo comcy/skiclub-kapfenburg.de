@@ -54,6 +54,7 @@ export const TAGESAUSFAHRT_MELLAU_DAMUELS: EventTile = {
     image: '../../../../assets/img/cards/snow.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
+    details: '',
     actions: [TileActions.Register],
     expiration: new Date('2026-02-29'),
     boardings: BOARDING_LIST,

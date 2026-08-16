@@ -46,6 +46,7 @@ export const PARTYAUSFAHRT_LERMOOS: EventTile = {
     image: '../../../../assets/img/cards/lift.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
+    details: '',
     actions: [TileActions.Register],
     expiration: new Date('2026-02-22'),
     boardings: BOARDING_LIST,
