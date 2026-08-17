@@ -16,6 +16,13 @@ const SENDER_PW = process.env.SENDER_PW || '';
 // rather than importing that HTTP handler, since it isn't a reusable "send
 // this mail" function on its own.
 export const sendMail = async (to: string, subject: string, html: string): Promise<void> => {
+  if (!SMTP_SERVER) {
+    // No SMTP configured (local dev) — log instead of failing. Production
+    // always has SMTP_SERVER set, so this path never runs there.
+    console.log(`[dev] Mail an ${to} (${subject}):\n${html}`);
+    return;
+  }
+
   const transporter = nodemailer.createTransport({
     host: SMTP_SERVER,
     port: SMTP_PORT,
