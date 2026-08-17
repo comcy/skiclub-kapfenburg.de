@@ -161,6 +161,13 @@ export const listInvites = (): { id: string; email: string; createdAt: string; e
     acceptedAt: string | null;
   }[];
 
+export const getInviteByToken = (token: string): { email: string } | undefined => {
+  const invite = db
+    .prepare('SELECT email FROM invites WHERE token_hash = ? AND accepted_at IS NULL AND expires_at > ?')
+    .get(hashToken(token), nowIso()) as { email: string } | undefined;
+  return invite;
+};
+
 export const acceptInvite = (token: string): { user: AuthUser; sessionToken: string } | undefined => {
   const hashed = hashToken(token);
   const invite = db

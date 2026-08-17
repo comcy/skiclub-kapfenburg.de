@@ -5,8 +5,9 @@ import { AuthService } from '../services/auth.service';
 
 /**
  * Landing page for both auth methods: the magic-link email points here with
- * ?token=..., and the backend's Google OAuth callback redirects here after
- * setting the session cookie (no token param in that case).
+ * ?token=... (still needs exchanging via POST /auth/magic-link/verify), and
+ * the backend's Google OAuth callback redirects here with ?sessionToken=...
+ * (already a live session, just needs storing).
  */
 @Component({
     selector: 'app-auth-callback',
@@ -30,8 +31,15 @@ export class AuthCallbackComponent implements OnInit {
     private readonly router = inject(Router);
 
     ngOnInit(): void {
-        const token = this.route.snapshot.queryParamMap.get('token');
-        const result$ = token ? this.auth.verifyMagicLink(token) : this.auth.checkSession();
+        const params = this.route.snapshot.queryParamMap;
+        const sessionToken = params.get('sessionToken');
+        const magicLinkToken = params.get('token');
+
+        const result$ = sessionToken
+            ? this.auth.applySessionToken(sessionToken)
+            : magicLinkToken
+              ? this.auth.verifyMagicLink(magicLinkToken)
+              : this.auth.checkSession();
 
         result$.subscribe({
             next: (session) => {

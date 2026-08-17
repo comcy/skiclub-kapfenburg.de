@@ -27,7 +27,7 @@ export const requestMagicLink: RequestHandler = async (req, res) => {
     // Always respond the same way regardless of invite status, so the
     // endpoint can't be used to enumerate which addresses are invited.
     if (token) {
-      const link = `${ADMIN_APP_URL}/auth/verify?token=${token}`;
+      const link = `${ADMIN_APP_URL}/auth/callback?token=${token}`;
       await sendMail(
         email,
         'Anmeldelink für das SCK-Admin-Tool',
@@ -95,7 +95,10 @@ export const googleCallback: RequestHandler = async (req, res) => {
       return;
     }
 
-    res.redirect(`${ADMIN_APP_URL}/auth/callback?token=${result.sessionToken}`);
+    // sessionToken (not token): the browser already has a fully-issued
+    // session here, unlike the magic-link callback where ?token= still needs
+    // to be exchanged via POST /auth/magic-link/verify.
+    res.redirect(`${ADMIN_APP_URL}/auth/callback?sessionToken=${result.sessionToken}`);
   } catch (error: any) {
     console.error('Fehler bei der Google-Anmeldung:', error);
     res.redirect(`${ADMIN_APP_URL}/auth/callback?error=server_error`);

@@ -1,8 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Permission, Session } from '../domain/session';
+
+const TOKEN_KEY = 'sck-admin-session-token';
+
+interface AuthUser {
+    id: string;
+    email: string;
+    isSuperAdmin: boolean;
+    permissions: Permission[];
+}
+
+interface LoginResult {
+    user: AuthUser;
+    sessionToken: string;
+}
+
+const toSession = (user: AuthUser): Session => ({ email: user.email, permissions: user.permissions });
 
 @Injectable({
     providedIn: 'root',
@@ -18,11 +34,36 @@ export class AuthService {
         return this._session()?.permissions.includes(permission) ?? false;
     }
 
-    /** Loads the current session from the server-side cookie, if any. Never errors. */
+    getToken(): string | null {
+        return localStorage.getItem(TOKEN_KEY);
+    }
+
+    private setToken(token: string): void {
+        localStorage.setItem(TOKEN_KEY, token);
+    }
+
+    /** Google's OAuth callback hands back an already-issued session token (no exchange step needed) — store it and load the session it belongs to. */
+    applySessionToken(sessionToken: string): Observable<Session | null> {
+        this.setToken(sessionToken);
+        return this.checkSession();
+    }
+
+    private clearToken(): void {
+        localStorage.removeItem(TOKEN_KEY);
+    }
+
+    /** Loads the current session for the token held locally, if any. Never errors. */
     checkSession(): Observable<Session | null> {
-        return this.http.get<Session>(`${this.apiUrl}/auth/session`, { withCredentials: true }).pipe(
+        if (!this.getToken()) {
+            this._session.set(null);
+            return of(null);
+        }
+
+        return this.http.get<AuthUser>(`${this.apiUrl}/auth/me`).pipe(
+            map(toSession),
             tap((session) => this._session.set(session)),
             catchError(() => {
+                this.clearToken();
                 this._session.set(null);
                 return of(null);
             }),
@@ -34,16 +75,15 @@ export class AuthService {
     }
 
     verifyMagicLink(token: string): Observable<Session> {
-        return this.http
-            .get<Session>(`${this.apiUrl}/auth/magic-link/verify`, {
-                params: { token },
-                withCredentials: true,
-            })
-            .pipe(tap((session) => this._session.set(session)));
+        return this.http.post<LoginResult>(`${this.apiUrl}/auth/magic-link/verify`, { token }).pipe(
+            tap((result) => this.setToken(result.sessionToken)),
+            map((result) => toSession(result.user)),
+            tap((session) => this._session.set(session)),
+        );
     }
 
     googleLoginUrl(): string {
-        return `${this.apiUrl}/auth/google`;
+        return `${this.apiUrl}/auth/google/start`;
     }
 
     getInvite(token: string): Observable<{ email: string }> {
@@ -51,12 +91,12 @@ export class AuthService {
     }
 
     acceptInvite(token: string): Observable<void> {
-        return this.http.post<void>(`${this.apiUrl}/invites/${token}/accept`, {});
+        return this.http.post<void>(`${this.apiUrl}/invites/accept`, { token });
     }
 
-    logout(): Observable<void> {
-        return this.http
-            .post<void>(`${this.apiUrl}/auth/logout`, {}, { withCredentials: true })
-            .pipe(tap(() => this._session.set(null)));
+    /** Server holds no cookie to clear and there is no session-revocation endpoint yet — dropping the local token is all that's needed for now. */
+    logout(): void {
+        this.clearToken();
+        this._session.set(null);
     }
 }

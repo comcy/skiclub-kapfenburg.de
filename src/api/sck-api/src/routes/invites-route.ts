@@ -3,14 +3,15 @@
  */
 
 import { Router } from 'express';
-import { acceptInvite, createInvite, listInvites } from '../controllers/invites-controller.js';
+import { acceptInvite, createInvite, getInvitePreview, listInvites } from '../controllers/invites-controller.js';
 import { requireAuth, requirePermission } from '../middleware/auth-middleware.js';
 
 const router = Router();
 
-// Accepting an invite is how a brand-new user authenticates for the first
-// time — must stay open, no requireAuth.
+// Previewing and accepting an invite are how a brand-new user authenticates
+// for the first time — must stay open, no requireAuth.
 router.post('/invites/accept', acceptInvite);
+router.get('/invites/:token', getInvitePreview);
 
 router.get('/invites', requireAuth, requirePermission('users:manage'), listInvites);
 router.post('/invites', requireAuth, requirePermission('users:manage'), createInvite);

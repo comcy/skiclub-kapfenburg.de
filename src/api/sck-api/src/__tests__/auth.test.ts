@@ -104,4 +104,17 @@ describe('Auth Routes', () => {
     const secondAccept = await request(app).post('/api/invites/accept').send({ token: 'raw-invite-token' });
     expect(secondAccept.status).toBe(401);
   });
+
+  it('GET /api/invites/:token - zeigt die eingeladene Adresse für einen offenen Einladungslink, sonst 404', async () => {
+    db.prepare(
+      "INSERT INTO invites (id, email, token_hash, expires_at) VALUES (?, ?, ?, datetime('now', '+7 days'))",
+    ).run(randomUUID(), 'preview@example.com', hashToken('preview-token'));
+
+    const res = await request(app).get('/api/invites/preview-token');
+    expect(res.status).toBe(200);
+    expect(res.body.email).toBe('preview@example.com');
+
+    const missingRes = await request(app).get('/api/invites/does-not-exist');
+    expect(missingRes.status).toBe(404);
+  });
 });

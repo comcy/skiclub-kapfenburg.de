@@ -23,7 +23,7 @@ export const createInvite: RequestHandler = async (req, res) => {
     }
 
     const { token } = authService.createInvite(email, req.user!.email);
-    const link = `${ADMIN_APP_URL}/invite/accept?token=${token}`;
+    const link = `${ADMIN_APP_URL}/invite/${token}`;
     await sendMail(
       email,
       'Einladung zum SCK-Admin-Tool',
@@ -34,6 +34,23 @@ export const createInvite: RequestHandler = async (req, res) => {
   } catch (error: any) {
     console.error('Fehler beim Erstellen der Einladung:', error);
     res.status(500).json({ error: 'Fehler beim Erstellen der Einladung.', details: error.message });
+  }
+};
+
+// Public preview for the invite-accept screen: lets an as-yet-unauthenticated
+// invitee see which address they were invited as before choosing a login
+// method. Deliberately returns only the email, nothing else about the invite.
+export const getInvitePreview: RequestHandler = (req, res) => {
+  try {
+    const invite = authService.getInviteByToken(String(req.params.token));
+    if (!invite) {
+      res.status(404).json({ error: 'Einladung ungültig, bereits angenommen oder abgelaufen.' });
+      return;
+    }
+    res.status(200).json({ email: invite.email });
+  } catch (error: any) {
+    console.error('Fehler beim Laden der Einladung:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der Einladung.', details: error.message });
   }
 };
 
