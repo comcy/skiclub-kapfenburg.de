@@ -1,6 +1,7 @@
 packages:
   - 'src/web'
   - 'src/api/sck-api'
+  - 'e2e'
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
