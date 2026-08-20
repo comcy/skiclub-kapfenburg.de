@@ -67,6 +67,13 @@ const routes: Routes = [
         data: { dialogType: 'agb' },
     },
     {
+        path: 'satzung',
+        loadComponent: () =>
+            import('./components/routing-dialog/routing-dialog.component').then((m) => m.RoutingDialogComponent),
+        outlet: 'modal',
+        data: { dialogType: 'satzung' },
+    },
+    {
         path: EMPTY_ROUTE,
         pathMatch: 'full',
         redirectTo: HOME_ROUTE,

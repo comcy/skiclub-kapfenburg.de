@@ -9,3 +9,4 @@ getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDyn
 // Explicit imports (fallback because dynamic context failed in environment)
 import './app/components/home/home.component.spec';
 import './app/services/business/course-registration-form.service.spec';
+import './app/services/business/membership-registration-form.service.spec';
