@@ -1,0 +1,37 @@
+<shared-lib-site-header [title]="tile ? tile.title : 'Ausfahrt'"></shared-lib-site-header>
+
+<div class="content-container">
+    @if (tile) {
+        <a class="back-link" routerLink="/home">&larr; Zurück zur Übersicht</a>
+
+        <mat-card appearance="outlined" class="detail-card">
+            <mat-card-header>
+                <mat-card-title class="trip-date">{{ tile.date }}</mat-card-title>
+                <mat-card-subtitle>{{ tile.subTitle }}</mat-card-subtitle>
+            </mat-card-header>
+
+            @if (tile.status === tileStatusEnum.Canceled) {
+                <span class="canceled-stamp">Abgesagt</span>
+            }
+            @if (tile.status === tileStatusEnum.BookedUp) {
+                <span class="booked-up-stamp">Warteliste</span>
+            }
+            <img mat-card-image src="{{ tile.image }}" alt="{{ tile.imageDescription }}" />
+
+            <mat-card-content class="mat-card-content">
+                <p [innerHTML]="markdown.render(description)"></p>
+                @if (tile.details) {
+                    <p [innerHTML]="markdown.render(tile.details)"></p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+        <section class="registration-section">
+            <h2>Anmeldung</h2>
+            <lib-trips-registration-form [additionalData]="registrationData"></lib-trips-registration-form>
+        </section>
+    } @else {
+        <p class="not-found">Diese Ausfahrt wurde nicht gefunden.</p>
+        <a routerLink="/home">Zurück zur Startseite</a>
+    }
+</div>

@@ -26,7 +26,6 @@ import { SiteHeaderComponent } from '@shared/ui-common';
 import { MarkdownRenderService } from '@shared/util-markdown';
 import { TripsFeatureModule } from '@trips-lib';
 import {
-    EventTile,
     InfoTile,
     Tile,
     TileActions,
@@ -35,6 +34,7 @@ import {
     TileType,
 } from 'projects/shared-lib/src/lib/ui-common/models';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
+import { TRIPS_ROUTE } from '../../route-segments';
 
 @Component({
     selector: 'app-home',
@@ -70,6 +70,7 @@ export class HomeComponent implements OnInit {
     public tileStatusEnum = TileStatus;
     public tileActionsEnum = TileActions;
     public tileBehaviorEnum = TileBehavior;
+    public tileTypeEnum = TileType;
     public registerLabel = 'Anmelden';
     public tiles: Tile[] = [];
     public programmDownloadLink = PROGRAMM_DOWNLOAD_LINK;
@@ -111,12 +112,23 @@ export class HomeComponent implements OnInit {
         this.router.navigate([{ outlets: { modal: ['register', tile.id] } }]);
     }
 
+    public openTripDetail(tile: Tile): void {
+        this.router.navigate([TRIPS_ROUTE, tile.id]);
+    }
+
     public openLink(link: string | undefined) {
         if (link) {
             window.open(link, '_blank');
         }
     }
 
+    /**
+     * Builds the description markdown for non-trip tiles (info tiles get
+     * their location/timeData appended). Trip (Event) tiles no longer render
+     * inline on the home tile - their full description now lives on the
+     * trip detail page (TripDetailComponent in trips-lib), which builds its
+     * own event-specific markdown (destination, boardings, pricing table).
+     */
     public getTileDescription(tile: Tile): string {
         if (tile.type === TileType.Info) {
             const infoTile = tile as InfoTile;
@@ -133,77 +145,6 @@ export class HomeComponent implements OnInit {
             return content;
         }
 
-        if (tile.type !== TileType.Event) {
-            return tile.description;
-        }
-
-        const eventTile = tile as EventTile;
-        let dynamicContent = tile.description || '';
-
-        // 1. Destination / Location
-        if (eventTile.destination) {
-            dynamicContent += `\n\n**Ziel:** ${eventTile.destination}\n`;
-        }
-        if (eventTile.location) {
-            dynamicContent += `\n\n**Ort:** ${eventTile.location}\n`;
-        }
-
-        // 2. Boarding List (Abfahrtszeiten)
-        if (eventTile.boardings && eventTile.boardings.length > 0) {
-            dynamicContent += '\n **Abfahrtszeiten**\n';
-            eventTile.boardings.forEach((b: string) => {
-                dynamicContent += ` - ${b}\n`;
-            });
-        }
-
-        // 3. Pricing Table
-        const pricing = eventTile.tripConfig?.pricing;
-        if (pricing) {
-            dynamicContent += '\n**Kosten**\n\n';
-            dynamicContent += '| Bus + Liftkarte + Optionen | Mitglieder | Nicht-Mitglieder |\n';
-            dynamicContent += '|:---|---:|---:|\n';
-
-            // Bus + Lift
-            if (pricing.busLift) {
-                dynamicContent += `| Erwachsene | ${pricing.busLift.adult.member},00 € | ${pricing.busLift.adult.nonMember},00 € |\n`;
-                dynamicContent += `| Jugendliche (bis 16 J.) | ${pricing.busLift.youthUntil16.member},00 € | ${pricing.busLift.youthUntil16.nonMember},00 € |\n`;
-                dynamicContent += `| Kinder (bis 6 J.) | ${pricing.busLift.childUntil6.member},00 € | ${pricing.busLift.childUntil6.nonMember},00 € |\n`;
-            }
-
-            // Bus Only
-            if (pricing.busOnly) {
-                dynamicContent += `| Nur Busfahrt | ${pricing.busOnly.member},00 € | ${pricing.busOnly.nonMember},00 € |\n`;
-            }
-
-            // Addons
-            const addons = pricing.addons;
-            if (addons && Object.keys(addons).length > 0) {
-                // Visual separator line
-                dynamicContent += `| -------------------------- | ---------- | ---------- |\n`;
-
-                if (addons.courseBeginner) {
-                    dynamicContent += `| Anfängerkurs | ${addons.courseBeginner.member},00 € | ${addons.courseBeginner.nonMember},00 € |\n`;
-                }
-                if (addons.courseAdvanced) {
-                    dynamicContent += `| Fortgeschrittenenkurs | ${addons.courseAdvanced.member},00 € | ${addons.courseAdvanced.nonMember},00 € |\n`;
-                }
-                if (addons.technikHalf) {
-                    dynamicContent += `| Techniktraining (1/2 Tag) | ${addons.technikHalf.member},00 € | ${addons.technikHalf.nonMember},00 € |\n`;
-                }
-                if (addons.technikFull) {
-                    dynamicContent += `| Techniktraining (ganzer Tag) | ${addons.technikFull.member},00 € | ${addons.technikFull.nonMember},00 € |\n`;
-                }
-                if (addons.snowshoes) {
-                    dynamicContent += `| Schneeschuhe | ${addons.snowshoes.member},00 € | ${addons.snowshoes.nonMember},00 € |\n`;
-                }
-            }
-        }
-
-        // 4. Additional Information
-        if (eventTile.additionalInformation) {
-            dynamicContent += `\n---\n_*${eventTile.additionalInformation}_`;
-        }
-
-        return dynamicContent;
+        return tile.description;
     }
 }

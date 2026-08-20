@@ -1,0 +1,55 @@
+.content-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 32px 64px 32px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 16px;
+    text-decoration: none;
+    color: #3f51b5;
+}
+
+.detail-card {
+    margin-bottom: 32px;
+}
+
+.trip-date {
+    color: #3f51b5;
+}
+
+.registration-section h2 {
+    margin-bottom: 16px;
+}
+
+.not-found {
+    font-size: 1.1rem;
+}
+
+.canceled-stamp,
+.booked-up-stamp {
+    font-size: 3rem;
+    font-weight: 700;
+    border: 0.25rem solid #555;
+    display: inline-block;
+    padding: 0.95rem 2rem;
+    text-transform: uppercase;
+    border-radius: 2rem;
+    font-family: 'Courier';
+    -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+    mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+    -webkit-mask-size: 944px 604px;
+    mask-size: 944px 604px;
+    mix-blend-mode: multiply;
+}
+
+.canceled-stamp {
+    transform: rotate(10deg);
+    color: rgba(236, 12, 12, 0.884);
+}
+
+.booked-up-stamp {
+    transform: rotate(-6deg);
+    color: rgba(175, 177, 45, 0.884);
+}
