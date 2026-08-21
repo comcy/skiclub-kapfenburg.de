@@ -12,7 +12,7 @@
     </div>
 }
 
-<div class="content-container">
+<div class="content-container" [class.overlaps-image]="tile">
     @if (tile) {
         <a class="back-link" routerLink="/home">&larr; Zurück zur Übersicht</a>
 

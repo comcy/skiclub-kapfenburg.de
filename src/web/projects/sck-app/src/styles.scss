@@ -15,3 +15,18 @@ body {
 .cdk-overlay-container {
     z-index: 99;
 }
+
+// Section tab bars (Übersicht/Anmeldung/Information/Preise/…) default to Material's
+// generous tab padding, which forces horizontal scrolling with cut-off tabs on phones.
+// Shrink them enough that all tabs fit in one row without scrolling instead.
+@media (max-width: 600px) {
+    .mat-mdc-tab-header .mdc-tab {
+        min-width: 0;
+        padding: 0 8px;
+
+        .mdc-tab__text-label {
+            font-size: 12px;
+            letter-spacing: normal;
+        }
+    }
+}
