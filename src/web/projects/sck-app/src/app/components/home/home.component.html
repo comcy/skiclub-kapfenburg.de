@@ -187,49 +187,81 @@
             <div class="tiles-grid">
                 @for (info of infoTiles; track info.id) {
                     @if (info.visible) {
-                        <article class="tile-card" [class.expired]="info.expired">
+                        <article class="tile-card" [class.expired]="info.expired" [class.image-only]="info.imageOnly">
                             <div class="tile-card-image">
                                 <img [src]="info.image" [alt]="info.imageDescription" />
                                 @if (info.status === tileStatusEnum.Canceled) {
                                     <span class="badge badge-off">Abgesagt</span>
                                 }
                             </div>
-                            <div class="tile-card-content">
-                                <div class="eyebrow">{{ info.date }}</div>
-                                <h3>{{ info.title }}</h3>
-                                <p class="description" [innerHTML]="markdown.render(getTileDescription(info))"></p>
-                                @if (info.actions && info.actions.length > 0) {
-                                    <div class="card-actions">
-                                        <span></span>
-                                        @for (action of info.actions; track action) {
-                                            @switch (action) {
-                                                @case (tileActionsEnum.Download) {
-                                                    <button
-                                                        mat-fab
-                                                        extended
-                                                        color="primary"
-                                                        (click)="openLink(info.downloadActionLink)"
-                                                    >
-                                                        <mat-icon>download</mat-icon>
-                                                        Öffnen
-                                                    </button>
-                                                }
-                                                @case (tileActionsEnum.Register) {
-                                                    <button
-                                                        mat-fab
-                                                        extended
-                                                        color="accent"
-                                                        (click)="openRegisterDialog(info)"
-                                                    >
-                                                        <mat-icon>event_note</mat-icon>
-                                                        Anmelden
-                                                    </button>
-                                                }
+                            @if (info.imageOnly && info.actions && info.actions.length > 0) {
+                                <div class="image-only-actions">
+                                    @for (action of info.actions; track action) {
+                                        @switch (action) {
+                                            @case (tileActionsEnum.Download) {
+                                                <button
+                                                    mat-fab
+                                                    extended
+                                                    color="primary"
+                                                    (click)="openLink(info.downloadActionLink)"
+                                                >
+                                                    <mat-icon>download</mat-icon>
+                                                    Öffnen
+                                                </button>
+                                            }
+                                            @case (tileActionsEnum.Register) {
+                                                <button
+                                                    mat-fab
+                                                    extended
+                                                    color="accent"
+                                                    (click)="openRegisterDialog(info)"
+                                                >
+                                                    <mat-icon>event_note</mat-icon>
+                                                    Anmelden
+                                                </button>
                                             }
                                         }
-                                    </div>
-                                }
-                            </div>
+                                    }
+                                </div>
+                            }
+                            @if (!info.imageOnly) {
+                                <div class="tile-card-content">
+                                    <div class="eyebrow">{{ info.date }}</div>
+                                    <h3>{{ info.title }}</h3>
+                                    <p class="description" [innerHTML]="markdown.render(getTileDescription(info))"></p>
+                                    @if (info.actions && info.actions.length > 0) {
+                                        <div class="card-actions">
+                                            <span></span>
+                                            @for (action of info.actions; track action) {
+                                                @switch (action) {
+                                                    @case (tileActionsEnum.Download) {
+                                                        <button
+                                                            mat-fab
+                                                            extended
+                                                            color="primary"
+                                                            (click)="openLink(info.downloadActionLink)"
+                                                        >
+                                                            <mat-icon>download</mat-icon>
+                                                            Öffnen
+                                                        </button>
+                                                    }
+                                                    @case (tileActionsEnum.Register) {
+                                                        <button
+                                                            mat-fab
+                                                            extended
+                                                            color="accent"
+                                                            (click)="openRegisterDialog(info)"
+                                                        >
+                                                            <mat-icon>event_note</mat-icon>
+                                                            Anmelden
+                                                        </button>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
                         </article>
                     }
                 }

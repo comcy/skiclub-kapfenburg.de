@@ -189,6 +189,23 @@ $color-on-accent: #6b4d00;
     }
 }
 
+.tile-card.image-only {
+    .tile-card-image {
+        height: auto;
+
+        img {
+            height: auto;
+            object-fit: contain;
+        }
+    }
+}
+
+.image-only-actions {
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+}
+
 .course-placeholder {
     background: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%);
     display: flex;
