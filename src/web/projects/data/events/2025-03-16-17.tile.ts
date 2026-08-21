@@ -13,21 +13,6 @@ Neben Skifahren kann man auch Rodeln und Winterwandern genießen. Die gemütiche
 
 **Ziel**
 - Montafon "Silvretta"
-
-**Abfahrtszeiten**
- - 05:00 Uhr Schwabsberg Schule 
- - 05:15 Uhr Westhausen Turnhalle
-
-**Kosten**
-
-|                             |              |
-|:----------------------------|-------------:|
-|  Erwachsene:                |   260,00 €*  |
-
----
-
-**Im Preis enthalten ist die Busfahrt mit Vesper, 2-Tages-Skipass und eine Überachtung inklusive Halbpension*
-
 `;
 
 const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
@@ -48,6 +33,8 @@ export const FREIE_PISTENAUSFAHRT: EventTile = {
     expiration: new Date('2026-03-17'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
+    additionalInformation:
+        'Im Preis enthalten ist die Busfahrt mit Vesper, 2-Tages-Skipass und eine Überachtung inklusive Halbpension',
     tripConfig: {
         pricing: {
             busLift: {

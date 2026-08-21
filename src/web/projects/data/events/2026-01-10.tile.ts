@@ -14,28 +14,6 @@ Alpen“. Dort gibt es über 30km traumhafte Pisten auf fast 1600m Höhe. Für a
 sich im Funpark austoben möchten, bietet der „Easypark“ die perfekte Gelegenheit 
 dazu. Bei guter Schneelage ist eine Langlaufloipe vorhanden.
 
- **Abfahrtszeiten**
- - 05:15 Uhr Westhausen Turnhalle 
- - 05:25 Uhr Lauchheim Schule
- - 05:30 Uhr Hülen Bushaltestelle Wiesenweg
-
-**Kosten**
-
-|        Bus + Liftkarte      |   Mitglieder |  Nicht-Mtglieder |
-|:----------------------------|-------------:|------------------:|
-|  Erwachsene                 |   75,00 €    |  85,00 €          |
-|  Jugendliche bis 16 Jahre   |   65,00 €    |  75,00 €          | 
-|  Kinder bis 6 Jahre         |   50,00 €    |  55,00 €          |
-|                             |              |                   |
-|                             |              |                   |
-|                             |              |                   |
-|  Anfängerkurse              |   35,00 €    |  40,00 €          |
-|  Techniktraining 1/2 Tag    |   35,00 €    |  30,00 €          |
-|  Techniktraining            |   60,00 €    |  55,00 €          |
-|  Schneeschuhe               |   5,00 €     |  5,00 €           |
-|  Nur Busfahrt               |   30,00 €    |  30,00 €          |
-
-_Hinweis: Kurse ab 5 Jahre möglich_
 `;
 
 const BOARDING_LIST = [
@@ -60,6 +38,7 @@ export const TRAININGSTAG_OBERJOCH_TILE: EventTile = {
     expiration: new Date('2026-01-11'),
     boardings: BOARDING_LIST,
     status: TileStatus.BookedUp,
+    additionalInformation: 'Kurse ab 5 Jahre möglich',
     tripConfig: {
         pricing: {
             busLift: {

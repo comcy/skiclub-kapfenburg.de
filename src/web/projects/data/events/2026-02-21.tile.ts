@@ -11,21 +11,8 @@ Den Schneetag lassen wir ausklingen beim Aprés Ski in der „Lahmen Ente“ dir
 an der Talstation. Hierfür ist genügend Zeit eingeplant, denn es geht erst um 19 Uhr 
 zurück Richtung Heimat.
 
- **Abfahrtszeiten**
- - 05:00 Uhr Schwabsberg Schule
- - 05:15 Uhr Westhausen Turnhalle 
- - 05:25 Uhr Lauchheim Schule
- - 05:30 Uhr Hülen Bushaltestelle Wiesenweg 
-
 **Rückfahrt**
 - 19:00 Uhr
-
-**Kosten**
-
-|                                 |               |
-|:--------------------------------|--------------:|
-|  Bus + Liftkarte + kl. Vesper   |   95,00 €     |
-|  Schneeschuhe                   |    5,00 €     |
 `;
 
 const BOARDING_LIST = [

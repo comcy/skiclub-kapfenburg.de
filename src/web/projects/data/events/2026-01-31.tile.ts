@@ -12,27 +12,6 @@ Schneeschnecke.
 Falls ihr doch lieber die Gegend zu Fuß erkundet, könnt ihr direkt an der Ehrwalder 
 Almbahn loslegen: Von dort aus starten zwei schöne Winterwanderwege und Schneeschuhtrails
 
- **Abfahrtszeiten**
- - 05:15 Uhr Westhausen Turnhalle 
- - 05:25 Uhr Lauchheim Schule
- - 05:30 Uhr Hülen Bushaltestelle Wiesenweg
-
-**Kosten**
-
-|        Bus + Liftkarte      |   Mitglieder |  Nicht-Mtglieder |
-|:----------------------------|-------------:|------------------:|
-|  Erwachsene                 |   90,00 €    |  100,00 €          |
-|  Jugendliche bis 16 Jahre   |   65,00 €    |  75,00 €          | 
-|  Kinder bis 6 Jahre         |   50,00 €    |  55,00 €          |
-|                             |              |                   |
-|                             |              |                   |
-|                             |              |                   |
-|  Anfängerkurse              |   35,00 €    |  40,00 €          |
-|  Techniktraining 1/2 Tag    |   35,00 €    |  40,00 €          |
-|  Techniktraining            |   60,00 €    |  65,00 €          |
-|  Schneeschuhe               |   5,00 €     |  5,00 €           |
-|  Nur Busfahrt               |   30,00 €    |  30,00 €          |
-
 `;
 
 const BOARDING_LIST = [

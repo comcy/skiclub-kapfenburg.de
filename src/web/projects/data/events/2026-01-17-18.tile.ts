@@ -8,23 +8,6 @@ const DESCRIPTION_TEXT = `Bei unser diesjährigen Kooperationsausfahrt mit dem F
 
 **Ziel**
  - Brandnertal
-
-**Abfahrtszeiten**
- - 05:00 Uhr Schwabsberg Schule 
- - 05:15 Uhr Westhausen Turnhalle
-
-**Kosten**
-
-|                             |              |
-|:----------------------------|-------------:|
-|  Erwachsene                 |   245,00 €*  |
-|  Jugendliche bis 16 Jahre   |   180,00 €*  | 
-|  Kinder bis 6 Jahre         |   85,00 €*   |
-
---- 
-
-**Im Preis enthalten ist die Busfahrt mit Vesper, 2-Tages-Skipass und eine Überachtung inklusive Halbpension*
-
 `;
 
 const BOARDING_LIST = ['Schwabsberg (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
@@ -45,6 +28,8 @@ export const LA_OELE_AUSFAHRT: EventTile = {
     expiration: new Date('2026-01-18'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
+    additionalInformation:
+        'Im Preis enthalten ist die Busfahrt mit Vesper, 2-Tages-Skipass und eine Überachtung inklusive Halbpension',
     tripConfig: {
         pricing: {
             busLift: {

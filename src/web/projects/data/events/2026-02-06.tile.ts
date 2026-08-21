@@ -8,24 +8,8 @@ const DESCRIPTION_TEXT = `Wie könnte das Wochenende besser beginnen als mit Ski
 Getreu nach diesem Motto fahren wir am Freitag zur Ehrwalder Almbahn und genießen die tolle Landschaft mit leeren Pisten. 
 Zum Abschluss lassen wir den Tag beim Après Ski in der Brent Alm an der Talstation ausklingen.
 
- **Abfahrtszeiten**
- - 05:15 Uhr Westhausen Turnhalle 
- - 05:25 Uhr Lauchheim Schule
- - 05:30 Uhr Hülen Bushaltestelle Wiesenweg
- - 05:40 Uhr Ebnat Jurahalle
-
 **Rückfahrt**
  - 18:00 Uhr bis 18:30 Uhr
-
-**Kosten**
-
-|        Bus + Liftkarte      |   Mitglieder |  Nicht-Mtglieder |
-|:----------------------------|-------------:|------------------:|
-|  Erwachsene                 |   85,00 €    |  95,00 €          |
-|                             |              |                   |
-|                             |              |                   |
-|  Schneeschuhe               |    5,00 €    |   5,00 €          |
-|  Nur Busfahrt               |   30,00 €    |  30,00 €          |
 `;
 
 const BOARDING_LIST = [

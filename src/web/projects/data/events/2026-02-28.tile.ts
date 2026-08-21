@@ -14,27 +14,6 @@ Auch für Anfänger ist diese Ausfahrt bestens geeignet: Ihr müsst nicht am Üb
 an der Talstation bleiben, denn im Mellauer Teil des Gebietes gibt es viele einfachere 
 Pisten, die gut zu bewältigen sind.
 
- **Abfahrtszeiten**
- - 05:15 Uhr Westhausen Turnhalle 
- - 05:25 Uhr Lauchheim Schule
- - 05:30 Uhr Hülen Bushaltestelle Wiesenweg
-
-**Kosten**
-
-|        Bus + Liftkarte      |   Mitglieder |  Nicht-Mtglieder |
-|:----------------------------|-------------:|------------------:|
-|  Erwachsene                 |   90,00 €    |  100,00 €          |
-|  Jugendliche bis 16 Jahre   |   80,00 €    |  90,00 €          | 
-|  Kinder bis 6 Jahre         |   65,00 €    |  70,00 €          |
-|                             |              |                   |
-|                             |              |                   |
-|                             |              |                   |
-|  Techniktraining 1/2 Tag    |   25,00 €    |  30,00 €          |
-|  Techniktraining            |   50,00 €    |  55,00 €          |
-|  Schneeschuhe               |   5,00 €     |  5,00 €           |
-|  Nur Busfahrt               |   30,00 €    |  30,00 €          |
-
-_Hinweis: Keine Anfänger_
 `;
 
 const BOARDING_LIST = [
@@ -59,6 +38,7 @@ export const TAGESAUSFAHRT_MELLAU_DAMUELS: EventTile = {
     expiration: new Date('2026-02-29'),
     boardings: BOARDING_LIST,
     status: TileStatus.BookedUp,
+    additionalInformation: 'Keine Anfänger',
     tripConfig: {
         pricing: {
             busLift: {
