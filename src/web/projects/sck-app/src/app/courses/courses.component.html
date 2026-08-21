@@ -1,14 +1,72 @@
 <shared-lib-site-header [title]="title" [color]="color"></shared-lib-site-header>
 
-<nav class="courses-lib-tab-navigation" mat-tab-nav-bar [tabPanel]="tabPanel">
-    @for (link of navLinks; track link) {
-        <a mat-tab-link [routerLink]="link.link" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-            {{ link.label }}
-        </a>
-    }
-</nav>
-<div class="tab-content">
-    <mat-tab-nav-panel #tabPanel>
-        <router-outlet></router-outlet>
-    </mat-tab-nav-panel>
+<div class="content">
+    <div class="info-page">
+        <h3>Kurspreise im heimischen Gelände (Skihang bei der Kapfenburg)</h3>
+        <table class="price-table-compact">
+            <thead>
+                <tr>
+                    <th>Kurs</th>
+                    <th>Mitglied</th>
+                    <th>Nicht-Mitglied</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (p of courseAtHomePrice; track p) {
+                    @for (s of p.sportType; track s) {
+                        @for (g of s.ageGroup; track g) {
+                            <tr>
+                                <td>{{ s.type }} ({{ s.time }}) – {{ g.group }}</td>
+                                @for (m of g.clubMemberStatus; track m) {
+                                    <td>{{ m.value }}</td>
+                                }
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="info-page">
+        <h3>Kursanmeldung</h3>
+        <p class="intro">
+            Egal ob auf Ski oder Snowboard – lies dir einfach die Beschreibungen durch und schätze selbst ein, wo du
+            dich am wohlsten fühlst.
+        </p>
+
+        <div class="level-grid">
+            @for (level of levelTiles; track level.id) {
+                <article class="level-card">
+                    <h3>{{ level.title }}</h3>
+                    <div [innerHTML]="markdown.render(level.description)"></div>
+                    <button mat-fab extended color="primary" (click)="openRegistrationFor(level)">
+                        <mat-icon>event_note</mat-icon>
+                        Jetzt anmelden
+                    </button>
+                </article>
+            }
+        </div>
+
+        <p class="reassurance">
+            Keine Sorge wegen der Selbsteinschätzung! Unsere Ski- und Snowboardlehrer schauen sich am ersten Tag alle
+            Teilnehmer kurz an. Wenn ein Kurs mal zu leicht oder zu schwer ist, kannst du problemlos wechseln.
+        </p>
+
+        <p class="auskunft">
+            <b>Weitere Auskünfte:</b> per Mail an
+            <a href="mailto:skikurse@skiclub-kapfenburg.de">skikurse&#64;skiclub-kapfenburg.de</a>
+            oder bei Markus Rup, Tel: 0151/56625746
+        </p>
+
+        <div class="notice-box">
+            <b>Hinweis:</b> Anmeldungen der vergangenen Saison werden nicht in die neue Saison übertragen.
+        </div>
+
+        @if (registrationOpen) {
+            <div class="registration-form-wrap" #registrationSection>
+                <lib-course-registration-form [presetLevel]="selectedLevel"></lib-course-registration-form>
+            </div>
+        }
+    </div>
 </div>

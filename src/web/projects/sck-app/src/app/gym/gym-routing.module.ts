@@ -10,31 +10,11 @@ const routes: Routes = [
     {
         path: '',
         component: GymComponent,
-        children: [
-            {
-                path: '',
-                redirectTo: 'information',
-                pathMatch: 'full',
-            },
-            {
-                path: 'information',
-                loadComponent: () =>
-                    import('./components/tabs/information/information.component').then(
-                        (mod) => mod.InformationComponent,
-                    ),
-            },
-            {
-                path: 'registration',
-                loadComponent: () =>
-                    import('./components/tabs/registration/registration.component').then(
-                        (mod) => mod.RegistrationComponent,
-                    ),
-            },
-        ],
+        pathMatch: 'full',
     },
-    // Standalone course detail page (/gymnastik/:id) - not part of the tabbed
-    // shell above, only tried once none of its fixed child paths match.
-    // Mirrors trips-routing.module.ts's :id route for trip-detail.
+    // Standalone course detail page (/gymnastik/:id) - only tried once the
+    // empty path above doesn't match. Mirrors trips-routing.module.ts's :id
+    // route for trip-detail.
     {
         path: ':id',
         loadComponent: () =>

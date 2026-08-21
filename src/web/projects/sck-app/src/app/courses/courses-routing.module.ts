@@ -6,41 +6,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CoursesComponent } from './courses.component';
 
+// Single consolidated page - no tabs, see CoursesComponent.
 const routes: Routes = [
     {
         path: '',
         component: CoursesComponent,
-        children: [
-            {
-                path: '',
-                redirectTo: 'information',
-                pathMatch: 'full',
-            },
-            {
-                path: 'overview',
-                loadComponent: () =>
-                    import('./components/tabs/overview/overview.component').then((mod) => mod.OverviewComponent),
-            },
-            {
-                path: 'information',
-                loadComponent: () =>
-                    import('./components/tabs/information/information.component').then(
-                        (mod) => mod.InformationComponent,
-                    ),
-            },
-            {
-                path: 'registration',
-                loadComponent: () =>
-                    import('./components/tabs/registration/registration.component').then(
-                        (mod) => mod.RegistrationComponent,
-                    ),
-            },
-            {
-                path: 'prices',
-                loadComponent: () =>
-                    import('./components/tabs/prices/prices.component').then((mod) => mod.PricesComponent),
-            },
-        ],
     },
 ];
 

@@ -113,4 +113,24 @@ export const GYM_FITNESSMIX_TILE: InfoTile = {
     status: TileStatus.Open,
 };
 
+export const GYM_VITALGYMNASTIK_TILE: InfoTile = {
+    id: 'vitalgymnastik',
+    order: 3,
+    type: TileType.Info,
+    behavior: TileBehavior.View,
+    title: GYM_VITALGYMNASTIK_INFORMATION.name,
+    date: '',
+    subTitle: GYM_VITALGYMNASTIK_INFORMATION.time,
+    image: '',
+    imageDescription: GYM_VITALGYMNASTIK_INFORMATION.name,
+    description: GYM_VITALGYMNASTIK_INFORMATION.description,
+    details: '',
+    location: GYM_VITALGYMNASTIK_INFORMATION.location,
+    expiration: new Date('2027-12-31'),
+    status: TileStatus.Open,
+};
+
 export const GYM_MONDAY_TILES: InfoTile[] = [GYM_FITNESS_COCKTAIL_TILE, GYM_FITNESSMIX_TILE];
+
+/** All public, non-bookable Gymnastik offer tiles (Monday groups + Vitalgymnastik). */
+export const GYM_OFFER_TILES: InfoTile[] = [GYM_FITNESS_COCKTAIL_TILE, GYM_VITALGYMNASTIK_TILE, GYM_FITNESSMIX_TILE];

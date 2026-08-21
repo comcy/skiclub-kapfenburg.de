@@ -2,23 +2,22 @@
  * @copyright Copyright (c) 2019 Christian Silfang
  */
 
-import { Component, Input, inject } from '@angular/core';
-import { GymInformationCoreServiceInterface } from '../../domain';
-import { AsyncPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MarkdownRenderService } from '@shared/util-markdown';
-import { GYM_MONDAY_TILES } from 'projects/data/static';
+import { COURSE_DATA } from '@data';
+import { GYM_OFFER_TILES } from 'projects/data/static';
+import { CourseTile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 
 @Component({
     selector: 'lib-gym-general-information',
     templateUrl: './gym-general-information.component.html',
     styleUrls: ['./gym-general-information.component.scss'],
-    imports: [AsyncPipe, MatIconModule],
+    imports: [MatIconModule, RouterModule],
 })
 export class GymGeneralInformationComponent {
-    @Input() gymState!: GymInformationCoreServiceInterface;
-
     public markdown = inject(MarkdownRenderService);
-    public mondayTiles = GYM_MONDAY_TILES;
-    public mondayTileNames = GYM_MONDAY_TILES.map((tile) => tile.title);
+    public pilatesTiles = COURSE_DATA.filter((t): t is CourseTile => t.type === TileType.Course);
+    public offerTiles = GYM_OFFER_TILES;
 }
