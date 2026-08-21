@@ -72,55 +72,108 @@
                 <p>Ski- und Snowboardschule, Gymnastik und Pilates – für jede Könnerstufe.</p>
             </div>
         </div>
-        <div class="tiles-grid">
-            <article class="tile-card clickable" routerLink="/courses">
-                <div class="tile-card-image">
-                    <img src="assets/img/cards/boy.jpg" alt="Ski- und Snowboardschule am Skilift Kapfenburg" />
-                    <span class="badge">Alle Level</span>
+        <div class="course-section-layout">
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <button mat-icon-button (click)="prevMonth()" aria-label="Vorheriger Monat">
+                        <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <span class="calendar-month-label">{{ calendarMonth | date: 'MMMM yyyy' }}</span>
+                    <button mat-icon-button (click)="nextMonth()" aria-label="Nächster Monat">
+                        <mat-icon>chevron_right</mat-icon>
+                    </button>
                 </div>
-                <div class="tile-card-content">
-                    <div class="eyebrow">Nach Schneelage</div>
-                    <h3>Ski- &amp; Snowboardschule</h3>
-                    <p class="description">
-                        Für Kinder und Erwachsene, alle Könnerstufen, direkt am Skilift Kapfenburg.
-                    </p>
-                    <div class="card-actions">
-                        <span class="price-label">Kontakt &amp; Termine</span>
-                        <button mat-fab extended color="accent" (click)="$event.stopPropagation()">
-                            Mehr erfahren
-                        </button>
-                    </div>
+                <div class="calendar-weekdays">
+                    @for (weekday of calendarWeekdayLabels; track weekday) {
+                        <span>{{ weekday }}</span>
+                    }
                 </div>
-            </article>
+                <div class="calendar-grid">
+                    @for (week of calendarGrid; track $index) {
+                        @for (day of week; track day.getTime()) {
+                            <div
+                                class="calendar-day"
+                                [class.outside]="!isSameMonthAsCalendar(day)"
+                                [class.has-events]="getDayEvents(day).length > 0"
+                                [matTooltip]="dayTooltip(day)"
+                                [matTooltipDisabled]="getDayEvents(day).length === 0"
+                            >
+                                <span class="day-number">{{ day.getDate() }}</span>
+                                @if (getDayEvents(day).length > 0) {
+                                    <span class="day-dot"></span>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
 
-            @for (course of courseTiles; track course.id) {
-                <article class="tile-card clickable" (click)="openRegisterDialog(course)">
-                    <div class="tile-card-image course-placeholder">
-                        <mat-icon class="course-icon">self_improvement</mat-icon>
-                        <span class="badge">{{
-                            course.title.includes('Donnerstag') ? 'Donnerstags' : 'Mittwochs'
-                        }}</span>
+            <div class="carousel" (mouseenter)="pauseCarousel()" (mouseleave)="resumeCarousel()">
+                <div class="carousel-viewport">
+                    <div class="carousel-track" [style.transform]="'translateX(-' + carouselIndex * 100 + '%)'">
+                        @for (slide of carouselSlides; track slide.id) {
+                            <article class="tile-card carousel-slide clickable" (click)="slide.onClick()">
+                                <div class="tile-card-image" [class.course-placeholder]="slide.kind === 'course'">
+                                    @if (slide.kind === 'course') {
+                                        <mat-icon class="course-icon">self_improvement</mat-icon>
+                                    } @else {
+                                        <img [src]="slide.image" [alt]="slide.imageAlt" />
+                                    }
+                                    <span class="badge" [class.badge-warn]="slide.badgeWarn">{{ slide.badge }}</span>
+                                </div>
+                                <div class="tile-card-content">
+                                    <div class="eyebrow">{{ slide.eyebrow }}</div>
+                                    <h3>{{ slide.title }}</h3>
+                                    <p class="description" [innerHTML]="slide.descriptionHtml"></p>
+                                    <div class="card-actions">
+                                        @if (slide.priceLabelHtml) {
+                                            <span class="price-label" [innerHTML]="slide.priceLabelHtml"></span>
+                                        } @else {
+                                            <span></span>
+                                        }
+                                        <button
+                                            mat-fab
+                                            extended
+                                            [color]="slide.ctaColor"
+                                            (click)="$event.stopPropagation(); slide.onClick()"
+                                        >
+                                            {{ slide.ctaLabel }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        }
                     </div>
-                    <div class="tile-card-content">
-                        <div class="eyebrow">{{ course.subTitle }}</div>
-                        <h3>{{ course.title }}</h3>
-                        <p class="description" [innerHTML]="markdown.render(getTileDescription(course))"></p>
-                        <div class="card-actions">
-                            <span class="price-label"
-                                >ab <b>{{ course.course?.prices?.member }}</b></span
-                            >
+                </div>
+                @if (carouselSlides.length > 1) {
+                    <button
+                        mat-icon-button
+                        class="carousel-arrow carousel-arrow-prev"
+                        (click)="prevSlide()"
+                        aria-label="Vorherige Kachel"
+                    >
+                        <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <button
+                        mat-icon-button
+                        class="carousel-arrow carousel-arrow-next"
+                        (click)="nextSlide()"
+                        aria-label="Nächste Kachel"
+                    >
+                        <mat-icon>chevron_right</mat-icon>
+                    </button>
+                    <div class="carousel-dots">
+                        @for (slide of carouselSlides; track slide.id; let i = $index) {
                             <button
-                                mat-fab
-                                extended
-                                color="accent"
-                                (click)="$event.stopPropagation(); openRegisterDialog(course)"
-                            >
-                                Anmelden
-                            </button>
-                        </div>
+                                class="carousel-dot"
+                                [class.active]="i === carouselIndex"
+                                (click)="goToSlide(i)"
+                                [attr.aria-label]="'Zu Kachel ' + (i + 1) + ' springen'"
+                            ></button>
+                        }
                     </div>
-                </article>
-            }
+                }
+            </div>
         </div>
     </section>
 

@@ -36,6 +36,12 @@ export const GYM_PILATES_COURSE_INFORMATION_THU: GymCourseInformation = {
         member: '48 EUR',
         nonMember: '72 EUR',
     },
+    schedule: {
+        weekday: 4, // Donnerstag
+        startDate: new Date('2026-09-24'),
+        endDate: new Date('2026-12-17'),
+        excludedDates: [],
+    },
 };
 
 export const GYM_PILATES_THURSDAY_TILE: Tile = {

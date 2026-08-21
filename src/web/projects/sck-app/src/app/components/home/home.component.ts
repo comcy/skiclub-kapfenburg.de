@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -22,8 +22,21 @@ import { Router, RouterModule } from '@angular/router';
 import { CoursesFeatureModule } from '@courses-lib';
 import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
 import { GymFeatureModule } from '@gym-lib';
+import { GymCourseSchedule } from 'projects/gym-lib/src/lib/domain';
 import { MarkdownRenderService } from '@shared/util-markdown';
 import { TripsFeatureModule } from '@trips-lib';
+import {
+    addMonths,
+    eachDayOfInterval,
+    endOfMonth,
+    endOfWeek,
+    format,
+    isSameDay,
+    isSameMonth,
+    startOfMonth,
+    startOfWeek,
+    subMonths,
+} from 'date-fns';
 import {
     CourseTile,
     EventTile,
@@ -36,6 +49,27 @@ import {
 } from 'projects/shared-lib/src/lib/ui-common/models';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
 import { TRIPS_ROUTE } from '../../route-segments';
+
+interface CalendarDayEvent {
+    title: string;
+    type: 'trip' | 'course';
+}
+
+interface CarouselSlide {
+    id: string;
+    kind: 'static' | 'trip' | 'course';
+    image?: string;
+    imageAlt?: string;
+    badge: string;
+    badgeWarn: boolean;
+    eyebrow: string;
+    title: string;
+    descriptionHtml: string;
+    priceLabelHtml?: string;
+    ctaLabel: string;
+    ctaColor: 'primary' | 'accent';
+    onClick: () => void;
+}
 
 @Component({
     selector: 'app-home',
@@ -66,7 +100,7 @@ import { TRIPS_ROUTE } from '../../route-segments';
         TripsFeatureModule,
     ],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
     public title = 'Aktuelles';
     public tileStatusEnum = TileStatus;
     public tileActionsEnum = TileActions;
@@ -80,6 +114,15 @@ export class HomeComponent implements OnInit {
     public upcomingTrips: EventTile[] = [];
     public courseTiles: CourseTile[] = [];
     public infoTiles: InfoTile[] = [];
+
+    public calendarMonth = new Date();
+    public calendarGrid: Date[][] = [];
+    public calendarWeekdayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    private calendarEvents = new Map<string, CalendarDayEvent[]>();
+
+    public carouselSlides: CarouselSlide[] = [];
+    public carouselIndex = 0;
+    private carouselTimer?: ReturnType<typeof setInterval>;
 
     private trips = TRIP_DATA;
     private courses = COURSE_DATA;
@@ -119,10 +162,182 @@ export class HomeComponent implements OnInit {
             .slice(0, 3);
         this.courseTiles = homeTiles.filter((t): t is CourseTile => t.type === TileType.Course);
         this.infoTiles = homeTiles.filter((t): t is InfoTile => t.type === TileType.Info);
+
+        const openTrips = homeTiles.filter((t): t is EventTile => t.type === TileType.Event && !t.expired);
+
+        this.calendarEvents = this.buildCalendarEvents(openTrips, this.courseTiles);
+        this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
+
+        this.carouselSlides = [
+            this.buildStaticSlide(),
+            ...openTrips.map((trip) => this.buildTripSlide(trip)),
+            ...this.courseTiles.map((course) => this.buildCourseSlide(course)),
+        ];
+        if (this.carouselSlides.length > 1) {
+            this.startCarouselAutoplay();
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.pauseCarousel();
     }
 
     public resolvePrice(trip: EventTile): number | undefined {
         return trip.tripConfig?.pricing?.busLift?.adult?.member;
+    }
+
+    // CALENDAR
+
+    public prevMonth(): void {
+        this.calendarMonth = subMonths(this.calendarMonth, 1);
+        this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
+    }
+
+    public nextMonth(): void {
+        this.calendarMonth = addMonths(this.calendarMonth, 1);
+        this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
+    }
+
+    public isSameMonthAsCalendar(day: Date): boolean {
+        return isSameMonth(day, this.calendarMonth);
+    }
+
+    public getDayEvents(day: Date): CalendarDayEvent[] {
+        return this.calendarEvents.get(format(day, 'yyyy-MM-dd')) ?? [];
+    }
+
+    public dayTooltip(day: Date): string {
+        return this.getDayEvents(day)
+            .map((event) => `${event.type === 'trip' ? 'Ausfahrt' : 'Kurs'}: ${event.title}`)
+            .join('\n');
+    }
+
+    private buildCalendarGrid(month: Date): Date[][] {
+        const start = startOfWeek(startOfMonth(month), { weekStartsOn: 1 });
+        const end = endOfWeek(endOfMonth(month), { weekStartsOn: 1 });
+        const days = eachDayOfInterval({ start, end });
+        const weeks: Date[][] = [];
+        for (let i = 0; i < days.length; i += 7) {
+            weeks.push(days.slice(i, i + 7));
+        }
+        return weeks;
+    }
+
+    private buildCalendarEvents(trips: EventTile[], courses: CourseTile[]): Map<string, CalendarDayEvent[]> {
+        const map = new Map<string, CalendarDayEvent[]>();
+        const addEvent = (date: Date, title: string, type: CalendarDayEvent['type']) => {
+            const key = format(date, 'yyyy-MM-dd');
+            const list = map.get(key) ?? [];
+            list.push({ title, type });
+            map.set(key, list);
+        };
+
+        trips.forEach((trip) => addEvent(trip.expiration, trip.title, 'trip'));
+        courses.forEach((course) => {
+            const schedule = course.course?.schedule;
+            if (!schedule) {
+                return;
+            }
+            this.computeCourseSessionDates(schedule).forEach((date) => addEvent(date, course.title, 'course'));
+        });
+
+        return map;
+    }
+
+    private computeCourseSessionDates(schedule: GymCourseSchedule): Date[] {
+        return eachDayOfInterval({ start: schedule.startDate, end: schedule.endDate })
+            .filter((date) => date.getDay() === schedule.weekday)
+            .filter((date) => !(schedule.excludedDates ?? []).some((excluded) => isSameDay(excluded, date)));
+    }
+
+    // CAROUSEL
+
+    public nextSlide(): void {
+        if (this.carouselSlides.length === 0) {
+            return;
+        }
+        this.carouselIndex = (this.carouselIndex + 1) % this.carouselSlides.length;
+    }
+
+    public prevSlide(): void {
+        if (this.carouselSlides.length === 0) {
+            return;
+        }
+        this.carouselIndex = (this.carouselIndex - 1 + this.carouselSlides.length) % this.carouselSlides.length;
+    }
+
+    public goToSlide(index: number): void {
+        this.carouselIndex = index;
+    }
+
+    public pauseCarousel(): void {
+        if (this.carouselTimer) {
+            clearInterval(this.carouselTimer);
+            this.carouselTimer = undefined;
+        }
+    }
+
+    public resumeCarousel(): void {
+        if (!this.carouselTimer && this.carouselSlides.length > 1) {
+            this.startCarouselAutoplay();
+        }
+    }
+
+    private startCarouselAutoplay(): void {
+        this.carouselTimer = setInterval(() => this.nextSlide(), 6000);
+    }
+
+    private buildStaticSlide(): CarouselSlide {
+        return {
+            id: 'ski-snowboard-school',
+            kind: 'static',
+            image: 'assets/img/cards/boy.jpg',
+            imageAlt: 'Ski- und Snowboardschule am Skilift Kapfenburg',
+            badge: 'Alle Level',
+            badgeWarn: false,
+            eyebrow: 'Nach Schneelage',
+            title: 'Ski- & Snowboardschule',
+            descriptionHtml: 'Für Kinder und Erwachsene, alle Könnerstufen, direkt am Skilift Kapfenburg.',
+            priceLabelHtml: 'Kontakt &amp; Termine',
+            ctaLabel: 'Mehr erfahren',
+            ctaColor: 'accent',
+            onClick: () => this.router.navigate(['/courses']),
+        };
+    }
+
+    private buildTripSlide(trip: EventTile): CarouselSlide {
+        const price = this.resolvePrice(trip);
+        return {
+            id: trip.id,
+            kind: 'trip',
+            image: trip.image,
+            imageAlt: trip.imageDescription,
+            badge: trip.status === TileStatus.BookedUp ? 'Warteliste' : 'Plätze frei',
+            badgeWarn: trip.status === TileStatus.BookedUp,
+            eyebrow: trip.date,
+            title: trip.title,
+            descriptionHtml: trip.destination ?? '',
+            priceLabelHtml: price ? `ab <b>${price}&nbsp;€</b>` : undefined,
+            ctaLabel: 'Anmelden',
+            ctaColor: 'primary',
+            onClick: () => this.openTripDetail(trip),
+        };
+    }
+
+    private buildCourseSlide(course: CourseTile): CarouselSlide {
+        return {
+            id: course.id,
+            kind: 'course',
+            badge: course.title.includes('Donnerstag') ? 'Donnerstags' : 'Mittwochs',
+            badgeWarn: false,
+            eyebrow: course.subTitle,
+            title: course.title,
+            descriptionHtml: this.markdown.render(this.getTileDescription(course)),
+            priceLabelHtml: course.course?.prices?.member ? `ab <b>${course.course.prices.member}</b>` : undefined,
+            ctaLabel: 'Anmelden',
+            ctaColor: 'accent',
+            onClick: () => this.openRegisterDialog(course),
+        };
     }
 
     public openRegisterDialog(tile: Tile) {
