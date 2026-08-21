@@ -17,6 +17,11 @@ const routes: Routes = [
                 pathMatch: 'full',
             },
             {
+                path: 'overview',
+                loadComponent: () =>
+                    import('./components/tabs/overview/overview.component').then((mod) => mod.OverviewComponent),
+            },
+            {
                 path: 'information',
                 loadComponent: () =>
                     import('./components/tabs/information/information.component').then(

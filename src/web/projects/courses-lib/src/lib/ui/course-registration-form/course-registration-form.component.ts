@@ -43,7 +43,12 @@ export class CourseRegistrationFormComponent implements OnInit {
 
     public courseRegisterForm: FormGroup = new FormGroup({});
     public sportTypeList = ['Ski Alpin', 'Snowboard'];
-    public levelList = ['Anfänger', 'Könner', 'Fortgeschritten'];
+    public levelList = [
+        'A1 – Anfänger Basis',
+        'A2 – Anfänger Plus',
+        'F1 – Fortgeschritten Basis',
+        'F2 – Fortgeschritten Plus',
+    ];
 
     ngOnInit(): void {
         this.courseRegisterForm = this.formBuilder.group({

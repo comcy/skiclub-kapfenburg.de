@@ -336,7 +336,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             priceLabelHtml: 'Kontakt &amp; Termine',
             ctaLabel: 'Mehr erfahren',
             ctaColor: 'accent',
-            onClick: () => this.router.navigate(['/courses']),
+            onClick: () => this.router.navigate(['/courses', 'overview']),
         };
     }
 

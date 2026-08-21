@@ -9,3 +9,4 @@ export * from './skilift-info.tile';
 export * from './gym-pilates-thursday.tile';
 export * from './gym-pilates-wednesday.tile';
 export * from './gym-general-offers.tile';
+export * from './course-levels.tile';

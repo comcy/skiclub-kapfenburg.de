@@ -28,6 +28,10 @@ export class CoursesComponent {
     public color: MaterialColor = 'primary';
     public navLinks = [
         {
+            label: 'Übersicht',
+            link: './overview',
+        },
+        {
             label: 'Information',
             link: './information',
         },

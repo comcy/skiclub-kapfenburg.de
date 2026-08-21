@@ -1,0 +1,34 @@
+<div class="overview-container">
+    <h2>Ski- und Snowboardkurse am Skihang beim Skilift Kapfenburg</h2>
+    <p class="intro">
+        Unser Kursangebot ist breit gefächert und reicht von Anfängerkursen bis hin zu Kursen für erfahrene
+        Wintersportler. Diese werden durch qualifizierte Übungsleiter durchgeführt.
+    </p>
+
+    <p class="intro">
+        Egal ob auf Ski oder Snowboard – lies dir einfach die Beschreibungen durch und schätze selbst ein, wo du dich am
+        wohlsten fühlst.
+    </p>
+
+    <div class="level-grid">
+        @for (level of levelTiles; track level.id) {
+            <article class="level-card">
+                <h3>{{ level.title }}</h3>
+                <div [innerHTML]="markdown.render(level.description)"></div>
+                <button mat-fab extended color="primary" (click)="openRegistration()">
+                    <mat-icon>event_note</mat-icon>
+                    Jetzt anmelden
+                </button>
+            </article>
+        }
+    </div>
+
+    <p class="reassurance">
+        Keine Sorge wegen der Selbsteinschätzung! Unsere Ski- und Snowboardlehrer schauen sich am ersten Tag alle
+        Teilnehmer kurz an. Wenn ein Kurs mal zu leicht oder zu schwer ist, kannst du problemlos wechseln.
+    </p>
+
+    <div class="notice-box">
+        <b>Hinweis:</b> Anmeldungen der vergangenen Saison werden nicht in die neue Saison übertragen.
+    </div>
+</div>
