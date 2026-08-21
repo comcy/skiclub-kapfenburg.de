@@ -40,7 +40,15 @@ Playwright, living in `e2e/`, driving a real browser against the app. One-time s
 
 ### Test deployment (Docker)
 
-Beyond web/e2e/api unit tests, the repo also has a containerized deployment you can run for manual/exploratory testing, separate from the production systemd/Apache setup: `docker-compose.yml` at the repo root builds `web` (nginx) and `sck-api` (Node) images and runs them together with a persistent data volume. Try it locally with `docker compose up` (after copying `.env.example` to `.env` and filling in the values), or stand up a full instance on a Proxmox homeserver LXC with one script — see [`infrastructure/TEST_DEPLOYMENT.md`](infrastructure/TEST_DEPLOYMENT.md) for the complete walkthrough, including where SMTP/sheet-URL/API-URL configuration lives and how to change it after deploying.
+Beyond web/e2e/api unit tests, the repo also has a containerized deployment you can run for manual/exploratory testing, separate from the production systemd/Apache setup: `docker-compose.yml` at the repo root builds `web` (nginx) and `sck-api` (Node) images and runs them together with a persistent data volume. Try it locally with `docker compose up` (after copying `.env.example` to `.env` and filling in the values).
+
+To stand up a full instance on a Proxmox homeserver LXC, run this on the Proxmox host — no cloning required, prompts for everything it needs, safe to re-run (existing LXC/data/`.env` values are reused, not wiped):
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/comcy/skiclub-kapfenburg.de/master/infrastructure/proxmox/setup-test-system.sh)"
+```
+
+See [`infrastructure/TEST_DEPLOYMENT.md`](infrastructure/TEST_DEPLOYMENT.md) for the complete walkthrough, including where SMTP/sheet-URL/API-URL configuration lives and how to change it after deploying.
 
 ## LICENSE
 

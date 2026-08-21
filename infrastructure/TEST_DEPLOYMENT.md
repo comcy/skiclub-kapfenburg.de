@@ -10,26 +10,38 @@ Manager (NPM) auf seiner eigenen LXC.
 
 ### 1. Alles auf einmal: LXC + Docker + Repo + `.env` + erster Start
 
-Ein Skript, auf dem Proxmox-Host ausgeführt, erledigt die komplette
-Kette von der leeren LXC bis zum laufenden Stack:
+**Läuft auf dem Proxmox-Host** (braucht `pct`/`pveam`, die gibt es nur
+dort, nicht innerhalb einer LXC). Wie bei den bekannten Proxmox VE
+Helper-Scripts genügt ein Einzeiler, kein vorheriges Klonen des Repos,
+kein Editieren einer Config-Datei — jede Einstellung wird interaktiv
+abgefragt (mit sinnvollen Defaults, „Standardeinstellungen
+übernehmen? [Y/n]“ als Schnellweg):
 
 ```bash
-bash infrastructure/proxmox/setup-test-system.sh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/comcy/skiclub-kapfenburg.de/master/infrastructure/proxmox/setup-test-system.sh)"
 ```
 
-**Läuft auf dem Proxmox-Host** (braucht `pct`/`pveam`, die gibt es nur
-dort, nicht innerhalb einer LXC). Vorher den `CONFIG`-Block am Anfang
-des Skripts an eure Umgebung anpassen (VMID, Storage-Pool, Bridge, IP).
-Den Branch fragt das Skript bei jedem Lauf interaktiv ab. Das Skript:
+(`bash -c "$(curl ...)"`, nicht `curl | bash` — nur so bleibt die
+Terminal-Eingabe für die Prompts unten frei. Liegt das Repo schon lokal
+vor, geht auch einfach `bash infrastructure/proxmox/setup-test-system.sh`.)
+
+**Zwei verschiedene „Branch“-Fragen, nicht verwechseln:** Die URL im
+Einzeiler oben zeigt auf `master` — das ist nur, welche *Version des
+Setup-Skripts selbst* geladen wird (ändert sich selten). Welcher
+*App-Branch* tatsächlich in die LXC deployt wird, fragt das Skript
+danach separat und bei jedem Lauf neu — z. B. `release/2026-08-20`,
+solange der noch nicht gemerged ist.
+
+Das Skript:
 
 1. legt eine unprivilegierte Debian-12-LXC an — **oder**, falls unter
-   der konfigurierten `VMID` schon eine existiert, nutzt sie unverändert
+   der angegebenen VMID schon eine existiert, nutzt sie unverändert
    weiter (auch für eine LXC, die ihr selbst schon angelegt habt: deren
-   `VMID` einfach oben eintragen),
+   VMID einfach bei der Abfrage eintragen),
 2. installiert darin Docker Engine + Compose-Plugin (nur beim ersten
    Mal),
-3. fragt, welcher Branch deployt werden soll, und klont/aktualisiert ihn
-   nach `/opt/sck-test` in der LXC,
+3. fragt, welcher App-Branch deployt werden soll, und klont/aktualisiert
+   ihn nach `/opt/sck-test` in der LXC,
 4. fragt interaktiv nach `.env`-Werten (SMTP, Sheet-URLs, API-URL,
    SEPA-Schlüssel) — aber **nur nach denen, die dort noch nicht gesetzt
    sind**. Bereits vorhandene Werte bleiben unangetastet, keine
@@ -39,18 +51,17 @@ Den Branch fragt das Skript bei jedem Lauf interaktiv ab. Das Skript:
    bleibt also über jeden erneuten Lauf hinweg erhalten.
 
 Das Skript ist damit **beliebig oft wiederholbar** — für einen neuen
-Branch zum Testen, ein Redeploy nach Codeänderungen oder um eine neue
-Konfig-Variable nachzutragen (dann wird nur nach dieser einen gefragt,
-alles andere bleibt wie es ist): einfach nochmal ausführen. Testdaten
-und bereits gesetzte `.env`-Werte überleben das.
+App-Branch zum Testen, ein Redeploy nach Codeänderungen oder um eine
+neue Konfig-Variable nachzutragen (dann wird nur nach dieser einen
+gefragt, alles andere bleibt wie es ist): Einzeiler einfach nochmal
+ausführen. Testdaten und bereits gesetzte `.env`-Werte überleben das.
 
 Danach bleiben nur zwei Dinge manuell übrig (siehe Schritt 2 + 3
 unten): die Proxy Hosts in NPM und optional die GitHub-Secrets für
 spätere Redeploys per Workflow.
 
-**Zweites, unabhängiges Testsystem?** Skript kopieren, `VMID`/`HOSTNAME`
-in der Kopie anpassen, erneut ausführen — siehe Kommentar am Kopf des
-Skripts.
+**Zweites, unabhängiges Testsystem?** Beim Einzeiler-Lauf einfach eine
+andere VMID/Hostname angeben — siehe Kommentar am Kopf des Skripts.
 
 ### 2. Zwei Proxy Hosts in Nginx Proxy Manager anlegen
 

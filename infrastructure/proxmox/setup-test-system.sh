@@ -1,36 +1,76 @@
 #!/usr/bin/env bash
-# Test system setup — run this ON THE PROXMOX HOST. Safe to run again and
-# again against the same VMID: it reuses an existing LXC instead of
-# recreating it (so the sck-api-data Docker volume, and whatever test data
-# is in it, is never touched by this script), only prompts for .env values
-# that aren't already set (existing ones are kept as-is), and asks which
-# branch to deploy every time instead of hardcoding it.
+# Skiclub Kapfenburg — test system setup. Run this ON THE PROXMOX HOST,
+# either as a local checkout or piped straight in like the Proxmox VE
+# Helper-Scripts:
+#
+#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/comcy/skiclub-kapfenburg.de/master/infrastructure/proxmox/setup-test-system.sh)"
+#
+# (bash -c "$(...)" downloads the script into a variable first, so your
+# terminal's stdin is still free for the prompts below — unlike a plain
+# `curl | bash` pipe, which would eat stdin and break `read`.)
+#
+# No pre-editing required: every setting below is an interactive prompt
+# with a sensible default. Safe to run again and again against the same
+# VMID — it reuses an existing LXC instead of recreating it (so the
+# sck-api-data Docker volume, and whatever test data is in it, is never
+# touched by this script), only prompts for .env values that aren't
+# already set (existing ones are kept as-is), and asks which branch to
+# deploy every time instead of hardcoding it.
 #
 # See infrastructure/TEST_DEPLOYMENT.md for the full picture and what
 # stays manual afterwards (Nginx Proxy Manager, GitHub Actions secrets).
-#
-# To run a second, independent test system, copy this file, change
-# VMID/HOSTNAME below, and run the copy.
 
 set -euo pipefail
 
-# ---- CONFIG — edit these ----------------------------------------------
-VMID=900                        # pick a free VMID (pveam/pct list to check)
-HOSTNAME="sck-test"
-STORAGE="local-lvm"             # storage pool for the container's rootfs
-BRIDGE="vmbr0"                  # network bridge
-IP_CONFIG="dhcp"                 # or e.g. "192.168.1.50/24,gw=192.168.1.1"
-CORES=2
-MEMORY_MB=2048
-DISK_GB=8
-TEMPLATE_STORAGE="local"        # storage pool holding the CT template
-
 GIT_REPO_URL="https://github.com/comcy/skiclub-kapfenburg.de.git"
-DEFAULT_BRANCH="release/2026-08-20" # suggested default, always overridable below
-APP_DIR="/opt/sck-test"          # checkout path inside the LXC
-# -------------------------------------------------------------------------
+APP_DIR="/opt/sck-test" # checkout path inside the LXC
 
+DEFAULT_VMID=900
+DEFAULT_HOSTNAME="sck-test"
+DEFAULT_STORAGE="local-lvm"     # storage pool for the container's rootfs
+DEFAULT_BRIDGE="vmbr0"          # network bridge
+DEFAULT_IP_CONFIG="dhcp"        # or e.g. "192.168.1.50/24,gw=192.168.1.1"
+DEFAULT_CORES=2
+DEFAULT_MEMORY_MB=2048
+DEFAULT_DISK_GB=8
+DEFAULT_TEMPLATE_STORAGE="local" # storage pool holding the CT template
+DEFAULT_BRANCH="master"
 TEMPLATE="debian-12-standard_12.7-1_amd64.tar.zst"
+
+echo "Skiclub Kapfenburg — Test-System Setup"
+echo
+
+read -rp "Use default LXC settings (VMID ${DEFAULT_VMID}, ${DEFAULT_CORES} vCPU, ${DEFAULT_MEMORY_MB}MB RAM, ${DEFAULT_DISK_GB}GB disk, DHCP)? [Y/n]: " USE_DEFAULTS
+if [[ "${USE_DEFAULTS:-y}" =~ ^[Yy]?$ ]]; then
+  VMID=$DEFAULT_VMID
+  HOSTNAME=$DEFAULT_HOSTNAME
+  STORAGE=$DEFAULT_STORAGE
+  BRIDGE=$DEFAULT_BRIDGE
+  IP_CONFIG=$DEFAULT_IP_CONFIG
+  CORES=$DEFAULT_CORES
+  MEMORY_MB=$DEFAULT_MEMORY_MB
+  DISK_GB=$DEFAULT_DISK_GB
+  TEMPLATE_STORAGE=$DEFAULT_TEMPLATE_STORAGE
+else
+  read -rp "VMID (existing id reuses that LXC) [${DEFAULT_VMID}]: " VMID
+  VMID="${VMID:-$DEFAULT_VMID}"
+  read -rp "Hostname [${DEFAULT_HOSTNAME}]: " HOSTNAME
+  HOSTNAME="${HOSTNAME:-$DEFAULT_HOSTNAME}"
+  read -rp "Storage pool for rootfs [${DEFAULT_STORAGE}]: " STORAGE
+  STORAGE="${STORAGE:-$DEFAULT_STORAGE}"
+  read -rp "Network bridge [${DEFAULT_BRIDGE}]: " BRIDGE
+  BRIDGE="${BRIDGE:-$DEFAULT_BRIDGE}"
+  read -rp "IP config, dhcp or CIDR,gw=... [${DEFAULT_IP_CONFIG}]: " IP_CONFIG
+  IP_CONFIG="${IP_CONFIG:-$DEFAULT_IP_CONFIG}"
+  read -rp "CPU cores [${DEFAULT_CORES}]: " CORES
+  CORES="${CORES:-$DEFAULT_CORES}"
+  read -rp "Memory in MB [${DEFAULT_MEMORY_MB}]: " MEMORY_MB
+  MEMORY_MB="${MEMORY_MB:-$DEFAULT_MEMORY_MB}"
+  read -rp "Disk size in GB [${DEFAULT_DISK_GB}]: " DISK_GB
+  DISK_GB="${DISK_GB:-$DEFAULT_DISK_GB}"
+  read -rp "Template storage pool [${DEFAULT_TEMPLATE_STORAGE}]: " TEMPLATE_STORAGE
+  TEMPLATE_STORAGE="${TEMPLATE_STORAGE:-$DEFAULT_TEMPLATE_STORAGE}"
+fi
 
 read -rp "Branch to deploy [${DEFAULT_BRANCH}]: " GIT_BRANCH
 GIT_BRANCH="${GIT_BRANCH:-$DEFAULT_BRANCH}"
