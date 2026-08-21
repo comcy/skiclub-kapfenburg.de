@@ -28,10 +28,9 @@ services:
       SMTP_PORT: ${SMTP_PORT}
       SENDER_MAIL: ${SENDER_MAIL}
       SENDER_PW: ${SENDER_PW}
-      # Not consumed by sck-api on master yet — the field-encrypted SEPA/IBAN
-      # storage lands with the membership-registration feature. Wired here
-      # already so that merge doesn't also require touching this file.
-      SEPA_ENCRYPTION_KEY: ${SEPA_ENCRYPTION_KEY:-}
+      # Required by the online membership registration form (field-level
+      # IBAN encryption) — see .env.example.
+      SEPA_ENCRYPTION_KEY: ${SEPA_ENCRYPTION_KEY}
     volumes:
       - sck-api-data:/app/data
     healthcheck:
