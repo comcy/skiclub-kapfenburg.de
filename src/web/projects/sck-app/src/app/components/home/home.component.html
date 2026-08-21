@@ -74,6 +74,10 @@
         </div>
         <div class="course-section-layout">
             <div class="calendar-card">
+                <h3 class="calendar-title">Termine im Überblick</h3>
+                <p class="calendar-subtitle">
+                    Hier siehst du alle anstehenden Kurstermine und Ausfahrten auf einen Blick.
+                </p>
                 <div class="calendar-header">
                     <button mat-icon-button (click)="prevMonth()" aria-label="Vorheriger Monat">
                         <mat-icon>chevron_left</mat-icon>
@@ -100,11 +104,28 @@
                             >
                                 <span class="day-number">{{ day.getDate() }}</span>
                                 @if (getDayEvents(day).length > 0) {
-                                    <span class="day-dot"></span>
+                                    <span class="day-dots">
+                                        @if (hasCourseEvent(day)) {
+                                            <span class="day-dot day-dot-course"></span>
+                                        }
+                                        @if (hasTripEvent(day)) {
+                                            <span class="day-dot day-dot-trip"></span>
+                                        }
+                                    </span>
                                 }
                             </div>
                         }
                     }
+                </div>
+                <div class="calendar-legend">
+                    <span class="legend-item">
+                        <span class="legend-dot legend-dot-course"></span>
+                        Kurse
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-dot legend-dot-trip"></span>
+                        Ausfahrten
+                    </span>
                 </div>
             </div>
 

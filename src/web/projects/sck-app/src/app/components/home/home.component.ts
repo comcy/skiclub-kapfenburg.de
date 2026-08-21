@@ -212,6 +212,14 @@ export class HomeComponent implements OnInit, OnDestroy {
             .join('\n');
     }
 
+    public hasCourseEvent(day: Date): boolean {
+        return this.getDayEvents(day).some((event) => event.type === 'course');
+    }
+
+    public hasTripEvent(day: Date): boolean {
+        return this.getDayEvents(day).some((event) => event.type === 'trip');
+    }
+
     private buildCalendarGrid(month: Date): Date[][] {
         const start = startOfWeek(startOfMonth(month), { weekStartsOn: 1 });
         const end = endOfWeek(endOfMonth(month), { weekStartsOn: 1 });

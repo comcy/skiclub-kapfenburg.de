@@ -342,6 +342,20 @@ $color-on-accent: #6b4d00;
     }
 }
 
+.calendar-title {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: $color-primary-dark;
+}
+
+.calendar-subtitle {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.6);
+}
+
 .calendar-header {
     display: flex;
     align-items: center;
@@ -380,12 +394,24 @@ $color-on-accent: #6b4d00;
     font-size: 13px;
     color: rgba(0, 0, 0, 0.75);
 
+    .day-dots {
+        display: flex;
+        gap: 3px;
+        margin-top: 2px;
+    }
+
     .day-dot {
         width: 4px;
         height: 4px;
         border-radius: 50%;
-        background: $color-primary;
-        margin-top: 2px;
+
+        &.day-dot-course {
+            background: $color-primary;
+        }
+
+        &.day-dot-trip {
+            background: $color-accent;
+        }
     }
 
     &.outside {
@@ -397,6 +423,36 @@ $color-on-accent: #6b4d00;
         color: $color-primary-dark;
         font-weight: 700;
         cursor: default;
+    }
+}
+
+.calendar-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+
+    &.legend-dot-course {
+        background: $color-primary;
+    }
+
+    &.legend-dot-trip {
+        background: $color-accent;
     }
 }
 
