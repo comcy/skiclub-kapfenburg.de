@@ -7,9 +7,6 @@ $color-accent: #ffd740;
 $color-on-accent: #6b4d00;
 
 :host {
-    flex: 1;
-    overflow: scroll;
-    height: 100%;
     display: block;
 }
 
@@ -90,7 +87,7 @@ $color-on-accent: #6b4d00;
 // SECTIONS
 
 .content-container {
-    padding: 64px 32px 80px 32px;
+    padding: 96px 32px 80px 32px;
     max-width: 1200px;
     margin: 0 auto;
 }

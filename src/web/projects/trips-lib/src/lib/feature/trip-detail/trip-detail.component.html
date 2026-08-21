@@ -1,34 +1,53 @@
 <shared-lib-site-header [title]="tile ? tile.title : 'Ausfahrt'"></shared-lib-site-header>
 
+@if (tile) {
+    <div class="detail-image-wrap">
+        <img class="detail-image" src="{{ tile.image }}" alt="{{ tile.imageDescription }}" />
+        @if (tile.status === tileStatusEnum.Canceled) {
+            <span class="canceled-stamp">Abgesagt</span>
+        }
+        @if (tile.status === tileStatusEnum.BookedUp) {
+            <span class="booked-up-stamp">Warteliste</span>
+        }
+    </div>
+}
+
 <div class="content-container">
     @if (tile) {
         <a class="back-link" routerLink="/home">&larr; Zurück zur Übersicht</a>
 
-        <mat-card appearance="outlined" class="detail-card">
-            <mat-card-header>
-                <mat-card-title class="trip-date">{{ tile.date }}</mat-card-title>
-                <mat-card-subtitle>{{ tile.subTitle }}</mat-card-subtitle>
-            </mat-card-header>
-
-            @if (tile.status === tileStatusEnum.Canceled) {
-                <span class="canceled-stamp">Abgesagt</span>
+        <div class="detail-meta">
+            <span class="detail-date">{{ tile.date }}</span>
+            @if (tile.subTitle) {
+                <span class="detail-subtitle">{{ tile.subTitle }}</span>
             }
-            @if (tile.status === tileStatusEnum.BookedUp) {
-                <span class="booked-up-stamp">Warteliste</span>
-            }
-            <img mat-card-image src="{{ tile.image }}" alt="{{ tile.imageDescription }}" />
+        </div>
 
-            <mat-card-content class="mat-card-content">
-                <p [innerHTML]="markdown.render(description)"></p>
-                @if (tile.details) {
-                    <p [innerHTML]="markdown.render(tile.details)"></p>
-                }
-            </mat-card-content>
-        </mat-card>
+        <div class="detail-body">
+            <div [innerHTML]="markdown.render(description)"></div>
+            @if (tile.details) {
+                <div [innerHTML]="markdown.render(tile.details)"></div>
+            }
+        </div>
 
         <section class="registration-section">
-            <h2>Anmeldung</h2>
-            <lib-trips-registration-form [additionalData]="registrationData"></lib-trips-registration-form>
+            <button
+                mat-fab
+                extended
+                color="primary"
+                class="registration-toggle"
+                (click)="registrationOpen = !registrationOpen"
+            >
+                <mat-icon>event_note</mat-icon>
+                {{ registrationOpen ? 'Anmeldeformular schließen' : 'Jetzt anmelden' }}
+                <mat-icon>{{ registrationOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </button>
+
+            @if (registrationOpen) {
+                <div class="registration-form-wrap">
+                    <lib-trips-registration-form [additionalData]="registrationData"></lib-trips-registration-form>
+                </div>
+            }
         </section>
     } @else {
         <p class="not-found">Diese Ausfahrt wurde nicht gefunden.</p>

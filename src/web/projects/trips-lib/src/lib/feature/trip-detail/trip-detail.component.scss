@@ -1,26 +1,136 @@
+$color-primary: #673ab7;
+$color-primary-dark: #512da8;
+$color-accent-bg: #f3effa;
+$font-display: 'Montserrat', 'Roboto', sans-serif;
+
+// Full page width, breaking out of .content-container's max-width below.
+.detail-image-wrap {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    min-height: 320px;
+    max-height: 560px;
+    overflow: hidden;
+}
+
+.detail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .content-container {
-    max-width: 720px;
+    max-width: 760px;
     margin: 0 auto;
     padding: 32px 32px 64px 32px;
 }
 
 .back-link {
     display: inline-block;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     text-decoration: none;
-    color: #3f51b5;
+    color: $color-primary;
+    font-weight: 600;
 }
 
-.detail-card {
+.detail-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
     margin-bottom: 32px;
 }
 
-.trip-date {
-    color: #3f51b5;
+.detail-date {
+    font-family: $font-display;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: $color-primary-dark;
 }
 
-.registration-section h2 {
-    margin-bottom: 16px;
+.detail-subtitle {
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+// Markdown-rendered description/details/pricing table
+.detail-body {
+    ::ng-deep {
+        p {
+            line-height: 1.65;
+            color: rgba(0, 0, 0, 0.78);
+        }
+
+        strong {
+            display: block;
+            font-family: $font-display;
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: $color-primary-dark;
+            margin-top: 28px;
+            margin-bottom: 8px;
+        }
+
+        ul {
+            margin: 0 0 8px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0 16px 0;
+            background: $color-accent-bg;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 10px 16px;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(103, 58, 183, 0.12);
+            font-family: $font-display;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: $color-primary-dark;
+        }
+
+        tr:not(:last-child) td {
+            border-bottom: 1px solid rgba(103, 58, 183, 0.1);
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+    }
+}
+
+.registration-section {
+    margin-top: 48px;
+}
+
+.registration-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.registration-form-wrap {
+    margin-top: 24px;
 }
 
 .not-found {
@@ -29,14 +139,18 @@
 
 .canceled-stamp,
 .booked-up-stamp {
-    font-size: 3rem;
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 2rem;
     font-weight: 700;
-    border: 0.25rem solid #555;
+    border: 0.2rem solid #555;
     display: inline-block;
-    padding: 0.95rem 2rem;
+    padding: 0.6rem 1.4rem;
     text-transform: uppercase;
     border-radius: 2rem;
     font-family: 'Courier';
+    background: rgba(255, 255, 255, 0.85);
     -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
     mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
     -webkit-mask-size: 944px 604px;

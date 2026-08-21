@@ -4,7 +4,8 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TRIP_DATA } from '@data';
 import { SiteHeaderComponent } from '@shared/ui-common';
@@ -20,13 +21,21 @@ import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form
     styleUrls: ['./trip-detail.component.scss'],
     standalone: true,
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CommonModule, RouterModule, MatCardModule, SiteHeaderComponent, TripsRegistrationFormComponent],
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatButtonModule,
+        MatIconModule,
+        SiteHeaderComponent,
+        TripsRegistrationFormComponent,
+    ],
 })
 export class TripDetailComponent implements OnInit, OnDestroy {
     public tileStatusEnum = TileStatus;
     public tile: EventTile | undefined;
     public description = '';
     public registrationData: Trip[] = [];
+    public registrationOpen = false;
 
     public markdown = inject(MarkdownRenderService);
 
@@ -37,6 +46,7 @@ export class TripDetailComponent implements OnInit, OnDestroy {
         this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             const id = params.get('id');
             this.tile = id ? this.resolveTripById(id) : undefined;
+            this.registrationOpen = false;
 
             if (this.tile) {
                 this.description = this.buildDescription(this.tile);
