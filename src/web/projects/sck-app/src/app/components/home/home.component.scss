@@ -202,7 +202,8 @@ $color-on-accent: #6b4d00;
 
 .image-only-actions {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+    margin-top: auto;
     padding: 16px;
 }
 
