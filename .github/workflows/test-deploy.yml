@@ -1,0 +1,53 @@
+name: Test-System Deploy
+
+# Manual on purpose: a deploy to the test system is a deliberate action,
+# not a side effect of every push (unlike the prod workflows, which deploy
+# on push to master). Pick the branch/tag to deploy from the Actions tab.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch to deploy"
+        required: true
+        default: "master"
+
+env:
+  APP_DIR: "/opt/sck-test"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to test LXC
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.TEST_SERVER_ADDRESS }}
+          username: ${{ secrets.TEST_SSH_USER }}
+          password: ${{ secrets.TEST_SSH_PASSWORD }}
+          port: ${{ secrets.TEST_SSH_PORT || 22 }}
+          script: |
+            set -e
+
+            if [ ! -d "${{ env.APP_DIR }}/.git" ]; then
+              echo "📥 Cloning repository..."
+              mkdir -p ${{ env.APP_DIR }}
+              git clone ${{ github.server_url }}/${{ github.repository }}.git ${{ env.APP_DIR }}
+            fi
+
+            cd ${{ env.APP_DIR }}
+            echo "🔄 Checking out ${{ inputs.ref }}..."
+            git fetch origin
+            git checkout ${{ inputs.ref }}
+            git reset --hard origin/${{ inputs.ref }}
+
+            echo "🔨 Building images..."
+            docker compose build
+
+            echo "🚀 Starting stack..."
+            docker compose up -d
+
+            echo "🧹 Pruning old images..."
+            docker image prune -f
+
+            sleep 5
+            docker compose ps
