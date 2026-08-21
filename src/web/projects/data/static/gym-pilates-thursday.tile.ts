@@ -40,7 +40,8 @@ export const GYM_PILATES_COURSE_INFORMATION_THU: GymCourseInformation = {
         weekday: 4, // Donnerstag
         startDate: new Date('2026-09-24'),
         endDate: new Date('2026-12-17'),
-        excludedDates: [],
+        // Herbstferien BW 2026: 26.10.-31.10.2026
+        excludedDates: [new Date('2026-10-29')],
     },
 };
 
