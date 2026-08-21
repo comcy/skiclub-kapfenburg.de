@@ -97,6 +97,7 @@ $font-display: 'Montserrat', 'Roboto', sans-serif;
 
         table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             margin: 8px 0 16px 0;
             background: $color-accent-bg;
@@ -108,6 +109,16 @@ $font-display: 'Montserrat', 'Roboto', sans-serif;
         td {
             padding: 10px 16px;
             text-align: left;
+            overflow-wrap: break-word;
+
+            @media (max-width: 500px) {
+                padding: 8px 8px;
+            }
+        }
+
+        th:first-child,
+        td:first-child {
+            width: 42%;
         }
 
         th {
