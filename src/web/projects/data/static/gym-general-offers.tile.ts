@@ -2,6 +2,7 @@
  * @copyright Copyright (c) 2025 Christian Silfang
  */
 
+import { InfoTile, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 import { GymCourseInformation } from 'projects/gym-lib/src/lib/domain';
 
 // Herbstferien BW 2026: 26.-31.10.2026, Weihnachtsferien BW 2026/27: 23.12.2026-09.01.2027
@@ -61,7 +62,7 @@ export const GYM_VITALGYMNASTIK_INFORMATION: GymCourseInformation = {
 };
 
 /**
- * Public, non-bookable Gymnastik offers (no tile/registration - just the running
+ * Public, non-bookable Gymnastik offers (no registration - just the running
  * weekly sessions described on the Gymnastik information page). Kept here, as the
  * single source of truth, so GymInformationProviderService and the home page
  * calendar both read the same data.
@@ -71,3 +72,45 @@ export const GYM_GENERAL_OFFERS: GymCourseInformation[] = [
     GYM_VITALGYMNASTIK_INFORMATION,
     GYM_FITNESSMIX_INFORMATION,
 ];
+
+/**
+ * Display tiles for the two Monday groups, shown as cards on the Gymnastik
+ * information page. No registration/detail page - purely informational, so
+ * no actions/image (rendered with a placeholder icon instead, see
+ * gym-general-information.component).
+ */
+export const GYM_FITNESS_COCKTAIL_TILE: InfoTile = {
+    id: 'fitness-cocktail',
+    order: 3,
+    type: TileType.Info,
+    behavior: TileBehavior.View,
+    title: GYM_FITNESS_COCKTAIL_INFORMATION.name,
+    date: '',
+    subTitle: GYM_FITNESS_COCKTAIL_INFORMATION.time,
+    image: '',
+    imageDescription: GYM_FITNESS_COCKTAIL_INFORMATION.name,
+    description: GYM_FITNESS_COCKTAIL_INFORMATION.description,
+    details: '',
+    location: GYM_FITNESS_COCKTAIL_INFORMATION.location,
+    expiration: new Date('2027-12-31'),
+    status: TileStatus.Open,
+};
+
+export const GYM_FITNESSMIX_TILE: InfoTile = {
+    id: 'fitnessmix',
+    order: 3,
+    type: TileType.Info,
+    behavior: TileBehavior.View,
+    title: GYM_FITNESSMIX_INFORMATION.name,
+    date: '',
+    subTitle: GYM_FITNESSMIX_INFORMATION.time,
+    image: '',
+    imageDescription: GYM_FITNESSMIX_INFORMATION.name,
+    description: GYM_FITNESSMIX_INFORMATION.description,
+    details: '',
+    location: GYM_FITNESSMIX_INFORMATION.location,
+    expiration: new Date('2027-12-31'),
+    status: TileStatus.Open,
+};
+
+export const GYM_MONDAY_TILES: InfoTile[] = [GYM_FITNESS_COCKTAIL_TILE, GYM_FITNESSMIX_TILE];

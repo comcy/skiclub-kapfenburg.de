@@ -49,15 +49,41 @@
     <i>Kursleitung: Mascha Welk</i>
 </div>
 
+<div class="gym-tiles-grid">
+    @for (tile of mondayTiles; track tile.id) {
+        <article class="gym-tile-card">
+            @if (tile.image) {
+                <div class="gym-tile-image">
+                    <img [src]="tile.image" [alt]="tile.imageDescription" />
+                </div>
+            } @else {
+                <div class="gym-tile-image gym-tile-placeholder">
+                    <mat-icon>fitness_center</mat-icon>
+                </div>
+            }
+            <div class="gym-tile-content">
+                <div class="gym-tile-eyebrow">{{ tile.subTitle }}</div>
+                <h3>{{ tile.title }}</h3>
+                <p [innerHTML]="markdown.render(tile.description)"></p>
+                @if (tile.location) {
+                    <p class="gym-tile-location">{{ tile.location }}</p>
+                }
+            </div>
+        </article>
+    }
+</div>
+
 @if (gymState.gymOffers$ | async; as gymOffers) {
     @for (g of gymOffers; track g.name) {
-        <div class="info-page">
-            <h3>{{ g.name }}</h3>
-            <h2>{{ g.time }} - {{ g.location }}</h2>
-            <div [innerHTML]="markdown.render(g.description)"></div>
-            <p>
-                <i>{{ g.contact }}</i>
-            </p>
-        </div>
+        @if (!mondayTileNames.includes(g.name)) {
+            <div class="info-page">
+                <h3>{{ g.name }}</h3>
+                <h2>{{ g.time }} - {{ g.location }}</h2>
+                <div [innerHTML]="markdown.render(g.description)"></div>
+                <p>
+                    <i>{{ g.contact }}</i>
+                </p>
+            </div>
+        }
     }
 }
