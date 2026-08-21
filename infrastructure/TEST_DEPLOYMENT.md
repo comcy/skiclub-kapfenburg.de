@@ -17,25 +17,40 @@ Kette von der leeren LXC bis zum laufenden Stack:
 bash infrastructure/proxmox/setup-test-system.sh
 ```
 
-Vorher den `CONFIG`-Block am Anfang des Skripts an eure Umgebung
-anpassen (VMID, Storage-Pool, Bridge, IP, und `GIT_BRANCH` — welcher
-Branch dieses Testsystem abbildet). Das Skript:
+**Läuft auf dem Proxmox-Host** (braucht `pct`/`pveam`, die gibt es nur
+dort, nicht innerhalb einer LXC). Vorher den `CONFIG`-Block am Anfang
+des Skripts an eure Umgebung anpassen (VMID, Storage-Pool, Bridge, IP).
+Den Branch fragt das Skript bei jedem Lauf interaktiv ab. Das Skript:
 
-1. legt eine unprivilegierte Debian-12-LXC an,
-2. installiert darin Docker Engine + Compose-Plugin,
-3. klont den konfigurierten Branch nach `/opt/sck-test` in der LXC,
-4. fragt interaktiv genau die Werte ab, die es nicht wissen kann (SMTP,
-   Sheet-URLs, die öffentliche API-URL, SEPA-Schlüssel — Letzterer
-   auf Wunsch automatisch generiert), schreibt daraus `.env`,
-5. baut beide Images und startet den Stack (`docker compose up -d`).
+1. legt eine unprivilegierte Debian-12-LXC an — **oder**, falls unter
+   der konfigurierten `VMID` schon eine existiert, nutzt sie unverändert
+   weiter (auch für eine LXC, die ihr selbst schon angelegt habt: deren
+   `VMID` einfach oben eintragen),
+2. installiert darin Docker Engine + Compose-Plugin (nur beim ersten
+   Mal),
+3. fragt, welcher Branch deployt werden soll, und klont/aktualisiert ihn
+   nach `/opt/sck-test` in der LXC,
+4. fragt interaktiv nach `.env`-Werten (SMTP, Sheet-URLs, API-URL,
+   SEPA-Schlüssel) — aber **nur nach denen, die dort noch nicht gesetzt
+   sind**. Bereits vorhandene Werte bleiben unangetastet, keine
+   Neueingabe nötig,
+5. baut beide Images und startet den Stack (`docker compose up -d`) —
+   **ohne** `down -v`, das `sck-api-data`-Volume mit euren Testdaten
+   bleibt also über jeden erneuten Lauf hinweg erhalten.
+
+Das Skript ist damit **beliebig oft wiederholbar** — für einen neuen
+Branch zum Testen, ein Redeploy nach Codeänderungen oder um eine neue
+Konfig-Variable nachzutragen (dann wird nur nach dieser einen gefragt,
+alles andere bleibt wie es ist): einfach nochmal ausführen. Testdaten
+und bereits gesetzte `.env`-Werte überleben das.
 
 Danach bleiben nur zwei Dinge manuell übrig (siehe Schritt 2 + 3
 unten): die Proxy Hosts in NPM und optional die GitHub-Secrets für
 spätere Redeploys per Workflow.
 
-**Zweites Testsystem für einen anderen Branch?** Skript kopieren,
-`VMID`/`HOSTNAME`/`GIT_BRANCH` in der Kopie anpassen, erneut ausführen
-— siehe Kommentar am Kopf des Skripts.
+**Zweites, unabhängiges Testsystem?** Skript kopieren, `VMID`/`HOSTNAME`
+in der Kopie anpassen, erneut ausführen — siehe Kommentar am Kopf des
+Skripts.
 
 ### 2. Zwei Proxy Hosts in Nginx Proxy Manager anlegen
 
@@ -80,6 +95,13 @@ gelesen wird:
   ```bash
   docker compose up -d api
   ```
+  `SEPA_ENCRYPTION_KEY` verschlüsselt die IBAN im Online-Mitgliedsantrag
+  (siehe `src/api/sck-api/src/services/crypto-service.ts`) und wird
+  nirgends außer in dieser `.env` gespeichert — ändert ihr ihn (oder
+  fehlt er nach einem manuellen `.env`-Reset), sind zuvor gespeicherte
+  IBANs nicht mehr entschlüsselbar. Das Setup-Skript generiert ihn
+  deshalb nur beim allerersten Lauf und lässt einen einmal gesetzten
+  Wert bei jedem weiteren Lauf unangetastet.
 - **Build-Zeit-Variablen** (werden beim `ng build` fest in die
   ausgelieferten JS-Dateien eingesetzt, siehe
   `src/web/scripts/envsubst.sh`): `SCK_API_URL`, `COURSE_SHEET_URL`,
