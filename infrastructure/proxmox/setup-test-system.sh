@@ -173,6 +173,12 @@ prompt_if_missing SENDER_MAIL "Sender email address"
 prompt_if_missing SENDER_PW "Sender email password" secret
 prompt_if_missing COURSE_SHEET_URL "Course sheet URL"
 prompt_if_missing TRIP_SHEET_URL "Trip sheet URL"
+if [[ -z "${ENV_VALUES[SCK_API_URL]:-}" ]]; then
+  echo "  This gets baked into the web app's JS at build time and is then"
+  echo "  called from each visitor's browser, which has no route into this"
+  echo "  Docker network — so it must be a real public URL, not an"
+  echo "  internal docker-compose service name like http://api:3000."
+fi
 prompt_if_missing SCK_API_URL "Public API URL (e.g. https://sck-api-test.example.com/api)"
 
 if [[ -n "${ENV_VALUES[SEPA_ENCRYPTION_KEY]:-}" ]]; then
