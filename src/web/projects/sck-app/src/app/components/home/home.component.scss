@@ -44,7 +44,7 @@ $color-on-accent: #6b4d00;
     height: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 32px 56px 32px;
+    padding: 0 32px 96px 32px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -149,6 +149,8 @@ $color-on-accent: #6b4d00;
 }
 
 .tile-card {
+    display: flex;
+    flex-direction: column;
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
@@ -216,6 +218,9 @@ $color-on-accent: #6b4d00;
 }
 
 .tile-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     padding: 20px;
     margin-top: -20px;
     position: relative;
@@ -264,6 +269,7 @@ $color-on-accent: #6b4d00;
     justify-content: space-between;
     gap: 12px;
     padding-top: 14px;
+    margin-top: auto;
     border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
