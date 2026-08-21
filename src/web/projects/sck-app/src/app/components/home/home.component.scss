@@ -424,6 +424,14 @@ $color-on-accent: #6b4d00;
         font-weight: 700;
         cursor: default;
     }
+
+    &.clickable {
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(103, 58, 183, 0.2);
+        }
+    }
 }
 
 .calendar-legend {

@@ -99,8 +99,10 @@
                                 class="calendar-day"
                                 [class.outside]="!isSameMonthAsCalendar(day)"
                                 [class.has-events]="getDayEvents(day).length > 0"
+                                [class.clickable]="isDayClickable(day)"
                                 [matTooltip]="dayTooltip(day)"
                                 [matTooltipDisabled]="getDayEvents(day).length === 0"
+                                (click)="onDayClick(day)"
                             >
                                 <span class="day-number">{{ day.getDate() }}</span>
                                 @if (getDayEvents(day).length > 0) {

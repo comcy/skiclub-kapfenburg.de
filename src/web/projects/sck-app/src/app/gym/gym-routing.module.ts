@@ -32,6 +32,14 @@ const routes: Routes = [
             },
         ],
     },
+    // Standalone course detail page (/gymnastik/:id) - not part of the tabbed
+    // shell above, only tried once none of its fixed child paths match.
+    // Mirrors trips-routing.module.ts's :id route for trip-detail.
+    {
+        path: ':id',
+        loadComponent: () =>
+            import('./components/course-detail/course-detail.component').then((mod) => mod.CourseDetailComponent),
+    },
 ];
 
 @NgModule({

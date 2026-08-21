@@ -23,6 +23,7 @@ import { CoursesFeatureModule } from '@courses-lib';
 import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
 import { GymFeatureModule } from '@gym-lib';
 import { GymCourseSchedule } from 'projects/gym-lib/src/lib/domain';
+import { GYM_GENERAL_OFFERS } from 'projects/data/static';
 import { MarkdownRenderService } from '@shared/util-markdown';
 import { TripsFeatureModule } from '@trips-lib';
 import {
@@ -48,11 +49,13 @@ import {
     TileType,
 } from 'projects/shared-lib/src/lib/ui-common/models';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
-import { TRIPS_ROUTE } from '../../route-segments';
+import { GYM_ROUTE, TRIPS_ROUTE } from '../../route-segments';
 
 interface CalendarDayEvent {
     title: string;
     type: 'trip' | 'course';
+    /** Present only for events with their own detail page (trips, bookable courses). */
+    id?: string;
 }
 
 interface CarouselSlide {
@@ -220,6 +223,18 @@ export class HomeComponent implements OnInit, OnDestroy {
         return this.getDayEvents(day).some((event) => event.type === 'trip');
     }
 
+    public isDayClickable(day: Date): boolean {
+        return this.getDayEvents(day).some((event) => !!event.id);
+    }
+
+    public onDayClick(day: Date): void {
+        const target = this.getDayEvents(day).find((event) => !!event.id);
+        if (!target?.id) {
+            return;
+        }
+        this.router.navigate([target.type === 'trip' ? TRIPS_ROUTE : GYM_ROUTE, target.id]);
+    }
+
     private buildCalendarGrid(month: Date): Date[][] {
         const start = startOfWeek(startOfMonth(month), { weekStartsOn: 1 });
         const end = endOfWeek(endOfMonth(month), { weekStartsOn: 1 });
@@ -233,20 +248,32 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private buildCalendarEvents(trips: EventTile[], courses: CourseTile[]): Map<string, CalendarDayEvent[]> {
         const map = new Map<string, CalendarDayEvent[]>();
-        const addEvent = (date: Date, title: string, type: CalendarDayEvent['type']) => {
+        const addEvent = (date: Date, title: string, type: CalendarDayEvent['type'], id?: string) => {
             const key = format(date, 'yyyy-MM-dd');
             const list = map.get(key) ?? [];
-            list.push({ title, type });
+            list.push({ title, type, id });
             map.set(key, list);
         };
 
-        trips.forEach((trip) => addEvent(trip.expiration, trip.title, 'trip'));
+        trips.forEach((trip) => addEvent(trip.expiration, trip.title, 'trip', trip.id));
         courses.forEach((course) => {
             const schedule = course.course?.schedule;
             if (!schedule) {
                 return;
             }
-            this.computeCourseSessionDates(schedule).forEach((date) => addEvent(date, course.title, 'course'));
+            this.computeCourseSessionDates(schedule).forEach((date) =>
+                addEvent(date, course.title, 'course', course.id),
+            );
+        });
+        // Public, non-bookable Gymnastik sessions (Fitness Cocktail, Fitnessmix, Vitalgymnastik) -
+        // calendar-only, no detail page/registration, so no id.
+        GYM_GENERAL_OFFERS.forEach((offer) => {
+            if (!offer.schedule) {
+                return;
+            }
+            this.computeCourseSessionDates(offer.schedule).forEach((date) =>
+                addEvent(date, `${offer.name} (${offer.time})`, 'course'),
+            );
         });
 
         return map;
@@ -344,7 +371,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             priceLabelHtml: course.course?.prices?.member ? `ab <b>${course.course.prices.member}</b>` : undefined,
             ctaLabel: 'Anmelden',
             ctaColor: 'accent',
-            onClick: () => this.openRegisterDialog(course),
+            onClick: () => this.openCourseDetail(course),
         };
     }
 
@@ -354,6 +381,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     public openTripDetail(tile: Tile): void {
         this.router.navigate([TRIPS_ROUTE, tile.id]);
+    }
+
+    public openCourseDetail(tile: Tile): void {
+        this.router.navigate([GYM_ROUTE, tile.id]);
     }
 
     public openLink(link: string | undefined) {
