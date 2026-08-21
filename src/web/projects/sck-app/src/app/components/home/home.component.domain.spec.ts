@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { TileType, TileBehavior, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
 import { STATIC_DATA } from 'projects/data/static-data';
@@ -7,7 +8,10 @@ describe('HomeComponent (domain scenarios)', () => {
     let component: HomeComponent;
 
     beforeEach(async () => {
-        await TestBed.configureTestingModule({ imports: [HomeComponent] }).compileComponents();
+        await TestBed.configureTestingModule({
+            imports: [HomeComponent],
+            providers: [provideRouter([])],
+        }).compileComponents();
         const fixture = TestBed.createComponent(HomeComponent);
         component = fixture.componentInstance;
         component.ngOnInit();

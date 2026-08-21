@@ -13,8 +13,13 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'registration',
+                redirectTo: 'overview',
                 pathMatch: 'full',
+            },
+            {
+                path: 'overview',
+                loadComponent: () =>
+                    import('./components/tabs/overview/overview.component').then((mod) => mod.OverviewComponent),
             },
             {
                 path: 'registration',

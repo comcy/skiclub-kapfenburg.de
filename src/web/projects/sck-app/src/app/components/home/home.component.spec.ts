@@ -4,6 +4,7 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -15,6 +16,7 @@ describe('HomeComponent', () => {
         await TestBed.configureTestingModule({
             imports: [HomeComponent, NoopAnimationsModule],
             providers: [
+                provideRouter([]),
                 {
                     provide: MatDialog,
                     useFactory: () => {

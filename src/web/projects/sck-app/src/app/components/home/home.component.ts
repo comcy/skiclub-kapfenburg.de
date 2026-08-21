@@ -18,14 +18,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CoursesFeatureModule } from '@courses-lib';
 import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
 import { GymFeatureModule } from '@gym-lib';
-import { SiteHeaderComponent } from '@shared/ui-common';
 import { MarkdownRenderService } from '@shared/util-markdown';
 import { TripsFeatureModule } from '@trips-lib';
 import {
+    CourseTile,
+    EventTile,
     InfoTile,
     Tile,
     TileActions,
@@ -44,6 +45,7 @@ import { TRIPS_ROUTE } from '../../route-segments';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         CommonModule,
+        RouterModule,
         ComponentsModule,
         MatToolbarModule,
         MatIconModule,
@@ -62,7 +64,6 @@ import { TRIPS_ROUTE } from '../../route-segments';
         CoursesFeatureModule,
         GymFeatureModule,
         TripsFeatureModule,
-        SiteHeaderComponent,
     ],
 })
 export class HomeComponent implements OnInit {
@@ -74,6 +75,11 @@ export class HomeComponent implements OnInit {
     public registerLabel = 'Anmelden';
     public tiles: Tile[] = [];
     public programmDownloadLink = PROGRAMM_DOWNLOAD_LINK;
+
+    /** Next upcoming trips, teased on the home page; full list lives on the Ausfahrten overview tab. */
+    public upcomingTrips: EventTile[] = [];
+    public courseTiles: CourseTile[] = [];
+    public infoTiles: InfoTile[] = [];
 
     private trips = TRIP_DATA;
     private courses = COURSE_DATA;
@@ -106,6 +112,17 @@ export class HomeComponent implements OnInit {
         });
 
         this.tiles = homeTiles;
+
+        this.upcomingTrips = homeTiles
+            .filter((t): t is EventTile => t.type === TileType.Event && !t.expired)
+            .sort((a, b) => a.expiration.getTime() - b.expiration.getTime())
+            .slice(0, 3);
+        this.courseTiles = homeTiles.filter((t): t is CourseTile => t.type === TileType.Course);
+        this.infoTiles = homeTiles.filter((t): t is InfoTile => t.type === TileType.Info);
+    }
+
+    public resolvePrice(trip: EventTile): number | undefined {
+        return trip.tripConfig?.pricing?.busLift?.adult?.member;
     }
 
     public openRegisterDialog(tile: Tile) {

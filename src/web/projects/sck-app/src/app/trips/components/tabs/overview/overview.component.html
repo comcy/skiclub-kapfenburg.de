@@ -1,0 +1,76 @@
+<div class="overview-container">
+    <p class="intro">
+        Von der Familienfahrt nach Ehrwald bis zur Partynacht am Sonnenkopf – hier ist für jeden was dabei. Busfahrt und
+        Liftkarte sind im Preis enthalten.
+    </p>
+
+    <div class="filter-bar">
+        <mat-form-field appearance="fill">
+            <mat-label>Zielgruppe</mat-label>
+            <mat-select [(value)]="selectedAudience" (selectionChange)="applyFilters()">
+                @for (audience of audiences; track audience) {
+                    <mat-option [value]="audience">{{ audience }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Ziel</mat-label>
+            <mat-select [(value)]="selectedDestination" (selectionChange)="applyFilters()">
+                @for (destination of destinations; track destination) {
+                    <mat-option [value]="destination">{{ destination }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Zeitraum</mat-label>
+            <mat-select [(value)]="selectedPeriod" (selectionChange)="applyFilters()">
+                @for (period of periods; track period) {
+                    <mat-option [value]="period">{{ period }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="trips-grid">
+        @for (trip of filteredTrips; track trip.id) {
+            <article class="trip-card" [class.inactive]="trip.status === tileStatusEnum.Canceled">
+                <div class="trip-card-image">
+                    <img [src]="trip.image" [alt]="trip.imageDescription" />
+                    <span
+                        class="badge"
+                        [class.badge-warn]="trip.status === tileStatusEnum.BookedUp"
+                        [class.badge-off]="trip.status === tileStatusEnum.Canceled"
+                    >
+                        {{ resolveStatusLabel(trip) }}
+                    </span>
+                </div>
+                <div class="trip-card-content">
+                    <div class="trip-card-heading">
+                        <h3>{{ trip.title }}</h3>
+                        @if (resolvePrice(trip); as price) {
+                            <span class="price">{{ price }}&nbsp;€</span>
+                        }
+                    </div>
+                    <p class="destination">{{ trip.destination }}</p>
+                    <div class="meta-row">
+                        <span class="meta-chip"><mat-icon>event</mat-icon>{{ trip.date }}</span>
+                        @if (trip.subTitle) {
+                            <span class="meta-chip"><mat-icon>groups</mat-icon>{{ trip.subTitle }}</span>
+                        }
+                    </div>
+                    <div class="card-actions">
+                        <span class="boardings-count" [innerText]="(trip.boardings?.length ?? 0) + ' Zustiege'"></span>
+                        <a mat-fab extended color="primary" [routerLink]="['/trips', trip.id]">
+                            <mat-icon>event_note</mat-icon>
+                            {{ trip.status === tileStatusEnum.BookedUp ? 'Warteliste' : 'Anmelden' }}
+                        </a>
+                    </div>
+                </div>
+            </article>
+        } @empty {
+            <p class="no-results">Keine Ausfahrten für diese Auswahl gefunden.</p>
+        }
+    </div>
+</div>

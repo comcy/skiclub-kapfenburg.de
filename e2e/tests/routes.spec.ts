@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Sektionen mit Tabs leiten auf ihren Standard-Tab um', () => {
     const cases: Array<{ from: string; to: string }> = [
-        { from: '/trips', to: '/trips/registration' },
+        { from: '/trips', to: '/trips/overview' },
         { from: '/courses', to: '/courses/information' },
         { from: '/gymnastik', to: '/gymnastik/information' },
     ];

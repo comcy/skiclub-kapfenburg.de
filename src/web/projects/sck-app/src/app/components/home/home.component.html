@@ -1,86 +1,186 @@
-<shared-lib-site-header [title]="title"></shared-lib-site-header>
+<div class="hero">
+    <img src="assets/img/cards/piste.jpg" alt="Präparierte Skipiste im Sonnenlicht" class="hero-image" />
+    <div class="hero-scrim"></div>
+    <div class="hero-content">
+        <h1>Dein Winter beginnt hier.</h1>
+        <p>
+            Ausfahrten, Ski- und Snowboardkurse, Gymnastik – der Skiclub Kapfenburg bringt dich und deine Familie auf
+            die Piste. Jetzt anmelden und Startplatz sichern.
+        </p>
+        <div class="hero-actions">
+            <a mat-fab extended color="accent" routerLink="/trips">
+                <mat-icon>directions_bus</mat-icon>
+                Ausfahrten entdecken
+            </a>
+            <a mat-stroked-button class="hero-secondary" routerLink="/courses">Kurse ansehen</a>
+        </div>
+    </div>
+</div>
 
 <div class="content-container">
-    <div class="cards-grid">
-        @for (t of tiles; track $index) {
-            @if (t.visible) {
-                <mat-card
-                    appearance="outlined"
-                    class="card"
-                    [ngClass]="{ expired: t.expired, clickable: t.type === tileTypeEnum.Event }"
-                    (click)="t.type === tileTypeEnum.Event ? openTripDetail(t) : null"
-                >
-                    <mat-card-header>
-                        @if (t.avatar) {
-                            <div mat-card-avatar class="card-header-image">
-                                <img mat-card-avatar src="{{ t.avatar }}" />
-                            </div>
-                        }
-                        <mat-card-title class="card-date">{{ t.date }}</mat-card-title>
-                        <mat-card-title
-                            style="white-space: pre-wrap"
-                            [innerHTML]="this.markdown.render(t.title)"
-                        ></mat-card-title>
-                        <mat-card-subtitle class="mat-card-content">{{ t.subTitle }}</mat-card-subtitle>
-                    </mat-card-header>
-
-                    @if (t.status === tileStatusEnum.Canceled) {
-                        <span class="canceled-stamp">Abgesagt</span>
-                    }
-                    @if (t.status === tileStatusEnum.BookedUp) {
-                        <span class="booked-up-stamp">Warteliste</span>
-                    }
-                    <img mat-card-image src="{{ t.image }}" alt="{{ t.imageDescription }}" />
-
-                    @if (t.type !== tileTypeEnum.Event) {
-                        <mat-card-content class="mat-card-content">
-                            <p [innerHTML]="this.markdown.render(getTileDescription(t))"></p>
-                            <p [innerHTML]="this.markdown.render(t.details)"></p>
-                        </mat-card-content>
-                    }
-                    <mat-card-actions class="actions">
-                        @for (action of t.actions; track action) {
-                            @switch (action) {
-                                @case (tileActionsEnum.Download) {
-                                    <button
-                                        mat-fab
-                                        extended
-                                        class="card-button"
-                                        color="primary"
-                                        (click)="openLink(t.downloadActionLink)"
-                                        matTooltip="Öffnen"
+    @if (upcomingTrips.length > 0) {
+        <section class="tile-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Nächste Ausfahrten</h2>
+                    <p>Tages- und Mehrtagesfahrten in die schönsten Skigebiete der Alpen.</p>
+                </div>
+                <a routerLink="/trips" class="section-link">
+                    Alle Ausfahrten ansehen
+                    <mat-icon>arrow_forward</mat-icon>
+                </a>
+            </div>
+            <div class="tiles-grid">
+                @for (trip of upcomingTrips; track trip.id) {
+                    <article class="tile-card clickable" (click)="openTripDetail(trip)">
+                        <div class="tile-card-image">
+                            <img [src]="trip.image" [alt]="trip.imageDescription" />
+                            <span class="badge" [class.badge-warn]="trip.status === tileStatusEnum.BookedUp">
+                                {{ trip.status === tileStatusEnum.BookedUp ? 'Warteliste' : 'Plätze frei' }}
+                            </span>
+                        </div>
+                        <div class="tile-card-content">
+                            <div class="eyebrow">{{ trip.date }}</div>
+                            <h3>{{ trip.title }}</h3>
+                            <p class="description">{{ trip.destination }}</p>
+                            <div class="card-actions">
+                                @if (resolvePrice(trip); as price) {
+                                    <span class="price-label"
+                                        >ab <b>{{ price }}&nbsp;€</b></span
                                     >
-                                        <mat-icon>download</mat-icon>
-                                        Öffnen
-                                    </button>
                                 }
-                                @case (tileActionsEnum.Register) {
-                                    @if (t.type !== tileTypeEnum.Event) {
-                                        <button
-                                            class="card-button"
-                                            mat-fab
-                                            extended
-                                            color="primary"
-                                            (click)="openRegisterDialog(t)"
-                                            matTooltip="Anmelden"
-                                        >
-                                            <mat-icon>event_note</mat-icon>
-                                            Anmelden
-                                        </button>
-                                    }
+                                <button
+                                    mat-fab
+                                    extended
+                                    color="primary"
+                                    (click)="$event.stopPropagation(); openTripDetail(trip)"
+                                >
+                                    Anmelden
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+
+    <section class="tile-section">
+        <div class="section-heading">
+            <div>
+                <h2>Kurse &amp; Sportangebote</h2>
+                <p>Ski- und Snowboardschule, Gymnastik und Pilates – für jede Könnerstufe.</p>
+            </div>
+        </div>
+        <div class="tiles-grid">
+            <article class="tile-card clickable" routerLink="/courses">
+                <div class="tile-card-image">
+                    <img src="assets/img/cards/boy.jpg" alt="Ski- und Snowboardschule am Skilift Kapfenburg" />
+                    <span class="badge">Alle Level</span>
+                </div>
+                <div class="tile-card-content">
+                    <div class="eyebrow">Nach Schneelage</div>
+                    <h3>Ski- &amp; Snowboardschule</h3>
+                    <p class="description">
+                        Für Kinder und Erwachsene, alle Könnerstufen, direkt am Skilift Kapfenburg.
+                    </p>
+                    <div class="card-actions">
+                        <span class="price-label">Kontakt &amp; Termine</span>
+                        <button mat-fab extended color="accent" (click)="$event.stopPropagation()">
+                            Mehr erfahren
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            @for (course of courseTiles; track course.id) {
+                <article class="tile-card clickable" (click)="openRegisterDialog(course)">
+                    <div class="tile-card-image course-placeholder">
+                        <mat-icon class="course-icon">self_improvement</mat-icon>
+                        <span class="badge">{{
+                            course.title.includes('Donnerstag') ? 'Donnerstags' : 'Mittwochs'
+                        }}</span>
+                    </div>
+                    <div class="tile-card-content">
+                        <div class="eyebrow">{{ course.subTitle }}</div>
+                        <h3>{{ course.title }}</h3>
+                        <p class="description" [innerHTML]="markdown.render(getTileDescription(course))"></p>
+                        <div class="card-actions">
+                            <span class="price-label"
+                                >ab <b>{{ course.course?.prices?.member }}</b></span
+                            >
+                            <button
+                                mat-fab
+                                extended
+                                color="accent"
+                                (click)="$event.stopPropagation(); openRegisterDialog(course)"
+                            >
+                                Anmelden
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+
+    @if (infoTiles.length > 0) {
+        <section class="tile-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Mitgliedschaft &amp; Aktuelles</h2>
+                </div>
+            </div>
+            <div class="tiles-grid">
+                @for (info of infoTiles; track info.id) {
+                    @if (info.visible) {
+                        <article class="tile-card" [class.expired]="info.expired">
+                            <div class="tile-card-image">
+                                <img [src]="info.image" [alt]="info.imageDescription" />
+                                @if (info.status === tileStatusEnum.Canceled) {
+                                    <span class="badge badge-off">Abgesagt</span>
                                 }
-                                @case (tileActionsEnum.Share) {
-                                    <div class="secondary-action-buttons">
-                                        <button mat-mini-fab matTooltip="Teilen" class="card-button">
-                                            <mat-icon>share</mat-icon>
-                                        </button>
+                            </div>
+                            <div class="tile-card-content">
+                                <div class="eyebrow">{{ info.date }}</div>
+                                <h3>{{ info.title }}</h3>
+                                <p class="description" [innerHTML]="markdown.render(getTileDescription(info))"></p>
+                                @if (info.actions && info.actions.length > 0) {
+                                    <div class="card-actions">
+                                        <span></span>
+                                        @for (action of info.actions; track action) {
+                                            @switch (action) {
+                                                @case (tileActionsEnum.Download) {
+                                                    <button
+                                                        mat-fab
+                                                        extended
+                                                        color="primary"
+                                                        (click)="openLink(info.downloadActionLink)"
+                                                    >
+                                                        <mat-icon>download</mat-icon>
+                                                        Öffnen
+                                                    </button>
+                                                }
+                                                @case (tileActionsEnum.Register) {
+                                                    <button
+                                                        mat-fab
+                                                        extended
+                                                        color="accent"
+                                                        (click)="openRegisterDialog(info)"
+                                                    >
+                                                        <mat-icon>event_note</mat-icon>
+                                                        Anmelden
+                                                    </button>
+                                                }
+                                            }
+                                        }
                                     </div>
                                 }
-                            }
-                        }
-                    </mat-card-actions>
-                </mat-card>
-            }
-        }
-    </div>
+                            </div>
+                        </article>
+                    }
+                }
+            </div>
+        </section>
+    }
 </div>
