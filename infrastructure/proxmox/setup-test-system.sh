@@ -192,23 +192,34 @@ else
   fi
 fi
 
+prompt_if_missing SUPER_ADMIN_EMAIL "Your email (gets full admin-app access on first login)"
+if [[ -z "${ENV_VALUES[ADMIN_APP_URL]:-}" ]]; then
+  echo "  Embedded in the magic-link login mail — must be wherever the admin"
+  echo "  app is actually reachable from your browser, e.g. http://<LXC-IP>:8081"
+  echo "  (or a real domain, once you have a Proxy Host for it)."
+fi
+prompt_if_missing ADMIN_APP_URL "Admin app URL (e.g. http://<LXC-IP>:8081)"
+
 echo "▶ Writing ${APP_DIR}/.env..."
 {
-  for key in SMTP_SERVER SMTP_PORT SENDER_MAIL SENDER_PW SEPA_ENCRYPTION_KEY SCK_API_URL COURSE_SHEET_URL TRIP_SHEET_URL; do
+  for key in SMTP_SERVER SMTP_PORT SENDER_MAIL SENDER_PW SEPA_ENCRYPTION_KEY SUPER_ADMIN_EMAIL ADMIN_APP_URL SCK_API_URL COURSE_SHEET_URL TRIP_SHEET_URL; do
     echo "${key}=${ENV_VALUES[$key]:-}"
   done
 } | pct exec "$VMID" -- tee "${APP_DIR}/.env" > /dev/null
 
 echo "▶ Building images and starting the stack (this takes a few minutes)..."
 echo "  (existing sck-api-data volume, if any, is left as-is — no 'down -v' here)"
-pct exec "$VMID" -- bash -c "cd '${APP_DIR}' && docker compose build && docker compose up -d"
+# One at a time, not a plain "docker compose build" (parallel by default) -
+# three Angular/Node builds fighting over the same RAM at once is how we
+# found the OOM-kill issue documented in TEST_DEPLOYMENT.md.
+pct exec "$VMID" -- bash -c "cd '${APP_DIR}' && docker compose build api && docker compose build web && docker compose build admin && docker compose up -d"
 
 echo
-echo "🎉 Done. LXC ${VMID} (${HOSTNAME}) is running web on :8080 and sck-api on :3000, branch ${GIT_BRANCH}."
+echo "🎉 Done. LXC ${VMID} (${HOSTNAME}) is running web on :8080, sck-api on :3000, and the admin app on :8081, branch ${GIT_BRANCH}."
 echo "   docker compose ps / logs:  pct exec ${VMID} -- bash -c 'cd ${APP_DIR} && docker compose ps'"
 echo "   Still to do manually on first run — see infrastructure/TEST_DEPLOYMENT.md:"
-echo "   - Two Proxy Hosts in Nginx Proxy Manager (web → :8080, api → :3000)"
+echo "   - Proxy Hosts in Nginx Proxy Manager (web → :8080, api → :3000, optionally admin → :8081)"
 echo "   - If SCK_API_URL wasn't final above: fix .env, then"
-echo "     'docker compose build web && docker compose up -d web'"
+echo "     'docker compose build web && docker compose build admin && docker compose up -d web admin'"
 echo "   - GitHub Actions secrets, if you want future deploys via the"
 echo "     'Test-System Deploy' workflow instead of re-running this script"

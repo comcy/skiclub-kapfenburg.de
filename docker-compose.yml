@@ -38,6 +38,14 @@ services:
       # Required by the online membership registration form (field-level
       # IBAN encryption) — see .env.example.
       SEPA_ENCRYPTION_KEY: ${SEPA_ENCRYPTION_KEY}
+      # Admin-app auth: this email gets full access on first login, no
+      # invite needed — set it to your own address. Blank means nobody can
+      # bootstrap into the admin app at all.
+      SUPER_ADMIN_EMAIL: ${SUPER_ADMIN_EMAIL}
+      # Base URL embedded in the magic-link login mail — must be wherever
+      # the "admin" service below is actually reachable from your browser
+      # (e.g. http://<LXC-IP>:8081), not the container-internal address.
+      ADMIN_APP_URL: ${ADMIN_APP_URL}
     volumes:
       - sck-api-data:/app/data
     healthcheck:
@@ -51,6 +59,21 @@ services:
           '-e',
           "require('http').get('http://127.0.0.1:3000/', (r) => process.exit(0)).on('error', () => process.exit(1))",
         ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  admin:
+    build:
+      context: .
+      dockerfile: src/web/projects/sck-admin-app/Dockerfile
+      args:
+        SCK_API_URL: ${SCK_API_URL}
+    restart: unless-stopped
+    ports:
+      - '8081:80'
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:80']
       interval: 30s
       timeout: 5s
       retries: 3
