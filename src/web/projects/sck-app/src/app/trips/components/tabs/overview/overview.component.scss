@@ -40,6 +40,12 @@ $color-warn: #f44336;
     mat-form-field {
         width: 100%;
     }
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+        padding: 16px 16px 0 16px;
+        gap: 8px;
+    }
 }
 
 .trips-grid {
