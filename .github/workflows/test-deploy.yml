@@ -35,9 +35,15 @@ jobs:
         run: |
           set -e
 
+          # /opt/sck-test was created as root by the original setup script;
+          # the runner runs as github-runner. Reclaim ownership (idempotent,
+          # safe to re-run) and tell git this cross-user directory is fine.
+          sudo mkdir -p "${{ env.APP_DIR }}"
+          sudo chown -R "$(id -u):$(id -g)" "${{ env.APP_DIR }}"
+          git config --global --add safe.directory "${{ env.APP_DIR }}"
+
           if [ ! -d "${{ env.APP_DIR }}/.git" ]; then
             echo "📥 Cloning repository..."
-            mkdir -p ${{ env.APP_DIR }}
             git clone ${{ github.server_url }}/${{ github.repository }}.git ${{ env.APP_DIR }}
           fi
 
