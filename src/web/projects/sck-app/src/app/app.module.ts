@@ -41,6 +41,7 @@ import { courseRegistrationServiceProvider } from './services/business/course-re
 import { gymCoursesRegisterFormServiceProvider } from './services/business/gym-courses-registration-form.service';
 import { membershipRegistrationServiceProvider } from './services/business/membership-registration-form.service';
 import { tripRegistrationServiceProvider } from './services/business/trip-registration-form.service';
+import { tripTilesApiServiceProvider } from './services/business/trip-tiles-api.service';
 
 @NgModule({
     declarations: [AppComponent],
@@ -82,6 +83,7 @@ import { tripRegistrationServiceProvider } from './services/business/trip-regist
     ],
     providers: [
         tripRegistrationServiceProvider,
+        tripTilesApiServiceProvider,
         courseRegistrationServiceProvider,
         gymCoursesRegisterFormServiceProvider,
         membershipRegistrationServiceProvider,

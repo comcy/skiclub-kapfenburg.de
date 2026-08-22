@@ -3,15 +3,15 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { TRIP_DATA } from '@data';
 import { SiteHeaderComponent } from '@shared/ui-common';
 import { MarkdownRenderService } from '@shared/util-markdown';
-import { EventTile, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
-import { Subject, takeUntil } from 'rxjs';
+import { EventTile, Tile, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { Subject, map, switchMap, takeUntil } from 'rxjs';
+import { TripTilesApiServiceInterface } from '../../api/trip-tiles-api.interface';
 import { Trip } from '../../domain/models/trip-base';
 import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form/trips-registration-form.component';
 
@@ -40,26 +40,40 @@ export class TripDetailComponent implements OnInit, OnDestroy {
     public markdown = inject(MarkdownRenderService);
 
     private route = inject(ActivatedRoute);
+    private tripsApi = inject(TripTilesApiServiceInterface);
+    private cdr = inject(ChangeDetectorRef);
     private destroy$ = new Subject<void>();
 
     ngOnInit(): void {
-        this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-            const id = params.get('id');
-            this.tile = id ? this.resolveTripById(id) : undefined;
-            this.registrationOpen = false;
+        this.route.paramMap
+            .pipe(
+                switchMap((params) =>
+                    this.tripsApi.getAllTrips().pipe(map((trips) => ({ id: params.get('id'), trips }))),
+                ),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(({ id, trips }) => {
+                this.tile = id ? this.resolveTripById(id, trips) : undefined;
+                this.registrationOpen = false;
 
-            if (this.tile) {
-                this.description = this.buildDescription(this.tile);
-                this.registrationData = [
-                    {
-                        destination: this.tile.destination || this.tile.title,
-                        date: this.tile.date,
-                        availableBoardings: this.tile.boardings ?? [],
-                        tripConfig: this.tile.tripConfig,
-                    },
-                ];
-            }
-        });
+                if (this.tile) {
+                    this.description = this.buildDescription(this.tile);
+                    this.registrationData = [
+                        {
+                            destination: this.tile.destination || this.tile.title,
+                            date: this.tile.date,
+                            availableBoardings: this.tile.boardings ?? [],
+                            tripConfig: this.tile.tripConfig,
+                        },
+                    ];
+                }
+
+                // Needed on top of the automatic zone-triggered check: this runs
+                // inside an HttpClient response nested two operators deep
+                // (switchMap -> getAllTrips()'s own shareReplay/catchError), and
+                // without this the view keeps showing its pre-response state.
+                this.cdr.markForCheck();
+            });
     }
 
     ngOnDestroy(): void {
@@ -67,14 +81,8 @@ export class TripDetailComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    /**
-     * Resolves the trip tile behind the given id. Reads from the static
-     * TRIP_DATA import for now - once trips move behind a backend API this
-     * is the single spot to swap for a service/HTTP call, the rest of the
-     * component stays the same.
-     */
-    private resolveTripById(id: string): EventTile | undefined {
-        return TRIP_DATA.filter((t): t is EventTile => t.type === TileType.Event).find((t) => t.id === id);
+    private resolveTripById(id: string, trips: Tile[]): EventTile | undefined {
+        return trips.filter((t): t is EventTile => t.type === TileType.Event).find((t) => t.id === id);
     }
 
     private buildDescription(tile: EventTile): string {

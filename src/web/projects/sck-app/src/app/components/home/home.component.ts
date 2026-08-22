@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -20,7 +20,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { CoursesFeatureModule } from '@courses-lib';
-import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
+import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA } from '@data';
+import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 import { GymFeatureModule } from '@gym-lib';
 import { GymCourseSchedule } from 'projects/gym-lib/src/lib/domain';
 import { GYM_GENERAL_OFFERS } from 'projects/data/static';
@@ -127,58 +128,62 @@ export class HomeComponent implements OnInit, OnDestroy {
     public carouselIndex = 0;
     private carouselTimer?: ReturnType<typeof setInterval>;
 
-    private trips = TRIP_DATA;
     private courses = COURSE_DATA;
     private staticData = STATIC_DATA;
 
     public router = inject(Router);
     public markdown = inject(MarkdownRenderService);
+    private tripsApi = inject(TripTilesApiServiceInterface);
+    private cdr = inject(ChangeDetectorRef);
 
     ngOnInit(): void {
-        const homeTiles: Tile[] = [...this.courses, ...this.staticData, ...this.trips];
+        this.tripsApi.getAllTrips().subscribe((trips) => {
+            const homeTiles: Tile[] = [...this.courses, ...this.staticData, ...trips];
 
-        homeTiles.sort((a, b) => {
-            return a.order > b.order // Handle order
-                ? -1
-                : b.expiration.getTime() - a.expiration.getTime(); // Handle expiration
+            homeTiles.sort((a, b) => {
+                return a.order > b.order // Handle order
+                    ? -1
+                    : b.expiration.getTime() - a.expiration.getTime(); // Handle expiration
+            });
+
+            // then place expired events at the end (stable: keeps the previous ordering within each group)
+            const now = new Date().getTime();
+            homeTiles.sort((a, b) => {
+                const aExpired = a.expiration.getTime() < now;
+                const bExpired = b.expiration.getTime() < now;
+                if (aExpired === bExpired) return 0;
+                return aExpired ? 1 : -1;
+            });
+
+            homeTiles.map((t) => {
+                t.expired = t.expiration.getTime() < new Date().getTime() ? true : false;
+                t.visible = t.visible === false ? false : true;
+            });
+
+            this.tiles = homeTiles;
+
+            this.upcomingTrips = homeTiles
+                .filter((t): t is EventTile => t.type === TileType.Event && !t.expired)
+                .sort((a, b) => a.expiration.getTime() - b.expiration.getTime())
+                .slice(0, 3);
+            this.courseTiles = homeTiles.filter((t): t is CourseTile => t.type === TileType.Course);
+            this.infoTiles = homeTiles.filter((t): t is InfoTile => t.type === TileType.Info);
+
+            const openTrips = homeTiles.filter((t): t is EventTile => t.type === TileType.Event && !t.expired);
+
+            this.calendarEvents = this.buildCalendarEvents(openTrips, this.courseTiles);
+            this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
+
+            this.carouselSlides = [
+                this.buildStaticSlide(),
+                ...openTrips.map((trip) => this.buildTripSlide(trip)),
+                ...this.courseTiles.map((course) => this.buildCourseSlide(course)),
+            ];
+            if (this.carouselSlides.length > 1) {
+                this.startCarouselAutoplay();
+            }
+            this.cdr.markForCheck();
         });
-
-        // then place expired events at the end (stable: keeps the previous ordering within each group)
-        const now = new Date().getTime();
-        homeTiles.sort((a, b) => {
-            const aExpired = a.expiration.getTime() < now;
-            const bExpired = b.expiration.getTime() < now;
-            if (aExpired === bExpired) return 0;
-            return aExpired ? 1 : -1;
-        });
-
-        homeTiles.map((t) => {
-            t.expired = t.expiration.getTime() < new Date().getTime() ? true : false;
-            t.visible = t.visible === false ? false : true;
-        });
-
-        this.tiles = homeTiles;
-
-        this.upcomingTrips = homeTiles
-            .filter((t): t is EventTile => t.type === TileType.Event && !t.expired)
-            .sort((a, b) => a.expiration.getTime() - b.expiration.getTime())
-            .slice(0, 3);
-        this.courseTiles = homeTiles.filter((t): t is CourseTile => t.type === TileType.Course);
-        this.infoTiles = homeTiles.filter((t): t is InfoTile => t.type === TileType.Info);
-
-        const openTrips = homeTiles.filter((t): t is EventTile => t.type === TileType.Event && !t.expired);
-
-        this.calendarEvents = this.buildCalendarEvents(openTrips, this.courseTiles);
-        this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
-
-        this.carouselSlides = [
-            this.buildStaticSlide(),
-            ...openTrips.map((trip) => this.buildTripSlide(trip)),
-            ...this.courseTiles.map((course) => this.buildCourseSlide(course)),
-        ];
-        if (this.carouselSlides.length > 1) {
-            this.startCarouselAutoplay();
-        }
     }
 
     ngOnDestroy(): void {

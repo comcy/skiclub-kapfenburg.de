@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { TRIP_DATA } from '@data';
 import { EventTile, InfoTile, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 
 const ALL = 'Alle';
 
@@ -38,18 +39,30 @@ export class OverviewComponent implements OnInit {
     public selectedPeriod = ALL;
 
     private readonly monthFormatter = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' });
+    private tripsApi = inject(TripTilesApiServiceInterface);
+    private cdr = inject(ChangeDetectorRef);
 
     ngOnInit(): void {
-        this.allTrips = TRIP_DATA.filter((t): t is EventTile => t.type === TileType.Event).sort(
-            (a, b) => a.expiration.getTime() - b.expiration.getTime(),
-        );
         this.otherOffers = TRIP_DATA.filter((t): t is InfoTile => t.type === TileType.Info);
 
-        this.audiences = [ALL, ...new Set(this.allTrips.map((t) => this.resolveAudience(t)).filter((a) => a !== ALL))];
-        this.destinations = [ALL, ...new Set(this.allTrips.map((t) => t.destination).filter((d): d is string => !!d))];
-        this.periods = [ALL, ...new Set(this.allTrips.map((t) => this.monthFormatter.format(t.expiration)))];
+        this.tripsApi.getAllTrips().subscribe((tiles) => {
+            this.allTrips = tiles
+                .filter((t): t is EventTile => t.type === TileType.Event)
+                .sort((a, b) => a.expiration.getTime() - b.expiration.getTime());
 
-        this.applyFilters();
+            this.audiences = [
+                ALL,
+                ...new Set(this.allTrips.map((t) => this.resolveAudience(t)).filter((a) => a !== ALL)),
+            ];
+            this.destinations = [
+                ALL,
+                ...new Set(this.allTrips.map((t) => t.destination).filter((d): d is string => !!d)),
+            ];
+            this.periods = [ALL, ...new Set(this.allTrips.map((t) => this.monthFormatter.format(t.expiration)))];
+
+            this.applyFilters();
+            this.cdr.markForCheck();
+        });
     }
 
     public resolveAudience(trip: EventTile): string {

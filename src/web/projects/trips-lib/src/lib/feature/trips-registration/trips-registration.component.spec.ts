@@ -3,7 +3,8 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { of } from 'rxjs';
+import { TripTilesApiServiceInterface } from '../../api/trip-tiles-api.interface';
 import { TripsRegistrationComponent } from './trips-registration.component';
 
 describe('TripsRegistrationComponent', () => {
@@ -12,8 +13,9 @@ describe('TripsRegistrationComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [TripsRegistrationComponent],
-}).compileComponents();
+            imports: [TripsRegistrationComponent],
+            providers: [{ provide: TripTilesApiServiceInterface, useValue: { getAllTrips: () => of([]) } }],
+        }).compileComponents();
     });
 
     beforeEach(() => {

@@ -4,7 +4,6 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { TRIP_DATA } from '@data';
 import {
     EventTile,
     TileActions,
@@ -12,7 +11,8 @@ import {
     TileStatus,
     TileType,
 } from 'projects/shared-lib/src/lib/ui-common/models';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
+import { TripTilesApiServiceInterface } from '../../api/trip-tiles-api.interface';
 import { TripRegistrationFormServiceInterface } from '../../ui/trips-registration-form/trips-registration-form.interfaces';
 import { TripDetailComponent } from './trip-detail.component';
 
@@ -51,18 +51,12 @@ describe('TripDetailComponent', () => {
                     provide: TripRegistrationFormServiceInterface,
                     useValue: { sendFormToSheetsIo: () => {}, sendConfirmationMail: () => {} },
                 },
+                { provide: TripTilesApiServiceInterface, useValue: { getAllTrips: () => of([TEST_TILE]) } },
             ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(TripDetailComponent);
         component = fixture.componentInstance;
-    });
-
-    afterEach(() => {
-        const index = TRIP_DATA.indexOf(TEST_TILE);
-        if (index !== -1) {
-            TRIP_DATA.splice(index, 1);
-        }
     });
 
     it('should create', () => {
@@ -77,8 +71,7 @@ describe('TripDetailComponent', () => {
         expect(component.tile).toBeUndefined();
     });
 
-    it('resolves the trip tile and pre-fills the registration data from TRIP_DATA', () => {
-        TRIP_DATA.push(TEST_TILE);
+    it('resolves the trip tile and pre-fills the registration data', () => {
         paramMap$.next(convertToParamMap({ id: TEST_TILE.id }));
         fixture.detectChanges();
 

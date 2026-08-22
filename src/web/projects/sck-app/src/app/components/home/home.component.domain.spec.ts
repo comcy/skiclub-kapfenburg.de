@@ -3,6 +3,9 @@ import { provideRouter } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { TileType, TileBehavior, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
 import { STATIC_DATA } from 'projects/data/static-data';
+import { TRIP_DATA } from '@data';
+import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
+import { of } from 'rxjs';
 
 describe('HomeComponent (domain scenarios)', () => {
     let component: HomeComponent;
@@ -10,7 +13,10 @@ describe('HomeComponent (domain scenarios)', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [HomeComponent],
-            providers: [provideRouter([])],
+            providers: [
+                provideRouter([]),
+                { provide: TripTilesApiServiceInterface, useValue: { getAllTrips: () => of(TRIP_DATA) } },
+            ],
         }).compileComponents();
         const fixture = TestBed.createComponent(HomeComponent);
         component = fixture.componentInstance;
