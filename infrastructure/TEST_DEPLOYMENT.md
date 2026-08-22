@@ -127,9 +127,18 @@ Faustregel: `api` ändert sich sofort mit `up -d`, `web` braucht immer
 
 ## Alltag
 
-**Neu deployen** (nachdem GitHub Secrets eingerichtet sind — Schritt 3
-oben): GitHub → Actions → „Test-System Deploy" → „Run workflow",
-Branch eingeben (Default `master`).
+**Automatisch:** Jeder Push auf einen `release/**`-Branch deployt
+automatisch auf die Test-LXC — kein manueller Trigger nötig, sobald
+GitHub Secrets eingerichtet sind (Schritt 3 oben).
+
+**Neu deployen, für jeden anderen Branch on-demand** (nachdem GitHub
+Secrets eingerichtet sind — Schritt 3 oben): GitHub → Actions →
+„Test-System Deploy" → „Run workflow", Branch eingeben (Default
+`master`). Funktioniert auch aus der GitHub-App unterwegs — **Achtung:**
+der „Run workflow"-Button erscheint dort nur, wenn `test-deploy.yml`
+auch auf dem Default-Branch (`master`) liegt, nicht nur auf dem
+Feature-/Release-Branch, von dem aus ihr die Datei zuletzt geändert
+habt.
 
 **Logs ansehen:**
 ```bash

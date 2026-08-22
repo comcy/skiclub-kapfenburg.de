@@ -1,9 +1,13 @@
 name: Test-System Deploy
 
-# Manual on purpose: a deploy to the test system is a deliberate action,
-# not a side effect of every push (unlike the prod workflows, which deploy
-# on push to master). Pick the branch/tag to deploy from the Actions tab.
+# Auto-deploys on every push to a release/** branch. workflow_dispatch still
+# lets you deploy any other branch on demand (e.g. from the GitHub mobile
+# app while away from home) - pick the branch/tag to deploy from the Actions
+# tab, defaulting to master.
 on:
+  push:
+    branches:
+      - "release/**"
   workflow_dispatch:
     inputs:
       ref:
@@ -18,6 +22,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Determine ref to deploy
+        id: ref
+        run: echo "ref=${{ github.event.inputs.ref || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
       - name: Deploy to test LXC
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -35,10 +43,10 @@ jobs:
             fi
 
             cd ${{ env.APP_DIR }}
-            echo "🔄 Checking out ${{ inputs.ref }}..."
+            echo "🔄 Checking out ${{ steps.ref.outputs.ref }}..."
             git fetch origin
-            git checkout ${{ inputs.ref }}
-            git reset --hard origin/${{ inputs.ref }}
+            git checkout ${{ steps.ref.outputs.ref }}
+            git reset --hard origin/${{ steps.ref.outputs.ref }}
 
             echo "🔨 Building images..."
             docker compose build
