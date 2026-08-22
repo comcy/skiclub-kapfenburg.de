@@ -7,6 +7,9 @@ services:
         COURSE_SHEET_URL: ${COURSE_SHEET_URL}
         TRIP_SHEET_URL: ${TRIP_SHEET_URL}
         SCK_API_URL: ${SCK_API_URL}
+        # Set automatically by GitHub Actions when the self-hosted runner
+        # builds this - blank for a manual `docker compose build` outside CI.
+        BUILD_NUMBER: ${GITHUB_RUN_NUMBER}
     restart: unless-stopped
     ports:
       - '8080:80'

@@ -15,11 +15,15 @@ RUN pnpm install --frozen-lockfile
 ARG COURSE_SHEET_URL
 ARG TRIP_SHEET_URL
 ARG SCK_API_URL
+ARG BUILD_NUMBER
 
 # Reuses the same environment.prod.ts generation the existing CI web
 # workflow runs (see .github/workflows/sck-web-app-build-deploy.yml) —
 # one substitution script, one source of truth for the template fill-in.
-RUN cd src/web/scripts && ./envsubst.sh "$COURSE_SHEET_URL" "$TRIP_SHEET_URL" "$SCK_API_URL"
+# GITHUB_RUN_NUMBER doesn't cross the docker build isolation boundary on
+# its own (unlike BUILD_DATE/GIT_COMMIT_HASH, which envsubst.sh computes
+# natively inside the container) - has to come in as a build ARG instead.
+RUN cd src/web/scripts && GITHUB_RUN_NUMBER="$BUILD_NUMBER" ./envsubst.sh "$COURSE_SHEET_URL" "$TRIP_SHEET_URL" "$SCK_API_URL"
 RUN pnpm --filter web run build
 
 FROM nginx:alpine
