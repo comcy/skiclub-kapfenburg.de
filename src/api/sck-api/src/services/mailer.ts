@@ -28,3 +28,16 @@ export const createMailTransporter = (): Transporter => {
 };
 
 export const defaultSender = (): string => SENDER_MAIL;
+
+// Convenience wrapper around createMailTransporter() for simple to/subject/html
+// sends (e.g. the admin-app's magic-link mail) - logs instead of failing when
+// SMTP isn't configured (local dev), same as the confirmation mails already
+// tolerate missing config elsewhere in this service.
+export const sendMail = async (to: string, subject: string, html: string): Promise<void> => {
+  if (!SMTP_SERVER) {
+    console.log(`[dev] Mail an ${to} (${subject}):\n${html}`);
+    return;
+  }
+
+  await createMailTransporter().sendMail({ from: defaultSender(), to, subject, html });
+};
