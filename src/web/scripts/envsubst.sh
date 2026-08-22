@@ -21,7 +21,12 @@ echo "DEPLOY_ENV: $DEPLOY_ENV"
 # Dynamisch generierte Metadaten
 export BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 export BUILD_NUMBER=${GITHUB_RUN_NUMBER}
-export GIT_COMMIT_HASH=$(git rev-parse --short HEAD)
+# .git isn't present in the Docker build context (excluded via
+# .dockerignore), so `git rev-parse` fails there - prefer a hash already
+# passed in from outside the container (computed where .git does exist),
+# only fall back to computing it here (works for the direct-on-runner
+# prod pipeline, which never had this problem).
+export GIT_COMMIT_HASH=${GIT_COMMIT_HASH:-$(git rev-parse --short HEAD 2>/dev/null)}
 
 echo "BUILD_DATE: $BUILD_DATE"
 echo "BUILD_NUMBER: $BUILD_NUMBER"

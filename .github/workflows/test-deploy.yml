@@ -52,6 +52,11 @@ jobs:
           git checkout ${{ steps.ref.outputs.ref }}
           git reset --hard origin/${{ steps.ref.outputs.ref }}
 
+          # .git isn't in the Docker build context (.dockerignore), so the
+          # web image can't compute its own commit hash - pass it in from
+          # here, where the checkout above already put it within reach.
+          export GIT_COMMIT_HASH=$(git rev-parse --short HEAD)
+
           # Sequential, not "docker compose build" (parallel by default with
           # BuildKit) - the LXC has 2GB RAM by default, and building web's
           # memory-hungry Angular bundle at the same time as api's build

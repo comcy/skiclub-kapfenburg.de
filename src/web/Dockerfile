@@ -16,14 +16,15 @@ ARG COURSE_SHEET_URL
 ARG TRIP_SHEET_URL
 ARG SCK_API_URL
 ARG BUILD_NUMBER
+ARG GIT_COMMIT_HASH
 
 # Reuses the same environment.prod.ts generation the existing CI web
 # workflow runs (see .github/workflows/sck-web-app-build-deploy.yml) —
 # one substitution script, one source of truth for the template fill-in.
-# GITHUB_RUN_NUMBER doesn't cross the docker build isolation boundary on
-# its own (unlike BUILD_DATE/GIT_COMMIT_HASH, which envsubst.sh computes
-# natively inside the container) - has to come in as a build ARG instead.
-RUN cd src/web/scripts && GITHUB_RUN_NUMBER="$BUILD_NUMBER" ./envsubst.sh "$COURSE_SHEET_URL" "$TRIP_SHEET_URL" "$SCK_API_URL" "TEST"
+# GITHUB_RUN_NUMBER and GIT_COMMIT_HASH don't cross the docker build
+# isolation boundary on their own (.git is excluded via .dockerignore, and
+# GITHUB_RUN_NUMBER is just a host env var) - both come in as build ARGs.
+RUN cd src/web/scripts && GITHUB_RUN_NUMBER="$BUILD_NUMBER" GIT_COMMIT_HASH="$GIT_COMMIT_HASH" ./envsubst.sh "$COURSE_SHEET_URL" "$TRIP_SHEET_URL" "$SCK_API_URL" "TEST"
 RUN pnpm --filter web run build
 
 FROM nginx:alpine
