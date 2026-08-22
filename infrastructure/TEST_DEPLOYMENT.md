@@ -63,6 +63,19 @@ Runner auf der LXC für spätere Redeploys per Workflow.
 **Zweites, unabhängiges Testsystem?** Beim Einzeiler-Lauf einfach eine
 andere VMID/Hostname angeben — siehe Kommentar am Kopf des Skripts.
 
+**RAM-Hinweis:** Der Default (`DEFAULT_MEMORY_MB=2048`, 2 GB) reicht
+knapp nicht für einen `ng build` des Web-Frontends — beobachtet als
+vom Linux-OOM-Killer abgeschossener Build (`SIGKILL` mitten in
+`ng build sck-app`, teils auch als "runner lost communication with
+the server", wenn die ganze LXC dabei kurzzeitig durchhängt). Der
+Self-hosted-Runner-Workflow baut `api` und `web` deshalb inzwischen
+nacheinander statt parallel (senkt den Spitzenverbrauch), aber
+dauerhaft sicherer ist mehr RAM:
+```bash
+pct set <VMID> --memory 4096
+pct reboot <VMID>
+```
+
 ### 2. Zwei Proxy Hosts in Nginx Proxy Manager anlegen
 
 Im NPM-Web-UI, „Proxy Hosts" → „Add Proxy Host", je einmal für Web und

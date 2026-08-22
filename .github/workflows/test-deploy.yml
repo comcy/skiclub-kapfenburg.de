@@ -52,8 +52,13 @@ jobs:
           git checkout ${{ steps.ref.outputs.ref }}
           git reset --hard origin/${{ steps.ref.outputs.ref }}
 
+          # Sequential, not "docker compose build" (parallel by default with
+          # BuildKit) - the LXC has 2GB RAM by default, and building web's
+          # memory-hungry Angular bundle at the same time as api's build
+          # reliably OOM-kills one of them (SIGKILL mid ng-build).
           echo "🔨 Building images..."
-          docker compose build
+          docker compose build api
+          docker compose build web
 
           echo "🚀 Starting stack..."
           docker compose up -d
