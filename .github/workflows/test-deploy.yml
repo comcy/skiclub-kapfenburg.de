@@ -4,6 +4,11 @@ name: Test-System Deploy
 # lets you deploy any other branch on demand (e.g. from the GitHub mobile
 # app while away from home) - pick the branch/tag to deploy from the Actions
 # tab, defaulting to master.
+#
+# Runs directly on the sck-test LXC via a self-hosted runner (label
+# "sck-test") instead of SSHing in from a GitHub-hosted runner - the LXC has
+# no open inbound port and no public DNS, so the runner connects outbound to
+# GitHub instead. See infrastructure/TEST_DEPLOYMENT.md.
 on:
   push:
     branches:
@@ -20,42 +25,36 @@ env:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, sck-test]
     steps:
       - name: Determine ref to deploy
         id: ref
         run: echo "ref=${{ github.event.inputs.ref || github.ref_name }}" >> "$GITHUB_OUTPUT"
 
       - name: Deploy to test LXC
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.TEST_SERVER_ADDRESS }}
-          username: ${{ secrets.TEST_SSH_USER }}
-          password: ${{ secrets.TEST_SSH_PASSWORD }}
-          port: ${{ secrets.TEST_SSH_PORT || 22 }}
-          script: |
-            set -e
+        run: |
+          set -e
 
-            if [ ! -d "${{ env.APP_DIR }}/.git" ]; then
-              echo "📥 Cloning repository..."
-              mkdir -p ${{ env.APP_DIR }}
-              git clone ${{ github.server_url }}/${{ github.repository }}.git ${{ env.APP_DIR }}
-            fi
+          if [ ! -d "${{ env.APP_DIR }}/.git" ]; then
+            echo "📥 Cloning repository..."
+            mkdir -p ${{ env.APP_DIR }}
+            git clone ${{ github.server_url }}/${{ github.repository }}.git ${{ env.APP_DIR }}
+          fi
 
-            cd ${{ env.APP_DIR }}
-            echo "🔄 Checking out ${{ steps.ref.outputs.ref }}..."
-            git fetch origin
-            git checkout ${{ steps.ref.outputs.ref }}
-            git reset --hard origin/${{ steps.ref.outputs.ref }}
+          cd ${{ env.APP_DIR }}
+          echo "🔄 Checking out ${{ steps.ref.outputs.ref }}..."
+          git fetch origin
+          git checkout ${{ steps.ref.outputs.ref }}
+          git reset --hard origin/${{ steps.ref.outputs.ref }}
 
-            echo "🔨 Building images..."
-            docker compose build
+          echo "🔨 Building images..."
+          docker compose build
 
-            echo "🚀 Starting stack..."
-            docker compose up -d
+          echo "🚀 Starting stack..."
+          docker compose up -d
 
-            echo "🧹 Pruning old images..."
-            docker image prune -f
+          echo "🧹 Pruning old images..."
+          docker image prune -f
 
-            sleep 5
-            docker compose ps
+          sleep 5
+          docker compose ps

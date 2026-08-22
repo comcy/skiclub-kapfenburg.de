@@ -57,8 +57,8 @@ gefragt, alles andere bleibt wie es ist): Einzeiler einfach nochmal
 ausführen. Testdaten und bereits gesetzte `.env`-Werte überleben das.
 
 Danach bleiben nur zwei Dinge manuell übrig (siehe Schritt 2 + 3
-unten): die Proxy Hosts in NPM und optional die GitHub-Secrets für
-spätere Redeploys per Workflow.
+unten): die Proxy Hosts in NPM und ein GitHub Actions Self-hosted
+Runner auf der LXC für spätere Redeploys per Workflow.
 
 **Zweites, unabhängiges Testsystem?** Beim Einzeiler-Lauf einfach eine
 andere VMID/Hostname angeben — siehe Kommentar am Kopf des Skripts.
@@ -81,16 +81,26 @@ der LXC nachtragen, dann `docker compose build web && docker compose
 up -d web` — siehe „Konfiguration ändern" unten, warum das für `web`
 einen Rebuild statt nur einen Neustart braucht.
 
-### 3. GitHub Secrets für den Deploy-Workflow (optional)
+### 3. GitHub Actions Self-hosted Runner auf der LXC (optional)
 
-Nur nötig, wenn ihr künftige Redeploys über die Actions-UI statt durch
-erneutes Ausführen des Setup-Skripts anstoßen wollt. Repo-Settings →
-Secrets and variables → Actions:
+Nur nötig, wenn ihr künftige Redeploys über die Actions-UI/Workflow
+statt durch erneutes Ausführen des Setup-Skripts anstoßen wollt. Die
+LXC hat weder einen offenen Port noch eine öffentliche DNS für SSH —
+deshalb kein SSH-basierter Deploy von einem GitHub-gehosteten Runner
+aus, sondern ein **Self-hosted Runner direkt auf der LXC**, der sich
+ausgehend zu GitHub verbindet (kein offener Port, kein DNS nötig).
+Läuft dort als systemd-Service, dediziert unter einem eigenen
+`github-runner`-User (nicht root), mit dem Label `sck-test` — genau
+das erwartet `test-deploy.yml` (`runs-on: [self-hosted, sck-test]`).
 
-- `TEST_SERVER_ADDRESS` — IP/Hostname der `sck-test`-LXC
-- `TEST_SSH_USER`
-- `TEST_SSH_PASSWORD`
-- `TEST_SSH_PORT` (optional, Default 22)
+Einrichtung: Repo → Settings → Actions → Runners → „New self-hosted
+runner", Linux/x64 wählen, das dort angezeigte Download/Configure-
+Snippet auf der LXC ausführen. Als Service installieren: `sudo
+./svc.sh install && sudo ./svc.sh start`. Danach zeigt derselbe
+Runners-Tab den Runner als „Idle" mit dem Label `sck-test`.
+
+Keine GitHub Secrets für diesen Workflow nötig — es wird nichts mehr
+per SSH von außen verbunden.
 
 ## Konfiguration ändern (SMTP, Sheet-URLs, API-URL, ...)
 
@@ -129,16 +139,16 @@ Faustregel: `api` ändert sich sofort mit `up -d`, `web` braucht immer
 
 **Automatisch:** Jeder Push auf einen `release/**`-Branch deployt
 automatisch auf die Test-LXC — kein manueller Trigger nötig, sobald
-GitHub Secrets eingerichtet sind (Schritt 3 oben).
+der Self-hosted Runner eingerichtet ist (Schritt 3 oben).
 
-**Neu deployen, für jeden anderen Branch on-demand** (nachdem GitHub
-Secrets eingerichtet sind — Schritt 3 oben): GitHub → Actions →
-„Test-System Deploy" → „Run workflow", Branch eingeben (Default
-`master`). Funktioniert auch aus der GitHub-App unterwegs — **Achtung:**
-der „Run workflow"-Button erscheint dort nur, wenn `test-deploy.yml`
-auch auf dem Default-Branch (`master`) liegt, nicht nur auf dem
-Feature-/Release-Branch, von dem aus ihr die Datei zuletzt geändert
-habt.
+**Neu deployen, für jeden anderen Branch on-demand** (nachdem der
+Self-hosted Runner eingerichtet ist — Schritt 3 oben): GitHub →
+Actions → „Test-System Deploy" → „Run workflow", Branch eingeben
+(Default `master`). Funktioniert auch aus der GitHub-App unterwegs —
+**Achtung:** der „Run workflow"-Button erscheint dort nur, wenn
+`test-deploy.yml` auch auf dem Default-Branch (`master`) liegt, nicht
+nur auf dem Feature-/Release-Branch, von dem aus ihr die Datei zuletzt
+geändert habt.
 
 **Logs ansehen:**
 ```bash
