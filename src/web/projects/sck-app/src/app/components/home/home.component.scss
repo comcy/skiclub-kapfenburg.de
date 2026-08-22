@@ -67,6 +67,23 @@ $color-on-accent: #6b4d00;
         margin: 0 0 28px 0;
         color: rgba(255, 255, 255, 0.92);
     }
+
+    // At narrow widths the 42px heading + paragraph + buttons no longer fit
+    // within the hero's fixed height, and .hero's overflow:hidden clips the
+    // overflowing top of the heading instead of the page scrolling to it.
+    @media (max-width: 600px) {
+        padding: 0 20px 56px 20px;
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+    }
 }
 
 .hero-actions {
