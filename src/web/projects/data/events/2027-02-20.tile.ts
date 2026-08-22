@@ -4,16 +4,17 @@
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Bei dieser Ausfahrt geht es in das Traumskigebiet Mellau-Damüls. Dieses befindet 
-sich mitten im Bregenzerwald und ist das größte Gebiet in der Region. Es bietet über 
-100km schneesichere Pisten. 
-Neben den vielen Pisten von leicht bis sehr anspruchsvoll kommen die 
-Genussfahrer, Schneekids, Freestyler und Freerider voll auf ihre Kosten. 
-Tobt euch aus auf den bestens präparierten Pisten, im Snowpark, auf der SpeedStrecke, im Skitunnel oder auf der Skiroute. 
-Auch für Anfänger ist diese Ausfahrt bestens geeignet: Ihr müsst nicht am Übungslift 
-an der Talstation bleiben, denn im Mellauer Teil des Gebietes gibt es viele einfachere 
-Pisten, die gut zu bewältigen sind.
+const DESCRIPTION_TEXT = `Bei dieser Ausfahrt geht es in das Traumskigebiet Mellau-Damüls. Dieses befindet sich mitten im Bregenzerwald und ist das größte Gebiet in der Region.
+Es bietet über 100 km schneesichere Pisten.
 
+Neben den vielen Pisten von leicht bis sehr anspruchsvoll kommen die Genussfahrer, Schneekids, Freestyler und Freerider voll auf ihre Kosten.
+Tobt euch aus auf den bestens präparierten Pisten, im Snowpark, auf der Speed-Strecke, im Skitunnel oder auf der Skiroute.
+
+Auch für Anfänger ist diese Ausfahrt bestens geeignet: Ihr müsst nicht am Übungslift an der Talstation bleiben, denn im Mellauer Teil des Gebietes gibt es viele einfachere Pisten, die gut zu bewältigen sind.
+
+**Ansprechpartner**
+- Manuel Abele, Tel: 0152/51467970
+- Markus Rup, Tel: 0151/56625746
 `;
 
 const BOARDING_LIST = [
@@ -23,22 +24,21 @@ const BOARDING_LIST = [
 ];
 
 export const TAGESAUSFAHRT_MELLAU_DAMUELS: EventTile = {
-    id: 'tagesausfahrt-mellau-damuels-2026',
+    id: 'tagesausfahrt-mellau-damuels-2027',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
-    title: 'TAGESAUSFAHRT NACH MELLAU-DAMÜLS',
-    date: '28. Februar 2026',
+    title: 'AUSFAHRT NACH MELLAU-DAMÜLS',
+    date: '20. Februar 2027',
     subTitle: '',
     image: '../../../../assets/img/cards/snow.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     details: '',
     actions: [TileActions.Register],
-    expiration: new Date('2026-02-29'),
+    expiration: new Date('2027-02-21'),
     boardings: BOARDING_LIST,
-    status: TileStatus.BookedUp,
-    additionalInformation: 'Keine Anfänger',
+    status: TileStatus.Open,
     tripConfig: {
         pricing: {
             busLift: {
@@ -63,18 +63,18 @@ export const TAGESAUSFAHRT_MELLAU_DAMUELS: EventTile = {
 
             addons: {
                 snowshoes: {
-                    member: 5,
-                    nonMember: 5,
+                    member: 8,
+                    nonMember: 8,
                 },
 
                 technikHalf: {
-                    member: 25,
-                    nonMember: 30,
+                    member: 35,
+                    nonMember: 40,
                 },
 
                 technikFull: {
-                    member: 50,
-                    nonMember: 55,
+                    member: 60,
+                    nonMember: 65,
                 },
             },
         },

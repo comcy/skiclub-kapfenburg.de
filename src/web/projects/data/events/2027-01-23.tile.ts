@@ -4,14 +4,15 @@
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Auch in dieser Saison darf unser Klassiker, die Ausfahrt nach Ehrwald, nicht fehlen. 
-Dieses Gebiet verfügt über wunderschöne, leichte bis mittelschwere Waldpisten. 
-Besonders Familien finden hier traumhafte Bedingungen vor. Für jeden ist etwas dabei - seien es die breiten Pisten, der Funpark oder die Funslope mit Wellen, Tunneln und 
-Schneeschnecke. 
+const DESCRIPTION_TEXT = `Auch in dieser Saison darf unser Klassiker, die Ausfahrt nach Ehrwald, nicht fehlen.
+Dieses Gebiet verfügt über wunderschöne, leichte bis mittelschwere Waldpisten.
+Besonders Familien finden hier traumhafte Bedingungen vor. Für jeden ist etwas dabei – seien es die breiten Pisten, der Funpark oder die Funslope mit Wellen, Tunneln und Schneeschnecke.
 
-Falls ihr doch lieber die Gegend zu Fuß erkundet, könnt ihr direkt an der Ehrwalder 
-Almbahn loslegen: Von dort aus starten zwei schöne Winterwanderwege und Schneeschuhtrails
+Falls ihr doch lieber die Gegend zu Fuß erkundet, könnt ihr direkt an der Ehrwalder Almbahn loslegen: Von dort aus starten zwei schöne Winterwanderwege und Schneeschuhtrails.
 
+**Ansprechpartner**
+- Christian Silfang, Tel: 0157/51765444
+- Evelyne Gebler, Tel: 0151/26380686
 `;
 
 const BOARDING_LIST = [
@@ -21,21 +22,21 @@ const BOARDING_LIST = [
 ];
 
 export const TAGESAUSFAHRT_EHRWALD: EventTile = {
-    id: 'tagesausfahrt-ehrwald-2026',
+    id: 'tagesausfahrt-ehrwald-2027',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
     title: 'TAGESAUSFAHRT NACH EHRWALD',
-    date: '31. Januar 2026',
+    date: '23. Januar 2027',
     subTitle: 'Familienfreundlich',
     image: '../../../../assets/img/cards/huette.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     details: '',
     actions: [TileActions.Register],
-    expiration: new Date('2026-02-01'),
+    expiration: new Date('2027-01-24'),
     boardings: BOARDING_LIST,
-    status: TileStatus.BookedUp,
+    status: TileStatus.Open,
     tripConfig: {
         pricing: {
             busLift: {
@@ -60,8 +61,8 @@ export const TAGESAUSFAHRT_EHRWALD: EventTile = {
 
             addons: {
                 snowshoes: {
-                    member: 5,
-                    nonMember: 5,
+                    member: 8,
+                    nonMember: 8,
                 },
 
                 technikHalf: {
@@ -72,10 +73,6 @@ export const TAGESAUSFAHRT_EHRWALD: EventTile = {
                 technikFull: {
                     member: 60,
                     nonMember: 65,
-                },
-                courseBeginner: {
-                    member: 35,
-                    nonMember: 40,
                 },
             },
         },

@@ -4,16 +4,15 @@
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Diese Ausfahrt eignet sich sowohl für reine Anfänger als auch für Fortgeschrittene. 
-Egal ob ihr das erste Mal auf Skiern oder dem Board steht oder einfach eure Technik 
-verbessern wollt – hier seid ihr richtig! 
-Unser erfahrenes Lehrteam trainiert mit euch auf der Piste und bei Bedarf gerne im 
-Funpark.
-In dieser Saison fahrne wir mit euch in das „familienfreundlichste Skigebiet in den 
-Alpen“. Dort gibt es über 30km traumhafte Pisten auf fast 1600m Höhe. Für alle, die 
-sich im Funpark austoben möchten, bietet der „Easypark“ die perfekte Gelegenheit 
-dazu. Bei guter Schneelage ist eine Langlaufloipe vorhanden.
+const DESCRIPTION_TEXT = `Diese Ausfahrt eignet sich sowohl für reine Anfänger als auch für Fortgeschrittene. Egal ob ihr das erste Mal auf Skiern oder dem Board steht oder einfach eure Technik verbessern wollt – hier seid ihr richtig!
 
+Unser erfahrenes Lehrteam trainiert mit euch auf der Piste und bei Bedarf gerne im Funpark.
+
+In dieser Saison lassen wir uns das Skigebiet bis zuletzt offen. Je nach Wetter- und Schneelage suchen wir spontan das perfekte Skigebiet im Allgäu für uns aus.
+
+**Ansprechpartner**
+- Johannes Müller, Tel: 0176/70888590
+- Nicole Zimmermann, Tel: 0176/82455480
 `;
 
 const BOARDING_LIST = [
@@ -22,22 +21,23 @@ const BOARDING_LIST = [
     'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
 ];
 
-export const TRAININGSTAG_OBERJOCH_TILE: EventTile = {
-    id: 'trainingstag-oberjoch-2026',
+export const TRAININGSTAG_ALLGAEU_TILE: EventTile = {
+    id: 'trainingstag-allgaeu-2027',
     order: 4,
     type: TileType.Event,
     behavior: TileBehavior.View,
-    title: 'TRAININGSTAG IN OBERJOCH',
-    date: '10. Januar 2026',
+    title: 'TRAININGSTAG INS ALLGÄU',
+    date: '09. Januar 2027',
+    destination: 'Allgäu (je nach Schneelage)',
     subTitle: '',
     image: '../../../../assets/img/cards/piste2.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     details: '',
     actions: [TileActions.Register],
-    expiration: new Date('2026-01-11'),
+    expiration: new Date('2027-01-09'),
     boardings: BOARDING_LIST,
-    status: TileStatus.BookedUp,
+    status: TileStatus.Open,
     additionalInformation: 'Kurse ab 5 Jahre möglich',
     tripConfig: {
         pricing: {
@@ -63,18 +63,18 @@ export const TRAININGSTAG_OBERJOCH_TILE: EventTile = {
 
             addons: {
                 snowshoes: {
-                    member: 5,
-                    nonMember: 5,
+                    member: 8,
+                    nonMember: 8,
                 },
 
                 technikHalf: {
                     member: 35,
-                    nonMember: 30,
+                    nonMember: 40,
                 },
 
                 technikFull: {
                     member: 60,
-                    nonMember: 55,
+                    nonMember: 65,
                 },
                 courseBeginner: {
                     member: 35,

@@ -4,39 +4,39 @@
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `An unserer Montagsausfahrt geht es traditionell nach Oberstdorf zum Skigebiet Fellhorn/Kanzelwand. Hier erwartet euch ein abwechslungsreiches Skigebiet mit 36 bestens präparierten Pisten für jedes Level. 
-Das Gebiet verfügt über eine der modernsten Beschneiungsanlagen in Deutschland, womit dem Schneevergnügen nichts mehr im Wege steht. 
+const DESCRIPTION_TEXT = `An unserer Montagsausfahrt geht es traditionell nach Oberstdorf zum Skigebiet Fellhorn/Kanzelwand. Hier erwartet euch ein abwechslungsreiches Skigebiet mit 36 bestens präparierten Pisten für jedes Level.
+Das Gebiet verfügt über eine der modernsten Beschneiungsanlagen in Deutschland, womit dem Schneevergnügen nichts mehr im Wege steht.
 
 Nach einem tollen Schneetag lassen wir den Tag mit Kaffee und Kuchen am Bus oder an der Aprés Ski Bar ausklingen.
 
-_Hinweis: Keine Anfänger_
+**Ansprechpartner**
+- Jürgen Robitschko, Tel: 0171/6539018
+- Roland Eichberger, Tel: 0170/4312150
 `;
 
 const BOARDING_LIST = [
     'Westhausen Turnhalle (5:15 Uhr)',
     'Lauchheim Schule (5:25 Uhr)',
-    'Hülen Bushaltestelle (5:30 Uhr)',
+    'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
 ];
 
 export const MONTAGSAUSFAHRT_FELLHORN: EventTile = {
-    id: 'montagsausfahrt-fellhorn-2026',
+    id: 'montagsausfahrt-fellhorn-2027',
     order: 5,
     type: TileType.Event,
     behavior: TileBehavior.View,
-    title: 'MONTAGSAUSFAHRT FELLHORN',
-    date: '09. März 2026',
+    title: 'MONTAGSAUSFAHRT ANS FELLHORN',
+    date: '01. März 2027',
     subTitle: '',
     image: '../../../../assets/img/cards/skiing.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     details: '',
     actions: [TileActions.Register],
-    expiration: new Date('2026-03-10'),
+    expiration: new Date('2027-03-02'),
     boardings: BOARDING_LIST,
     status: TileStatus.Open,
     destination: 'Skigebiet Fellhorn (Oberstdorf)',
-    additionalInformation:
-        'Im Preis enthalten ist die Busfahrt mit Vesper, 2-Tages-Skipass und eine Überachtung inklusive Halbpension',
     tripConfig: {
         pricing: {
             busLift: {
@@ -61,8 +61,8 @@ export const MONTAGSAUSFAHRT_FELLHORN: EventTile = {
 
             addons: {
                 snowshoes: {
-                    member: 5,
-                    nonMember: 5,
+                    member: 8,
+                    nonMember: 8,
                 },
                 technikHalf: {
                     member: 35,
@@ -71,14 +71,6 @@ export const MONTAGSAUSFAHRT_FELLHORN: EventTile = {
                 technikFull: {
                     member: 60,
                     nonMember: 65,
-                },
-                courseAdvanced: {
-                    member: 25,
-                    nonMember: 30,
-                },
-                courseBeginner: {
-                    member: 25,
-                    nonMember: 30,
                 },
             },
         },

@@ -4,36 +4,43 @@
 
 import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
-const DESCRIPTION_TEXT = `Gemeinsam mit euch wollen wir die Pisten auf über 2000m Höhe unsicher machen. 
-Es gibt hier familienfreundliche Abfahrten bei tollem Panorama, aber auch herausfordernde, steile Pisten wie die „Bäraloch-Piste“. 
+const DESCRIPTION_TEXT = `Nach der grandiosen Stimmung im letzten Jahr steht fest: Unsere Partyausfahrt steuert wieder die Ehrwalder Alm mit der Brent-Alm an.
 
-Das Skigebiet Sonnenkopf liegt am Fuße des Arlbergs und gilt als sehr schneesicher. 
-Ihr könnt euch daher auf den Pisten austoben oder auch unsere Schneeschuhe für eine tolle Wanderung ausleihen. 
-
-Nach einem erfolgreichen Schneetag lassen wir den Tag in der „KELO-Bar“ ausklingen und stoßen dort miteinander an
+Nach einem genialen Skitag auf der Piste verlagern wir das Geschehen direkt an die Talstation, um den Apres-Skidort so richtig zu rocken.
 
 **Rückfahrt**
 - 19:00 Uhr
+
+**Ansprechpartner**
+- Marius Weber, Tel: 0151/18110710
+- Christoph Sachs, Tel: 0152/36442806
 `;
 
-const BOARDING_LIST = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
+const BOARDING_LIST = [
+    'Schwabsberg (5:00 Uhr)',
+    'Westhausen Turnhalle (5:15 Uhr)',
+    'Lauchheim Schule (5:25 Uhr)',
+    'Hülen Bushaltestelle Wiesenweg (5:30 Uhr)',
+];
 
-export const PARTYAUSFAHRT_SONNENKOPF_TILE: EventTile = {
-    id: 'partyausfahrt-sonnenkopf-2025',
+export const PARTY_BRENT_ALM_TILE: EventTile = {
+    id: 'party-brent-alm-2026',
     order: 3,
     type: TileType.Event,
     behavior: TileBehavior.View,
-    title: 'PARTYAUSFAHRT AN DEN SONNENKOPF',
-    date: '28. Dezember 2025',
+    title: '„AUFS ALTE JAHR" IN DER BRENT-ALM',
+    date: '28. Dezember 2026',
+    destination: 'Ehrwalder Alm',
     subTitle: 'Ausfahrt ab 18 Jahre',
     image: 'https://cdn.pixabay.com/photo/2014/10/22/18/04/man-498473_960_720.jpg',
     imageDescription: 'sample',
     description: DESCRIPTION_TEXT,
     details: '',
     actions: [TileActions.Register],
-    expiration: new Date('2025-12-28'),
+    expiration: new Date('2026-12-28'),
     boardings: BOARDING_LIST,
-    status: TileStatus.BookedUp,
+    status: TileStatus.Open,
+    additionalInformation: 'Im Preis enthalten ist die Busfahrt mit Liftkarte und kleinem Vesper.',
     tripConfig: {
         pricing: {
             busLift: {
@@ -53,8 +60,8 @@ export const PARTYAUSFAHRT_SONNENKOPF_TILE: EventTile = {
 
             addons: {
                 snowshoes: {
-                    member: 5,
-                    nonMember: 5,
+                    member: 8,
+                    nonMember: 8,
                 },
             },
         },
