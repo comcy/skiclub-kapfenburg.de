@@ -47,6 +47,8 @@ export interface BaseTile {
     avatar?: string;
     visible?: boolean;
     expired?: boolean;
+    /** Show only the image and the action button, no title/description text (e.g. a poster/flyer download). */
+    imageOnly?: boolean;
 }
 export interface InfoTile extends BaseTile {
     type: TileType.Info;

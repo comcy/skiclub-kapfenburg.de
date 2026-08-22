@@ -94,9 +94,10 @@ jobs:
             export SMTP_PORT="${{ secrets.SMTP_PORT }}"
             export SENDER_MAIL="${{ secrets.SENDER_MAIL }}"
             export SENDER_PW="${{ secrets.SENDER_PW }}"
-            
+            export SEPA_ENCRYPTION_KEY="${{ secrets.SEPA_ENCRYPTION_KEY }}"
+
             # Template mit envsubst verarbeiten
-            envsubst '$APP_USER,$WORKING_DIRECTORY,$NODE_PATH,$NODE_ENV,$SMTP_SERVER,$SMTP_PORT,$SENDER_MAIL,$SENDER_PW' \
+            envsubst '$APP_USER,$WORKING_DIRECTORY,$NODE_PATH,$NODE_ENV,$SMTP_SERVER,$SMTP_PORT,$SENDER_MAIL,$SENDER_PW,$SEPA_ENCRYPTION_KEY' \
               < systemd/sck-api.service.template | sudo tee /etc/systemd/system/${{ env.APP_NAME }}.service > /dev/null
             
             # Service aktivieren und starten

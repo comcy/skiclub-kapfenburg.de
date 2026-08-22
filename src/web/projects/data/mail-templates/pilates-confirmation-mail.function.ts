@@ -78,7 +78,7 @@ export const getGymConfirmationMailText = (values: Partial<GymCoursesRegisterFor
                 </ul>                   
                 
                 <p style="color: #e60f00; font-weight: bold;">Bitte bringe deine eigene Gymnastikmatte zum Kurs mit!</p> 
-                <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/gymnastik/information" style="color: #0073e6; text-decoration: none;">Kursinformation</a>
+                <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/gymnastik" style="color: #0073e6; text-decoration: none;">Kursinformation</a>
                 </p>
             </div>
 

@@ -3,7 +3,17 @@
  */
 
 import { AsyncPipe } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, inject, ChangeDetectionStrategy } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
+    inject,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -34,16 +44,22 @@ import {
         AsyncPipe,
     ],
 })
-export class CourseRegistrationFormComponent implements OnInit {
+export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     private formBuilder = inject(FormBuilder);
     private courseRegistrationFormService = inject(CourseRegistrationFormServiceInterface);
     breakpointObserver = inject(BreakpointObserverService);
 
+    @Input() presetLevel?: string;
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public courseRegisterForm: FormGroup = new FormGroup({});
     public sportTypeList = ['Ski Alpin', 'Snowboard'];
-    public levelList = ['Anfänger', 'Könner', 'Fortgeschritten'];
+    public levelList = [
+        'A1 – Anfänger Basis',
+        'A2 – Anfänger Plus',
+        'F1 – Fortgeschritten Basis',
+        'F2 – Fortgeschritten Plus',
+    ];
 
     ngOnInit(): void {
         this.courseRegisterForm = this.formBuilder.group({
@@ -54,8 +70,14 @@ export class CourseRegistrationFormComponent implements OnInit {
             phone: [null, [Validators.required]],
             age: [null, [Validators.required]],
             additionalText: [null, []],
-            level: [null, [Validators.required]],
+            level: [this.presetLevel ?? null, [Validators.required]],
         });
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['presetLevel'] && !changes['presetLevel'].firstChange) {
+            this.courseRegisterForm.get('level')?.setValue(this.presetLevel ?? null);
+        }
     }
 
     public hasError(field: string): boolean {

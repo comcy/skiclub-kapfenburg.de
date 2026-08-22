@@ -14,7 +14,7 @@ export const getCourseConfirmationMailSubject = (values: CourseRegisterFormField
 };
 
 export const getCourseConfirmationMailBcc = (): string => {
-     return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
+    return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
 };
 
 export const getCourseConfirmationMailText = (values: CourseRegisterFormFields): string => {
@@ -59,8 +59,8 @@ export const getCourseConfirmationMailText = (values: CourseRegisterFormFields):
                     <li>Bei geeigneter Wetterlage finden die Kurse bei uns im heimischen Gelände (Skilift an der Kapfenburg) statt.</li>
                     <li>Lässt es die Wetterlage im heimischen Gelände nicht zu, bieten wir spezielle Kursausfahrten mit Kursen an:
                         <ul>
-                            <li><b>Trainigstag in Oberjoch (10. Januar 2026)</b></li>
-                            <li><b>Tagesausfahrt nach Ehrwald (31. Januar 2026)</b></li>
+                            <li><b>Trainingstag ins Allgäu (09. Januar 2027)</b></li>
+                            <li><b>Tagesausfahrt nach Ehrwald (23. Januar 2027)</b></li>
                         </ul>
                         <p style="color: #e60f00; font-weight: bold;">Wichtig: Hierzu muss eine Anmeldung zur jeweiligen Ausfahrt erfolgen, diese Registrierung reicht dazu nicht aus!</p>
                     </li>
@@ -68,14 +68,14 @@ export const getCourseConfirmationMailText = (values: CourseRegisterFormFields):
                 
                 <h3>Preise</h3>
                 <ul>
-                    <li>Die aktuell gültigen Preise findest du auf unserer <a href="https://www.skiclub-kapfenburg.de/courses/prices">Website</a></li>
+                    <li>Die aktuell gültigen Preise findest du auf unserer <a href="https://www.skiclub-kapfenburg.de/courses">Website</a></li>
 
                 <p style="color: #0073e6; font-weight: bold;">Unsere Mitglieder erhalten vergünstigte Konditionen auf Kurse und Ausfahrten. Schon ein Kinderjahresbeitrag bringt ein echtes Ersparnis. Unseren Mitgliedsantrag findest du 
                     <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: underline;">
                         hier. 
                     </a>
                 </p>
-                <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/courses/information" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Kurse</a>
+                <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/courses" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Kurse</a>
                 </p>
             </div>
             

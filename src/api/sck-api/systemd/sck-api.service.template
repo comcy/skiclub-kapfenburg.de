@@ -14,6 +14,7 @@ Environment=SMTP_SERVER=${SMTP_SERVER}
 Environment=SMTP_PORT=${SMTP_PORT}
 Environment=SENDER_MAIL=${SENDER_MAIL}
 Environment=SENDER_PW=${SENDER_PW}
+Environment=SEPA_ENCRYPTION_KEY=${SEPA_ENCRYPTION_KEY}
 StandardOutput=journal
 StandardError=journal
 Restart=always

@@ -16,6 +16,7 @@ export const PROGRAM_TILE: Tile = {
     imageDescription: 'SCK-Programm',
     description: '',
     details: '',
+    imageOnly: true,
     actions: [TileActions.Download],
     downloadActionLink: 'https://1drv.ms/b/c/e16937961b6e725a/IQCn0TUDCXP5QIwb9XeWsjIkAbGbZXbJjH4wYnfRCxHQP98?e=ukyCEo',
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',

@@ -10,27 +10,15 @@ const routes: Routes = [
     {
         path: '',
         component: GymComponent,
-        children: [
-            {
-                path: '',
-                redirectTo: 'information',
-                pathMatch: 'full',
-            },
-            {
-                path: 'information',
-                loadComponent: () =>
-                    import('./components/tabs/information/information.component').then(
-                        (mod) => mod.InformationComponent,
-                    ),
-            },
-            {
-                path: 'registration',
-                loadComponent: () =>
-                    import('./components/tabs/registration/registration.component').then(
-                        (mod) => mod.RegistrationComponent,
-                    ),
-            },
-        ],
+        pathMatch: 'full',
+    },
+    // Standalone course detail page (/gymnastik/:id) - only tried once the
+    // empty path above doesn't match. Mirrors trips-routing.module.ts's :id
+    // route for trip-detail.
+    {
+        path: ':id',
+        loadComponent: () =>
+            import('./components/course-detail/course-detail.component').then((mod) => mod.CourseDetailComponent),
     },
 ];
 

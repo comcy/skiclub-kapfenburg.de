@@ -7,6 +7,7 @@ import 'dotenv/config';
 import express from 'express';
 import emailRoutes from './routes/email-route.js';
 import registrationRoutes from './routes/registration-route.js';
+import membershipRoutes from './routes/membership-route.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(cors());
 
 app.use('/api', emailRoutes);
 app.use('/api', registrationRoutes);
+app.use('/api', membershipRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

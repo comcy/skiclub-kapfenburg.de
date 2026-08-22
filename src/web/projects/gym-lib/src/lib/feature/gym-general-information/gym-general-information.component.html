@@ -14,26 +14,23 @@
     deine Muskulatur langfristig kräftigt
     <br />
     <br />
-    Wir bieten hierzu aktuell zwei Kurse an:
+    Wir bieten hierzu aktuell zwei Kurse an - einfach anklicken zum Anmelden:
 
-    <br />
-    <br />
-
-    @if (gymState.pilatesOffers$ | async; as pilatesOffers) {
-        @for (p of pilatesOffers; track $index) {
-            <div class="asd">
-                <h2>{{ p.name }} - {{ p.location }}</h2>
-                <div class="info-box">
-                    <div [innerHTML]="markdown.render(p.details)"></div>
+    <div class="gym-tiles-grid">
+        @for (tile of pilatesTiles; track tile.id) {
+            <article class="gym-tile-card gym-tile-clickable" [routerLink]="['/gymnastik', tile.id]">
+                <div class="gym-tile-image">
+                    <img [src]="tile.image" [alt]="tile.imageDescription" />
                 </div>
-            </div>
+                <div class="gym-tile-content">
+                    <div class="gym-tile-eyebrow">{{ tile.subTitle }}</div>
+                    <h3>{{ tile.title }}</h3>
+                    <p [innerHTML]="markdown.render(tile.description)"></p>
+                </div>
+            </article>
         }
-    }
+    </div>
 
-    <br />
-    <br />
-    Anmeldung über unser Formular auf der Website:
-    <a href="https://skiclub-kapfenburg.de/gymnastik/registration"> Anmeldung </a>
     <br />
     Die Anmeldung ist erst gültig bei Überweisung der Kursgebühr auf das nachstehende Konto:
     <div style="padding-left: 8px; border-left: 4px solid #673ab7; margin: 16px 0">
@@ -49,15 +46,29 @@
     <i>Kursleitung: Mascha Welk</i>
 </div>
 
-@if (gymState.gymOffers$ | async; as gymOffers) {
-    @for (g of gymOffers; track g.name) {
-        <div class="info-page">
-            <h3>{{ g.name }}</h3>
-            <h2>{{ g.time }} - {{ g.location }}</h2>
-            <div [innerHTML]="markdown.render(g.description)"></div>
-            <p>
-                <i>{{ g.contact }}</i>
-            </p>
-        </div>
-    }
-}
+<div class="info-page">
+    <h1>Weitere Angebote</h1>
+    <div class="gym-tiles-grid">
+        @for (tile of offerTiles; track tile.id) {
+            <article class="gym-tile-card">
+                @if (tile.image) {
+                    <div class="gym-tile-image">
+                        <img [src]="tile.image" [alt]="tile.imageDescription" />
+                    </div>
+                } @else {
+                    <div class="gym-tile-image gym-tile-placeholder">
+                        <mat-icon>fitness_center</mat-icon>
+                    </div>
+                }
+                <div class="gym-tile-content">
+                    <div class="gym-tile-eyebrow">{{ tile.subTitle }}</div>
+                    <h3>{{ tile.title }}</h3>
+                    <p [innerHTML]="markdown.render(tile.description)"></p>
+                    @if (tile.location) {
+                        <p class="gym-tile-location">{{ tile.location }}</p>
+                    }
+                </div>
+            </article>
+        }
+    </div>
+</div>

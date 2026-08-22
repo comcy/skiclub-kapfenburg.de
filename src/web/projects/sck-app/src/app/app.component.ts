@@ -31,6 +31,7 @@ export class AppComponent {
     public contactMail = 'webmaster@skiclub-kapfenburg.de';
     public contactMailTooltip = 'Mail senden';
     public buildNumber: string = environment.buildNumber;
+    public buildDate: string = environment.buildDate;
 
     public navItems: NavigationItem[] = [
         { name: 'Übersicht', route: HOME_ROUTE, icon: 'home' },

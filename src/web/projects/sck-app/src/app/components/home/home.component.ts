@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -18,14 +18,28 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CoursesFeatureModule } from '@courses-lib';
 import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA, TRIP_DATA } from '@data';
 import { GymFeatureModule } from '@gym-lib';
-import { SiteHeaderComponent } from '@shared/ui-common';
+import { GymCourseSchedule } from 'projects/gym-lib/src/lib/domain';
+import { GYM_GENERAL_OFFERS } from 'projects/data/static';
 import { MarkdownRenderService } from '@shared/util-markdown';
 import { TripsFeatureModule } from '@trips-lib';
 import {
+    addMonths,
+    eachDayOfInterval,
+    endOfMonth,
+    endOfWeek,
+    format,
+    isSameDay,
+    isSameMonth,
+    startOfMonth,
+    startOfWeek,
+    subMonths,
+} from 'date-fns';
+import {
+    CourseTile,
     EventTile,
     InfoTile,
     Tile,
@@ -35,6 +49,30 @@ import {
     TileType,
 } from 'projects/shared-lib/src/lib/ui-common/models';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
+import { GYM_ROUTE, TRIPS_ROUTE } from '../../route-segments';
+
+interface CalendarDayEvent {
+    title: string;
+    type: 'trip' | 'course';
+    /** Present only for events with their own detail page (trips, bookable courses). */
+    id?: string;
+}
+
+interface CarouselSlide {
+    id: string;
+    kind: 'static' | 'trip' | 'course';
+    image?: string;
+    imageAlt?: string;
+    badge: string;
+    badgeWarn: boolean;
+    eyebrow: string;
+    title: string;
+    descriptionHtml: string;
+    priceLabelHtml?: string;
+    ctaLabel: string;
+    ctaColor: 'primary' | 'accent';
+    onClick: () => void;
+}
 
 @Component({
     selector: 'app-home',
@@ -44,6 +82,7 @@ import { ComponentsModule } from 'projects/shared-lib/src/public-api';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         CommonModule,
+        RouterModule,
         ComponentsModule,
         MatToolbarModule,
         MatIconModule,
@@ -62,17 +101,31 @@ import { ComponentsModule } from 'projects/shared-lib/src/public-api';
         CoursesFeatureModule,
         GymFeatureModule,
         TripsFeatureModule,
-        SiteHeaderComponent,
     ],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
     public title = 'Aktuelles';
     public tileStatusEnum = TileStatus;
     public tileActionsEnum = TileActions;
     public tileBehaviorEnum = TileBehavior;
+    public tileTypeEnum = TileType;
     public registerLabel = 'Anmelden';
     public tiles: Tile[] = [];
     public programmDownloadLink = PROGRAMM_DOWNLOAD_LINK;
+
+    /** Next upcoming trips, teased on the home page; full list lives on the Ausfahrten overview tab. */
+    public upcomingTrips: EventTile[] = [];
+    public courseTiles: CourseTile[] = [];
+    public infoTiles: InfoTile[] = [];
+
+    public calendarMonth = new Date();
+    public calendarGrid: Date[][] = [];
+    public calendarWeekdayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    private calendarEvents = new Map<string, CalendarDayEvent[]>();
+
+    public carouselSlides: CarouselSlide[] = [];
+    public carouselIndex = 0;
+    private carouselTimer?: ReturnType<typeof setInterval>;
 
     private trips = TRIP_DATA;
     private courses = COURSE_DATA;
@@ -105,10 +158,233 @@ export class HomeComponent implements OnInit {
         });
 
         this.tiles = homeTiles;
+
+        this.upcomingTrips = homeTiles
+            .filter((t): t is EventTile => t.type === TileType.Event && !t.expired)
+            .sort((a, b) => a.expiration.getTime() - b.expiration.getTime())
+            .slice(0, 3);
+        this.courseTiles = homeTiles.filter((t): t is CourseTile => t.type === TileType.Course);
+        this.infoTiles = homeTiles.filter((t): t is InfoTile => t.type === TileType.Info);
+
+        const openTrips = homeTiles.filter((t): t is EventTile => t.type === TileType.Event && !t.expired);
+
+        this.calendarEvents = this.buildCalendarEvents(openTrips, this.courseTiles);
+        this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
+
+        this.carouselSlides = [
+            this.buildStaticSlide(),
+            ...openTrips.map((trip) => this.buildTripSlide(trip)),
+            ...this.courseTiles.map((course) => this.buildCourseSlide(course)),
+        ];
+        if (this.carouselSlides.length > 1) {
+            this.startCarouselAutoplay();
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.pauseCarousel();
+    }
+
+    public resolvePrice(trip: EventTile): number | undefined {
+        return trip.tripConfig?.pricing?.busLift?.adult?.member;
+    }
+
+    // CALENDAR
+
+    public prevMonth(): void {
+        this.calendarMonth = subMonths(this.calendarMonth, 1);
+        this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
+    }
+
+    public nextMonth(): void {
+        this.calendarMonth = addMonths(this.calendarMonth, 1);
+        this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
+    }
+
+    public isSameMonthAsCalendar(day: Date): boolean {
+        return isSameMonth(day, this.calendarMonth);
+    }
+
+    public getDayEvents(day: Date): CalendarDayEvent[] {
+        return this.calendarEvents.get(format(day, 'yyyy-MM-dd')) ?? [];
+    }
+
+    public dayTooltip(day: Date): string {
+        return this.getDayEvents(day)
+            .map((event) => `${event.type === 'trip' ? 'Ausfahrt' : 'Kurs'}: ${event.title}`)
+            .join('\n');
+    }
+
+    public hasCourseEvent(day: Date): boolean {
+        return this.getDayEvents(day).some((event) => event.type === 'course');
+    }
+
+    public hasTripEvent(day: Date): boolean {
+        return this.getDayEvents(day).some((event) => event.type === 'trip');
+    }
+
+    public isDayClickable(day: Date): boolean {
+        return this.getDayEvents(day).some((event) => !!event.id);
+    }
+
+    public onDayClick(day: Date): void {
+        const target = this.getDayEvents(day).find((event) => !!event.id);
+        if (!target?.id) {
+            return;
+        }
+        this.router.navigate([target.type === 'trip' ? TRIPS_ROUTE : GYM_ROUTE, target.id]);
+    }
+
+    private buildCalendarGrid(month: Date): Date[][] {
+        const start = startOfWeek(startOfMonth(month), { weekStartsOn: 1 });
+        const end = endOfWeek(endOfMonth(month), { weekStartsOn: 1 });
+        const days = eachDayOfInterval({ start, end });
+        const weeks: Date[][] = [];
+        for (let i = 0; i < days.length; i += 7) {
+            weeks.push(days.slice(i, i + 7));
+        }
+        return weeks;
+    }
+
+    private buildCalendarEvents(trips: EventTile[], courses: CourseTile[]): Map<string, CalendarDayEvent[]> {
+        const map = new Map<string, CalendarDayEvent[]>();
+        const addEvent = (date: Date, title: string, type: CalendarDayEvent['type'], id?: string) => {
+            const key = format(date, 'yyyy-MM-dd');
+            const list = map.get(key) ?? [];
+            list.push({ title, type, id });
+            map.set(key, list);
+        };
+
+        trips.forEach((trip) => addEvent(trip.expiration, trip.title, 'trip', trip.id));
+        courses.forEach((course) => {
+            const schedule = course.course?.schedule;
+            if (!schedule) {
+                return;
+            }
+            this.computeCourseSessionDates(schedule).forEach((date) =>
+                addEvent(date, course.title, 'course', course.id),
+            );
+        });
+        // Public, non-bookable Gymnastik sessions (Fitness Cocktail, Fitnessmix, Vitalgymnastik) -
+        // calendar-only, no detail page/registration, so no id.
+        GYM_GENERAL_OFFERS.forEach((offer) => {
+            if (!offer.schedule) {
+                return;
+            }
+            this.computeCourseSessionDates(offer.schedule).forEach((date) =>
+                addEvent(date, `${offer.name} (${offer.time})`, 'course'),
+            );
+        });
+
+        return map;
+    }
+
+    private computeCourseSessionDates(schedule: GymCourseSchedule): Date[] {
+        return eachDayOfInterval({ start: schedule.startDate, end: schedule.endDate })
+            .filter((date) => date.getDay() === schedule.weekday)
+            .filter((date) => !(schedule.excludedDates ?? []).some((excluded) => isSameDay(excluded, date)));
+    }
+
+    // CAROUSEL
+
+    public nextSlide(): void {
+        if (this.carouselSlides.length === 0) {
+            return;
+        }
+        this.carouselIndex = (this.carouselIndex + 1) % this.carouselSlides.length;
+    }
+
+    public prevSlide(): void {
+        if (this.carouselSlides.length === 0) {
+            return;
+        }
+        this.carouselIndex = (this.carouselIndex - 1 + this.carouselSlides.length) % this.carouselSlides.length;
+    }
+
+    public goToSlide(index: number): void {
+        this.carouselIndex = index;
+    }
+
+    public pauseCarousel(): void {
+        if (this.carouselTimer) {
+            clearInterval(this.carouselTimer);
+            this.carouselTimer = undefined;
+        }
+    }
+
+    public resumeCarousel(): void {
+        if (!this.carouselTimer && this.carouselSlides.length > 1) {
+            this.startCarouselAutoplay();
+        }
+    }
+
+    private startCarouselAutoplay(): void {
+        this.carouselTimer = setInterval(() => this.nextSlide(), 6000);
+    }
+
+    private buildStaticSlide(): CarouselSlide {
+        return {
+            id: 'ski-snowboard-school',
+            kind: 'static',
+            image: 'assets/img/cards/boy.jpg',
+            imageAlt: 'Ski- und Snowboardschule am Skilift Kapfenburg',
+            badge: 'Alle Level',
+            badgeWarn: false,
+            eyebrow: 'Nach Schneelage',
+            title: 'Ski- & Snowboardschule',
+            descriptionHtml: 'Für Kinder und Erwachsene, alle Könnerstufen, direkt am Skilift Kapfenburg.',
+            priceLabelHtml: 'Kontakt &amp; Termine',
+            ctaLabel: 'Mehr erfahren',
+            ctaColor: 'accent',
+            onClick: () => this.router.navigate(['/courses']),
+        };
+    }
+
+    private buildTripSlide(trip: EventTile): CarouselSlide {
+        const price = this.resolvePrice(trip);
+        return {
+            id: trip.id,
+            kind: 'trip',
+            image: trip.image,
+            imageAlt: trip.imageDescription,
+            badge: trip.status === TileStatus.BookedUp ? 'Warteliste' : 'Plätze frei',
+            badgeWarn: trip.status === TileStatus.BookedUp,
+            eyebrow: trip.date,
+            title: trip.title,
+            descriptionHtml: trip.destination ?? '',
+            priceLabelHtml: price ? `ab <b>${price}&nbsp;€</b>` : undefined,
+            ctaLabel: 'Anmelden',
+            ctaColor: 'primary',
+            onClick: () => this.openTripDetail(trip),
+        };
+    }
+
+    private buildCourseSlide(course: CourseTile): CarouselSlide {
+        return {
+            id: course.id,
+            kind: 'course',
+            badge: course.title.includes('Donnerstag') ? 'Donnerstags' : 'Mittwochs',
+            badgeWarn: false,
+            eyebrow: course.subTitle,
+            title: course.title,
+            descriptionHtml: this.markdown.render(this.getTileDescription(course)),
+            priceLabelHtml: course.course?.prices?.member ? `ab <b>${course.course.prices.member}</b>` : undefined,
+            ctaLabel: 'Anmelden',
+            ctaColor: 'accent',
+            onClick: () => this.openCourseDetail(course),
+        };
     }
 
     public openRegisterDialog(tile: Tile) {
         this.router.navigate([{ outlets: { modal: ['register', tile.id] } }]);
+    }
+
+    public openTripDetail(tile: Tile): void {
+        this.router.navigate([TRIPS_ROUTE, tile.id]);
+    }
+
+    public openCourseDetail(tile: Tile): void {
+        this.router.navigate([GYM_ROUTE, tile.id]);
     }
 
     public openLink(link: string | undefined) {
@@ -117,6 +393,13 @@ export class HomeComponent implements OnInit {
         }
     }
 
+    /**
+     * Builds the description markdown for non-trip tiles (info tiles get
+     * their location/timeData appended). Trip (Event) tiles no longer render
+     * inline on the home tile - their full description now lives on the
+     * trip detail page (TripDetailComponent in trips-lib), which builds its
+     * own event-specific markdown (destination, boardings, pricing table).
+     */
     public getTileDescription(tile: Tile): string {
         if (tile.type === TileType.Info) {
             const infoTile = tile as InfoTile;
@@ -133,77 +416,6 @@ export class HomeComponent implements OnInit {
             return content;
         }
 
-        if (tile.type !== TileType.Event) {
-            return tile.description;
-        }
-
-        const eventTile = tile as EventTile;
-        let dynamicContent = tile.description || '';
-
-        // 1. Destination / Location
-        if (eventTile.destination) {
-            dynamicContent += `\n\n**Ziel:** ${eventTile.destination}\n`;
-        }
-        if (eventTile.location) {
-            dynamicContent += `\n\n**Ort:** ${eventTile.location}\n`;
-        }
-
-        // 2. Boarding List (Abfahrtszeiten)
-        if (eventTile.boardings && eventTile.boardings.length > 0) {
-            dynamicContent += '\n **Abfahrtszeiten**\n';
-            eventTile.boardings.forEach((b: string) => {
-                dynamicContent += ` - ${b}\n`;
-            });
-        }
-
-        // 3. Pricing Table
-        const pricing = eventTile.tripConfig?.pricing;
-        if (pricing) {
-            dynamicContent += '\n**Kosten**\n\n';
-            dynamicContent += '| Bus + Liftkarte + Optionen | Mitglieder | Nicht-Mitglieder |\n';
-            dynamicContent += '|:---|---:|---:|\n';
-
-            // Bus + Lift
-            if (pricing.busLift) {
-                dynamicContent += `| Erwachsene | ${pricing.busLift.adult.member},00 € | ${pricing.busLift.adult.nonMember},00 € |\n`;
-                dynamicContent += `| Jugendliche (bis 16 J.) | ${pricing.busLift.youthUntil16.member},00 € | ${pricing.busLift.youthUntil16.nonMember},00 € |\n`;
-                dynamicContent += `| Kinder (bis 6 J.) | ${pricing.busLift.childUntil6.member},00 € | ${pricing.busLift.childUntil6.nonMember},00 € |\n`;
-            }
-
-            // Bus Only
-            if (pricing.busOnly) {
-                dynamicContent += `| Nur Busfahrt | ${pricing.busOnly.member},00 € | ${pricing.busOnly.nonMember},00 € |\n`;
-            }
-
-            // Addons
-            const addons = pricing.addons;
-            if (addons && Object.keys(addons).length > 0) {
-                // Visual separator line
-                dynamicContent += `| -------------------------- | ---------- | ---------- |\n`;
-
-                if (addons.courseBeginner) {
-                    dynamicContent += `| Anfängerkurs | ${addons.courseBeginner.member},00 € | ${addons.courseBeginner.nonMember},00 € |\n`;
-                }
-                if (addons.courseAdvanced) {
-                    dynamicContent += `| Fortgeschrittenenkurs | ${addons.courseAdvanced.member},00 € | ${addons.courseAdvanced.nonMember},00 € |\n`;
-                }
-                if (addons.technikHalf) {
-                    dynamicContent += `| Techniktraining (1/2 Tag) | ${addons.technikHalf.member},00 € | ${addons.technikHalf.nonMember},00 € |\n`;
-                }
-                if (addons.technikFull) {
-                    dynamicContent += `| Techniktraining (ganzer Tag) | ${addons.technikFull.member},00 € | ${addons.technikFull.nonMember},00 € |\n`;
-                }
-                if (addons.snowshoes) {
-                    dynamicContent += `| Schneeschuhe | ${addons.snowshoes.member},00 € | ${addons.snowshoes.nonMember},00 € |\n`;
-                }
-            }
-        }
-
-        // 4. Additional Information
-        if (eventTile.additionalInformation) {
-            dynamicContent += `\n---\n_*${eventTile.additionalInformation}_`;
-        }
-
-        return dynamicContent;
+        return tile.description;
     }
 }

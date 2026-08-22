@@ -14,6 +14,7 @@
     "build": "rollup -c",
     "start": "node dist/index.js",
     "start:dev": "node --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
+    "lint": "tsc --noEmit",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "type": "module",
