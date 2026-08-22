@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { TRIP_DATA } from '@data';
-import { EventTile, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { EventTile, InfoTile, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 
 const ALL = 'Alle';
 
@@ -26,6 +26,8 @@ export class OverviewComponent implements OnInit {
     public tileStatusEnum = TileStatus;
     public allTrips: EventTile[] = [];
     public filteredTrips: EventTile[] = [];
+    /** Standing offers alongside the trips (e.g. Skibörse, Schneeschuhverleih) - not date-bound events. */
+    public otherOffers: InfoTile[] = [];
 
     public audiences: string[] = [ALL];
     public destinations: string[] = [ALL];
@@ -41,6 +43,7 @@ export class OverviewComponent implements OnInit {
         this.allTrips = TRIP_DATA.filter((t): t is EventTile => t.type === TileType.Event).sort(
             (a, b) => a.expiration.getTime() - b.expiration.getTime(),
         );
+        this.otherOffers = TRIP_DATA.filter((t): t is InfoTile => t.type === TileType.Info);
 
         this.audiences = [ALL, ...new Set(this.allTrips.map((t) => this.resolveAudience(t)).filter((a) => a !== ALL))];
         this.destinations = [ALL, ...new Set(this.allTrips.map((t) => t.destination).filter((d): d is string => !!d))];

@@ -1,7 +1,7 @@
 <div class="overview-container">
     <p class="intro">
-        Von der Familienfahrt nach Ehrwald bis zur Partynacht am Sonnenkopf – hier ist für jeden was dabei. Busfahrt und
-        Liftkarte sind im Preis enthalten.
+        Von der Familienfahrt nach Ehrwald bis zur Partynacht in der Brent-Alm – hier ist für jeden was dabei. Busfahrt
+        und Liftkarte sind im Preis enthalten.
     </p>
 
     <div class="filter-bar">
@@ -73,4 +73,26 @@
             <p class="no-results">Keine Ausfahrten für diese Auswahl gefunden.</p>
         }
     </div>
+
+    @if (otherOffers.length > 0) {
+        <h2 class="section-title">Weitere Angebote</h2>
+        <div class="offers-grid">
+            @for (offer of otherOffers; track offer.id) {
+                <article class="offer-card">
+                    <div class="offer-card-image">
+                        <img [src]="offer.image" [alt]="offer.imageDescription" />
+                    </div>
+                    <div class="offer-card-content">
+                        <h3>{{ offer.title }}</h3>
+                        @if (offer.subTitle) {
+                            <p class="offer-subtitle">{{ offer.subTitle }}</p>
+                        }
+                        @if (offer.location) {
+                            <span class="meta-chip"><mat-icon>place</mat-icon>{{ offer.location }}</span>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
 </div>
