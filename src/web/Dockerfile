@@ -23,7 +23,7 @@ ARG BUILD_NUMBER
 # GITHUB_RUN_NUMBER doesn't cross the docker build isolation boundary on
 # its own (unlike BUILD_DATE/GIT_COMMIT_HASH, which envsubst.sh computes
 # natively inside the container) - has to come in as a build ARG instead.
-RUN cd src/web/scripts && GITHUB_RUN_NUMBER="$BUILD_NUMBER" ./envsubst.sh "$COURSE_SHEET_URL" "$TRIP_SHEET_URL" "$SCK_API_URL"
+RUN cd src/web/scripts && GITHUB_RUN_NUMBER="$BUILD_NUMBER" ./envsubst.sh "$COURSE_SHEET_URL" "$TRIP_SHEET_URL" "$SCK_API_URL" "TEST"
 RUN pnpm --filter web run build
 
 FROM nginx:alpine

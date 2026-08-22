@@ -1,9 +1,6 @@
 <div class="copyright-container">
     <p>
-        <span>{{ getVersionOrBuildNumber() }}</span>
-        @if (getFormattedBuildDate(); as buildDateLabel) {
-            <span>{{ buildDateLabel }}</span>
-        }
+        <span [attr.title]="getFormattedBuildDate() || null">{{ getBuildTag() }}</span>
         <span>&copy; {{ getYear() }}</span>
         <a href="{{ link }}"
             ><i>{{ name }}</i></a

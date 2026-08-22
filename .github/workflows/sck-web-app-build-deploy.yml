@@ -38,7 +38,7 @@ jobs:
       - name: Environment substitution
         run: |
           cd ${{ env.PROJECT_PATH }}/scripts
-          ./envsubst.sh "${{ secrets.COURSE_SHEET_URL }}" "${{ secrets.TRIP_SHEET_URL }}" "${{ secrets.SCK_API_URL }}"
+          ./envsubst.sh "${{ secrets.COURSE_SHEET_URL }}" "${{ secrets.TRIP_SHEET_URL }}" "${{ secrets.SCK_API_URL }}" "PROD"
 
       # PREPARE
       - name: Install dependencies

@@ -10,4 +10,5 @@ export const environment = {
     buildDate: '${BUILD_DATE}',
     buildNumber: '${BUILD_NUMBER}',
     gitCommitHash: '${GIT_COMMIT_HASH}',
+    deployEnv: '${DEPLOY_ENV}',
 };

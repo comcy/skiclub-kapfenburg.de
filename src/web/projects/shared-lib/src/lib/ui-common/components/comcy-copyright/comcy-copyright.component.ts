@@ -16,7 +16,8 @@ export class ComcyCopyrightComponent {
     @Input() link!: string;
     @Input() name!: string;
     @Input() version?: string;
-    @Input() buildNumber?: string;
+    @Input() deployEnv?: string;
+    @Input() gitCommitHash?: string;
     @Input() buildDate?: string;
 
     constructor() {
@@ -24,18 +25,21 @@ export class ComcyCopyrightComponent {
         this.name = 'comcy';
     }
 
-    getVersionOrBuildNumber(): string {
+    // "#DEV:<hash>" / "#TEST:<hash>" / "#PROD:<hash>" - which pipeline
+    // built this and which commit it's running. Falls back to a semver
+    // "v<version>" tag if that's set instead (not currently used anywhere,
+    // kept for callers that may still pass it).
+    getBuildTag(): string {
         if (this.version) {
             return `v${this.version}`;
-        } else if (this.buildNumber) {
-            return `#${this.buildNumber}`;
+        } else if (this.deployEnv && this.gitCommitHash) {
+            return `#${this.deployEnv}:${this.gitCommitHash}`;
         }
         return '';
     }
 
-    // Shows which deployed build is currently live (helpful on dev/test
-    // deployments, where the build number alone doesn't say much) - blank
-    // for unset/unsubstituted (e.g. a stray "${BUILD_DATE}") values.
+    // Hover text for the build tag - blank for unset/unsubstituted (e.g. a
+    // stray "${BUILD_DATE}") values, so no empty tooltip shows.
     getFormattedBuildDate(): string {
         if (!this.buildDate) {
             return '';

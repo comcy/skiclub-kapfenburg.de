@@ -30,8 +30,9 @@ export class AppComponent {
     public footerColor = 'primary';
     public contactMail = 'webmaster@skiclub-kapfenburg.de';
     public contactMailTooltip = 'Mail senden';
-    public buildNumber: string = environment.buildNumber;
     public buildDate: string = environment.buildDate;
+    public deployEnv: string = environment.deployEnv;
+    public gitCommitHash: string = environment.gitCommitHash;
 
     public navItems: NavigationItem[] = [
         { name: 'Übersicht', route: HOME_ROUTE, icon: 'home' },

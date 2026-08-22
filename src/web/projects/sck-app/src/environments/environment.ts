@@ -13,7 +13,12 @@ export const environment = {
     tripSheetUrl: '',
     buildDate: '2025-06-24T12:34:56Z',
     buildNumber: 'DEV', // oder aus Git,
-    gitCommitHash: '${GIT_COMMIT_HASH}',
+    // Not substituted for a plain `ng serve`/local build - no envsubst.sh
+    // step runs for the "development" configuration. A real hash would
+    // need re-generating this file on every serve, which isn't worth it
+    // for a local dev build.
+    gitCommitHash: 'local',
+    deployEnv: 'DEV',
 };
 
 /*
