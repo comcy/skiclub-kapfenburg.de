@@ -1,0 +1,49 @@
+<div class="login-container">
+    <mat-card class="login-card">
+        <mat-card-header>
+            <mat-card-title>SCK Admin</mat-card-title>
+            <mat-card-subtitle>Anmeldung nur für eingeladene Adressen</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            @if (errorMessage) {
+                <p class="error-message">{{ errorMessage }}</p>
+            }
+
+            @if (magicLinkSent) {
+                <p class="info-message">
+                    <mat-icon>mail</mat-icon>
+                    Falls diese Adresse eingeladen wurde, wurde ein Anmeldelink verschickt. Bitte E-Mails prüfen.
+                </p>
+            } @else {
+                <form (ngSubmit)="requestMagicLink()">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>E-Mail-Adresse</mat-label>
+                        <input matInput type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
+                    </mat-form-field>
+
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        type="submit"
+                        class="full-width"
+                        [disabled]="!email || isSending"
+                    >
+                        @if (isSending) {
+                            <mat-spinner diameter="20"></mat-spinner>
+                        } @else {
+                            Magic-Link anfordern
+                        }
+                    </button>
+                </form>
+            }
+
+            <div class="divider"><span>oder</span></div>
+
+            <button mat-stroked-button type="button" class="full-width" (click)="loginWithGoogle()">
+                <mat-icon>login</mat-icon>
+                Mit Google anmelden
+            </button>
+        </mat-card-content>
+    </mat-card>
+</div>

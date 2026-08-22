@@ -1,0 +1,24 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+shared-lib-site-header {
+    padding-top: 64px;
+    flex-shrink: 0;
+}
+
+mat-tab-group {
+    flex-shrink: 0;
+}
+
+.content-area {
+    flex: 1;
+    min-height: 0;
+    /* Critical for nested flex scrolling */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}

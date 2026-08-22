@@ -1,0 +1,47 @@
+<div class="invite-container">
+    <mat-card class="invite-card">
+        @switch (state) {
+            @case ('loading') {
+                <mat-card-content class="centered">
+                    <mat-spinner diameter="40"></mat-spinner>
+                </mat-card-content>
+            }
+            @case ('invalid') {
+                <mat-card-header>
+                    <mat-card-title>Einladung ungültig</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>Dieser Einladungslink ist ungültig oder bereits verwendet worden.</p>
+                </mat-card-content>
+            }
+            @case ('ready') {
+                <mat-card-header>
+                    <mat-card-title>Einladung annehmen</mat-card-title>
+                    <mat-card-subtitle>{{ email }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>Wähle eine Anmeldemethode, um die Einladung anzunehmen und dich anzumelden.</p>
+                    <button mat-raised-button color="primary" class="full-width" (click)="acceptAndRequestMagicLink()">
+                        <mat-icon>mail</mat-icon>
+                        Annehmen &amp; Magic-Link senden
+                    </button>
+                    <button mat-stroked-button class="full-width" (click)="acceptAndUseGoogle()">
+                        <mat-icon>login</mat-icon>
+                        Annehmen &amp; mit Google anmelden
+                    </button>
+                </mat-card-content>
+            }
+            @case ('accepted') {
+                <mat-card-header>
+                    <mat-card-title>Einladung angenommen</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        <mat-icon>mail</mat-icon>
+                        Ein Anmeldelink wurde an {{ email }} verschickt. Bitte E-Mails prüfen.
+                    </p>
+                </mat-card-content>
+            }
+        }
+    </mat-card>
+</div>

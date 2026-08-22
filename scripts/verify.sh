@@ -40,4 +40,14 @@ run pnpm "${PNPM_FILTER[@]}" -r run build
 run pnpm "${PNPM_FILTER[@]}" -r run lint
 run pnpm "${PNPM_FILTER[@]}" -r run test
 
+# sck-admin-app has its own build/lint/test scripts (build:admin etc.)
+# rather than being folded into web's plain build/lint/test - that script
+# stays sck-app-only since it's also what the "web" Docker image build
+# calls, and that image has no business depending on sck-admin-app too.
+if [ -z "$FILTER" ] || [ "$FILTER" = "web" ]; then
+  run pnpm --filter web run build:admin
+  run pnpm --filter web run lint:admin
+  run pnpm --filter web run test:admin
+fi
+
 echo "✔ verify passed"
