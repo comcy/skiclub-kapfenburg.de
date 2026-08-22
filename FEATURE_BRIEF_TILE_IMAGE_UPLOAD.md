@@ -1,101 +1,72 @@
-# Status: Bild-Upload für Tiles (admin-app)
+# Status: Admin-App, Datenbank-Backend, Bild-Upload
 
 Ausgangsfrage war: wie sollen Tile-Bilder künftig verwaltet werden, wenn
 Admins sie selbst hochladen können sollen, statt sie fest im Frontend-Build
-(`src/web/projects/data/static/*.tile.ts`, `assets/img/...`) zu verdrahten?
+zu verdrahten? Das führte zu einem größeren Schritt: Backend + Admin-App
+von `feature/admin-app` additiv auf `release/2026-08-20` angebunden.
 
-**Ergebnis der Recherche: das ist bereits gebaut**, auf dem Branch/Worktree
-`feature/admin-app` (`/home/cy/Workspace/skiclub-kapfenburg.de/feature/admin-app`).
-Dieser Branch ist noch **nicht** in `release/2026-08-20` oder `master`
-gemerged. Dieses Dokument hält fest, was dort existiert, was noch offen ist,
-und was zu tun ist, wenn das Thema angegangen wird.
+**Aktueller Stand: additiv angebunden, Pilot-Umfang Ausfahrten.** Statische
+Tiles (`data/static/*.tile.ts`, `data/events/*.tile.ts`) bleiben exakt wie
+sie sind, unverändert. Über die Admin-App neu angelegte **Ausfahrten**
+(EventTile) erscheinen zusätzlich daneben — auf `/trips/overview`,
+`/trips/prices`, `/trips/registration`, der Startseite (Kalender/Karussell)
+und den Trip-Detailseiten. Kurse/Gymnastik/Info-Tiles sind noch **nicht**
+angebunden — eigene, spätere Runde.
 
-## Was bereits existiert (committed, `feature/admin-app`)
+## Was jetzt läuft (auf `release/2026-08-20`, committed)
 
-Ansatz: lokale Disk-Storage über `sck-api` selbst (kein externer Dienst) —
-genau das Muster, das wir hier besprochen hatten (`sck-api` läuft dauerhaft
-per systemd, keine ephemere Serverless-Umgebung, also ist lokale Disk
-persistent und ausreichend).
+- **`sck-api`**: SQLite-Backend (Tiles/Boardings/Auth: Magic-Link + Google
+  OAuth-Code + Invites/Users/Sessions/Permissions, Bild-Upload) aus
+  `feature/admin-app` übernommen — additiv neben den bestehenden
+  E-Mail-/Registrierungs-/Mitgliedschafts-Routen, nichts Bestehendes ersetzt.
+  `Tile`-Domain-Typ trägt `tripConfig`/`course`/etc. opak in `extra_json`
+  (JSON-Blob, nicht schema-validiert) — reicht für Ausfahrten-Pricing, ohne
+  dass `sck-api` `TripConfig`/`GymCourseInformation` von Hand nachbilden muss.
+  Bewusst **nicht** mitgenommen: `sepa-route.ts`/`sepa_data`-Tabelle
+  (eigenständiges, ungenutztes Admin-Feature, um nicht mit der schon
+  funktionierenden `sepa-data.ndjson`-Speicherung des Mitgliedsantrags zu
+  kollidieren) und das `migrate-tiles`-Skript (zeigt auf veraltete
+  Vor-Saison-Daten, nicht gebraucht solange statische Tiles Quelle der
+  Wahrheit bleiben).
+- **`sck-admin-app`**: komplett übernommen, eigenes Angular-CLI-Projekt,
+  baut/lintet/testet über `build:admin`/`lint:admin`/`test:admin` (bewusst
+  nicht in `web`s normale `build`/`test`/`lint`-Skripte gefaltet, da die vom
+  `web`-Docker-Image aufgerufen werden — das soll nicht von der Admin-App
+  abhängen). `scripts/verify.sh` deckt beides ab.
+- **`docker-compose.yml`**: neuer `admin`-Service (Port 8081), `api`
+  bekommt `SUPER_ADMIN_EMAIL`/`ADMIN_APP_URL`. `test-deploy.yml` +
+  `setup-test-system.sh` bauen `api`/`web`/`admin` sequenziell (RAM-Grund,
+  siehe `infrastructure/TEST_DEPLOYMENT.md`).
+- **`sck-app`**: neuer `TripTilesApiService` (DI-Interface
+  `TripTilesApiServiceInterface` in `trips-lib`, Implementierung in
+  `sck-app`, gleiches Muster wie `TripRegistrationFormServiceInterface`) —
+  holt `GET {sckApiUrl}/tiles?type=event`, hängt das Ergebnis an `TRIP_DATA`
+  an. Fällt bei nicht erreichbarem Backend automatisch auf `TRIP_DATA` allein
+  zurück (`catchError`) — eine tote DB-Verbindung darf die bestehende Seite
+  nie mitreißen.
 
-- **`sck-api`** (`src/api/sck-api`):
-  - `POST /images/upload` (`src/routes/images-route.ts`) — geschützt durch
-    `requireAuth` + `requirePermission('tiles:write')`.
-  - `src/services/upload-service.ts` — `multer.diskStorage` nach
-    `dataDir/media`, Mime-Whitelist (png/jpeg/webp/gif/svg), 10 MB Limit.
-  - `src/controllers/images-controller.ts` — liefert
-    `{ id, filename, filepath, url, mimetype, size, uploadedAt }` zurück,
-    `url` ist `/media/<filename>`.
-  - `express.static('/media', mediaDir)` in `src/index.ts` liefert die
-    Dateien wieder aus.
-  - Kein eigenes DB-Table für Bilder — die Datei auf Disk ist der Record
-    (wie bei `registrations.ndjson`).
-  - `Tile`-Domain-Typ (`src/domain/tile.ts`) hat bereits `image: string` +
-    `imageId?: string`; SQLite-Spalte `image_id` existiert
-    (`src/db/connection.ts`).
+**Gefundener Bug beim Verifizieren:** `ChangeDetectionStrategy.Eager`
+aktualisiert die Ansicht nicht zuverlässig nach einer async-Response aus
+einer verschachtelten `switchMap`/`HttpClient`-Kette (beobachtet bei
+`TripDetailComponent` — der Zustand war korrekt gesetzt, das Template zeigte
+trotzdem den alten Stand). Alle sieben umgestellten Komponenten rufen jetzt
+zur Sicherheit `ChangeDetectorRef.markForCheck()` nach dem async-Update auf.
 
-- **`sck-admin-app`** (`src/web/projects/sck-admin-app`):
-  - `editable-image` Komponente
-    (`tile-management/components/editable-image/`) — Klick-zum-Hochladen,
-    Ladeanimation, Entfernen-Button, ruft den Upload-Endpoint über
-    `TilesDataService`.
-  - Eingebunden im `tile-editor` (`tile-management/components/tile-editor/`).
-  - `domain/image.ts` — `Image`-Interface passend zur API-Antwort.
+## Offene Punkte
 
-- **`sck-app`** (öffentliche Website): Commit
-  `9e01312 feat(sck-app): fetch tiles from sck-api at runtime instead of
-  static @data imports` — der Umstieg von den fest eingebauten
-  `data/static/*.tile.ts`-Dateien auf zur-Laufzeit von `sck-api` geladene
-  Tiles ist auf diesem Branch bereits angefangen. Das ist der fehlende Teil,
-  der macht, dass ein von einem Admin hochgeladenes Bild überhaupt auf der
-  echten Website ankommt (aktuell, auf `release/2026-08-20`, liest `sck-app`
-  weiterhin nur die statischen `.tile.ts`-Dateien).
-
-## Was auf dem Branch noch uncommitted/in Arbeit ist
-
-Stand `feature/admin-app`, Arbeitsverzeichnis nicht sauber:
-- `src/scripts/migrate-tiles.ts` (einzelne Datei) wird zu
-  `src/scripts/migrate-tiles/{index.ts, migrate.ts}` umgebaut.
-- `src/db/connection.ts`, `src/domain/tile.ts`, `src/services/tiles-service.ts`
-  haben zugehörige Anpassungen (u. a. offenbar rund um `image_id`).
-- `src/__tests__/migrate-tiles.test.ts` entsprechend angepasst.
-- `tsconfig.json` / `tsconfig.lint.json` / `package.json` / `pnpm-lock.yaml`
-  ebenfalls verändert.
-
-Dieser WIP-Stand war zuvor bewusst zurückgestellt und ist nicht Teil dieses
-Dokuments — nur als Hinweis: bevor an diesem Branch weitergearbeitet wird,
-zuerst `git status`/`git diff` in `feature/admin-app` prüfen, ob dieser Stand
-noch relevant ist oder verworfen werden soll.
-
-## Offene Punkte für den späteren Merge/Ausbau
-
-1. **`sck-app` vollständig auf API-Tiles umstellen.** Commit `9e01312` ist
-   der Anfang — prüfen, ob alle Tile-Quellen (Kurse, Gymnastik, Ausfahrten,
-   Info-Tiles wie `programm.tile.ts`) schon migriert sind oder nur ein Teil.
-   Die ganze in `release/2026-08-20` seit dieser Session neu entstandene
-   Kalender-/Karussell-/Konsolidierungs-Arbeit (`home.component.ts`,
-   `courses.component.ts`, `gym-general-information.component.ts` etc.)
-   basiert noch auf den statischen `.tile.ts`-Imports (`projects/data/static`)
-   — beim Merge muss abgeglichen werden, welche Tile-Daten/Felder
-   (`schedule`, `imageOnly`, …) in `feature/admin-app`s `Tile`-Domain-Typ
-   noch fehlen.
-2. **Migrationsskript** (`migrate-tiles`) fertigstellen — überführt die
-   bestehenden statischen Tile-Daten in die SQLite-DB, damit beim Umstieg
-   keine Inhalte verloren gehen.
-3. **Bestehende Bilder migrieren**: aktuelle `assets/img/...`-Dateien (Pilates,
-   Programm, Skilift, Overview) einmalig in `dataDir/media` kopieren bzw. per
-   Upload-Endpoint einspielen, damit die migrierten Tiles auf existierende
-   Bild-URLs zeigen statt auf 404.
+1. **Kurse/Gymnastik/Info-Tiles additiv anbinden** — gleiches Muster wie bei
+   Ausfahrten, eigene Runde. `imageOnly` (Info-Tile-Feld) und
+   `GymCourseSchedule` (Kurs-Feld) fehlen im `sck-api`-`Tile`-Typ als
+   eigene Felder — würden aber genau wie `tripConfig` einfach über
+   `extra_json` mitlaufen, kein Schema-Umbau nötig.
+2. **Login/Bootstrap testen**: `SUPER_ADMIN_EMAIL` + `ADMIN_APP_URL` müssen
+   in der `.env` auf der Test-LXC gesetzt werden (nur vom Nutzer selbst
+   befüllbar), danach `docker compose up -d api` — siehe
+   `infrastructure/TEST_DEPLOYMENT.md`.
+3. **Bestehende Bilder migrieren**: aktuelle `assets/img/...`-Dateien
+   einmalig in `dataDir/media` kopieren bzw. per Upload-Endpoint einspielen,
+   falls/wenn Info-Tiles später auch über die DB laufen.
 4. **Backup** des `dataDir` (SQLite-DB + `media/`-Ordner) auf dem Server
-   sicherstellen, bevor produktiv genutzt wird — lokale Disk-Storage hat
-   kein eingebautes Redundanz-/Backup-Konzept.
-5. **Merge-Reihenfolge** klären: `feature/admin-app` ist inzwischen ein
-   eigenständiger, großer Strang (Auth, Login, Rechte, SQLite, Tiles-API)
-   parallel zu allem, was in `release/2026-08-20` seit der letzten
-   gemeinsamen Basis passiert ist — Merge-Konflikte in `home.component.ts`,
-   `courses.component.ts` etc. sind zu erwarten, da beide Branches an den
-   Tile-Quellen arbeiten.
-
-## Nicht Teil dieses Dokuments
-
-Kein neuer Code wurde in diesem Schritt geschrieben — reine Bestandsaufnahme
-und Wegweiser für die spätere Umsetzung, wie besprochen.
+   sicherstellen, bevor produktiv genutzt wird.
+5. **`master`-Merge**: dieser ganze Strang lebt bisher nur auf
+   `release/2026-08-20`, noch nicht auf `master`/Produktiv.
