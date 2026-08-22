@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { getYear } from 'date-fns';
+import { format, getYear, isValid } from 'date-fns';
 
 @Component({
     imports: [],
@@ -17,6 +17,7 @@ export class ComcyCopyrightComponent {
     @Input() name!: string;
     @Input() version?: string;
     @Input() buildNumber?: string;
+    @Input() buildDate?: string;
 
     constructor() {
         this.link = 'https://github.com/comcy';
@@ -30,6 +31,17 @@ export class ComcyCopyrightComponent {
             return `#${this.buildNumber}`;
         }
         return '';
+    }
+
+    // Shows which deployed build is currently live (helpful on dev/test
+    // deployments, where the build number alone doesn't say much) - blank
+    // for unset/unsubstituted (e.g. a stray "${BUILD_DATE}") values.
+    getFormattedBuildDate(): string {
+        if (!this.buildDate) {
+            return '';
+        }
+        const date = new Date(this.buildDate);
+        return isValid(date) ? format(date, 'dd.MM.yyyy HH:mm') : '';
     }
 
     getYear(): string {
