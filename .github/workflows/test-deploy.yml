@@ -35,11 +35,10 @@ jobs:
         run: |
           set -e
 
-          # /opt/sck-test was created as root by the original setup script;
-          # the runner runs as github-runner. Reclaim ownership (idempotent,
-          # safe to re-run) and tell git this cross-user directory is fine.
-          sudo mkdir -p "${{ env.APP_DIR }}"
-          sudo chown -R "$(id -u):$(id -g)" "${{ env.APP_DIR }}"
+          # /opt/sck-test must be owned by the github-runner user (one-time
+          # fix on the LXC: chown -R github-runner:github-runner /opt/sck-test)
+          # - deliberately not "fixed" here via sudo, since sudo needs a
+          # password with no TTY to read it from in an unattended CI run.
           git config --global --add safe.directory "${{ env.APP_DIR }}"
 
           if [ ! -d "${{ env.APP_DIR }}/.git" ]; then

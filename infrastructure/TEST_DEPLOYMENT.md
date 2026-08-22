@@ -102,6 +102,15 @@ Runners-Tab den Runner als „Idle" mit dem Label `sck-test`.
 Keine GitHub Secrets für diesen Workflow nötig — es wird nichts mehr
 per SSH von außen verbunden.
 
+**Einmalig auf der LXC nachziehen, falls `/opt/sck-test` schon vom
+Setup-Skript (das als root läuft) angelegt wurde, bevor der
+`github-runner`-User existierte** — sonst scheitert der erste
+Runner-Deploy an Dateibesitz-Fehlern (git "dubious ownership",
+Docker-Build-Fehler):
+```bash
+chown -R github-runner:github-runner /opt/sck-test
+```
+
 ## Konfiguration ändern (SMTP, Sheet-URLs, API-URL, ...)
 
 Alle Werte leben in **einer** Datei: `.env` in `/opt/sck-test` auf der
