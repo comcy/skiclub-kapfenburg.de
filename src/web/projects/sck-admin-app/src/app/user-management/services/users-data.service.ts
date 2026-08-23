@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { Permission } from '../../auth/domain/session';
 import { Invite } from '../domain/invite';
 import { AdminUser } from '../domain/user';
+import { UserDirectoryEntry } from '../domain/user-directory-entry';
 
 @Injectable({
     providedIn: 'root',
@@ -15,6 +16,12 @@ export class UsersDataService {
 
     getUsers(): Observable<AdminUser[]> {
         return this.http.get<AdminUser[]>(`${this.apiUrl}/users`);
+    }
+
+    // Lighter than getUsers() (id/email only) - reachable without
+    // users:manage, for pickers like the tile-editor's organizer dropdown.
+    getUserDirectory(): Observable<UserDirectoryEntry[]> {
+        return this.http.get<UserDirectoryEntry[]>(`${this.apiUrl}/users/directory`);
     }
 
     updateUserPermissions(id: string, permissions: Permission[]): Observable<AdminUser> {

@@ -16,6 +16,15 @@ export const listUsers: RequestHandler = (_req, res) => {
   }
 };
 
+export const listUserDirectory: RequestHandler = (_req, res) => {
+  try {
+    res.status(200).json(authService.listUserDirectory());
+  } catch (error: any) {
+    console.error('Fehler beim Laden des Nutzerverzeichnisses:', error);
+    res.status(500).json({ error: 'Fehler beim Laden des Nutzerverzeichnisses.', details: error.message });
+  }
+};
+
 export const updateUserPermissions: RequestHandler = (req, res) => {
   try {
     const { permissions } = req.body as UpdatePermissionsBody;

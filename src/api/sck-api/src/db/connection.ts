@@ -146,6 +146,16 @@ if (!tileColumns.some((c) => c.name === 'extra_json')) {
   db.exec("ALTER TABLE tiles ADD COLUMN extra_json TEXT NOT NULL DEFAULT '{}';");
 }
 
+// Phase 2 of the trip-registration plan: seat capacity and an informational
+// organizer reference, both plain nullable columns (no CHECK constraint
+// involved, so no rebuild needed like the permissions migration above).
+if (!tileColumns.some((c) => c.name === 'capacity')) {
+  db.exec('ALTER TABLE tiles ADD COLUMN capacity INTEGER;');
+}
+if (!tileColumns.some((c) => c.name === 'organizer_user_id')) {
+  db.exec('ALTER TABLE tiles ADD COLUMN organizer_user_id TEXT REFERENCES users (id) ON DELETE SET NULL;');
+}
+
 // SQLite can't ALTER a CHECK constraint, so an already-existing permissions
 // table (from before 'members:manage' existed) needs a full rebuild to
 // accept it — guarded by inspecting the table's stored CREATE TABLE SQL

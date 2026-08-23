@@ -1,3 +1,4 @@
+import type { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-config';
 import { TileActions, TileBehavior, TileStatus, TileType } from './tile-enums';
 
 export interface Tile {
@@ -22,6 +23,15 @@ export interface Tile {
     expired?: boolean;
     createdAt?: string;
     updatedAt?: string;
+    // Real tiles columns (Phase 2 of the trip-registration plan) — capacity
+    // is nullable (unlimited), organizerUserId a plain informational
+    // reference to a users.id, no access-control implications (see the plan).
+    capacity?: number;
+    organizerUserId?: string;
+    // Still opaque passthrough in extra_json server-side (see EXTRA_FIELD_KEYS
+    // in sck-api's domain/tile.ts) — typed here now that the editor actually
+    // reads/writes into it, previously round-tripped completely blind.
+    tripConfig?: TripConfig;
 }
 
 export type TileCreationParams = Omit<Tile, 'id'>;

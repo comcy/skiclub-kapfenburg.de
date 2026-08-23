@@ -102,6 +102,30 @@ describe('Tiles Routes', () => {
     expect(getAfterDelete.status).toBe(404);
   });
 
+  it('rundet capacity, organizerUserId und tripConfig (Phase 2) korrekt', async () => {
+    const token = createAuthedUser(['tiles:write']);
+    const organizerId = randomUUID();
+    db.prepare('INSERT INTO users (id, email) VALUES (?, ?)').run(organizerId, 'organizer@test.com');
+
+    const tripConfig = { pricing: { busOnly: { member: 30, nonMember: 40 } } };
+    const createRes = await request(app)
+      .post('/api/tiles')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validTilePayload, capacity: 40, organizerUserId: organizerId, tripConfig });
+
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.capacity).toBe(40);
+    expect(createRes.body.organizerUserId).toBe(organizerId);
+    expect(createRes.body.tripConfig).toEqual(tripConfig);
+
+    // A tile with no capacity set stays unlimited (undefined), not 0/null leaking through.
+    const unlimitedRes = await request(app)
+      .post('/api/tiles')
+      .set('Authorization', `Bearer ${token}`)
+      .send(validTilePayload);
+    expect(unlimitedRes.body.capacity).toBeUndefined();
+  });
+
   it('PUT /api/tiles/:id/boardings - ordnet Boardings anhand ihres Namens zu', async () => {
     const token = createAuthedUser(['tiles:write']);
 

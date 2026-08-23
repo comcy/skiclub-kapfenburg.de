@@ -187,6 +187,13 @@ export const listUsers = (): (AuthUser & { lastLoginAt: string | null })[] => {
   return rows.map((row) => ({ ...toAuthUser(row), lastLoginAt: row.lastLoginAt }));
 };
 
+// Minimal id+email list for pickers (e.g. assigning a tile's organizer) —
+// deliberately lighter than listUsers() so it can sit behind plain
+// requireAuth instead of users:manage: no permissions or lastLoginAt, just
+// enough to let any admin see who else has an account.
+export const listUserDirectory = (): { id: string; email: string }[] =>
+  db.prepare('SELECT id, email FROM users ORDER BY email').all() as { id: string; email: string }[];
+
 const googleClient = (): OAuth2Client => new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL);
 
 export const buildGoogleAuthUrl = (state: string): string =>

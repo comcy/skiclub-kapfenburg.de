@@ -66,11 +66,20 @@ export class TileManagerComponent implements OnInit {
         this.selectedTile = tile;
         this.isEditorOpen = true;
 
-        // Update URL without reloading, preserving query params
-        this.router.navigate(['event-management', 'tiles', tile.id], {
-            queryParamsHandling: 'preserve',
-            replaceUrl: true,
-        });
+        // 'tiles' and 'tiles/:id' are two separate route config entries (see
+        // app.routes.ts), so navigating between them destroys and recreates
+        // this component - fine for an existing tile (loadTile() re-fetches
+        // it), fatal for a brand-new draft (TileListComponent.onCreate()'s
+        // `id: 'new-...'' placeholder): the fresh instance's ngOnInit sees
+        // that id, has no in-memory draft to match it against, and fires a
+        // GET for a tile that doesn't exist yet (404, blank editor). Only
+        // deep-link real, already-persisted tiles.
+        if (!tile.id.startsWith('new-')) {
+            this.router.navigate(['event-management', 'tiles', tile.id], {
+                queryParamsHandling: 'preserve',
+                replaceUrl: true,
+            });
+        }
     }
 
     onTileSaved(): void {

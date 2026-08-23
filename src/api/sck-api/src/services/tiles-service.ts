@@ -27,6 +27,8 @@ interface TileRow {
   extra_json: string;
   created_at: string;
   updated_at: string;
+  capacity: number | null;
+  organizer_user_id: string | null;
 }
 
 // Picks only the whitelisted passthrough fields (see EXTRA_FIELD_KEYS) into
@@ -90,6 +92,8 @@ const rowToTile = (row: TileRow): Tile => {
     expired: expiration ? expiration.getTime() < Date.now() : false,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    capacity: row.capacity ?? undefined,
+    organizerUserId: row.organizer_user_id ?? undefined,
     ...extra,
   };
 };
@@ -170,8 +174,9 @@ export const createTile = (params: TileCreationParams): Tile => {
   db.prepare(
     `INSERT INTO tiles (
       id, order_index, type, title, date, sub_title, image, image_id, image_description,
-      description, status, expiration, behavior, actions, download_action_link, avatar, visible, extra_json
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      description, status, expiration, behavior, actions, download_action_link, avatar, visible,
+      capacity, organizer_user_id, extra_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     params.order ?? 0,
@@ -190,6 +195,8 @@ export const createTile = (params: TileCreationParams): Tile => {
     params.downloadActionLink ?? null,
     params.avatar ?? null,
     params.visible === false ? 0 : 1,
+    params.capacity ?? null,
+    params.organizerUserId ?? null,
     extractExtraFields(params),
   );
 
@@ -219,7 +226,8 @@ export const updateTile = (id: string, params: TileCreationParams): Tile | undef
     `UPDATE tiles SET
       order_index = ?, type = ?, title = ?, date = ?, sub_title = ?, image = ?, image_id = ?,
       image_description = ?, description = ?, status = ?, expiration = ?, behavior = ?,
-      actions = ?, download_action_link = ?, avatar = ?, visible = ?, extra_json = ?,
+      actions = ?, download_action_link = ?, avatar = ?, visible = ?,
+      capacity = ?, organizer_user_id = ?, extra_json = ?,
       updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
     WHERE id = ?`,
   ).run(
@@ -239,6 +247,8 @@ export const updateTile = (id: string, params: TileCreationParams): Tile | undef
     params.downloadActionLink ?? null,
     params.avatar ?? null,
     params.visible === false ? 0 : 1,
+    params.capacity ?? null,
+    params.organizerUserId ?? null,
     mergedExtra,
     id,
   );

@@ -1,4 +1,4 @@
-import { Component, Input, inject, OnInit, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, inject, OnInit, OnChanges, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,6 +22,9 @@ import { TilePreviewComponent } from '../tile-preview/tile-preview.component';
 import { BoardingsDataService } from '../../../boardings-management/services/boardings-data.service';
 import { Boarding } from '../../../boardings-management/domain/boarding';
 import { AuthService } from '../../../auth/services/auth.service';
+import { UsersDataService } from '../../../user-management/services/users-data.service';
+import { UserDirectoryEntry } from '../../../user-management/domain/user-directory-entry';
+import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-base';
 
 @Component({
     selector: 'app-tile-editor',
@@ -45,27 +48,68 @@ import { AuthService } from '../../../auth/services/auth.service';
     templateUrl: './tile-editor.component.html',
     styleUrls: ['./tile-editor.component.scss'],
 })
-export class TileEditorComponent implements OnInit {
+export class TileEditorComponent implements OnInit, OnChanges {
     @Input() tile: Tile | null = null;
     @Output() tileSaved = new EventEmitter<void>();
 
     private readonly dataService = inject(TilesDataService);
     private readonly boardingsService = inject(BoardingsDataService);
+    private readonly usersService = inject(UsersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
     public readonly auth = inject(AuthService);
 
     public isUploadingImage = false;
     public availableBoardings$: Observable<Boarding[]> | undefined;
+    public availableUsers$: Observable<UserDirectoryEntry[]> | undefined;
     public isShowingPreview = false;
 
     public readonly tileTypes = Object.values(TileType);
     public readonly tileStatus = Object.values(TileStatus);
     public readonly tileBehaviors = Object.values(TileBehavior);
     public readonly tileActions = Object.values(TileActions);
+    public readonly ageCategories: AgeCategory[] = ['adult', 'youthUntil16', 'childUntil6'];
+    public readonly ageCategoryLabels: Record<AgeCategory, string> = {
+        adult: 'Adult',
+        youthUntil16: 'Youth (up to 16)',
+        childUntil6: 'Child (up to 6)',
+    };
 
     ngOnInit(): void {
-        // Load all boardings for the dropdown (up to 1000)
+        // Load all boardings/users for the dropdowns (up to 1000)
         this.availableBoardings$ = this.boardingsService.getBoardings(1, 1000).pipe(map((response) => response.items));
+        this.availableUsers$ = this.usersService.getUserDirectory();
+    }
+
+    ngOnChanges(): void {
+        this.ensurePricingShape();
+    }
+
+    // The pricing form binds directly to nested tripConfig.pricing.* paths,
+    // so every field it renders needs a real object to bind into - tripConfig
+    // is still opaque passthrough server-side (extra_json) and may be
+    // entirely absent on an existing tile that predates this editor section.
+    private ensurePricingShape(): void {
+        if (!this.tile) return;
+        const zero = () => ({ member: 0, nonMember: 0 });
+        const pricing = this.tile.tripConfig?.pricing;
+        this.tile.tripConfig = {
+            ...this.tile.tripConfig,
+            pricing: {
+                busLift: {
+                    adult: pricing?.busLift?.adult ?? zero(),
+                    youthUntil16: pricing?.busLift?.youthUntil16 ?? zero(),
+                    childUntil6: pricing?.busLift?.childUntil6 ?? zero(),
+                },
+                busOnly: pricing?.busOnly ?? zero(),
+                addons: {
+                    snowshoes: pricing?.addons?.snowshoes ?? zero(),
+                    technikHalf: pricing?.addons?.technikHalf ?? zero(),
+                    technikFull: pricing?.addons?.technikFull ?? zero(),
+                    courseBeginner: pricing?.addons?.courseBeginner ?? zero(),
+                    courseAdvanced: pricing?.addons?.courseAdvanced ?? zero(),
+                },
+            },
+        };
     }
 
     togglePreview(): void {

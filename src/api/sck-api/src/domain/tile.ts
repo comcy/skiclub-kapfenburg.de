@@ -51,6 +51,11 @@ export interface Tile {
   expired?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  // Real tiles columns (Phase 2 of the trip-registration plan) — capacity is
+  // nullable (unlimited), organizerUserId a plain informational reference to
+  // a users.id with no access-control implications (see the plan).
+  capacity?: number;
+  organizerUserId?: string;
   // Opaque passthrough, stored in `tiles.extra_json` — owned by the richer
   // sck-app Tile union (EventTile/CourseTile/InfoTile in
   // shared-lib/ui-common/models), not validated or edited here. Typed

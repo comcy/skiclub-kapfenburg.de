@@ -72,6 +72,32 @@
     &.two-columns {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
+
+    &.three-columns {
+        grid-template-columns: 2fr 1fr 1fr;
+        align-items: center;
+        gap: 8px 16px;
+    }
+}
+
+.section-title {
+    margin: 8px 0 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.pricing-header {
+    margin-bottom: -8px;
+}
+
+.pricing-col-label {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.pricing-row-label {
+    font-size: 14px;
 }
 
 .preview-header {
