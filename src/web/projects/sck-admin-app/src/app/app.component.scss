@@ -12,6 +12,7 @@
     .logo {
         height: 32px;
         width: auto;
+        margin-left: 8px;
     }
 
     .title {
@@ -44,6 +45,22 @@
     border-right: 1px solid rgba(0, 0, 0, 0.12);
     padding-top: 16px;
     overflow-y: auto;
+    overflow-x: hidden;
+    transition: width 0.15s ease;
+
+    &.collapsed {
+        width: 64px;
+
+        .nav-item {
+            justify-content: center;
+            padding: 0;
+            gap: 0;
+        }
+
+        .nav-label {
+            display: none;
+        }
+    }
 }
 
 .nav-item {

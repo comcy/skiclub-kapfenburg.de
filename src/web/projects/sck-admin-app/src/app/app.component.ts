@@ -3,6 +3,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from './auth/services/auth.service';
 
 interface NavItem {
@@ -14,7 +15,15 @@ interface NavItem {
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, RouterLink, RouterLinkActive, MatToolbarModule, MatIconModule, MatButtonModule],
+    imports: [
+        RouterOutlet,
+        RouterLink,
+        RouterLinkActive,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+    ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
 })
@@ -23,6 +32,7 @@ export class AppComponent implements OnInit {
     private readonly router = inject(Router);
 
     title = 'SCK Admin';
+    navExpanded = true;
     navItems: NavItem[] = [
         { name: 'Übersicht', route: '/dashboard', icon: 'dashboard' },
         { name: 'Tiles', route: '/event-management/tiles', icon: 'grid_view' },
@@ -34,6 +44,10 @@ export class AppComponent implements OnInit {
         // Populate the session signal so the user bar / permission-gated actions
         // render correctly even when landing on a route the auth guard doesn't cover.
         this.auth.checkSession().subscribe();
+    }
+
+    toggleNav(): void {
+        this.navExpanded = !this.navExpanded;
     }
 
     logout(): void {
