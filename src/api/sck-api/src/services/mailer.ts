@@ -35,7 +35,9 @@ export const defaultSender = (): string => SENDER_MAIL;
 // tolerate missing config elsewhere in this service.
 export const sendMail = async (to: string, subject: string, html: string): Promise<void> => {
   if (!SMTP_SERVER) {
-    console.log(`[dev] Mail an ${to} (${subject}):\n${html}`);
+    const links = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+    const linksBlock = links.length ? `\n🔗 ${links.join('\n🔗 ')}` : '';
+    console.log(`[dev] Mail an ${to} (${subject}):${linksBlock}\n${html}`);
     return;
   }
 
