@@ -112,6 +112,22 @@ export class TileEditorComponent implements OnInit, OnChanges {
         };
     }
 
+    // tile.tripConfig.customBccList is a string[] (see trip-config.ts) - the
+    // input binds to a plain comma-separated string instead, same as the
+    // getTripConfirmationMailBcc() reader on the sck-app side expects.
+    get customBccListText(): string {
+        return this.tile?.tripConfig?.customBccList?.join(', ') ?? '';
+    }
+
+    set customBccListText(value: string) {
+        if (!this.tile?.tripConfig) return;
+        const emails = value
+            .split(',')
+            .map((email) => email.trim())
+            .filter(Boolean);
+        this.tile.tripConfig.customBccList = emails.length ? emails : undefined;
+    }
+
     togglePreview(): void {
         this.isShowingPreview = !this.isShowingPreview;
     }

@@ -272,6 +272,17 @@
                                 />
                             </mat-form-field>
                         </div>
+
+                        <h4 class="section-title">Notifications</h4>
+                        <mat-form-field>
+                            <mat-label>Benachrichtigungs-E-Mails (BCC)</mat-label>
+                            <input
+                                matInput
+                                [(ngModel)]="customBccListText"
+                                placeholder="a@example.com, b@example.com"
+                            />
+                            <mat-hint>Kommagetrennt. Leer = Standard-Verteiler wird verwendet.</mat-hint>
+                        </mat-form-field>
                     }
                 </div>
 
