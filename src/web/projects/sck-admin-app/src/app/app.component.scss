@@ -12,7 +12,6 @@
     .logo {
         height: 32px;
         width: auto;
-        margin-left: 8px;
     }
 
     .title {
@@ -41,15 +40,18 @@
 .side-nav {
     flex: 0 0 auto;
     width: 220px;
-    background: #fff;
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
-    padding-top: 16px;
+    background: #673ab7;
+    padding-top: 8px;
     overflow-y: auto;
     overflow-x: hidden;
     transition: width 0.15s ease;
 
     &.collapsed {
         width: 64px;
+
+        .collapse-toggle {
+            margin: 0 auto 8px;
+        }
 
         .nav-item {
             justify-content: center;
@@ -63,26 +65,37 @@
     }
 }
 
+.collapse-toggle {
+    display: flex;
+    margin: 0 8px 8px auto;
+    color: rgba(255, 255, 255, 0.75);
+
+    &:hover {
+        color: #fff;
+    }
+}
+
 .nav-item {
     display: flex;
     align-items: center;
     gap: 16px;
     height: 48px;
     padding: 0 24px;
-    color: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 14px;
     text-decoration: none;
     cursor: pointer;
 
     &:hover {
-        background: rgba(0, 0, 0, 0.04);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
     }
 
     &.active {
-        background: #d1c4e9;
-        color: #512da8;
+        background: rgba(255, 255, 255, 0.16);
+        color: #fff;
         font-weight: 500;
-        border-right: 3px solid #673ab7;
+        border-right: 3px solid #ffd740;
     }
 }
 

@@ -1,9 +1,4 @@
 <mat-toolbar color="primary" class="top-bar">
-    @if (auth.session()) {
-        <button mat-icon-button (click)="toggleNav()" aria-label="Navigation ein-/ausblenden">
-            <mat-icon>menu</mat-icon>
-        </button>
-    }
     <img src="assets/logos/ski-logo.svg" alt="SCK" class="logo" />
     <span class="title">{{ title }}</span>
     <span class="spacer"></span>
@@ -19,6 +14,14 @@
 <div class="body">
     @if (auth.session()) {
         <nav class="side-nav" [class.collapsed]="!navExpanded">
+            <button
+                mat-icon-button
+                class="collapse-toggle"
+                (click)="toggleNav()"
+                [attr.aria-label]="navExpanded ? 'Navigation einklappen' : 'Navigation ausklappen'"
+            >
+                <mat-icon>{{ navExpanded ? 'chevron_left' : 'chevron_right' }}</mat-icon>
+            </button>
             @for (item of navItems; track item.route) {
                 <a
                     class="nav-item"
