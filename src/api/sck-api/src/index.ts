@@ -10,6 +10,7 @@ import boardingsRoutes from './routes/boardings-route.js';
 import emailRoutes from './routes/email-route.js';
 import imagesRoutes from './routes/images-route.js';
 import invitesRoutes from './routes/invites-route.js';
+import membersRoutes from './routes/members-route.js';
 import registrationRoutes from './routes/registration-route.js';
 import membershipRoutes from './routes/membership-route.js';
 import tilesRoutes from './routes/tiles-route.js';
@@ -39,6 +40,7 @@ app.use('/api', imagesRoutes);
 app.use('/api', authRoutes);
 app.use('/api', invitesRoutes);
 app.use('/api', usersRoutes);
+app.use('/api', membersRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

@@ -1,0 +1,51 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+table {
+    width: 100%;
+}
+
+.family-hint {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.38);
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chip-active {
+    background: #dcf3e0;
+    color: #1e7d32;
+}
+
+.chip-inactive {
+    background: #eee;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.chip-online {
+    background: #d1c4e9;
+    color: #512da8;
+}
+
+.chip-manual {
+    background: #d7ecfb;
+    color: #205e8a;
+}
+
+.chip-paper {
+    background: #fff3cd;
+    color: #8a6a00;
+}

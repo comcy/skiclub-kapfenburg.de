@@ -10,6 +10,7 @@ const PERMISSION_OPTIONS: { value: Permission; label: string }[] = [
     { value: 'tiles:write', label: 'Ausfahrten/Tiles bearbeiten' },
     { value: 'boardings:write', label: 'Fahrgemeinschaften bearbeiten' },
     { value: 'users:manage', label: 'Nutzer verwalten' },
+    { value: 'members:manage', label: 'Mitglieder verwalten' },
 ];
 
 @Component({
@@ -31,6 +32,7 @@ export class UserPermissionsEditorComponent implements OnChanges {
         'tiles:write': false,
         'boardings:write': false,
         'users:manage': false,
+        'members:manage': false,
     };
 
     ngOnChanges(): void {
@@ -38,6 +40,7 @@ export class UserPermissionsEditorComponent implements OnChanges {
             'tiles:write': !!this.user?.permissions.includes('tiles:write'),
             'boardings:write': !!this.user?.permissions.includes('boardings:write'),
             'users:manage': !!this.user?.permissions.includes('users:manage'),
+            'members:manage': !!this.user?.permissions.includes('members:manage'),
         };
     }
 

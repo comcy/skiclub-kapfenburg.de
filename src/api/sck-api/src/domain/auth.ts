@@ -5,7 +5,7 @@
 // Granular rights beyond plain read/write. Baseline read is implicit for any
 // authenticated user; everything here is an elevated grant an admin hands
 // out one at a time.
-export const PERMISSIONS = ['tiles:write', 'boardings:write', 'users:manage'] as const;
+export const PERMISSIONS = ['tiles:write', 'boardings:write', 'users:manage', 'members:manage'] as const;
 export type Permission = (typeof PERMISSIONS)[number];
 
 export const isPermission = (value: string): value is Permission => (PERMISSIONS as readonly string[]).includes(value);

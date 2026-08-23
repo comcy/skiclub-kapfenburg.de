@@ -31,6 +31,23 @@ const appendRecord = async (file: string, record: object, errorMessage: string):
 };
 
 /**
+ * Liest alle Datensätze eines bestimmten Typs aus der NDJSON-Datei (z.B.
+ * 'membership-registration' für die Mitgliedsanträge). Fehlt die Datei
+ * noch (kein Antrag bisher gespeichert), liefert das eine leere Liste statt
+ * eines Fehlers.
+ */
+export const listDataByType = <T>(type: string): T[] => {
+  if (!fs.existsSync(dataFile)) return [];
+
+  return fs
+    .readFileSync(dataFile, 'utf8')
+    .split('\n')
+    .filter((line) => line.trim())
+    .map((line) => JSON.parse(line))
+    .filter((record) => record.type === type) as T[];
+};
+
+/**
  * Speichert ein Datenobjekt in der NDJSON-Datei.
  * @param type Der Typ des Datensatzes (z.B. 'email-contact', 'course-registration').
  * @param data Das zu speichernde Objekt.

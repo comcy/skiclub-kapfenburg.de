@@ -1,0 +1,75 @@
+<div class="header">
+    <h2>Mitgliederliste</h2>
+    @if (auth.hasPermission('members:manage')) {
+        <button mat-raised-button color="primary" (click)="onCreate()">
+            <mat-icon>add</mat-icon>
+            Neues Mitglied
+        </button>
+    }
+</div>
+
+<table mat-table [dataSource]="(members$ | async) || []" class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let member">
+            {{ member.firstName }} {{ member.lastName }}
+            @if (member.isFamilyMembership) {
+                <div class="family-hint">Familienmitgliedschaft</div>
+            }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>E-Mail</th>
+        <td mat-cell *matCellDef="let member">{{ member.email || '–' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let member">
+            @if (member.status === 'active') {
+                <span class="chip chip-active">Aktiv</span>
+            } @else {
+                <span class="chip chip-inactive">Inaktiv</span>
+            }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="source">
+        <th mat-header-cell *matHeaderCellDef>Quelle</th>
+        <td mat-cell *matCellDef="let member">
+            @switch (member.source) {
+                @case ('online') {
+                    <span class="chip chip-online">Online</span>
+                }
+                @case ('paper') {
+                    <span class="chip chip-paper">Papierform</span>
+                }
+                @default {
+                    <span class="chip chip-manual">Manuell</span>
+                }
+            }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="memberSince">
+        <th mat-header-cell *matHeaderCellDef>Mitglied seit</th>
+        <td mat-cell *matCellDef="let member">
+            {{ member.memberSince ? (member.memberSince | date: 'shortDate') : '–' }}
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let member">
+            @if (auth.hasPermission('members:manage')) {
+                <button mat-icon-button (click)="onEdit(member)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            }
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

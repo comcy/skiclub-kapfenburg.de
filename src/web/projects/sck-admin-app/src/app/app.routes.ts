@@ -5,6 +5,7 @@ import { InviteAcceptComponent } from './auth/invite-accept/invite-accept.compon
 import { LoginComponent } from './auth/login/login.component';
 import { BoardingManagementComponent } from './boardings-management/boarding-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { MemberManagementComponent } from './member-management/member-management.component';
 import { MediaManagementComponent } from './tile-management/components/media-management/media-management.component';
 import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
 import { TileManagementComponent } from './tile-management/tile-management.component';
@@ -67,6 +68,11 @@ export const routes: Routes = [
     {
         path: 'user-management',
         component: UserManagementComponent,
+        canActivate: [authGuard],
+    },
+    {
+        path: 'member-management',
+        component: MemberManagementComponent,
         canActivate: [authGuard],
     },
     {

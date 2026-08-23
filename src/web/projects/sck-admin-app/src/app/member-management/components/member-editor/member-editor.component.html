@@ -1,0 +1,85 @@
+@if (member) {
+    <div>
+        <h3>{{ member.id ? 'Mitglied bearbeiten' : 'Mitglied anlegen' }}</h3>
+
+        @if (isFromApplication) {
+            <div class="banner">Aus eingereichtem Antrag übernommen — bitte prüfen und speichern.</div>
+        }
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Vorname</mat-label>
+                <input matInput [(ngModel)]="member.firstName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Nachname</mat-label>
+                <input matInput [(ngModel)]="member.lastName" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>E-Mail</mat-label>
+            <input matInput type="email" [(ngModel)]="member.email" />
+        </mat-form-field>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Telefon</mat-label>
+                <input matInput [(ngModel)]="member.phone" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Geburtsdatum</mat-label>
+                <input matInput placeholder="TT.MM.JJJJ" [(ngModel)]="member.birthday" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Adresse</mat-label>
+            <input matInput [(ngModel)]="member.address" />
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="member.isFamilyMembership" class="checkbox-row">Familienmitgliedschaft</mat-checkbox>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Mitglied seit</mat-label>
+            <input matInput placeholder="TT.MM.JJJJ" [(ngModel)]="member.memberSince" />
+        </mat-form-field>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="member.status">
+                    <mat-option value="active">Aktiv</mat-option>
+                    <mat-option value="inactive">Inaktiv</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Quelle</mat-label>
+                <mat-select [(ngModel)]="member.source">
+                    <mat-option value="online">Online</mat-option>
+                    <mat-option value="manual">Manuell</mat-option>
+                    <mat-option value="paper">Papierform</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notizen</mat-label>
+            <textarea matInput rows="3" [(ngModel)]="member.notes"></textarea>
+        </mat-form-field>
+
+        <div class="actions">
+            @if (auth.hasPermission('members:manage')) {
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="onSave()"
+                    [disabled]="!member.firstName || !member.lastName"
+                >
+                    Speichern
+                </button>
+            }
+            <button mat-button (click)="onCancel()">Abbrechen</button>
+        </div>
+    </div>
+}

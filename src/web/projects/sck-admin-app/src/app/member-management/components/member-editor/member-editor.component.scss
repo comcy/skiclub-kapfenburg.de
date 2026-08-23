@@ -1,0 +1,32 @@
+.full-width {
+    width: 100%;
+}
+
+.field-row {
+    display: flex;
+    gap: 16px;
+
+    mat-form-field {
+        flex: 1;
+    }
+}
+
+.checkbox-row {
+    display: block;
+    margin-bottom: 16px;
+}
+
+.banner {
+    background: #ede7f6;
+    color: #512da8;
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}

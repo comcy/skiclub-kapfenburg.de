@@ -74,11 +74,39 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS permissions (
     user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     permission TEXT NOT NULL CHECK (
-      permission IN ('tiles:write', 'boardings:write', 'users:manage')
+      permission IN ('tiles:write', 'boardings:write', 'users:manage', 'members:manage')
     ),
     granted_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     granted_by TEXT,
     PRIMARY KEY (user_id, permission)
+  );
+
+  -- Curated member roster, deliberately separate from the raw
+  -- registrations.ndjson application log (see members-service.ts) -- an
+  -- application only becomes a member once someone here confirms it, and a
+  -- member can also be entered directly (paper-form signups, no online
+  -- application at all).
+  CREATE TABLE IF NOT EXISTS members (
+    id TEXT PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT COLLATE NOCASE,
+    phone TEXT,
+    birthday TEXT,
+    address TEXT,
+    is_family_membership INTEGER NOT NULL DEFAULT 0,
+    -- Shared, app-generated value (not a FK) grouping the rows of one family
+    -- membership -- no separate "families" table for just that.
+    family_group_id TEXT,
+    status TEXT NOT NULL CHECK (status IN ('active', 'inactive')) DEFAULT 'active',
+    source TEXT NOT NULL CHECK (source IN ('online', 'manual', 'paper')) DEFAULT 'manual',
+    -- registrationId from registrations.ndjson, if this member was promoted
+    -- from an online Mitgliedsantrag -- not a DB FK, that log lives on disk.
+    application_registration_id TEXT,
+    notes TEXT,
+    member_since TEXT,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
   );
 
   CREATE TABLE IF NOT EXISTS invites (
@@ -116,4 +144,32 @@ db.exec(`
 const tileColumns = db.prepare("SELECT name FROM pragma_table_info('tiles')").all() as { name: string }[];
 if (!tileColumns.some((c) => c.name === 'extra_json')) {
   db.exec("ALTER TABLE tiles ADD COLUMN extra_json TEXT NOT NULL DEFAULT '{}';");
+}
+
+// SQLite can't ALTER a CHECK constraint, so an already-existing permissions
+// table (from before 'members:manage' existed) needs a full rebuild to
+// accept it — guarded by inspecting the table's stored CREATE TABLE SQL
+// rather than trying an insert and catching the failure.
+const permissionsTableSql = (
+  db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'permissions'").get() as
+    | { sql: string }
+    | undefined
+)?.sql;
+if (permissionsTableSql && !permissionsTableSql.includes('members:manage')) {
+  db.exec(`
+    BEGIN;
+    ALTER TABLE permissions RENAME TO permissions_old;
+    CREATE TABLE permissions (
+      user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+      permission TEXT NOT NULL CHECK (
+        permission IN ('tiles:write', 'boardings:write', 'users:manage', 'members:manage')
+      ),
+      granted_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+      granted_by TEXT,
+      PRIMARY KEY (user_id, permission)
+    );
+    INSERT INTO permissions SELECT * FROM permissions_old;
+    DROP TABLE permissions_old;
+    COMMIT;
+  `);
 }
