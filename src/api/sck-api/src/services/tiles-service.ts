@@ -25,6 +25,8 @@ interface TileRow {
   avatar: string | null;
   visible: number;
   extra_json: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // Picks only the whitelisted passthrough fields (see EXTRA_FIELD_KEYS) into
@@ -86,6 +88,8 @@ const rowToTile = (row: TileRow): Tile => {
     avatar: row.avatar ?? undefined,
     visible: row.visible === 1,
     expired: expiration ? expiration.getTime() < Date.now() : false,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
     ...extra,
   };
 };

@@ -49,6 +49,8 @@ export interface Tile {
   avatar?: string;
   visible?: boolean;
   expired?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
   // Opaque passthrough, stored in `tiles.extra_json` — owned by the richer
   // sck-app Tile union (EventTile/CourseTile/InfoTile in
   // shared-lib/ui-common/models), not validated or edited here. Typed

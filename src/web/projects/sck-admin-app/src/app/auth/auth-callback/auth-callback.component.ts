@@ -47,7 +47,7 @@ export class AuthCallbackComponent implements OnInit {
         result$.pipe(timeout(CALLBACK_TIMEOUT_MS)).subscribe({
             next: (session) => {
                 if (session) {
-                    this.router.navigateByUrl('/event-management');
+                    this.router.navigateByUrl('/dashboard');
                 } else {
                     this.router.navigate(['/login'], { queryParams: { error: 'auth-failed' } });
                 }

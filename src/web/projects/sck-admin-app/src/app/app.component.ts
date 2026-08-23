@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
 
     title = 'SCK Admin';
     navItems: NavItem[] = [
+        { name: 'Übersicht', route: '/dashboard', icon: 'dashboard' },
         { name: 'Tiles', route: '/event-management/tiles', icon: 'grid_view' },
         { name: 'Boardings', route: '/event-management/boardings', icon: 'directions_bus' },
         { name: 'Users', route: '/user-management', icon: 'group' },

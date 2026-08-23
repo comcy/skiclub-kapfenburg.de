@@ -20,6 +20,8 @@ export interface Tile {
     avatar?: string;
     visible?: boolean;
     expired?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export type TileCreationParams = Omit<Tile, 'id'>;
