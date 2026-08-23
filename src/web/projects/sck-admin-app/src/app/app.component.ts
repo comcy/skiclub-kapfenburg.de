@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
         { name: 'Übersicht', route: '/dashboard', icon: 'dashboard' },
         { name: 'Tiles', route: '/event-management/tiles', icon: 'grid_view' },
         { name: 'Boardings', route: '/event-management/boardings', icon: 'directions_bus' },
+        { name: 'Media', route: '/event-management/media', icon: 'photo_library' },
         { name: 'Users', route: '/user-management', icon: 'group' },
     ];
 

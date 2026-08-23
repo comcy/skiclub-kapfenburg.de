@@ -66,4 +66,12 @@ export class TilesDataService {
         formData.append('image', file);
         return this.http.post<Image>(`${this.apiUrl}/images/upload`, formData);
     }
+
+    listImages(): Observable<Image[]> {
+        return this.http.get<Image[]>(`${this.apiUrl}/images`);
+    }
+
+    deleteImage(filename: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/images/${filename}`);
+    }
 }
