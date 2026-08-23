@@ -1,0 +1,204 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.page-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.page-title {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.page-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 24px 32px;
+}
+
+.print-title {
+    display: none;
+}
+
+.capacity-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.capacity-bar-wrap {
+    flex: 1;
+}
+
+.capacity-label {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 6px;
+}
+
+.capacity-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: #d1c4e9;
+    overflow: hidden;
+}
+
+.capacity-bar-fill {
+    height: 100%;
+    background: #673ab7;
+    border-radius: 4px;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.registrations-table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th {
+        text-align: left;
+        font-weight: 500;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.6);
+        padding: 0 16px;
+        height: 40px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    td {
+        font-size: 14px;
+        padding: 0 16px;
+        height: 52px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    tr.row:hover td {
+        background: rgba(0, 0, 0, 0.03);
+    }
+}
+
+.group-heading {
+    font-size: 13px;
+    font-weight: 500;
+    color: #512da8;
+    background: #ede7f6;
+}
+
+.empty {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.38);
+    padding: 32px 0;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chip-confirmed {
+    background: #dcf3e0;
+    color: #1e7d32;
+}
+
+.chip-waitlist {
+    background: #fff3cd;
+    color: #8a6a00;
+}
+
+.chip-cancelled {
+    background: #eee;
+    color: rgba(0, 0, 0, 0.6);
+    text-decoration: line-through;
+}
+
+.badge-member {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #1e7d32;
+    font-weight: 500;
+
+    mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.badge-nonmember {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.38);
+}
+
+.actions-cell {
+    white-space: nowrap;
+}
+
+.editor-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.32);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.editor-panel {
+    width: 480px;
+    max-width: 100%;
+    background: #fff;
+    padding: 24px;
+    overflow-y: auto;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+@media print {
+    .page-content {
+        overflow: visible;
+        padding: 0;
+    }
+
+    .print-title {
+        display: block;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .group-heading {
+        background: none;
+        padding: 14px 12px 4px;
+    }
+}

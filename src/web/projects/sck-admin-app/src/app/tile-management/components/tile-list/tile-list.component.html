@@ -101,6 +101,15 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let tile" (click)="$event.stopPropagation()">
+                    @if (tile.type === 'event' && !tile.id.startsWith('new-')) {
+                        <button
+                            mat-icon-button
+                            [routerLink]="['/event-management', 'tiles', tile.id, 'registrations']"
+                            matTooltip="Anmeldungen"
+                        >
+                            <mat-icon>how_to_reg</mat-icon>
+                        </button>
+                    }
                     @if (auth.hasPermission('tiles:write')) {
                         <button mat-icon-button (click)="onDelete(tile)">
                             <mat-icon>delete</mat-icon>

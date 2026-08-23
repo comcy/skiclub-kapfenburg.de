@@ -13,3 +13,24 @@ body {
 .cdk-overlay-container {
     z-index: 1000;
 }
+
+// Print support (first use of this pattern in the app - trip-registrations'
+// "Drucken" button just calls window.print()): hide the app chrome and any
+// element opted out via .no-print, let the printed content flow naturally
+// instead of being clipped by the app shell's fixed-height flex layout.
+@media print {
+    .top-bar,
+    .side-nav,
+    shared-lib-site-header,
+    .no-print {
+        display: none !important;
+    }
+
+    html,
+    body,
+    .body,
+    .content {
+        height: auto !important;
+        overflow: visible !important;
+    }
+}

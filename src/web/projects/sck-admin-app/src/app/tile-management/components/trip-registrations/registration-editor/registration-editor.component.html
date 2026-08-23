@@ -1,0 +1,90 @@
+@if (registration) {
+    <div>
+        <h3>{{ registration.id ? 'Anmeldung bearbeiten' : 'Neue Anmeldung' }}</h3>
+
+        @if (registration.id && registration.isMember) {
+            <div class="member-hint">
+                <mat-icon>check_circle</mat-icon>
+                Als Mitglied erkannt
+            </div>
+        }
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Vorname</mat-label>
+                <input matInput [(ngModel)]="registration.firstName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Nachname</mat-label>
+                <input matInput [(ngModel)]="registration.lastName" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>E-Mail</mat-label>
+            <input matInput type="email" [(ngModel)]="registration.email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Telefon</mat-label>
+            <input matInput [(ngModel)]="registration.phone" />
+        </mat-form-field>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Alterskategorie</mat-label>
+                <mat-select [(ngModel)]="registration.ageCategory">
+                    @for (category of ageCategories; track category) {
+                        <mat-option [value]="category">{{ ageCategoryLabels[category] }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Boarding-Ort</mat-label>
+                <mat-select [(ngModel)]="registration.boardingId">
+                    <mat-option [value]="undefined">–</mat-option>
+                    @for (boarding of availableBoardings$ | async; track boarding.id) {
+                        <mat-option [value]="boarding.id">{{ boarding.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="registration.status">
+                    <mat-option value="confirmed">Bestätigt</mat-option>
+                    <mat-option value="waitlist">Warteliste</mat-option>
+                    <mat-option value="cancelled">Storniert</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Quelle</mat-label>
+                <mat-select [(ngModel)]="registration.source">
+                    <mat-option value="manual">Manuell</mat-option>
+                    <mat-option value="phone">Telefon</mat-option>
+                    <mat-option value="paper">Papierform</mat-option>
+                    <mat-option value="sheet-import">Aus Anmeldeformular</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notizen</mat-label>
+            <textarea matInput rows="3" [(ngModel)]="registration.notes"></textarea>
+        </mat-form-field>
+
+        <div class="actions">
+            <button
+                mat-raised-button
+                color="primary"
+                (click)="onSave()"
+                [disabled]="!registration.firstName || !registration.lastName"
+            >
+                Speichern
+            </button>
+            <button mat-button (click)="onCancel()">Abbrechen</button>
+        </div>
+    </div>
+}

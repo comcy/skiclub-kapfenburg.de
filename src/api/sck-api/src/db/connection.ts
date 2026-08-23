@@ -109,6 +109,30 @@ db.exec(`
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
   );
 
+  -- Admin-side registration register per Ausfahrt (Phase 3 of the
+  -- trip-registration plan) -- deliberately parallel to, not replacing, the
+  -- public site's Google-Sheet-based registration form. member_id/is_member
+  -- are recomputed server-side from email on every write (see
+  -- trip-registrations-service.ts), never trusted from the client.
+  CREATE TABLE IF NOT EXISTS trip_registrations (
+    id TEXT PRIMARY KEY,
+    tile_id TEXT NOT NULL REFERENCES tiles (id) ON DELETE CASCADE,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT,
+    phone TEXT,
+    member_id TEXT REFERENCES members (id) ON DELETE SET NULL,
+    boarding_id TEXT REFERENCES boardings (id) ON DELETE SET NULL,
+    age_category TEXT NOT NULL CHECK (age_category IN ('adult', 'youthUntil16', 'childUntil6')) DEFAULT 'adult',
+    is_member INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL CHECK (status IN ('confirmed', 'waitlist', 'cancelled')) DEFAULT 'confirmed',
+    source TEXT NOT NULL CHECK (source IN ('manual', 'phone', 'paper', 'sheet-import')) DEFAULT 'manual',
+    notes TEXT,
+    order_index INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+  );
+
   CREATE TABLE IF NOT EXISTS invites (
     id TEXT PRIMARY KEY,
     email TEXT NOT NULL COLLATE NOCASE,

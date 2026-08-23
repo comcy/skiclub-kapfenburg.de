@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { Image } from '../domain/image';
 import { PaginatedResponse } from '../domain/paginated-response';
 import { Tile, TileCreationParams } from '../domain/tile';
+import { TripRegistration, TripRegistrationCreationParams } from '../domain/trip-registration';
 
 @Injectable({
     providedIn: 'root',
@@ -73,5 +74,21 @@ export class TilesDataService {
 
     deleteImage(filename: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/images/${filename}`);
+    }
+
+    getRegistrations(tileId: string): Observable<TripRegistration[]> {
+        return this.http.get<TripRegistration[]>(`${this.apiUrl}/${this.endpoint}/${tileId}/registrations`);
+    }
+
+    createRegistration(tileId: string, params: TripRegistrationCreationParams): Observable<TripRegistration> {
+        return this.http.post<TripRegistration>(`${this.apiUrl}/${this.endpoint}/${tileId}/registrations`, params);
+    }
+
+    updateRegistration(id: string, params: TripRegistrationCreationParams): Observable<TripRegistration> {
+        return this.http.put<TripRegistration>(`${this.apiUrl}/registrations/${id}`, params);
+    }
+
+    deleteRegistration(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/registrations/${id}`);
     }
 }

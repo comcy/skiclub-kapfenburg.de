@@ -14,6 +14,7 @@ import membersRoutes from './routes/members-route.js';
 import registrationRoutes from './routes/registration-route.js';
 import membershipRoutes from './routes/membership-route.js';
 import tilesRoutes from './routes/tiles-route.js';
+import tripRegistrationsRoutes from './routes/trip-registrations-route.js';
 import usersRoutes from './routes/users-route.js';
 import { mediaDir } from './services/upload-service.js';
 import dotenv from 'dotenv';
@@ -41,6 +42,7 @@ app.use('/api', authRoutes);
 app.use('/api', invitesRoutes);
 app.use('/api', usersRoutes);
 app.use('/api', membersRoutes);
+app.use('/api', tripRegistrationsRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

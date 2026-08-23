@@ -8,6 +8,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MemberManagementComponent } from './member-management/member-management.component';
 import { MediaManagementComponent } from './tile-management/components/media-management/media-management.component';
 import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
+import { TripRegistrationsComponent } from './tile-management/components/trip-registrations/trip-registrations.component';
 import { TileManagementComponent } from './tile-management/tile-management.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 
@@ -49,6 +50,10 @@ export const routes: Routes = [
             {
                 path: 'tiles/:id',
                 component: TileManagerComponent,
+            },
+            {
+                path: 'tiles/:tileId/registrations',
+                component: TripRegistrationsComponent,
             },
             {
                 path: 'boardings',

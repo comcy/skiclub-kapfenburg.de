@@ -17,3 +17,9 @@ shared-lib-site-header {
     display: flex;
     flex-direction: column;
 }
+
+@media print {
+    .content-area {
+        overflow: visible;
+    }
+}

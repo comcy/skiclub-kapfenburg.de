@@ -9,7 +9,8 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -30,6 +31,8 @@ import { TilesDataService } from '../../services/tiles-data.service';
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        MatTooltipModule,
+        RouterLink,
         FormsModule,
     ],
     templateUrl: './tile-list.component.html',
