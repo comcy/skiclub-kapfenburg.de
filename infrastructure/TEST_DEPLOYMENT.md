@@ -146,7 +146,11 @@ gelesen wird:
 
 - **Laufzeit-Variablen** (`sck-api` liest sie beim Start des Prozesses):
   `SMTP_SERVER`, `SMTP_PORT`, `SENDER_MAIL`, `SENDER_PW`,
-  `SEPA_ENCRYPTION_KEY`, `SUPER_ADMIN_EMAIL`, `ADMIN_APP_URL`. Ändern →
+  `SEPA_ENCRYPTION_KEY`, `SUPER_ADMIN_EMAIL`, `ADMIN_APP_URL`,
+  `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
+  (die drei Google-Werte sind optional — ohne sie funktioniert weiterhin
+  der Magic-Link-Login, nur der "Mit Google anmelden"-Button nicht).
+  Ändern →
   `.env` bearbeiten, dann reicht ein Neustart des `api`-Containers,
   **kein** Rebuild:
   ```bash

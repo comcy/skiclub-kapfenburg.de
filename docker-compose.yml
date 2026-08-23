@@ -46,6 +46,12 @@ services:
       # the "admin" service below is actually reachable from your browser
       # (e.g. http://<LXC-IP>:8081), not the container-internal address.
       ADMIN_APP_URL: ${ADMIN_APP_URL}
+      # Google login for the admin app — optional, magic-link works without
+      # it. All three blank disables the "Sign in with Google" button's
+      # backend route (it 500s instead of completing). See .env.example.
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
     volumes:
       - sck-api-data:/app/data
     healthcheck:
