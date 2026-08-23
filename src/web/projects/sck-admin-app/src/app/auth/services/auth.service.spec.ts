@@ -45,7 +45,11 @@ describe('AuthService', () => {
             sessionToken: 'session-token',
         });
 
-        expect(service.session()).toEqual({ email: 'member@example.com', permissions: ['tiles:write'] });
+        expect(service.session()).toEqual({
+            email: 'member@example.com',
+            isSuperAdmin: false,
+            permissions: ['tiles:write'],
+        });
         expect(service.getToken()).toBe('session-token');
     });
 
@@ -60,9 +64,23 @@ describe('AuthService', () => {
         const req = httpMock.expectOne(`${environment.sckApiUrl}/auth/me`);
         req.flush({ id: '1', email: 'member@example.com', isSuperAdmin: false, permissions: ['boardings:write'] });
 
-        expect(service.session()).toEqual({ email: 'member@example.com', permissions: ['boardings:write'] });
+        expect(service.session()).toEqual({
+            email: 'member@example.com',
+            isSuperAdmin: false,
+            permissions: ['boardings:write'],
+        });
         expect(service.hasPermission('boardings:write')).toBeTrue();
-        expect(service.hasPermission('sepa:read')).toBeFalse();
+        expect(service.hasPermission('users:manage')).toBeFalse();
+    });
+
+    it('hasPermission is true for a super-admin regardless of granted permissions', () => {
+        service.verifyMagicLink('magic-token').subscribe();
+        httpMock.expectOne(`${environment.sckApiUrl}/auth/magic-link/verify`).flush({
+            user: { id: '1', email: 'admin@example.com', isSuperAdmin: true, permissions: [] },
+            sessionToken: 'session-token',
+        });
+
+        expect(service.hasPermission('tiles:write')).toBeTrue();
     });
 
     it('checkSession clears the token and session on a 401 instead of erroring', () => {

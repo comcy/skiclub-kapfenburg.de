@@ -18,7 +18,11 @@ interface LoginResult {
     sessionToken: string;
 }
 
-const toSession = (user: AuthUser): Session => ({ email: user.email, permissions: user.permissions });
+const toSession = (user: AuthUser): Session => ({
+    email: user.email,
+    isSuperAdmin: user.isSuperAdmin,
+    permissions: user.permissions,
+});
 
 @Injectable({
     providedIn: 'root',
@@ -31,7 +35,8 @@ export class AuthService {
     public readonly session = this._session.asReadonly();
 
     hasPermission(permission: Permission): boolean {
-        return this._session()?.permissions.includes(permission) ?? false;
+        const session = this._session();
+        return !!session && (session.isSuperAdmin || session.permissions.includes(permission));
     }
 
     getToken(): string | null {

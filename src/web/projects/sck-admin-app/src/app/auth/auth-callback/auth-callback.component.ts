@@ -1,7 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
+import { timeout } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+
+const CALLBACK_TIMEOUT_MS = 15000;
 
 /**
  * Landing page for both auth methods: the magic-link email points here with
@@ -41,7 +44,7 @@ export class AuthCallbackComponent implements OnInit {
               ? this.auth.verifyMagicLink(magicLinkToken)
               : this.auth.checkSession();
 
-        result$.subscribe({
+        result$.pipe(timeout(CALLBACK_TIMEOUT_MS)).subscribe({
             next: (session) => {
                 if (session) {
                     this.router.navigateByUrl('/event-management');
