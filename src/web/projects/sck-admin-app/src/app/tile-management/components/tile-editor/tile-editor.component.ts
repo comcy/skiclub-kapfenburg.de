@@ -107,12 +107,16 @@ export class TileEditorComponent implements OnInit {
                     next: (savedTile: Tile) => {
                         this.tile = savedTile;
                         this.tileSaved.emit();
+                        this.cdr.markForCheck();
                     },
                     error: (err: unknown) => console.error('createTile error:', err),
                 });
             } else {
                 this.dataService.updateTile(this.tile.id, this.tile).subscribe({
-                    next: () => this.tileSaved.emit(),
+                    next: () => {
+                        this.tileSaved.emit();
+                        this.cdr.markForCheck();
+                    },
                     error: (err: unknown) => console.error('updateTile error:', err),
                 });
             }

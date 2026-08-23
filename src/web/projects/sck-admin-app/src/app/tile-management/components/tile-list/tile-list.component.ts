@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -39,6 +39,7 @@ export class TileListComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
+    private readonly cdr = inject(ChangeDetectorRef);
     public readonly auth = inject(AuthService);
 
     @Output() tileSelected = new EventEmitter<Tile>();
@@ -83,6 +84,11 @@ export class TileListComponent implements OnInit {
         });
     }
 
+    // Zoneless change detection (see app.config.ts) doesn't track a plain
+    // HttpClient subscribe callback - loadTiles() is also called from
+    // onDelete()'s async callback and from the parent TileManagerComponent
+    // after a save, both outside any tracked context, so mark here to cover
+    // every call site uniformly.
     loadTiles(): void {
         this.tiles$ = this.dataService
             .getTiles(
@@ -98,6 +104,7 @@ export class TileListComponent implements OnInit {
                 tap((response) => (this.totalItems = response.total)),
                 map((response) => response.items),
             );
+        this.cdr.markForCheck();
     }
 
     onPageChange(event: PageEvent): void {

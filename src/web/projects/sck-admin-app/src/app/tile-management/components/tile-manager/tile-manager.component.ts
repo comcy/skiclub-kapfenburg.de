@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +22,7 @@ export class TileManagerComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     private readonly dataService = inject(TilesDataService);
+    private readonly cdr = inject(ChangeDetectorRef);
 
     @ViewChild(TileListComponent) tileList!: TileListComponent;
 
@@ -49,9 +50,15 @@ export class TileManagerComponent implements OnInit {
         });
     }
 
+    // Same nested-HTTP-off-a-router-tracked-source gap as trip-detail.component.ts
+    // in sck-app: the outer route.paramMap subscribe is tracked, but this
+    // inner getTile() call is its own untracked async boundary under
+    // zoneless change detection - without markForCheck() a direct link to
+    // /tiles/:id would leave the editor panel blank.
     loadTile(id: string): void {
         this.dataService.getTile(id).subscribe((tile) => {
             this.selectedTile = tile;
+            this.cdr.markForCheck();
         });
     }
 

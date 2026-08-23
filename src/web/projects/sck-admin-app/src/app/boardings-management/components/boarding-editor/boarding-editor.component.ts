@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -51,17 +51,27 @@ export class BoardingEditorComponent {
     @Output() cancelled = new EventEmitter<void>();
 
     private readonly dataService = inject(BoardingsDataService);
+    private readonly cdr = inject(ChangeDetectorRef);
     public readonly auth = inject(AuthService);
 
+    // Zoneless change detection (see app.config.ts) doesn't track a plain
+    // HttpClient subscribe callback - without markForCheck() the parent's
+    // @if (selectedBoarding) editor panel wouldn't visibly close on save.
     onSave(): void {
         if (!this.boarding) return;
 
         const params: BoardingCreationParams = { name: this.boarding.name };
 
         if (this.boarding.id) {
-            this.dataService.updateBoarding(this.boarding.id, params).subscribe(() => this.saved.emit());
+            this.dataService.updateBoarding(this.boarding.id, params).subscribe(() => {
+                this.saved.emit();
+                this.cdr.markForCheck();
+            });
         } else {
-            this.dataService.createBoarding(params).subscribe(() => this.saved.emit());
+            this.dataService.createBoarding(params).subscribe(() => {
+                this.saved.emit();
+                this.cdr.markForCheck();
+            });
         }
     }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -74,6 +74,7 @@ import { BoardingsDataService } from '../../services/boardings-data.service';
 })
 export class BoardingListComponent implements OnInit {
     private readonly dataService = inject(BoardingsDataService);
+    private readonly cdr = inject(ChangeDetectorRef);
     public readonly auth = inject(AuthService);
 
     @Output() boardingSelected = new EventEmitter<Boarding>();
@@ -89,11 +90,15 @@ export class BoardingListComponent implements OnInit {
         this.refresh();
     }
 
+    // Zoneless change detection (see app.config.ts) doesn't track a plain
+    // HttpClient subscribe callback - refresh() is also called from
+    // onDelete()'s async callback, so mark here to cover both call sites.
     refresh(): void {
         this.boardings$ = this.dataService.getBoardings(this.pageIndex + 1, this.pageSize).pipe(
             tap((response) => (this.totalItems = response.total)),
             map((response) => response.items),
         );
+        this.cdr.markForCheck();
     }
 
     onPageChange(event: PageEvent): void {
