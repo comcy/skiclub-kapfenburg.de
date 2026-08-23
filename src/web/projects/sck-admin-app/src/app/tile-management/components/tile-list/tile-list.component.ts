@@ -146,7 +146,10 @@ export class TileListComponent implements OnInit {
         const newTile: Tile = {
             id: `new-${Date.now()}`,
             order: 0,
-            type: TileType.Info,
+            // Event is the only type currently wired into the live site
+            // (sck-app's trips pages) - Info/Course tiles save fine but are
+            // silently inert right now, see FEATURE_BRIEF_TILE_IMAGE_UPLOAD.md.
+            type: TileType.Event,
             title: 'New Tile',
             date: new Date().toISOString(),
             subTitle: '',

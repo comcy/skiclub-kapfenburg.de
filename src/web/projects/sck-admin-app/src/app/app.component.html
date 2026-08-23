@@ -12,19 +12,21 @@
 </mat-toolbar>
 
 <div class="body">
-    <nav class="side-nav">
-        @for (item of navItems; track item.route) {
-            <a
-                class="nav-item"
-                [routerLink]="item.route"
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: false }"
-            >
-                <mat-icon>{{ item.icon }}</mat-icon>
-                {{ item.name }}
-            </a>
-        }
-    </nav>
+    @if (auth.session()) {
+        <nav class="side-nav">
+            @for (item of navItems; track item.route) {
+                <a
+                    class="nav-item"
+                    [routerLink]="item.route"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: false }"
+                >
+                    <mat-icon>{{ item.icon }}</mat-icon>
+                    {{ item.name }}
+                </a>
+            }
+        </nav>
+    }
 
     <div class="content">
         <router-outlet></router-outlet>
