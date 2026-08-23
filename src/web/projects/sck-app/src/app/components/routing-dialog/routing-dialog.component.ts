@@ -8,13 +8,14 @@ import { ComponentType } from '@angular/cdk/portal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { COURSE_DATA, STATIC_DATA } from '@data';
 import { TripsRegisterDialogComponent } from '@trips-lib';
+import { CourseTilesApiServiceInterface } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
 import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feature/gym-courses-register-dialog/gym-courses-register-dialog.component';
 import { MembershipRegisterDialogComponent } from 'projects/membership-lib/src/lib/feature/membership-register-dialog/membership-register-dialog.component';
 import { MembershipDeclarationDialogComponent } from 'projects/membership-lib/src/lib/ui/membership-declaration-dialog/membership-declaration-dialog.component';
-import { Tile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { CourseTile, Tile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 import { AgbDialogComponent } from 'projects/trips-lib/src/lib/ui/agb-dialog/agb-dialog.component';
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
 
 const MEMBERSHIP_TILE_ID = 'membership';
 
@@ -29,6 +30,7 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
     private router = inject(Router);
     private dialog = inject(MatDialog);
     private tripsApi = inject(TripTilesApiServiceInterface);
+    private courseTilesApi = inject(CourseTilesApiServiceInterface);
     private destroy$ = new Subject<void>();
 
     ngOnInit(): void {
@@ -52,16 +54,22 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
     }
 
     private openRegisterDialog(id: string): void {
-        this.tripsApi
-            .getAllTrips()
+        combineLatest([this.tripsApi.getAllTrips(), this.courseTilesApi.getAllCourseBccTiles()])
             .pipe(takeUntil(this.destroy$))
-            .subscribe((trips) => {
+            .subscribe(([trips, bccTiles]) => {
                 const allTiles: Tile[] = [...COURSE_DATA, ...STATIC_DATA, ...trips];
-                const tile = allTiles.find((t) => t.id === id);
+                let tile = allTiles.find((t) => t.id === id);
 
                 if (!tile) {
                     this.close();
                     return;
+                }
+
+                if (tile.type === TileType.Course) {
+                    const courseTile = tile as CourseTile;
+                    const customBccList = bccTiles.find((t) => t.title === courseTile.course.name)?.courseConfig
+                        ?.customBccList;
+                    tile = { ...courseTile, course: { ...courseTile.course, customBccList } };
                 }
 
                 const dialogRef = this.dialog.open(this.resolveRegisterDialogComponent(tile), {

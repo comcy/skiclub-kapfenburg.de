@@ -27,4 +27,8 @@ export interface GymCourseInformation {
     prices?: GymCoursePrice;
     date?: string;
     schedule?: GymCourseSchedule;
+    // Resolved from the matching admin-managed course tile (see
+    // CourseTilesApiServiceInterface) before registration - never set in the
+    // static GYM_PILATES_*_TILE data itself.
+    customBccList?: string[];
 }

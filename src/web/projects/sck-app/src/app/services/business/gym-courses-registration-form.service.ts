@@ -36,7 +36,7 @@ export class GymCoursesRegistrationFormService implements GymCoursesRegistration
             to: formToMailData.receiver,
             subject: this.getSubjectText(formToMailData.formValues),
             text: this.getMailText(formToMailData.formValues),
-            bcc: this.getBccReceivers(),
+            bcc: this.getBccReceivers(formToMailData.formValues),
         };
 
         this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
@@ -57,8 +57,8 @@ export class GymCoursesRegistrationFormService implements GymCoursesRegistration
         return getGymConfirmationMailSubject(values);
     }
 
-    private getBccReceivers(): string {
-        return getGymConfirmationMailBcc();
+    private getBccReceivers(values: GymCoursesRegisterFormFields): string {
+        return getGymConfirmationMailBcc(values);
     }
 
     private getMailText(values: GymCoursesRegisterFormFields): string {

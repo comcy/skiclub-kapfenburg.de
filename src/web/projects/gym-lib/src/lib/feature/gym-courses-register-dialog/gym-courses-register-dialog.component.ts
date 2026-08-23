@@ -55,6 +55,7 @@ export class GymCoursesRegisterDialogComponent implements OnInit {
                     nonMember: tile.course.prices?.nonMember ?? '',
                 },
                 contact: tile.course.contact,
+                customBccList: tile.course.customBccList,
             },
         ]);
     }

@@ -15,8 +15,12 @@ export const getGymConfirmationMailSubject = (values: GymCoursesRegisterFormFiel
     return `SC-Kapfenburg Anmeldung: ${values.firstName}`;
 };
 
-export const getGymConfirmationMailBcc = (): string => {
-    // return 'christian.silfang@gmail.com';
+export const getGymConfirmationMailBcc = (values: Partial<GymCoursesRegisterFormFields>): string => {
+    const customList = values.course?.customBccList;
+    if (customList && customList.length > 0) {
+        return customList.join(',');
+    }
+    // Default BCC List
     return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';
 };
 
