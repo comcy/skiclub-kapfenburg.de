@@ -13,7 +13,12 @@ export const getCourseConfirmationMailSubject = (values: CourseRegisterFormField
     return `SC-Kapfenburg Kursanmeldung: ${values.sportType} / ${values.level}`;
 };
 
-export const getCourseConfirmationMailBcc = (): string => {
+export const getCourseConfirmationMailBcc = (values: CourseRegisterFormFields): string => {
+    const customList = values.customBccList;
+    if (customList && customList.length > 0) {
+        return customList.join(',');
+    }
+    // Default BCC List
     return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';
 };
 

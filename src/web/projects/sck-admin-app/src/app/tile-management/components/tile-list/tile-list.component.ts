@@ -47,6 +47,10 @@ export class TileListComponent implements OnInit {
 
     @Output() tileSelected = new EventEmitter<Tile>();
     @Input() selectedTileId: string | undefined;
+    // Locks this list to one tile type (e.g. the "Kurse" section, separate
+    // from the Ausfahrten/Tiles list) - hides the type filter and forces
+    // new tiles to this type instead of TileType.Event.
+    @Input() fixedType: TileType | undefined;
 
     public tiles$!: Observable<Tile[]>;
     public totalItems = 0;
@@ -81,7 +85,7 @@ export class TileListComponent implements OnInit {
             this.sortField = params['sort'] || 'order';
             this.sortDirection = params['direction'] || 'asc';
             this.filterSearch = params['search'] || '';
-            this.filterType = params['type'] || '';
+            this.filterType = this.fixedType ?? params['type'] ?? '';
             this.filterStatus = params['status'] || '';
             this.loadTiles();
         });
@@ -156,10 +160,9 @@ export class TileListComponent implements OnInit {
         const newTile: Tile = {
             id: `new-${Date.now()}`,
             order: 0,
-            // Event is the only type currently wired into the live site
-            // (sck-app's trips pages) - Info/Course tiles save fine but are
-            // silently inert right now, see FEATURE_BRIEF_TILE_IMAGE_UPLOAD.md.
-            type: TileType.Event,
+            // Event is the default type for the Ausfahrten/Tiles list -
+            // fixedType overrides this for a locked-type section (e.g. Kurse).
+            type: this.fixedType ?? TileType.Event,
             title: 'New Tile',
             date: new Date().toISOString(),
             subTitle: '',

@@ -43,16 +43,18 @@
                             <input matInput type="number" [(ngModel)]="tile.order" />
                         </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>Type</mat-label>
-                            <mat-select [(ngModel)]="tile.type">
-                                @for (type of tileTypes; track type) {
-                                    <mat-option [value]="type">
-                                        {{ type }}
-                                    </mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
+                        @if (!fixedType) {
+                            <mat-form-field>
+                                <mat-label>Type</mat-label>
+                                <mat-select [(ngModel)]="tile.type">
+                                    @for (type of tileTypes; track type) {
+                                        <mat-option [value]="type">
+                                            {{ type }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        }
 
                         <mat-form-field>
                             <mat-label>Status</mat-label>
@@ -279,6 +281,19 @@
                             <input
                                 matInput
                                 [(ngModel)]="customBccListText"
+                                placeholder="a@example.com, b@example.com"
+                            />
+                            <mat-hint>Kommagetrennt. Leer = Standard-Verteiler wird verwendet.</mat-hint>
+                        </mat-form-field>
+                    }
+
+                    @if (tile.courseConfig) {
+                        <h4 class="section-title">Notifications</h4>
+                        <mat-form-field>
+                            <mat-label>Benachrichtigungs-E-Mails (BCC)</mat-label>
+                            <input
+                                matInput
+                                [(ngModel)]="courseCustomBccListText"
                                 placeholder="a@example.com, b@example.com"
                             />
                             <mat-hint>Kommagetrennt. Leer = Standard-Verteiler wird verwendet.</mat-hint>

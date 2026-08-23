@@ -50,6 +50,7 @@ import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-
 })
 export class TileEditorComponent implements OnInit, OnChanges {
     @Input() tile: Tile | null = null;
+    @Input() fixedType: TileType | undefined;
     @Output() tileSaved = new EventEmitter<void>();
 
     private readonly dataService = inject(TilesDataService);
@@ -81,7 +82,19 @@ export class TileEditorComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(): void {
-        this.ensurePricingShape();
+        if (this.fixedType === TileType.Course) {
+            this.ensureCourseConfigShape();
+        } else {
+            this.ensurePricingShape();
+        }
+    }
+
+    // Kurse section (fixedType===Course) only needs a BCC config, not the
+    // full pricing shape - see courseConfig in the trip-registration-plan
+    // follow-up.
+    private ensureCourseConfigShape(): void {
+        if (!this.tile) return;
+        this.tile.courseConfig = this.tile.courseConfig ?? {};
     }
 
     // The pricing form binds directly to nested tripConfig.pricing.* paths,
@@ -126,6 +139,21 @@ export class TileEditorComponent implements OnInit, OnChanges {
             .map((email) => email.trim())
             .filter(Boolean);
         this.tile.tripConfig.customBccList = emails.length ? emails : undefined;
+    }
+
+    // Same pattern as customBccListText, targeting the Kurse section's
+    // courseConfig instead of tripConfig.
+    get courseCustomBccListText(): string {
+        return this.tile?.courseConfig?.customBccList?.join(', ') ?? '';
+    }
+
+    set courseCustomBccListText(value: string) {
+        if (!this.tile?.courseConfig) return;
+        const emails = value
+            .split(',')
+            .map((email) => email.trim())
+            .filter(Boolean);
+        this.tile.courseConfig.customBccList = emails.length ? emails : undefined;
     }
 
     togglePreview(): void {

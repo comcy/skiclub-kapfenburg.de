@@ -38,6 +38,7 @@ import { SiteFooterComponent } from 'projects/shared-lib/src/lib/ui-common/compo
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
+import { courseTilesApiServiceProvider } from './services/business/course-tiles-api.service';
 import { gymCoursesRegisterFormServiceProvider } from './services/business/gym-courses-registration-form.service';
 import { membershipRegistrationServiceProvider } from './services/business/membership-registration-form.service';
 import { tripRegistrationServiceProvider } from './services/business/trip-registration-form.service';
@@ -84,6 +85,7 @@ import { tripTilesApiServiceProvider } from './services/business/trip-tiles-api.
     providers: [
         tripRegistrationServiceProvider,
         tripTilesApiServiceProvider,
+        courseTilesApiServiceProvider,
         courseRegistrationServiceProvider,
         gymCoursesRegisterFormServiceProvider,
         membershipRegistrationServiceProvider,

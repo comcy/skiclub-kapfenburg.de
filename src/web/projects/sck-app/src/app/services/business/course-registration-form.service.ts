@@ -69,7 +69,7 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
             to: formToMailData.receiver,
             subject: this.getSubjectText(formToMailData.formValues),
             text: this.getMailText(formToMailData.formValues),
-            bcc: this.getBccReceivers(),
+            bcc: this.getBccReceivers(formToMailData.formValues),
         };
 
         this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
@@ -86,8 +86,8 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
         return getCourseConfirmationMailSubject(values);
     }
 
-    private getBccReceivers(): string {
-        return getCourseConfirmationMailBcc();
+    private getBccReceivers(values: CourseRegisterFormFields): string {
+        return getCourseConfirmationMailBcc(values);
     }
 
     private getMailText(values: CourseRegisterFormFields): string {

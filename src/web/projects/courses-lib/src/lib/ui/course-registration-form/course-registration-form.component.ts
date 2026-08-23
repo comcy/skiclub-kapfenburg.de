@@ -50,6 +50,7 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     breakpointObserver = inject(BreakpointObserverService);
 
     @Input() presetLevel?: string;
+    @Input() presetCustomBccList?: string[];
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public courseRegisterForm: FormGroup = new FormGroup({});
@@ -115,7 +116,7 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
 
                 const mailToFormData: FormToMailInformation<CourseRegisterFormFields> = {
                     receiver: this.courseRegisterForm.controls['email'].getRawValue(),
-                    formValues: this.courseRegisterForm.getRawValue(),
+                    formValues: { ...this.courseRegisterForm.getRawValue(), customBccList: this.presetCustomBccList },
                 };
 
                 this.courseRegistrationFormService.sendConfirmationMail(mailToFormData);

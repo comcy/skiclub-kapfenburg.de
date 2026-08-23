@@ -42,6 +42,7 @@ export const routes: Routes = [
         path: 'event-management',
         component: TileManagementComponent,
         canActivate: [authGuard],
+        data: { title: 'Event Konfiguration' },
         children: [
             {
                 path: 'tiles',
@@ -62,6 +63,29 @@ export const routes: Routes = [
             {
                 path: 'media',
                 component: MediaManagementComponent,
+            },
+            {
+                path: '',
+                redirectTo: 'tiles',
+                pathMatch: 'full',
+            },
+        ],
+    },
+    {
+        path: 'course-management',
+        component: TileManagementComponent,
+        canActivate: [authGuard],
+        data: { title: 'Kurse' },
+        children: [
+            {
+                path: 'tiles',
+                component: TileManagerComponent,
+                data: { fixedType: 'course' },
+            },
+            {
+                path: 'tiles/:id',
+                component: TileManagerComponent,
+                data: { fixedType: 'course' },
             },
             {
                 path: '',

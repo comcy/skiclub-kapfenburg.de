@@ -69,6 +69,11 @@ export interface Tile {
   additionalInformation?: string;
   tripConfig?: unknown;
   course?: unknown;
+  // BCC config for the ski-course/gym-course admin section - see courseConfig
+  // in sck-admin-app's tile domain (CourseConfig, courses-lib). Deliberately
+  // separate from `course` (GymCourseInformation, a required display-shaped
+  // object) - ski-level tiles have no display use for that shape.
+  courseConfig?: unknown;
 }
 
 // The subset of Tile that lives in `extra_json` rather than its own column.
@@ -80,6 +85,7 @@ export const EXTRA_FIELD_KEYS = [
   'additionalInformation',
   'tripConfig',
   'course',
+  'courseConfig',
 ] as const satisfies readonly (keyof Tile)[];
 
 export type TileCreationParams = Omit<Tile, 'id'>;

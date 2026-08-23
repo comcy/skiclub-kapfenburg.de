@@ -4,6 +4,8 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CourseTilesApiServiceInterface } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
+import { of } from 'rxjs';
 
 import { CoursesComponent } from './courses.component';
 
@@ -14,6 +16,7 @@ describe('CoursesComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule, CoursesComponent],
+            providers: [{ provide: CourseTilesApiServiceInterface, useValue: { getAllCourseBccTiles: () => of([]) } }],
         }).compileComponents();
     });
 

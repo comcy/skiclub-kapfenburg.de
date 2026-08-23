@@ -16,15 +16,17 @@
             />
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Type</mat-label>
-            <mat-select [(ngModel)]="filterType" (selectionChange)="onFilterChange()">
-                <mat-option value="">All</mat-option>
-                @for (type of tileTypes; track type) {
-                    <mat-option [value]="type">{{ type }}</mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
+        @if (!fixedType) {
+            <mat-form-field appearance="outline">
+                <mat-label>Type</mat-label>
+                <mat-select [(ngModel)]="filterType" (selectionChange)="onFilterChange()">
+                    <mat-option value="">All</mat-option>
+                    @for (type of tileTypes; track type) {
+                        <mat-option [value]="type">{{ type }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        }
 
         <mat-form-field appearance="outline">
             <mat-label>Status</mat-label>

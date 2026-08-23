@@ -16,6 +16,10 @@ export interface CourseRegisterFormFields {
     age: string;
     additionalText: string;
     level: string;
+    // Resolved from the matching admin-managed course tile (see
+    // CourseTilesApiServiceInterface) before submit - never a form control,
+    // never user-visible/validated.
+    customBccList?: string[];
 }
 
 export interface CourseRegisterForm {

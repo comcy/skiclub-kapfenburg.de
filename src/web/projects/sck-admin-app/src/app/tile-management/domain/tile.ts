@@ -1,3 +1,4 @@
+import type { CourseConfig } from 'projects/courses-lib/src/lib/domain/models/course-config';
 import type { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-config';
 import { TileActions, TileBehavior, TileStatus, TileType } from './tile-enums';
 
@@ -32,6 +33,10 @@ export interface Tile {
     // in sck-api's domain/tile.ts) — typed here now that the editor actually
     // reads/writes into it, previously round-tripped completely blind.
     tripConfig?: TripConfig;
+    // Kurse section (see fixedType in tile-list/tile-editor) — BCC config
+    // only, ski-level and Pilates course tiles have no other admin-editable
+    // fields yet (pricing/schedule stay in the static TS data files).
+    courseConfig?: CourseConfig;
 }
 
 export type TileCreationParams = Omit<Tile, 'id'>;

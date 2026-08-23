@@ -65,7 +65,10 @@
 
         @if (registrationOpen) {
             <div class="registration-form-wrap" #registrationSection>
-                <lib-course-registration-form [presetLevel]="selectedLevel"></lib-course-registration-form>
+                <lib-course-registration-form
+                    [presetLevel]="selectedLevel"
+                    [presetCustomBccList]="selectedCustomBccList"
+                ></lib-course-registration-form>
             </div>
         }
     </div>

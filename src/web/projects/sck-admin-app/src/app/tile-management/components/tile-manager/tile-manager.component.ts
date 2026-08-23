@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TileListComponent } from '../tile-list/tile-list.component';
 import { TileEditorComponent } from '../tile-editor/tile-editor.component';
 import { Tile } from '../../domain/tile';
+import { TileType } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
 
 @Component({
@@ -18,6 +19,10 @@ import { TilesDataService } from '../../services/tiles-data.service';
 export class TileManagerComponent implements OnInit {
     public selectedTile: Tile | null = null;
     public isEditorOpen = false;
+    // Set via route `data` (see app.routes.ts's course-management children)
+    // - locks this whole manager to one tile type, e.g. the "Kurse" section,
+    // kept separate from the Ausfahrten/Tiles list.
+    public fixedType: TileType | undefined;
 
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
@@ -26,7 +31,13 @@ export class TileManagerComponent implements OnInit {
 
     @ViewChild(TileListComponent) tileList!: TileListComponent;
 
+    private get basePath(): string {
+        return this.fixedType === TileType.Course ? 'course-management' : 'event-management';
+    }
+
     ngOnInit(): void {
+        this.fixedType = this.route.snapshot.data['fixedType'] as TileType | undefined;
+
         // Check for ID parameter
         this.route.paramMap.subscribe((params) => {
             const id = params.get('id');
@@ -75,7 +86,7 @@ export class TileManagerComponent implements OnInit {
         // GET for a tile that doesn't exist yet (404, blank editor). Only
         // deep-link real, already-persisted tiles.
         if (!tile.id.startsWith('new-')) {
-            this.router.navigate(['event-management', 'tiles', tile.id], {
+            this.router.navigate([this.basePath, 'tiles', tile.id], {
                 queryParamsHandling: 'preserve',
                 replaceUrl: true,
             });
@@ -90,7 +101,7 @@ export class TileManagerComponent implements OnInit {
     closeEditor(): void {
         this.isEditorOpen = false;
         // Optionally clear selection in URL?
-        this.router.navigate(['event-management', 'tiles'], {
+        this.router.navigate([this.basePath, 'tiles'], {
             queryParamsHandling: 'preserve',
             replaceUrl: true,
         });
