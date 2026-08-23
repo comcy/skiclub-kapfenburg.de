@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -27,6 +27,7 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent {
     private readonly auth = inject(AuthService);
     private readonly route = inject(ActivatedRoute);
+    private readonly cdr = inject(ChangeDetectorRef);
 
     public email = '';
     public isSending = false;
@@ -39,6 +40,11 @@ export class LoginComponent {
         }
     }
 
+    // The app runs zoneless (see app.config.ts) — an HttpClient subscribe
+    // callback isn't part of any tracked context, so state set inside it
+    // needs an explicit markForCheck() to actually reach the view. Without
+    // this, the request still succeeds server-side but the form just sits
+    // there with no visible feedback.
     requestMagicLink(): void {
         if (!this.email) return;
         this.isSending = true;
@@ -47,10 +53,12 @@ export class LoginComponent {
             next: () => {
                 this.isSending = false;
                 this.magicLinkSent = true;
+                this.cdr.markForCheck();
             },
             error: () => {
                 this.isSending = false;
                 this.errorMessage = 'Anfrage fehlgeschlagen. Bitte später erneut versuchen.';
+                this.cdr.markForCheck();
             },
         });
     }

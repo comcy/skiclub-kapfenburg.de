@@ -7,6 +7,7 @@ import { BoardingManagementComponent } from './boardings-management/boarding-man
 import { MediaPlaceholderComponent } from './tile-management/components/media-placeholder.component';
 import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
 import { TileManagementComponent } from './tile-management/tile-management.component';
+import { UserManagementComponent } from './user-management/user-management.component';
 
 // Registration-management routes from the original branch (registrations list,
 // courses) are intentionally dropped — superseded by the trip-registration work
@@ -56,6 +57,11 @@ export const routes: Routes = [
                 pathMatch: 'full',
             },
         ],
+    },
+    {
+        path: 'user-management',
+        component: UserManagementComponent,
+        canActivate: [authGuard],
     },
     {
         path: '**',

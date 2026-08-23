@@ -1,0 +1,25 @@
+@if (user) {
+    <div>
+        <h3>Berechtigungen bearbeiten</h3>
+        <div class="user-email">{{ user.email }}</div>
+
+        @for (option of options; track option.value) {
+            <div>
+                <mat-checkbox [(ngModel)]="checked[option.value]" [disabled]="user.isSuperAdmin">
+                    {{ option.label }}
+                </mat-checkbox>
+            </div>
+        }
+
+        @if (user.isSuperAdmin) {
+            <div class="hint">Superadmin hat automatisch alle Rechte.</div>
+        }
+
+        <div class="actions">
+            <button mat-raised-button color="primary" (click)="onSave()" [disabled]="user.isSuperAdmin">
+                Speichern
+            </button>
+            <button mat-button (click)="onCancel()">Abbrechen</button>
+        </div>
+    </div>
+}

@@ -1,0 +1,26 @@
+.content-area {
+    padding: 16px;
+}
+
+.pair {
+    display: flex;
+    gap: 32px;
+}
+
+.pair + .pair {
+    margin-top: 40px;
+}
+
+.list-area {
+    flex: 1;
+}
+
+.editor-area {
+    flex: 1;
+    padding-top: 40px;
+}
+
+.no-access {
+    padding: 32px;
+    color: rgba(0, 0, 0, 0.6);
+}

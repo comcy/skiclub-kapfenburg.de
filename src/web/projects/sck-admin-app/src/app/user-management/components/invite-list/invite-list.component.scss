@@ -1,0 +1,36 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+table {
+    width: 100%;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chip-pending {
+    background: #fff3cd;
+    color: #8a6a00;
+}
+
+.chip-accepted {
+    background: #dcf3e0;
+    color: #1e7d32;
+}
+
+.chip-expired {
+    background: #eee;
+    color: rgba(0, 0, 0, 0.6);
+}

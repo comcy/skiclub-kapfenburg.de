@@ -1,17 +1,32 @@
-@if (auth.session(); as session) {
-    <div class="user-bar">
-        <span>{{ session.email }}</span>
+<mat-toolbar color="primary" class="top-bar">
+    <img src="assets/logos/ski-logo.svg" alt="SCK" class="logo" />
+    <span class="title">{{ title }}</span>
+    <span class="spacer"></span>
+    @if (auth.session(); as session) {
+        <span class="user-email">{{ session.email }}</span>
         <button mat-button (click)="logout()">
             <mat-icon>logout</mat-icon>
             Logout
         </button>
+    }
+</mat-toolbar>
+
+<div class="body">
+    <nav class="side-nav">
+        @for (item of navItems; track item.route) {
+            <a
+                class="nav-item"
+                [routerLink]="item.route"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: false }"
+            >
+                <mat-icon>{{ item.icon }}</mat-icon>
+                {{ item.name }}
+            </a>
+        }
+    </nav>
+
+    <div class="content">
+        <router-outlet></router-outlet>
     </div>
-}
-
-<div id="navigation">
-    <shared-lib-site-navigation [title]="title" [navItems]="navItems"></shared-lib-site-navigation>
-</div>
-
-<div class="content">
-    <router-outlet></router-outlet>
 </div>

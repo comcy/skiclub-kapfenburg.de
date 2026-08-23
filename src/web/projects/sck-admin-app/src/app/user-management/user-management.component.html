@@ -1,0 +1,36 @@
+<shared-lib-site-header title="Nutzerverwaltung"></shared-lib-site-header>
+
+@if (auth.hasPermission('users:manage')) {
+    <div class="content-area">
+        <section class="pair">
+            <div class="list-area">
+                <app-user-list (userSelected)="onUserSelected($event)" #userList></app-user-list>
+            </div>
+            @if (selectedUser) {
+                <div class="editor-area">
+                    <app-user-permissions-editor
+                        [user]="selectedUser"
+                        (saved)="onPermissionsSaved(userList)"
+                        (cancelled)="selectedUser = null"
+                    ></app-user-permissions-editor>
+                </div>
+            }
+        </section>
+
+        <section class="pair">
+            <div class="list-area">
+                <app-invite-list (createRequested)="isInviting = true" #inviteList></app-invite-list>
+            </div>
+            @if (isInviting) {
+                <div class="editor-area">
+                    <app-invite-editor
+                        (saved)="onInviteSaved(inviteList)"
+                        (cancelled)="isInviting = false"
+                    ></app-invite-editor>
+                </div>
+            }
+        </section>
+    </div>
+} @else {
+    <div class="no-access">Keine Berechtigung, Nutzer zu verwalten.</div>
+}
