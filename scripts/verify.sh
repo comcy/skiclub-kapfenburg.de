@@ -48,6 +48,13 @@ if [ -z "$FILTER" ] || [ "$FILTER" = "web" ]; then
   run pnpm --filter web run build:admin
   run pnpm --filter web run lint:admin
   run pnpm --filter web run test:admin
+
+  # trips-lib specs (registration form, trip detail, etc.) are otherwise
+  # never run by anything: it's an Angular library, not its own pnpm
+  # package, so "pnpm -r run test" never reaches it, and it has no test
+  # target of its own here on purpose - it shares sck-app's Angular
+  # workspace but the CLI test builder is per-project.
+  run pnpm --filter web run test:trips-lib
 fi
 
 echo "✔ verify passed"

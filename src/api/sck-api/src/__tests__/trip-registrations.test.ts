@@ -217,11 +217,95 @@ describe('Trip Registrations Routes', () => {
       expect(res.status).toBe(400);
     });
 
+    it('lehnt eine fehlende participants-Liste mit 400 ab', async () => {
+      const tileId = createTile();
+      const res = await request(app).post(`/api/tiles/${tileId}/registrations/public`).send({});
+      expect(res.status).toBe(400);
+    });
+
+    it('lehnt die gesamte Gruppe mit 400 ab, wenn auch nur ein Teilnehmer ungueltig ist', async () => {
+      const tileId = createTile(10);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Gueltig', lastName: 'Person' },
+            { firstName: '', lastName: 'Ohne Vornamen' },
+          ],
+        });
+      expect(res.status).toBe(400);
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body).toHaveLength(0);
+    });
+
     it('liefert 404 für eine unbekannte Ausfahrt', async () => {
       const res = await request(app)
         .post(`/api/tiles/${randomUUID()}/registrations/public`)
         .send({ participants: [{ firstName: 'Max', lastName: 'Mustermann' }] });
       expect(res.status).toBe(404);
+    });
+
+    it('bestaetigt immer, wenn die Ausfahrt keine Kapazitaetsgrenze hat (capacity = null)', async () => {
+      const tileId = createTile(); // no capacity -> unlimited
+      for (let i = 0; i < 5; i++) {
+        const res = await request(app)
+          .post(`/api/tiles/${tileId}/registrations/public`)
+          .send({ participants: [{ firstName: `Person${i}`, lastName: 'Test' }] });
+        expect(res.body).toEqual({ status: 'confirmed' });
+      }
+    });
+
+    it('loest einen bekannten Zustiegsort (case-insensitive) auf boardingId auf, unbekannte bleiben leer', async () => {
+      const tileId = createTile(10);
+      const token = createAuthedUser(['tiles:write']);
+      const boardingId = randomUUID();
+      db.prepare('INSERT INTO boardings (id, name) VALUES (?, ?)').run(boardingId, 'Hauptbahnhof');
+
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Bekannt', lastName: 'Person', boarding: 'hauptbahnhof' },
+            { firstName: 'Unbekannt', lastName: 'Person', boarding: 'Irgendwo' },
+          ],
+        });
+
+      const list = await request(app).get(`/api/tiles/${tileId}/registrations`).set('Authorization', `Bearer ${token}`);
+      const byName = (name: string) => list.body.find((r: any) => r.firstName === name);
+      expect(byName('Bekannt').boardingId).toBe(boardingId);
+      expect(byName('Bekannt').boardingName).toBe('Hauptbahnhof');
+      expect(byName('Unbekannt').boardingId).toBeUndefined();
+    });
+
+    it('setzt die Alterskategorie-Grenzen exakt bei 6/7 und 16/17 Jahren', async () => {
+      const tileId = createTile(10);
+      const token = createAuthedUser(['tiles:write']);
+      const birthdateForAge = (age: number): string => {
+        const d = new Date();
+        d.setFullYear(d.getFullYear() - age);
+        return d.toISOString().slice(0, 10);
+      };
+
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'AgeSix', lastName: 'Test', birthday: birthdateForAge(6) },
+            { firstName: 'AgeSeven', lastName: 'Test', birthday: birthdateForAge(7) },
+            { firstName: 'AgeSixteen', lastName: 'Test', birthday: birthdateForAge(16) },
+            { firstName: 'AgeSeventeen', lastName: 'Test', birthday: birthdateForAge(17) },
+          ],
+        });
+
+      const list = await request(app).get(`/api/tiles/${tileId}/registrations`).set('Authorization', `Bearer ${token}`);
+      const byName = (name: string) => list.body.find((r: any) => r.firstName === name);
+      expect(byName('AgeSix').ageCategory).toBe('childUntil6');
+      expect(byName('AgeSeven').ageCategory).toBe('youthUntil16');
+      expect(byName('AgeSixteen').ageCategory).toBe('youthUntil16');
+      expect(byName('AgeSeventeen').ageCategory).toBe('adult');
     });
   });
 });

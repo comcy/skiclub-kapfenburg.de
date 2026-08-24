@@ -5,6 +5,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TripTilesApiServiceInterface } from '../../api/trip-tiles-api.interface';
+import { TripRegistrationFormServiceInterface } from '../../ui/trips-registration-form/trips-registration-form.interfaces';
 import { TripsRegistrationComponent } from './trips-registration.component';
 
 describe('TripsRegistrationComponent', () => {
@@ -14,7 +15,17 @@ describe('TripsRegistrationComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [TripsRegistrationComponent],
-            providers: [{ provide: TripTilesApiServiceInterface, useValue: { getAllTrips: () => of([]) } }],
+            providers: [
+                { provide: TripTilesApiServiceInterface, useValue: { getAllTrips: () => of([]) } },
+                {
+                    provide: TripRegistrationFormServiceInterface,
+                    useValue: {
+                        sendFormToSheetsIo: () => {},
+                        sendConfirmationMail: () => {},
+                        submitPublicRegistration: () => of({ status: 'confirmed' }),
+                    },
+                },
+            ],
         }).compileComponents();
     });
 

@@ -78,6 +78,7 @@ describe('TripDetailComponent', () => {
         expect(component.tile?.id).toBe(TEST_TILE.id);
         expect(component.registrationData).toEqual([
             {
+                id: TEST_TILE.id,
                 destination: TEST_TILE.title,
                 date: TEST_TILE.date,
                 availableBoardings: TEST_TILE.boardings ?? [],
@@ -86,5 +87,23 @@ describe('TripDetailComponent', () => {
         ]);
         expect(component.description).toContain(TEST_TILE.description);
         expect(component.description).toContain('Abfahrtszeiten');
+    });
+
+    describe('isTripFull (Kapazitäts-Warnung + Warteliste)', () => {
+        it('is false when the tile has no capacity set', () => {
+            expect(component.isTripFull({ ...TEST_TILE, capacity: undefined })).toBeFalse();
+        });
+
+        it('is false when confirmed registrations are below capacity', () => {
+            expect(component.isTripFull({ ...TEST_TILE, capacity: 10, confirmedRegistrationsCount: 9 })).toBeFalse();
+        });
+
+        it('is true once confirmed registrations reach capacity', () => {
+            expect(component.isTripFull({ ...TEST_TILE, capacity: 10, confirmedRegistrationsCount: 10 })).toBeTrue();
+        });
+
+        it('is true when confirmed registrations exceed capacity', () => {
+            expect(component.isTripFull({ ...TEST_TILE, capacity: 10, confirmedRegistrationsCount: 11 })).toBeTrue();
+        });
     });
 });

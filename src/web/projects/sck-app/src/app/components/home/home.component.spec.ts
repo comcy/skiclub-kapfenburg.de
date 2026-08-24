@@ -102,4 +102,24 @@ describe('HomeComponent', () => {
             expect(windowOpenSpy).not.toHaveBeenCalled();
         });
     });
+
+    describe('isTripFull (Kapazitäts-Warnung + Warteliste)', () => {
+        const baseTrip = () => component.upcomingTrips[0] ?? TRIP_DATA.find((t) => t.type === 'event');
+
+        it('is false when the trip has no capacity set', () => {
+            expect(component.isTripFull({ ...baseTrip(), capacity: undefined } as never)).toBeFalse();
+        });
+
+        it('is false when confirmed registrations are below capacity', () => {
+            expect(
+                component.isTripFull({ ...baseTrip(), capacity: 10, confirmedRegistrationsCount: 9 } as never),
+            ).toBeFalse();
+        });
+
+        it('is true once confirmed registrations reach capacity', () => {
+            expect(
+                component.isTripFull({ ...baseTrip(), capacity: 10, confirmedRegistrationsCount: 10 } as never),
+            ).toBeTrue();
+        });
+    });
 });
