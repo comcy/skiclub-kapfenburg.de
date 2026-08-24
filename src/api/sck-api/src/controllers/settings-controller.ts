@@ -13,7 +13,7 @@ export const getNotificationBccSetting: RequestHandler = (_req, res) => {
     res.status(200).json(getSetting<NotificationBccSetting>(NOTIFICATION_BCC_SETTING_KEY) ?? EMPTY_BCC_SETTING);
   } catch (error: any) {
     console.error('Fehler beim Laden der Benachrichtigungs-Einstellungen:', error);
-    res.status(500).json({ error: 'Fehler beim Laden der Benachrichtigungs-Einstellungen.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Laden der Benachrichtigungs-Einstellungen.' });
   }
 };
 
@@ -28,6 +28,6 @@ export const updateNotificationBccSetting: RequestHandler = (req, res) => {
     res.status(200).json({ customBccList: body.customBccList });
   } catch (error: any) {
     console.error('Fehler beim Speichern der Benachrichtigungs-Einstellungen:', error);
-    res.status(500).json({ error: 'Fehler beim Speichern der Benachrichtigungs-Einstellungen.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Speichern der Benachrichtigungs-Einstellungen.' });
   }
 };

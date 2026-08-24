@@ -5,13 +5,14 @@
 import { Router } from 'express';
 import { createTile, deleteTile, getTile, listTiles, updateTile, updateTileBoardings } from '../controllers/tiles-controller.js';
 import { requireAuth, requirePermission } from '../middleware/auth-middleware.js';
+import { publicReadLimiter } from '../middleware/rate-limit.js';
 
 const router = Router();
 
 // Reads are public — the public site (sck-app) fetches tiles at runtime
 // without any admin login.
-router.get('/tiles', listTiles);
-router.get('/tiles/:id', getTile);
+router.get('/tiles', publicReadLimiter, listTiles);
+router.get('/tiles/:id', publicReadLimiter, getTile);
 
 router.post('/tiles', requireAuth, requirePermission('tiles:write'), createTile);
 router.put('/tiles/:id', requireAuth, requirePermission('tiles:write'), updateTile);

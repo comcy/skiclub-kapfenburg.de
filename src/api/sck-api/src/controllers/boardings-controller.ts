@@ -15,7 +15,7 @@ export const listBoardings: RequestHandler = (req, res) => {
     res.status(200).json(boardingsService.listBoardings(page, limit));
   } catch (error: any) {
     console.error('Fehler beim Laden der Boardings:', error);
-    res.status(500).json({ error: 'Fehler beim Laden der Boardings.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Laden der Boardings.' });
   }
 };
 
@@ -29,7 +29,7 @@ export const getBoarding: RequestHandler = (req, res) => {
     res.status(200).json(boarding);
   } catch (error: any) {
     console.error('Fehler beim Laden des Boardings:', error);
-    res.status(500).json({ error: 'Fehler beim Laden des Boardings.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Laden des Boardings.' });
   }
 };
 
@@ -47,7 +47,7 @@ export const createBoarding: RequestHandler = (req, res) => {
       return;
     }
     console.error('Fehler beim Erstellen des Boardings:', error);
-    res.status(500).json({ error: 'Fehler beim Erstellen des Boardings.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Erstellen des Boardings.' });
   }
 };
 
@@ -70,7 +70,7 @@ export const updateBoarding: RequestHandler = (req, res) => {
       return;
     }
     console.error('Fehler beim Aktualisieren des Boardings:', error);
-    res.status(500).json({ error: 'Fehler beim Aktualisieren des Boardings.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Aktualisieren des Boardings.' });
   }
 };
 
@@ -84,6 +84,6 @@ export const deleteBoarding: RequestHandler = (req, res) => {
     res.status(204).send();
   } catch (error: any) {
     console.error('Fehler beim Löschen des Boardings:', error);
-    res.status(500).json({ error: 'Fehler beim Löschen des Boardings.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Löschen des Boardings.' });
   }
 };

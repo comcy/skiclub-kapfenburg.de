@@ -24,7 +24,7 @@ export const sendEmail: RequestHandler = async (req, res) => {
     // E-Mail-Daten speichern
     await saveData('email-contact', emailData);
 
-    const { to, subject, text, cc, bcc, from } = emailData;
+    const { to, subject, text, cc, bcc } = emailData;
 
     const toList = parseEmailList(to);
     const ccList = parseEmailList(cc);
@@ -48,7 +48,10 @@ export const sendEmail: RequestHandler = async (req, res) => {
     const transporter = createMailTransporter();
 
     const mailOptions = {
-      from: from || defaultSender(),
+      // Never trust a client-supplied "from" - this endpoint is public and
+      // unauthenticated, a spoofable from would turn it into an open relay
+      // for phishing/spam under the club's domain.
+      from: defaultSender(),
       to: toList.join(","),
       cc: ccList.length ? ccList.join(",") : undefined,
       bcc: bccList.length ? bccList.join(",") : undefined,
@@ -69,9 +72,6 @@ export const sendEmail: RequestHandler = async (req, res) => {
     });
   } catch (error: any) {
     console.error("Fehler beim Senden der E-Mail:", error);
-    res.status(500).json({
-      error: "Fehler beim Senden der E-Mail",
-      details: error.message || error.toString(),
-    });
+    res.status(500).json({ error: "Fehler beim Senden der E-Mail" });
   }
 };

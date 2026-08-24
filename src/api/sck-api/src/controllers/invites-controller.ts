@@ -33,7 +33,7 @@ export const createInvite: RequestHandler = async (req, res) => {
     res.status(201).json({ message: 'Einladung wurde verschickt.', email });
   } catch (error: any) {
     console.error('Fehler beim Erstellen der Einladung:', error);
-    res.status(500).json({ error: 'Fehler beim Erstellen der Einladung.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Erstellen der Einladung.' });
   }
 };
 
@@ -50,7 +50,7 @@ export const getInvitePreview: RequestHandler = (req, res) => {
     res.status(200).json({ email: invite.email });
   } catch (error: any) {
     console.error('Fehler beim Laden der Einladung:', error);
-    res.status(500).json({ error: 'Fehler beim Laden der Einladung.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Laden der Einladung.' });
   }
 };
 
@@ -59,7 +59,7 @@ export const listInvites: RequestHandler = (_req, res) => {
     res.status(200).json(authService.listInvites());
   } catch (error: any) {
     console.error('Fehler beim Laden der Einladungen:', error);
-    res.status(500).json({ error: 'Fehler beim Laden der Einladungen.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Laden der Einladungen.' });
   }
 };
 
@@ -80,6 +80,6 @@ export const acceptInvite: RequestHandler = (req, res) => {
     res.status(200).json(result);
   } catch (error: any) {
     console.error('Fehler beim Annehmen der Einladung:', error);
-    res.status(500).json({ error: 'Fehler beim Annehmen der Einladung.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Annehmen der Einladung.' });
   }
 };

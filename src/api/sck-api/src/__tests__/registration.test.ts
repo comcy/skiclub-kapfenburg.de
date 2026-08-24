@@ -34,6 +34,8 @@ describe('Registration Routes', () => {
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('Registrierung erfolgreich gespeichert.');
     expect(mockedSaveData).toHaveBeenCalledWith('course-registration', registrationData);
+    // The publicWriteLimiter is wired to this route (see routes/registration-route.ts).
+    expect(response.headers['ratelimit-limit']).toBeDefined();
   });
 
   it('POST /api/register - sollte einen Fehler zurückgeben, wenn Felder fehlen', async () => {
@@ -61,6 +63,6 @@ describe('Registration Routes', () => {
     const response = await request(app).post('/api/register').send(registrationData);
 
     expect(response.status).toBe(500);
-    expect(response.body.error).toBe('Fehler bei der Verarbeitung Ihrer Anfrage.');
+    expect(response.body).toEqual({ error: 'Fehler bei der Verarbeitung Ihrer Anfrage.' });
   });
 });

@@ -35,7 +35,7 @@ export const listTiles: RequestHandler = (req, res) => {
     res.status(200).json(result);
   } catch (error: any) {
     console.error('Fehler beim Laden der Tiles:', error);
-    res.status(500).json({ error: 'Fehler beim Laden der Tiles.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Laden der Tiles.' });
   }
 };
 
@@ -49,7 +49,7 @@ export const getTile: RequestHandler = (req, res) => {
     res.status(200).json(tile);
   } catch (error: any) {
     console.error('Fehler beim Laden des Tiles:', error);
-    res.status(500).json({ error: 'Fehler beim Laden des Tiles.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Laden des Tiles.' });
   }
 };
 
@@ -66,7 +66,7 @@ export const createTile: RequestHandler = (req, res) => {
     res.status(201).json(tile);
   } catch (error: any) {
     console.error('Fehler beim Erstellen des Tiles:', error);
-    res.status(500).json({ error: 'Fehler beim Erstellen des Tiles.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Erstellen des Tiles.' });
   }
 };
 
@@ -87,7 +87,7 @@ export const updateTile: RequestHandler = (req, res) => {
     res.status(200).json(tile);
   } catch (error: any) {
     console.error('Fehler beim Aktualisieren des Tiles:', error);
-    res.status(500).json({ error: 'Fehler beim Aktualisieren des Tiles.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Aktualisieren des Tiles.' });
   }
 };
 
@@ -101,7 +101,7 @@ export const deleteTile: RequestHandler = (req, res) => {
     res.status(204).send();
   } catch (error: any) {
     console.error('Fehler beim Löschen des Tiles:', error);
-    res.status(500).json({ error: 'Fehler beim Löschen des Tiles.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Löschen des Tiles.' });
   }
 };
 
@@ -126,6 +126,6 @@ export const updateTileBoardings: RequestHandler = (req, res) => {
     res.status(200).json(tilesService.getTile(id));
   } catch (error: any) {
     console.error('Fehler beim Zuordnen der Boardings:', error);
-    res.status(500).json({ error: 'Fehler beim Zuordnen der Boardings.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Zuordnen der Boardings.' });
   }
 };

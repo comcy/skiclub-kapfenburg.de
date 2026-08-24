@@ -54,6 +54,8 @@ describe('Tiles Routes', () => {
     const res = await request(app).get('/api/tiles');
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ items: [], total: 0 });
+    // The publicReadLimiter is wired to this route (see routes/tiles-route.ts).
+    expect(res.headers['ratelimit-limit']).toBeDefined();
   });
 
   it('POST /api/tiles - erfordert Anmeldung', async () => {

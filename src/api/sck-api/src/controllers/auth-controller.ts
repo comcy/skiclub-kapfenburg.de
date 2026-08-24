@@ -38,7 +38,7 @@ export const requestMagicLink: RequestHandler = async (req, res) => {
     res.status(200).json({ message: 'Falls diese Adresse eingeladen wurde, wurde ein Anmeldelink verschickt.' });
   } catch (error: any) {
     console.error('Fehler beim Versenden des Anmeldelinks:', error);
-    res.status(500).json({ error: 'Fehler beim Versenden des Anmeldelinks.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Versenden des Anmeldelinks.' });
   }
 };
 
@@ -59,7 +59,7 @@ export const verifyMagicLink: RequestHandler = (req, res) => {
     res.status(200).json(result);
   } catch (error: any) {
     console.error('Fehler beim Verifizieren des Anmeldelinks:', error);
-    res.status(500).json({ error: 'Fehler beim Verifizieren des Anmeldelinks.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Verifizieren des Anmeldelinks.' });
   }
 };
 
@@ -69,7 +69,7 @@ export const googleStart: RequestHandler = (req, res) => {
     res.redirect(authService.buildGoogleAuthUrl(state));
   } catch (error: any) {
     console.error('Fehler beim Starten der Google-Anmeldung:', error);
-    res.status(500).json({ error: 'Fehler beim Starten der Google-Anmeldung.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Starten der Google-Anmeldung.' });
   }
 };
 

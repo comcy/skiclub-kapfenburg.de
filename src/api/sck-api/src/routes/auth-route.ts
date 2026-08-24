@@ -5,11 +5,12 @@
 import { Router } from 'express';
 import { getCurrentUser, googleCallback, googleStart, requestMagicLink, verifyMagicLink } from '../controllers/auth-controller.js';
 import { requireAuth } from '../middleware/auth-middleware.js';
+import { publicWriteLimiter } from '../middleware/rate-limit.js';
 
 const router = Router();
 
-router.post('/auth/magic-link', requestMagicLink);
-router.post('/auth/magic-link/verify', verifyMagicLink);
+router.post('/auth/magic-link', publicWriteLimiter, requestMagicLink);
+router.post('/auth/magic-link/verify', publicWriteLimiter, verifyMagicLink);
 router.get('/auth/google/start', googleStart);
 router.get('/auth/google/callback', googleCallback);
 router.get('/auth/me', requireAuth, getCurrentUser);

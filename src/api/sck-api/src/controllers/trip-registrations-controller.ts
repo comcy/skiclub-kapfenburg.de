@@ -3,12 +3,18 @@
  */
 
 import { RequestHandler } from 'express';
+import { TileStatus } from '../domain/tile.js';
 import { PublicParticipantInput, TripRegistrationCreationParams } from '../domain/trip-registration.js';
 import * as registrationsService from '../services/trip-registrations-service.js';
 import { getTile } from '../services/tiles-service.js';
 
 const isValidParams = (body: TripRegistrationCreationParams): boolean =>
   !!body.firstName?.trim() && !!body.lastName?.trim();
+
+// Caps a single public submission (contact person + any additional
+// participants, e.g. a family) - an unbounded array would let one request
+// enqueue arbitrary numbers of DB inserts and pollute a tile's waitlist.
+const MAX_PARTICIPANTS_PER_REQUEST = 20;
 
 const isValidParticipant = (participant: unknown): participant is PublicParticipantInput => {
   if (!participant || typeof participant !== 'object') return false;
@@ -21,7 +27,7 @@ export const listTripRegistrations: RequestHandler = (req, res) => {
     res.status(200).json(registrationsService.listRegistrationsForTile(String(req.params.tileId)));
   } catch (error: any) {
     console.error('Fehler beim Laden der Anmeldungen:', error);
-    res.status(500).json({ error: 'Fehler beim Laden der Anmeldungen.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Laden der Anmeldungen.' });
   }
 };
 
@@ -35,7 +41,7 @@ export const createTripRegistration: RequestHandler = (req, res) => {
     res.status(201).json(registrationsService.createRegistration(String(req.params.tileId), body));
   } catch (error: any) {
     console.error('Fehler beim Erstellen der Anmeldung:', error);
-    res.status(500).json({ error: 'Fehler beim Erstellen der Anmeldung.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Erstellen der Anmeldung.' });
   }
 };
 
@@ -47,8 +53,13 @@ export const createTripRegistration: RequestHandler = (req, res) => {
 export const createPublicTripRegistrations: RequestHandler = (req, res) => {
   try {
     const tileId = String(req.params.tileId);
-    if (!getTile(tileId)) {
+    const tile = getTile(tileId);
+    if (!tile) {
       res.status(404).json({ error: 'Ausfahrt nicht gefunden.' });
+      return;
+    }
+    if (tile.status === TileStatus.Canceled || tile.expired) {
+      res.status(400).json({ error: 'Für diese Ausfahrt ist keine Anmeldung mehr möglich.' });
       return;
     }
 
@@ -57,11 +68,15 @@ export const createPublicTripRegistrations: RequestHandler = (req, res) => {
       res.status(400).json({ error: 'Mindestens ein Teilnehmer mit Vor- und Nachname ist erforderlich.' });
       return;
     }
+    if (participants.length > MAX_PARTICIPANTS_PER_REQUEST) {
+      res.status(400).json({ error: `Höchstens ${MAX_PARTICIPANTS_PER_REQUEST} Teilnehmer pro Anmeldung.` });
+      return;
+    }
 
     res.status(201).json(registrationsService.createPublicRegistrations(tileId, participants));
   } catch (error: any) {
     console.error('Fehler beim Speichern der öffentlichen Anmeldung:', error);
-    res.status(500).json({ error: 'Fehler beim Speichern der Anmeldung.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Speichern der Anmeldung.' });
   }
 };
 
@@ -80,7 +95,7 @@ export const updateTripRegistration: RequestHandler = (req, res) => {
     res.status(200).json(registration);
   } catch (error: any) {
     console.error('Fehler beim Aktualisieren der Anmeldung:', error);
-    res.status(500).json({ error: 'Fehler beim Aktualisieren der Anmeldung.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Aktualisieren der Anmeldung.' });
   }
 };
 
@@ -94,6 +109,6 @@ export const deleteTripRegistration: RequestHandler = (req, res) => {
     res.status(204).send();
   } catch (error: any) {
     console.error('Fehler beim Löschen der Anmeldung:', error);
-    res.status(500).json({ error: 'Fehler beim Löschen der Anmeldung.', details: error.message });
+    res.status(500).json({ error: 'Fehler beim Löschen der Anmeldung.' });
   }
 };

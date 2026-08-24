@@ -34,6 +34,18 @@ const createTile = (capacity?: number): string => {
   return id;
 };
 
+const createTileWithState = (status: 'canceled' | 'open', expiration?: string): string => {
+  const id = randomUUID();
+  db.prepare('INSERT INTO tiles (id, type, title, status, expiration) VALUES (?, ?, ?, ?, ?)').run(
+    id,
+    'event',
+    'Skifahrt Ischgl',
+    status,
+    expiration ?? '',
+  );
+  return id;
+};
+
 const validRegistration = {
   firstName: 'Lisa',
   lastName: 'Berger',
@@ -239,6 +251,37 @@ describe('Trip Registrations Routes', () => {
         .get(`/api/tiles/${tileId}/registrations`)
         .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
       expect(list.body).toHaveLength(0);
+    });
+
+    it('lehnt mehr als 20 Teilnehmer pro Anfrage mit 400 ab', async () => {
+      const tileId = createTile(100);
+      const participants = Array.from({ length: 21 }, (_, i) => ({ firstName: `P${i}`, lastName: 'Test' }));
+
+      const res = await request(app).post(`/api/tiles/${tileId}/registrations/public`).send({ participants });
+
+      expect(res.status).toBe(400);
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body).toHaveLength(0);
+    });
+
+    it('lehnt eine Anmeldung fuer eine abgesagte Ausfahrt mit 400 ab', async () => {
+      const tileId = createTileWithState('canceled');
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Max', lastName: 'Mustermann' }] });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('lehnt eine Anmeldung fuer eine bereits vergangene Ausfahrt mit 400 ab', async () => {
+      const tileId = createTileWithState('open', '2000-01-01T00:00:00.000Z');
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Max', lastName: 'Mustermann' }] });
+
+      expect(res.status).toBe(400);
     });
 
     it('liefert 404 für eine unbekannte Ausfahrt', async () => {

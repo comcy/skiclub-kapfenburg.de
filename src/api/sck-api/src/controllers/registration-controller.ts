@@ -21,9 +21,6 @@ export const createRegistration: RequestHandler = async (req, res) => {
 
   } catch (error: any) {
     console.error('Fehler bei der Erstellung der Registrierung:', error);
-    res.status(500).json({
-      error: 'Fehler bei der Verarbeitung Ihrer Anfrage.',
-      details: error.message,
-    });
+    res.status(500).json({ error: 'Fehler bei der Verarbeitung Ihrer Anfrage.' });
   }
 };
