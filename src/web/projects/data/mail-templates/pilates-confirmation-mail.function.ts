@@ -4,6 +4,7 @@
 
 import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-courses-registration-form.interfaces';
 import { calculateAge, formatDateByLocale } from 'projects/shared-lib/src/lib/date-time';
+import { getGlobalBccList } from '../notification-settings-store';
 
 export const getGymConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
@@ -19,6 +20,10 @@ export const getGymConfirmationMailBcc = (values: Partial<GymCoursesRegisterForm
     const customList = values.course?.customBccList;
     if (customList && customList.length > 0) {
         return customList.join(',');
+    }
+    const globalList = getGlobalBccList();
+    if (globalList && globalList.length > 0) {
+        return globalList.join(',');
     }
     // Default BCC List
     return 'christian.silfang@gmail.com, m.rup@gmx.de, inchen14794@yahoo.de, registration@skiclub-kapfenburg.de';

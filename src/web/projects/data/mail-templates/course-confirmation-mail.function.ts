@@ -3,6 +3,7 @@
  */
 
 import { CourseRegisterFormFields } from 'projects/courses-lib/src/lib/ui/course-registration-form';
+import { getGlobalBccList } from '../notification-settings-store';
 
 export const getCourseConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
@@ -17,6 +18,10 @@ export const getCourseConfirmationMailBcc = (values: CourseRegisterFormFields): 
     const customList = values.customBccList;
     if (customList && customList.length > 0) {
         return customList.join(',');
+    }
+    const globalList = getGlobalBccList();
+    if (globalList && globalList.length > 0) {
+        return globalList.join(',');
     }
     // Default BCC List
     return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';

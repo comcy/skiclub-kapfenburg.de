@@ -13,6 +13,7 @@ import invitesRoutes from './routes/invites-route.js';
 import membersRoutes from './routes/members-route.js';
 import registrationRoutes from './routes/registration-route.js';
 import membershipRoutes from './routes/membership-route.js';
+import settingsRoutes from './routes/settings-route.js';
 import tilesRoutes from './routes/tiles-route.js';
 import tripRegistrationsRoutes from './routes/trip-registrations-route.js';
 import usersRoutes from './routes/users-route.js';
@@ -43,6 +44,7 @@ app.use('/api', invitesRoutes);
 app.use('/api', usersRoutes);
 app.use('/api', membersRoutes);
 app.use('/api', tripRegistrationsRoutes);
+app.use('/api', settingsRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

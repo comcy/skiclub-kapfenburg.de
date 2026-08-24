@@ -133,6 +133,14 @@ db.exec(`
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
   );
 
+  -- Generic key-value settings, currently just the global notification BCC
+  -- fallback (see settings-service.ts) - deliberately generic so future
+  -- site-wide settings don't each need their own table.
+  CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  );
+
   CREATE TABLE IF NOT EXISTS invites (
     id TEXT PRIMARY KEY,
     email TEXT NOT NULL COLLATE NOCASE,

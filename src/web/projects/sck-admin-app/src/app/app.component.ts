@@ -41,6 +41,7 @@ export class AppComponent implements OnInit {
         { name: 'Media', route: '/event-management/media', icon: 'photo_library' },
         { name: 'Users', route: '/user-management', icon: 'group' },
         { name: 'Mitglieder', route: '/member-management', icon: 'badge' },
+        { name: 'Einstellungen', route: '/settings', icon: 'settings' },
     ];
 
     ngOnInit(): void {

@@ -2,6 +2,7 @@
  * @copyright Copyright (c) 2024 Christian Silfang
  */
 
+import { getGlobalBccList } from '../notification-settings-store';
 import { calculateAge, formatDateByLocale } from 'projects/shared-lib/src/lib/date-time';
 import { TripParticipant } from 'projects/trips-lib/src/lib/domain/models';
 import { TripRegisterFormValue } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
@@ -19,6 +20,10 @@ export const getTripConfirmationMailBcc = (values: TripRegisterFormValue): strin
     const customList = values.trip.tripConfig?.customBccList;
     if (customList && customList.length > 0) {
         return customList.join(',');
+    }
+    const globalList = getGlobalBccList();
+    if (globalList && globalList.length > 0) {
+        return globalList.join(',');
     }
     // Default BCC List
     return 'christian.silfang@gmail.com,m.rup@gmx.de,registration@skiclub-kapfenburg.de';

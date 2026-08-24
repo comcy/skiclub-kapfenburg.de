@@ -10,6 +10,7 @@ import { MediaManagementComponent } from './tile-management/components/media-man
 import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
 import { TripRegistrationsComponent } from './tile-management/components/trip-registrations/trip-registrations.component';
 import { TileManagementComponent } from './tile-management/tile-management.component';
+import { SettingsComponent } from './settings/settings.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 
 // Registration-management routes from the original branch (registrations list,
@@ -102,6 +103,11 @@ export const routes: Routes = [
     {
         path: 'member-management',
         component: MemberManagementComponent,
+        canActivate: [authGuard],
+    },
+    {
+        path: 'settings',
+        component: SettingsComponent,
         canActivate: [authGuard],
     },
     {
