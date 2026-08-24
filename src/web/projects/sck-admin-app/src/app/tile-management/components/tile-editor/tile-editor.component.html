@@ -298,6 +298,86 @@
                             />
                             <mat-hint>Kommagetrennt. Leer = Standard-Verteiler wird verwendet.</mat-hint>
                         </mat-form-field>
+
+                        <h4 class="section-title">Pilates- / Gymnastik-Kurs</h4>
+                        <mat-checkbox [(ngModel)]="isGymCourse">Dies ist ein Pilates-/Gymnastik-Kurs</mat-checkbox>
+
+                        @if (tile.course) {
+                            <mat-form-field>
+                                <mat-label>Termine / Details (Markdown, z. B. "**Termine**\n- ...")</mat-label>
+                                <textarea matInput rows="6" [(ngModel)]="tile.details"></textarea>
+                            </mat-form-field>
+
+                            <div class="form-grid two-columns">
+                                <mat-form-field>
+                                    <mat-label>Zeit (z. B. "Donnerstags, 18:00 - 19:00 Uhr")</mat-label>
+                                    <input matInput [(ngModel)]="tile.course.time" />
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Ort</mat-label>
+                                    <input matInput [(ngModel)]="tile.course.location" />
+                                </mat-form-field>
+                            </div>
+
+                            <mat-form-field>
+                                <mat-label>Kontakt</mat-label>
+                                <input matInput [(ngModel)]="tile.course.contact" />
+                            </mat-form-field>
+
+                            <div class="form-grid two-columns">
+                                <mat-form-field>
+                                    <mat-label>Preis Mitglied</mat-label>
+                                    <input matInput [(ngModel)]="tile.course.prices!.member" placeholder="48 EUR" />
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Preis Nicht-Mitglied</mat-label>
+                                    <input matInput [(ngModel)]="tile.course.prices!.nonMember" placeholder="72 EUR" />
+                                </mat-form-field>
+                            </div>
+
+                            <mat-checkbox
+                                [ngModel]="!!tile.course.schedule"
+                                (ngModelChange)="onScheduleEnabledChange($event)"
+                            >
+                                Wiederkehrende Terminserie
+                            </mat-checkbox>
+
+                            @if (tile.course.schedule) {
+                                <div class="form-grid two-columns">
+                                    <mat-form-field>
+                                        <mat-label>Wochentag</mat-label>
+                                        <mat-select [(ngModel)]="tile.course.schedule.weekday">
+                                            @for (day of weekdays; track day) {
+                                                <mat-option [value]="day">{{ weekdayLabels[day] }}</mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="form-grid two-columns">
+                                    <app-editable-date
+                                        label="Start"
+                                        [value]="tile.course.schedule.startDate"
+                                        (valueChange)="tile.course.schedule!.startDate = $event"
+                                    ></app-editable-date>
+                                    <app-editable-date
+                                        label="Ende"
+                                        [value]="tile.course.schedule.endDate"
+                                        (valueChange)="tile.course.schedule!.endDate = $event"
+                                    ></app-editable-date>
+                                </div>
+
+                                <mat-form-field>
+                                    <mat-label>Ausgenommene Termine (Feiertage etc.)</mat-label>
+                                    <input
+                                        matInput
+                                        [(ngModel)]="excludedDatesText"
+                                        placeholder="2026-10-29, 2026-12-24"
+                                    />
+                                    <mat-hint>Kommagetrennt, Format JJJJ-MM-TT.</mat-hint>
+                                </mat-form-field>
+                            }
+                        }
                     }
                 </div>
 

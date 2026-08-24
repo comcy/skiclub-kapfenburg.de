@@ -4,6 +4,7 @@ import { HomeComponent } from './home.component';
 import { TileType, TileBehavior, TileActions } from 'projects/shared-lib/src/lib/ui-common/models';
 import { STATIC_DATA } from 'projects/data/static-data';
 import { TRIP_DATA } from '@data';
+import { CourseTilesApiServiceInterface } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
 import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 import { of } from 'rxjs';
 
@@ -16,6 +17,7 @@ describe('HomeComponent (domain scenarios)', () => {
             providers: [
                 provideRouter([]),
                 { provide: TripTilesApiServiceInterface, useValue: { getAllTrips: () => of(TRIP_DATA) } },
+                { provide: CourseTilesApiServiceInterface, useValue: { getAllCourseTiles: () => of([]) } },
             ],
         }).compileComponents();
         const fixture = TestBed.createComponent(HomeComponent);

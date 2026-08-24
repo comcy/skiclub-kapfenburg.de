@@ -16,7 +16,7 @@ describe('CoursesComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule, CoursesComponent],
-            providers: [{ provide: CourseTilesApiServiceInterface, useValue: { getAllCourseBccTiles: () => of([]) } }],
+            providers: [{ provide: CourseTilesApiServiceInterface, useValue: { getAllCourseTiles: () => of([]) } }],
         }).compileComponents();
     });
 

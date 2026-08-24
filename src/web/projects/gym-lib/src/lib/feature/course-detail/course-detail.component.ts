@@ -11,6 +11,7 @@ import { COURSE_DATA } from '@data';
 import { SiteHeaderComponent } from '@shared/ui-common';
 import { MarkdownRenderService } from '@shared/util-markdown';
 import { CourseTilesApiServiceInterface } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
+import { mergeCourseTile } from 'projects/courses-lib/src/lib/domain/merge-course-tile';
 import { CourseTile, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { GymCourseInformation } from '../../domain';
@@ -44,26 +45,27 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
     private cdr = inject(ChangeDetectorRef);
     private destroy$ = new Subject<void>();
 
-    // combineLatest([route.paramMap, HTTP-backed getAllCourseBccTiles()]) -
+    // combineLatest([route.paramMap, HTTP-backed getAllCourseTiles()]) -
     // unlike the plain route.paramMap-only subscribe this replaces, the
     // combined emission isn't reliably picked up by automatic change
     // detection once the HTTP response resolves, so mark explicitly (same
     // pattern already established for the admin app's zoneless subscribes).
     ngOnInit(): void {
-        combineLatest([this.route.paramMap, this.courseTilesApi.getAllCourseBccTiles()])
+        combineLatest([this.route.paramMap, this.courseTilesApi.getAllCourseTiles()])
             .pipe(takeUntil(this.destroy$))
-            .subscribe(([params, bccTiles]) => {
+            .subscribe(([params, apiTiles]) => {
                 const id = params.get('id');
-                this.tile = id ? this.resolveCourseById(id) : undefined;
+                const staticTile = id ? this.resolveCourseById(id) : undefined;
                 this.registrationOpen = false;
-                if (!this.tile) {
+                if (!staticTile) {
+                    this.tile = undefined;
                     this.registrationData = [];
                     this.cdr.markForCheck();
                     return;
                 }
-                const customBccList = bccTiles.find((t) => t.title === this.tile?.course.name)?.courseConfig
-                    ?.customBccList;
-                this.registrationData = [{ ...this.tile.course, customBccList }];
+                const match = apiTiles.find((t) => t.title === staticTile.course.name);
+                this.tile = mergeCourseTile(staticTile, match);
+                this.registrationData = [this.tile.course];
                 this.cdr.markForCheck();
             });
     }

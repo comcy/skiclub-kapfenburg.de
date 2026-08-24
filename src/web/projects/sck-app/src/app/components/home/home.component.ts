@@ -21,6 +21,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { CoursesFeatureModule } from '@courses-lib';
 import { COURSE_DATA, PROGRAMM_DOWNLOAD_LINK, STATIC_DATA } from '@data';
+import { CourseTilesApiServiceInterface } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
+import { mergeCourseTile } from 'projects/courses-lib/src/lib/domain/merge-course-tile';
 import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 import { GymFeatureModule } from '@gym-lib';
 import { GymCourseSchedule } from 'projects/gym-lib/src/lib/domain';
@@ -50,6 +52,7 @@ import {
     TileType,
 } from 'projects/shared-lib/src/lib/ui-common/models';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
+import { combineLatest } from 'rxjs';
 import { GYM_ROUTE, TRIPS_ROUTE } from '../../route-segments';
 
 interface CalendarDayEvent {
@@ -134,56 +137,65 @@ export class HomeComponent implements OnInit, OnDestroy {
     public router = inject(Router);
     public markdown = inject(MarkdownRenderService);
     private tripsApi = inject(TripTilesApiServiceInterface);
+    private courseTilesApi = inject(CourseTilesApiServiceInterface);
     private cdr = inject(ChangeDetectorRef);
 
     ngOnInit(): void {
-        this.tripsApi.getAllTrips().subscribe((trips) => {
-            const homeTiles: Tile[] = [...this.courses, ...this.staticData, ...trips];
+        combineLatest([this.tripsApi.getAllTrips(), this.courseTilesApi.getAllCourseTiles()]).subscribe(
+            ([trips, apiCourseTiles]) => {
+                const mergedCourses = this.courses
+                    .filter((t): t is CourseTile => t.type === TileType.Course)
+                    .map((course) => {
+                        const match = apiCourseTiles.find((t) => t.title === course.course.name);
+                        return mergeCourseTile(course, match);
+                    });
+                const homeTiles: Tile[] = [...mergedCourses, ...this.staticData, ...trips];
 
-            homeTiles.sort((a, b) => {
-                return a.order > b.order // Handle order
-                    ? -1
-                    : b.expiration.getTime() - a.expiration.getTime(); // Handle expiration
-            });
+                homeTiles.sort((a, b) => {
+                    return a.order > b.order // Handle order
+                        ? -1
+                        : b.expiration.getTime() - a.expiration.getTime(); // Handle expiration
+                });
 
-            // then place expired events at the end (stable: keeps the previous ordering within each group)
-            const now = new Date().getTime();
-            homeTiles.sort((a, b) => {
-                const aExpired = a.expiration.getTime() < now;
-                const bExpired = b.expiration.getTime() < now;
-                if (aExpired === bExpired) return 0;
-                return aExpired ? 1 : -1;
-            });
+                // then place expired events at the end (stable: keeps the previous ordering within each group)
+                const now = new Date().getTime();
+                homeTiles.sort((a, b) => {
+                    const aExpired = a.expiration.getTime() < now;
+                    const bExpired = b.expiration.getTime() < now;
+                    if (aExpired === bExpired) return 0;
+                    return aExpired ? 1 : -1;
+                });
 
-            homeTiles.map((t) => {
-                t.expired = t.expiration.getTime() < new Date().getTime() ? true : false;
-                t.visible = t.visible === false ? false : true;
-            });
+                homeTiles.map((t) => {
+                    t.expired = t.expiration.getTime() < new Date().getTime() ? true : false;
+                    t.visible = t.visible === false ? false : true;
+                });
 
-            this.tiles = homeTiles;
+                this.tiles = homeTiles;
 
-            this.upcomingTrips = homeTiles
-                .filter((t): t is EventTile => t.type === TileType.Event && !t.expired)
-                .sort((a, b) => a.expiration.getTime() - b.expiration.getTime())
-                .slice(0, 3);
-            this.courseTiles = homeTiles.filter((t): t is CourseTile => t.type === TileType.Course);
-            this.infoTiles = homeTiles.filter((t): t is InfoTile => t.type === TileType.Info);
+                this.upcomingTrips = homeTiles
+                    .filter((t): t is EventTile => t.type === TileType.Event && !t.expired)
+                    .sort((a, b) => a.expiration.getTime() - b.expiration.getTime())
+                    .slice(0, 3);
+                this.courseTiles = homeTiles.filter((t): t is CourseTile => t.type === TileType.Course);
+                this.infoTiles = homeTiles.filter((t): t is InfoTile => t.type === TileType.Info);
 
-            const openTrips = homeTiles.filter((t): t is EventTile => t.type === TileType.Event && !t.expired);
+                const openTrips = homeTiles.filter((t): t is EventTile => t.type === TileType.Event && !t.expired);
 
-            this.calendarEvents = this.buildCalendarEvents(openTrips, this.courseTiles);
-            this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
+                this.calendarEvents = this.buildCalendarEvents(openTrips, this.courseTiles);
+                this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
 
-            this.carouselSlides = [
-                this.buildStaticSlide(),
-                ...openTrips.map((trip) => this.buildTripSlide(trip)),
-                ...this.courseTiles.map((course) => this.buildCourseSlide(course)),
-            ];
-            if (this.carouselSlides.length > 1) {
-                this.startCarouselAutoplay();
-            }
-            this.cdr.markForCheck();
-        });
+                this.carouselSlides = [
+                    this.buildStaticSlide(),
+                    ...openTrips.map((trip) => this.buildTripSlide(trip)),
+                    ...this.courseTiles.map((course) => this.buildCourseSlide(course)),
+                ];
+                if (this.carouselSlides.length > 1) {
+                    this.startCarouselAutoplay();
+                }
+                this.cdr.markForCheck();
+            },
+        );
     }
 
     ngOnDestroy(): void {

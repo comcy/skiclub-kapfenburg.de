@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { COURSE_DATA, STATIC_DATA } from '@data';
 import { TripsRegisterDialogComponent } from '@trips-lib';
 import { CourseTilesApiServiceInterface } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
+import { mergeCourseTile } from 'projects/courses-lib/src/lib/domain/merge-course-tile';
 import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feature/gym-courses-register-dialog/gym-courses-register-dialog.component';
 import { MembershipRegisterDialogComponent } from 'projects/membership-lib/src/lib/feature/membership-register-dialog/membership-register-dialog.component';
 import { MembershipDeclarationDialogComponent } from 'projects/membership-lib/src/lib/ui/membership-declaration-dialog/membership-declaration-dialog.component';
@@ -54,9 +55,9 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
     }
 
     private openRegisterDialog(id: string): void {
-        combineLatest([this.tripsApi.getAllTrips(), this.courseTilesApi.getAllCourseBccTiles()])
+        combineLatest([this.tripsApi.getAllTrips(), this.courseTilesApi.getAllCourseTiles()])
             .pipe(takeUntil(this.destroy$))
-            .subscribe(([trips, bccTiles]) => {
+            .subscribe(([trips, apiCourseTiles]) => {
                 const allTiles: Tile[] = [...COURSE_DATA, ...STATIC_DATA, ...trips];
                 let tile = allTiles.find((t) => t.id === id);
 
@@ -67,9 +68,8 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
 
                 if (tile.type === TileType.Course) {
                     const courseTile = tile as CourseTile;
-                    const customBccList = bccTiles.find((t) => t.title === courseTile.course.name)?.courseConfig
-                        ?.customBccList;
-                    tile = { ...courseTile, course: { ...courseTile.course, customBccList } };
+                    const match = apiCourseTiles.find((t) => t.title === courseTile.course.name);
+                    tile = mergeCourseTile(courseTile, match);
                 }
 
                 const dialogRef = this.dialog.open(this.resolveRegisterDialogComponent(tile), {

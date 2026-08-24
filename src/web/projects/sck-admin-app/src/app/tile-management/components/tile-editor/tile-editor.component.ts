@@ -97,6 +97,59 @@ export class TileEditorComponent implements OnInit, OnChanges {
         this.tile.courseConfig = this.tile.courseConfig ?? {};
     }
 
+    // Whether the "Dies ist ein Pilates-/Gymnastik-Kurs" section is shown -
+    // driven purely by whether tile.course is currently set, so ski-level
+    // tiles (never toggled on) never carry an empty course object.
+    get isGymCourse(): boolean {
+        return !!this.tile?.course;
+    }
+
+    set isGymCourse(value: boolean) {
+        if (!this.tile) return;
+        if (value) {
+            this.tile.course = this.tile.course ?? {
+                name: this.tile.title,
+                description: this.tile.description,
+                details: '',
+                time: '',
+                location: '',
+                contact: '',
+                prices: { member: '', nonMember: '' },
+            };
+        } else {
+            this.tile.course = undefined;
+        }
+    }
+
+    public readonly weekdayLabels = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    public readonly weekdays = [0, 1, 2, 3, 4, 5, 6];
+
+    // schedule.excludedDates is a string[] of ISO dates - the input binds to
+    // a plain comma-separated string, same pattern as the BCC lists.
+    get excludedDatesText(): string {
+        return this.tile?.course?.schedule?.excludedDates?.join(', ') ?? '';
+    }
+
+    set excludedDatesText(value: string) {
+        if (!this.tile?.course?.schedule) return;
+        const dates = value
+            .split(',')
+            .map((date) => date.trim())
+            .filter(Boolean);
+        this.tile.course.schedule.excludedDates = dates.length ? dates : undefined;
+    }
+
+    onScheduleEnabledChange(enabled: boolean): void {
+        if (!this.tile?.course) return;
+        this.tile.course.schedule = enabled
+            ? (this.tile.course.schedule ?? {
+                  weekday: 1,
+                  startDate: new Date().toISOString(),
+                  endDate: new Date().toISOString(),
+              })
+            : undefined;
+    }
+
     // The pricing form binds directly to nested tripConfig.pricing.* paths,
     // so every field it renders needs a real object to bind into - tripConfig
     // is still opaque passthrough server-side (extra_json) and may be
