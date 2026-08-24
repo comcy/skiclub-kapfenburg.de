@@ -55,12 +55,16 @@ export const routes: Routes = [
                 component: TileManagerComponent,
             },
             {
-                path: 'tiles/:tileId/registrations',
-                component: TripRegistrationsComponent,
-            },
-            {
                 path: 'registrations',
                 component: RegistrationsOverviewComponent,
+            },
+            // Lives under registrations/:tileId (not tiles/:tileId/registrations)
+            // so the URL - and therefore the left nav's routerLinkActive
+            // highlight - stays on "Anmeldungen" instead of jumping to "Tiles"
+            // when you drill into one Ausfahrt's registrations from there.
+            {
+                path: 'registrations/:tileId',
+                component: TripRegistrationsComponent,
             },
             {
                 path: 'boardings',

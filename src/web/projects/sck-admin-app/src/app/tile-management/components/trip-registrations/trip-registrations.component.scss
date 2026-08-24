@@ -168,6 +168,35 @@
     text-decoration: line-through;
 }
 
+.tile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.meta-item strong {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.chip-tile-status {
+    background: #dcf3e0;
+    color: #1e7d32;
+}
+
+.chip-warn {
+    background: #fff3cd;
+    color: #8a6a00;
+}
+
+.chip-off {
+    background: #eee;
+    color: rgba(0, 0, 0, 0.6);
+}
+
 .badge-member {
     display: inline-flex;
     align-items: center;
@@ -195,6 +224,11 @@
 .editor-overlay {
     position: absolute;
     inset: 0;
+    // Without an explicit z-index, mat-button's internal ripple/focus layer
+    // (position: relative, z-index: auto, deep inside .toolbar) ends up
+    // painted above this overlay in some browsers - the "Drucken" button
+    // then visibly floats on top of the editor panel and stays clickable.
+    z-index: 10;
     background: rgba(0, 0, 0, 0.32);
     display: flex;
     justify-content: flex-end;

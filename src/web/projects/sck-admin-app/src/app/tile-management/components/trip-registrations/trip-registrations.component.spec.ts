@@ -90,4 +90,34 @@ describe('TripRegistrationsComponent', () => {
             expect(component.capacityPercent).toBe(100);
         });
     });
+
+    describe('tileStatusLabel (Anmeldungs-Metadaten)', () => {
+        it('is "Abgesagt" for a canceled tile, even if full', () => {
+            component.tile = { status: component.tileStatusEnum.Canceled, capacity: 1 } as never;
+            component.registrations = [makeRegistration()];
+
+            expect(component.tileStatusLabel).toBe('Abgesagt');
+        });
+
+        it('is "Warteliste" for the manual BookedUp status', () => {
+            component.tile = { status: component.tileStatusEnum.BookedUp } as never;
+            component.registrations = [];
+
+            expect(component.tileStatusLabel).toBe('Warteliste');
+        });
+
+        it('is "Warteliste" once confirmed registrations reach capacity, even without the manual flag', () => {
+            component.tile = { status: component.tileStatusEnum.Open, capacity: 1 } as never;
+            component.registrations = [makeRegistration()];
+
+            expect(component.tileStatusLabel).toBe('Warteliste');
+        });
+
+        it('is "Offen" when open and below capacity', () => {
+            component.tile = { status: component.tileStatusEnum.Open, capacity: 2 } as never;
+            component.registrations = [makeRegistration()];
+
+            expect(component.tileStatusLabel).toBe('Offen');
+        });
+    });
 });

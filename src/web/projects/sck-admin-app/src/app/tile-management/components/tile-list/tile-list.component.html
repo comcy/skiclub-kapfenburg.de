@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header">
         @if (auth.hasPermission('tiles:write')) {
-            <button mat-raised-button color="primary" (click)="onCreate()">Create New Tile</button>
+            <button mat-raised-button color="primary" (click)="onCreate()">{{ createButtonLabel }}</button>
         }
     </div>
 
@@ -106,14 +106,17 @@
                     @if (tile.type === 'event' && !tile.id.startsWith('new-')) {
                         <button
                             mat-icon-button
-                            [routerLink]="['/event-management', 'tiles', tile.id, 'registrations']"
+                            [routerLink]="['/event-management', 'registrations', tile.id]"
                             matTooltip="Anmeldungen"
                         >
                             <mat-icon>how_to_reg</mat-icon>
                         </button>
                     }
                     @if (auth.hasPermission('tiles:write')) {
-                        <button mat-icon-button (click)="onDelete(tile)">
+                        <button mat-icon-button (click)="onEdit(tile)" matTooltip="Bearbeiten">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="onDelete(tile)" matTooltip="Löschen">
                             <mat-icon>delete</mat-icon>
                         </button>
                     }

@@ -63,6 +63,10 @@ export class TileListComponent implements OnInit {
     public filterType: string = '';
     public filterStatus: string = '';
 
+    public get createButtonLabel(): string {
+        return this.fixedType === TileType.Course ? 'Kurs erstellen' : 'Event erstellen';
+    }
+
     public readonly tileTypes = Object.values(TileType);
     public readonly tileStatuses = Object.values(TileStatus);
 

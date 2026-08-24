@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RegistrationAgeCategory, TripRegistration } from '../../domain/trip-registration';
 import { Tile } from '../../domain/tile';
+import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { RegistrationEditorComponent } from './registration-editor/registration-editor.component';
 
@@ -32,6 +33,7 @@ export class TripRegistrationsComponent implements OnInit {
     public registrations: TripRegistration[] = [];
     public selectedRegistration: TripRegistration | null = null;
     public tileId!: string;
+    public readonly tileStatusEnum = TileStatus;
 
     public readonly ageCategoryLabels: Record<RegistrationAgeCategory, string> = {
         adult: 'Erwachsen',
@@ -73,6 +75,17 @@ export class TripRegistrationsComponent implements OnInit {
 
     get isOverCapacity(): boolean {
         return !!this.tile?.capacity && this.confirmedCount >= this.tile.capacity;
+    }
+
+    get tileStatusLabel(): string {
+        switch (this.tile?.status) {
+            case TileStatus.Canceled:
+                return 'Abgesagt';
+            case TileStatus.BookedUp:
+                return 'Warteliste';
+            default:
+                return this.isOverCapacity ? 'Warteliste' : 'Offen';
+        }
     }
 
     get groups(): RegistrationGroup[] {

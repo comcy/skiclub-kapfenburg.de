@@ -9,6 +9,23 @@
     <div class="page-content">
         <div class="print-title">{{ tile?.title }} — Anmeldungsliste</div>
 
+        <div class="tile-meta no-print">
+            <span class="meta-item"><strong>Datum:</strong> {{ tile?.date }}</span>
+            @if (tile?.subTitle) {
+                <span class="meta-item"><strong>Untertitel:</strong> {{ tile!.subTitle }}</span>
+            }
+            <span class="meta-item">
+                <strong>Status:</strong>
+                <span
+                    class="chip chip-tile-status"
+                    [class.chip-warn]="tile?.status === tileStatusEnum.BookedUp || isOverCapacity"
+                    [class.chip-off]="tile?.status === tileStatusEnum.Canceled"
+                >
+                    {{ tileStatusLabel }}
+                </span>
+            </span>
+        </div>
+
         <div class="capacity-row no-print">
             <div class="capacity-bar-wrap">
                 <div class="capacity-label" [class.capacity-label-full]="isOverCapacity">
