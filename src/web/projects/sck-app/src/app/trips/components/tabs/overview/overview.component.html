@@ -40,7 +40,7 @@
                     <img [src]="trip.image" [alt]="trip.imageDescription" />
                     <span
                         class="badge"
-                        [class.badge-warn]="trip.status === tileStatusEnum.BookedUp"
+                        [class.badge-warn]="trip.status === tileStatusEnum.BookedUp || isTripFull(trip)"
                         [class.badge-off]="trip.status === tileStatusEnum.Canceled"
                     >
                         {{ resolveStatusLabel(trip) }}
@@ -64,7 +64,9 @@
                         <span class="boardings-count" [innerText]="(trip.boardings?.length ?? 0) + ' Zustiege'"></span>
                         <a mat-fab extended color="primary" [routerLink]="['/trips', trip.id]">
                             <mat-icon>event_note</mat-icon>
-                            {{ trip.status === tileStatusEnum.BookedUp ? 'Warteliste' : 'Anmelden' }}
+                            {{
+                                trip.status === tileStatusEnum.BookedUp || isTripFull(trip) ? 'Warteliste' : 'Anmelden'
+                            }}
                         </a>
                     </div>
                 </div>

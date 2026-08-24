@@ -14,7 +14,7 @@
         @if (tile.status === tileStatusEnum.Canceled) {
             <span class="canceled-stamp">Abgesagt</span>
         }
-        @if (tile.status === tileStatusEnum.BookedUp) {
+        @if (tile.status === tileStatusEnum.BookedUp || isTripFull(tile)) {
             <span class="booked-up-stamp">Warteliste</span>
         }
 

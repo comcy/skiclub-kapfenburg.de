@@ -85,6 +85,10 @@ export class TripDetailComponent implements OnInit, OnDestroy {
         return trips.filter((t): t is EventTile => t.type === TileType.Event).find((t) => t.id === id);
     }
 
+    public isTripFull(tile: EventTile): boolean {
+        return !!tile.capacity && (tile.confirmedRegistrationsCount ?? 0) >= tile.capacity;
+    }
+
     private buildDescription(tile: EventTile): string {
         let content = tile.description || '';
 

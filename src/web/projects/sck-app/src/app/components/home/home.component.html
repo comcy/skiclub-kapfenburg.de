@@ -35,8 +35,15 @@
                     <article class="tile-card clickable" (click)="openTripDetail(trip)">
                         <div class="tile-card-image">
                             <img [src]="trip.image" [alt]="trip.imageDescription" />
-                            <span class="badge" [class.badge-warn]="trip.status === tileStatusEnum.BookedUp">
-                                {{ trip.status === tileStatusEnum.BookedUp ? 'Warteliste' : 'Plätze frei' }}
+                            <span
+                                class="badge"
+                                [class.badge-warn]="trip.status === tileStatusEnum.BookedUp || isTripFull(trip)"
+                            >
+                                {{
+                                    trip.status === tileStatusEnum.BookedUp || isTripFull(trip)
+                                        ? 'Warteliste'
+                                        : 'Plätze frei'
+                                }}
                             </span>
                         </div>
                         <div class="tile-card-content">

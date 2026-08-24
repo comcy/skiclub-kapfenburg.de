@@ -43,6 +43,8 @@ interface ApiEventTile {
     destination?: string;
     additionalInformation?: string;
     tripConfig?: TripConfig;
+    capacity?: number;
+    confirmedRegistrationsCount?: number;
 }
 
 interface ApiTilesResponse {
@@ -79,6 +81,8 @@ function mapApiTileToEventTile(api: ApiEventTile): EventTile {
         destination: api.destination,
         location: api.location,
         additionalInformation: api.additionalInformation,
+        capacity: api.capacity,
+        confirmedRegistrationsCount: api.confirmedRegistrationsCount,
     };
 }
 

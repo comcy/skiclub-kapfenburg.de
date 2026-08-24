@@ -36,4 +36,8 @@ export class TilePreviewComponent {
     renderMarkdown(text: string): string {
         return text ? text.replace(/\n/g, '<br>') : '';
     }
+
+    public isTripFull(tile: Tile): boolean {
+        return !!tile.capacity && (tile.confirmedRegistrationsCount ?? 0) >= tile.capacity;
+    }
 }

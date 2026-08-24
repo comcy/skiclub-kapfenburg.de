@@ -45,7 +45,7 @@ const validTilePayload = {
 
 beforeEach(() => {
   db.exec(
-    'DELETE FROM trip_boardings; DELETE FROM tiles; DELETE FROM boardings; DELETE FROM permissions; DELETE FROM sessions; DELETE FROM users;',
+    'DELETE FROM trip_registrations; DELETE FROM trip_boardings; DELETE FROM tiles; DELETE FROM boardings; DELETE FROM permissions; DELETE FROM sessions; DELETE FROM users;',
   );
 });
 
@@ -124,6 +124,36 @@ describe('Tiles Routes', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(validTilePayload);
     expect(unlimitedRes.body.capacity).toBeUndefined();
+  });
+
+  it('liefert confirmedRegistrationsCount nur fuer event-Tiles, gezaehlt aus confirmed-Anmeldungen', async () => {
+    const token = createAuthedUser(['tiles:write']);
+
+    const eventRes = await request(app)
+      .post('/api/tiles')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validTilePayload, type: 'event', capacity: 2 });
+    const eventId = eventRes.body.id as string;
+
+    db.prepare(
+      `INSERT INTO trip_registrations (id, tile_id, first_name, last_name, status) VALUES (?, ?, 'A', 'A', 'confirmed')`,
+    ).run(randomUUID(), eventId);
+    db.prepare(
+      `INSERT INTO trip_registrations (id, tile_id, first_name, last_name, status) VALUES (?, ?, 'B', 'B', 'confirmed')`,
+    ).run(randomUUID(), eventId);
+    db.prepare(
+      `INSERT INTO trip_registrations (id, tile_id, first_name, last_name, status) VALUES (?, ?, 'C', 'C', 'waitlist')`,
+    ).run(randomUUID(), eventId);
+
+    const getRes = await request(app).get(`/api/tiles/${eventId}`);
+    expect(getRes.body.confirmedRegistrationsCount).toBe(2);
+
+    const infoRes = await request(app)
+      .post('/api/tiles')
+      .set('Authorization', `Bearer ${token}`)
+      .send(validTilePayload);
+    const infoGetRes = await request(app).get(`/api/tiles/${infoRes.body.id}`);
+    expect(infoGetRes.body.confirmedRegistrationsCount).toBeUndefined();
   });
 
   it('PUT /api/tiles/:id/boardings - ordnet Boardings anhand ihres Namens zu', async () => {

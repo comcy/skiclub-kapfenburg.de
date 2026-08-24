@@ -56,6 +56,11 @@ export interface Tile {
   // a users.id with no access-control implications (see the plan).
   capacity?: number;
   organizerUserId?: string;
+  // Computed, not stored - COUNT of trip_registrations with status='confirmed'
+  // for this tile, only populated for type='event'. Public-safe: a bare
+  // number, no registrant PII, used to derive the "Warteliste" badge on the
+  // public site without needing a live-registrations read endpoint there.
+  confirmedRegistrationsCount?: number;
   // Opaque passthrough, stored in `tiles.extra_json` — owned by the richer
   // sck-app Tile union (EventTile/CourseTile/InfoTile in
   // shared-lib/ui-common/models), not validated or edited here. Typed

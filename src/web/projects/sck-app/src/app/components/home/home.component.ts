@@ -206,6 +206,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         return trip.tripConfig?.pricing?.busLift?.adult?.member;
     }
 
+    // Only ever true for API-backed tiles (capacity/confirmedRegistrationsCount
+    // are undefined on the static TRIP_DATA fallback) - an independent,
+    // automatic signal alongside the admin's manual BookedUp status.
+    public isTripFull(trip: EventTile): boolean {
+        return !!trip.capacity && (trip.confirmedRegistrationsCount ?? 0) >= trip.capacity;
+    }
+
     // CALENDAR
 
     public prevMonth(): void {
@@ -359,13 +366,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private buildTripSlide(trip: EventTile): CarouselSlide {
         const price = this.resolvePrice(trip);
+        const isWaitlisted = trip.status === TileStatus.BookedUp || this.isTripFull(trip);
         return {
             id: trip.id,
             kind: 'trip',
             image: trip.image,
             imageAlt: trip.imageDescription,
-            badge: trip.status === TileStatus.BookedUp ? 'Warteliste' : 'Plätze frei',
-            badgeWarn: trip.status === TileStatus.BookedUp,
+            badge: isWaitlisted ? 'Warteliste' : 'Plätze frei',
+            badgeWarn: isWaitlisted,
             eyebrow: trip.date,
             title: trip.title,
             descriptionHtml: trip.destination ?? '',

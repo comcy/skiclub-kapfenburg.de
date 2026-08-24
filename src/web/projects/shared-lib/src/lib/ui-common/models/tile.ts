@@ -67,6 +67,11 @@ export interface EventTile extends BaseTile {
     destination?: string;
     location?: string;
     additionalInformation?: string;
+    // Only populated for API-backed tiles (see TripTilesApiService) - static
+    // TRIP_DATA fallback tiles leave these undefined, so the derived
+    // "isFull" waitlist check simply never fires for them.
+    capacity?: number;
+    confirmedRegistrationsCount?: number;
 }
 
 export type Tile = InfoTile | CourseTile | EventTile;

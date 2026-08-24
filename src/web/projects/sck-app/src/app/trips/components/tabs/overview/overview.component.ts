@@ -76,14 +76,18 @@ export class OverviewComponent implements OnInit {
         return trip.tripConfig?.pricing?.busLift?.adult?.member;
     }
 
+    public isTripFull(trip: EventTile): boolean {
+        return !!trip.capacity && (trip.confirmedRegistrationsCount ?? 0) >= trip.capacity;
+    }
+
     public resolveStatusLabel(trip: EventTile): string {
         switch (trip.status) {
-            case TileStatus.BookedUp:
-                return 'Warteliste';
             case TileStatus.Canceled:
                 return 'Abgesagt';
+            case TileStatus.BookedUp:
+                return 'Warteliste';
             default:
-                return 'Plätze frei';
+                return this.isTripFull(trip) ? 'Warteliste' : 'Plätze frei';
         }
     }
 
