@@ -71,6 +71,10 @@ export class TripRegistrationsComponent implements OnInit {
         return Math.min(100, Math.round((this.confirmedCount / this.tile.capacity) * 100));
     }
 
+    get isOverCapacity(): boolean {
+        return !!this.tile?.capacity && this.confirmedCount >= this.tile.capacity;
+    }
+
     get groups(): RegistrationGroup[] {
         const byBoarding = new Map<string, TripRegistration[]>();
         for (const registration of this.registrations) {

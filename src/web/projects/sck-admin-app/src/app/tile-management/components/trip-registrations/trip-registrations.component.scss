@@ -55,6 +55,21 @@
     font-size: 13px;
     color: rgba(0, 0, 0, 0.6);
     margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.capacity-label-full {
+    color: #c62828;
+    font-weight: 500;
+}
+
+.capacity-warning-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #c62828;
 }
 
 .capacity-bar {
@@ -68,6 +83,16 @@
     height: 100%;
     background: #673ab7;
     border-radius: 4px;
+}
+
+.capacity-bar-fill-full {
+    background: #c62828;
+}
+
+.capacity-warning-text {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #c62828;
 }
 
 .toolbar {
