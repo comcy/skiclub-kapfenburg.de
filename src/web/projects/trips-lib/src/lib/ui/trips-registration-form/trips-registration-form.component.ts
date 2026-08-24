@@ -41,9 +41,11 @@ import { Trip } from '../../domain/models/trip-base';
 import { TripConfig } from '../../domain/models/trip-config';
 import { TripPricingDialogComponent } from '../trip-pricing-dialog/trip-pricing-dialog.component';
 import {
+    PublicRegistrationParticipantInput,
     SheetDbRow,
     TripRegisterFormValue,
     TripRegistrationFormServiceInterface,
+    WaitlistInfo,
 } from './trips-registration-form.interfaces';
 
 interface CourseOption {
@@ -469,15 +471,49 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
         this.handleSheetRegistration(rows);
 
-        const mailToFormData: FormToMailInformation<TripRegisterFormValue> = {
-            receiver: contactPerson.email,
-            formValues: rawValue,
-        };
+        // Parallel, capacity-aware write into sck-api - only possible for
+        // API-backed trips (static fallback trips have no id). Never blocks
+        // the confirmation mail: a missing id or a failed request just means
+        // the mail goes out without waitlist info, same as before this
+        // feature existed.
+        const tileId: string | undefined = rawValue.trip?.id;
+        if (tileId) {
+            const publicParticipants: PublicRegistrationParticipantInput[] = rawValue.participants.map(
+                (participant: TripParticipant) => ({
+                    firstName: participant.firstName,
+                    lastName: participant.lastName,
+                    email: participant.email || contactPerson.email,
+                    phone: participant.phone || contactPerson.phone,
+                    birthday: participant.birthday,
+                    boarding: participant.boarding,
+                }),
+            );
 
-        this.tripRegistrationFormService.sendConfirmationMail(mailToFormData);
+            this.tripRegistrationFormService.submitPublicRegistration(tileId, publicParticipants).subscribe({
+                next: (waitlistInfo) => this.sendConfirmationMail(rawValue, contactPerson, waitlistInfo),
+                error: (error) => {
+                    console.error('Kapazitätsprüfung fehlgeschlagen:', error);
+                    this.sendConfirmationMail(rawValue, contactPerson, undefined);
+                },
+            });
+        } else {
+            this.sendConfirmationMail(rawValue, contactPerson, undefined);
+        }
 
         this.submitForm.emit(true);
         this.isSending = false;
+    }
+
+    private sendConfirmationMail(
+        rawValue: TripRegisterFormValue,
+        contactPerson: TripParticipant,
+        waitlistInfo: WaitlistInfo | undefined,
+    ): void {
+        const mailToFormData: FormToMailInformation<TripRegisterFormValue> = {
+            receiver: contactPerson.email,
+            formValues: { ...rawValue, waitlistInfo },
+        };
+        this.tripRegistrationFormService.sendConfirmationMail(mailToFormData);
     }
 
     private handleSheetRegistration(rows: SheetDbRow[]): void {

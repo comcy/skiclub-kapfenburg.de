@@ -13,7 +13,8 @@ export const getTripConfirmationSuccessMessage = (): string => {
 };
 
 export const getTripConfirmationMailSubject = (values: TripRegisterFormValue): string => {
-    return `SC-Kapfenburg Anmeldung: ${values.participants[0].firstName}`;
+    const waitlistSuffix = values.waitlistInfo?.status === 'waitlist' ? ' (Warteliste)' : '';
+    return `SC-Kapfenburg Anmeldung: ${values.participants[0].firstName}${waitlistSuffix}`;
 };
 
 export const getTripConfirmationMailBcc = (values: TripRegisterFormValue): string => {
@@ -178,9 +179,23 @@ export const getTripConfirmationMailText = (values: TripRegisterFormValue): stri
 
                 <p>Hallo ${contactPerson.firstName},</p>
 
-                <p>
-                    wir freuen uns über eure Anmeldung! Bitte prüfe die folgenden Daten auf Richtigkeit.
-                </p>
+                ${
+                    values.waitlistInfo?.status === 'waitlist'
+                        ? `
+                            <div style="margin-bottom: 16px; padding: 16px; border: 1px solid #f5c400; border-radius: 8px; background-color: #fff8e1;">
+                                <strong>Du stehst aktuell auf der Warteliste.</strong><br>
+                                Diese Ausfahrt ist bereits ausgebucht. Deine Anmeldung wurde als Gruppe mit
+                                ${values.waitlistInfo.waitlistCount === 1 ? '1 Person' : `${values.waitlistInfo.waitlistCount} Personen`}
+                                auf Position ${values.waitlistInfo.waitlistPosition} der Warteliste eingetragen.
+                                Solltest du nachrücken, melden wir uns bei dir.
+                            </div>
+                          `
+                        : `
+                            <p>
+                                wir freuen uns über eure Anmeldung! Bitte prüfe die folgenden Daten auf Richtigkeit.
+                            </p>
+                          `
+                }
 
                 <div style="margin-top: 20px;">
                     ${renderParticipant(contactPerson, values, 'Ansprechpartner')}

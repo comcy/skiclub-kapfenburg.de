@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseFormElements } from 'projects/shared-lib/src/lib/components';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { Observable } from 'rxjs';
 import { TripParticipant } from '../../domain/models';
 import { Trip } from '../../domain/models/trip-base';
 
@@ -14,10 +15,21 @@ export interface TripRegisterForm {
     formFields: BaseFormElements[];
 }
 
+// Result of the parallel, capacity-aware sck-api submission (see
+// submitPublicRegistration below) - undefined when the tile has no id, the
+// request failed, or hasn't resolved yet: getTripConfirmationMailText()
+// then just renders its normal, non-waitlist text (never blocks sending).
+export interface WaitlistInfo {
+    status: 'confirmed' | 'waitlist';
+    waitlistPosition?: number;
+    waitlistCount?: number;
+}
+
 export interface TripRegisterFormValue {
     trip: Trip;
     additionalText: string;
     participants: TripParticipant[];
+    waitlistInfo?: WaitlistInfo;
 }
 
 export type SheetDbRow = Omit<Trip, 'availableBoardings'> &
@@ -27,8 +39,24 @@ export type SheetDbRow = Omit<Trip, 'availableBoardings'> &
         timestamp?: string;
     };
 
+export interface PublicRegistrationParticipantInput {
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+    birthday?: string;
+    boarding?: string;
+}
+
 @Injectable()
 export abstract class TripRegistrationFormServiceInterface {
     public abstract sendFormToSheetsIo(rows: SheetDbRow[]): void;
     public abstract sendConfirmationMail(mailData: FormToMailInformation<TripRegisterFormValue>): void;
+    // Parallel, capacity-aware write into sck-api's trip_registrations (see
+    // the plan) - does NOT replace sendFormToSheetsIo, which keeps running
+    // unconditionally as before.
+    public abstract submitPublicRegistration(
+        tileId: string,
+        participants: PublicRegistrationParticipantInput[],
+    ): Observable<WaitlistInfo>;
 }

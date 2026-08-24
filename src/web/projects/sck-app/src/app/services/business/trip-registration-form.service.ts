@@ -17,10 +17,13 @@ import {
     MailInformation,
 } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import {
+    PublicRegistrationParticipantInput,
     SheetDbRow,
     TripRegisterFormValue,
     TripRegistrationFormServiceInterface,
+    WaitlistInfo,
 } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class TripRegistrationFormService implements TripRegistrationFormServiceInterface {
@@ -79,6 +82,15 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
 
     private getMailText(values: TripRegisterFormValue): string {
         return getTripConfirmationMailText(values);
+    }
+
+    public submitPublicRegistration(
+        tileId: string,
+        participants: PublicRegistrationParticipantInput[],
+    ): Observable<WaitlistInfo> {
+        return this.http.post<WaitlistInfo>(`${environment.sckApiUrl}/tiles/${tileId}/registrations/public`, {
+            participants,
+        });
     }
 }
 

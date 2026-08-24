@@ -28,6 +28,7 @@ export class RegistrationComponent implements OnInit {
             for (const t of events) {
                 if (t.actions?.includes(TileActions.Register)) {
                     this.trips.push({
+                        id: t.id,
                         destination: t.destination || t.title,
                         date: t.date,
                         availableBoardings: t.boardings as string[],

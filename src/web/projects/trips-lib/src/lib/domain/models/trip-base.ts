@@ -5,6 +5,11 @@
 import { TripConfig } from './trip-config';
 
 export interface Trip {
+    // Optional so the two existing call sites (RegistrationComponent,
+    // TripDetailComponent) don't need to change their static-fallback paths -
+    // only set when the source is an sck-api tile, which is what the public
+    // registration flow needs to submit a capacity-aware registration.
+    id?: string;
     destination: string;
     date: string;
     availableBoardings: string[];

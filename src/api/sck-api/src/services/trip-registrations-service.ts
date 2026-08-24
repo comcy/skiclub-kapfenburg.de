@@ -4,7 +4,14 @@
 
 import { randomUUID } from 'node:crypto';
 import { db } from '../db/connection.js';
-import { TripRegistration, TripRegistrationCreationParams } from '../domain/trip-registration.js';
+import {
+  AgeCategory,
+  PublicParticipantInput,
+  PublicRegistrationResult,
+  RegistrationStatus,
+  TripRegistration,
+  TripRegistrationCreationParams,
+} from '../domain/trip-registration.js';
 import { findMemberByEmail } from './members-service.js';
 
 interface TripRegistrationRow {
@@ -136,4 +143,89 @@ export const updateRegistration = (
 export const deleteRegistration = (id: string): boolean => {
   const result = db.prepare('DELETE FROM trip_registrations WHERE id = ?').run(id);
   return result.changes > 0;
+};
+
+// Same age brackets as the public site's client-side price calculation
+// (data/mail-templates/trip-confirmation-mail.function.ts calculateParticipantPrice)
+// - duplicated rather than imported, sck-api never depends on the web workspace.
+const calculateAge = (birthday: string, refDate: Date = new Date()): number => {
+  const dob = new Date(birthday);
+  if (isNaN(dob.getTime())) return NaN;
+  let age = refDate.getFullYear() - dob.getFullYear();
+  const hadBirthdayThisYear =
+    refDate.getMonth() > dob.getMonth() ||
+    (refDate.getMonth() === dob.getMonth() && refDate.getDate() >= dob.getDate());
+  if (!hadBirthdayThisYear) age -= 1;
+  return age;
+};
+
+const resolveAgeCategory = (birthday: string | undefined): AgeCategory => {
+  if (!birthday) return 'adult';
+  const age = calculateAge(birthday);
+  if (isNaN(age) || age < 0) return 'adult';
+  if (age <= 6) return 'childUntil6';
+  if (age <= 16) return 'youthUntil16';
+  return 'adult';
+};
+
+const resolveBoardingId = (boardingName: string | undefined): string | undefined => {
+  if (!boardingName) return undefined;
+  const row = db.prepare('SELECT id FROM boardings WHERE name = ? COLLATE NOCASE').get(boardingName) as
+    | { id: string }
+    | undefined;
+  return row?.id;
+};
+
+// Public entry point for the website's Ausfahrten registration form (kept
+// deliberately parallel to, not replacing, its existing Google-Sheet
+// submission - see the plan). A whole submission (contact person + any
+// additional participants, e.g. a family) is treated as one unit: it only
+// gets 'confirmed' if the FULL group still fits in the remaining capacity,
+// otherwise every participant in it goes to 'waitlist' together - never
+// split across statuses.
+export const createPublicRegistrations = (
+  tileId: string,
+  participants: PublicParticipantInput[],
+): PublicRegistrationResult => {
+  const tileRow = db.prepare('SELECT capacity FROM tiles WHERE id = ?').get(tileId) as
+    | { capacity: number | null }
+    | undefined;
+  const capacity = tileRow?.capacity ?? null;
+
+  const confirmedCount = (
+    db
+      .prepare(`SELECT COUNT(*) AS count FROM trip_registrations WHERE tile_id = ? AND status = 'confirmed'`)
+      .get(tileId) as { count: number }
+  ).count;
+
+  const fitsInRemainingCapacity = capacity === null || confirmedCount + participants.length <= capacity;
+  const status: RegistrationStatus = fitsInRemainingCapacity ? 'confirmed' : 'waitlist';
+
+  let waitlistPosition: number | undefined;
+  let waitlistCount: number | undefined;
+  if (status === 'waitlist') {
+    const existingWaitlistCount = (
+      db
+        .prepare(`SELECT COUNT(*) AS count FROM trip_registrations WHERE tile_id = ? AND status = 'waitlist'`)
+        .get(tileId) as { count: number }
+    ).count;
+    waitlistPosition = existingWaitlistCount + 1;
+    waitlistCount = participants.length;
+  }
+
+  participants.forEach((participant, index) => {
+    createRegistration(tileId, {
+      firstName: participant.firstName,
+      lastName: participant.lastName,
+      email: participant.email,
+      phone: participant.phone,
+      boardingId: resolveBoardingId(participant.boarding),
+      ageCategory: resolveAgeCategory(participant.birthday),
+      status,
+      source: 'sheet-import',
+      orderIndex: index,
+    });
+  });
+
+  return { status, waitlistPosition, waitlistCount };
 };

@@ -25,9 +25,12 @@ const createAuthedUser = (permissions: string[] = []): string => {
   return token;
 };
 
-const createTile = (): string => {
+const createTile = (capacity?: number): string => {
   const id = randomUUID();
-  db.prepare("INSERT INTO tiles (id, type, title) VALUES (?, 'event', 'Skifahrt Ischgl')").run(id);
+  db.prepare("INSERT INTO tiles (id, type, title, capacity) VALUES (?, 'event', 'Skifahrt Ischgl', ?)").run(
+    id,
+    capacity ?? null,
+  );
   return id;
 };
 
@@ -128,5 +131,97 @@ describe('Trip Registrations Routes', () => {
     expect(createRes.body.isMember).toBe(true);
     expect(createRes.body.memberId).toBe(memberId);
     expect(createRes.body.boardingName).toBe('Hauptbahnhof');
+  });
+
+  describe('POST /api/tiles/:tileId/registrations/public', () => {
+    it('ist öffentlich (keine Anmeldung nötig) und bestätigt, solange Kapazität frei ist', async () => {
+      const tileId = createTile(2);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Max', lastName: 'Mustermann', birthday: '1990-01-01' }] });
+
+      expect(res.status).toBe(201);
+      expect(res.body).toEqual({ status: 'confirmed' });
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body).toHaveLength(1);
+      expect(list.body[0].source).toBe('sheet-import');
+      expect(list.body[0].ageCategory).toBe('adult');
+    });
+
+    it('leitet die Alterskategorie korrekt aus dem Geburtsdatum ab', async () => {
+      const tileId = createTile(10);
+      const token = createAuthedUser(['tiles:write']);
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Klein', lastName: 'Kind', birthday: new Date().toISOString().slice(0, 10) },
+            { firstName: 'Jugendlich', lastName: 'Person', birthday: '2015-01-01' },
+            { firstName: 'Erwachsen', lastName: 'Person', birthday: '1980-01-01' },
+          ],
+        });
+
+      const list = await request(app).get(`/api/tiles/${tileId}/registrations`).set('Authorization', `Bearer ${token}`);
+      const byName = (name: string) => list.body.find((r: any) => r.firstName === name);
+      expect(byName('Klein').ageCategory).toBe('childUntil6');
+      expect(byName('Jugendlich').ageCategory).toBe('youthUntil16');
+      expect(byName('Erwachsen').ageCategory).toBe('adult');
+    });
+
+    it('setzt weitere Anmeldungen auf die Warteliste, sobald die Kapazität erreicht ist, mit korrekter Position', async () => {
+      const tileId = createTile(1);
+      const token = createAuthedUser(['tiles:write']);
+
+      const firstRes = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Erste', lastName: 'Person' }] });
+      expect(firstRes.body.status).toBe('confirmed');
+
+      const secondRes = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Zweite', lastName: 'Person' }] });
+      expect(secondRes.body).toEqual({ status: 'waitlist', waitlistPosition: 1, waitlistCount: 1 });
+
+      const thirdRes = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Dritte', lastName: 'Person' }] });
+      expect(thirdRes.body).toEqual({ status: 'waitlist', waitlistPosition: 2, waitlistCount: 1 });
+
+      const list = await request(app).get(`/api/tiles/${tileId}/registrations`).set('Authorization', `Bearer ${token}`);
+      expect(list.body.filter((r: any) => r.status === 'confirmed')).toHaveLength(1);
+      expect(list.body.filter((r: any) => r.status === 'waitlist')).toHaveLength(2);
+    });
+
+    it('haelt eine Gruppenanmeldung zusammen (alle bestaetigt oder alle Warteliste)', async () => {
+      const tileId = createTile(2);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'A', lastName: 'Familie' },
+            { firstName: 'B', lastName: 'Familie' },
+            { firstName: 'C', lastName: 'Familie' },
+          ],
+        });
+
+      // 3 participants, only 2 slots -> the whole group waits together, none confirmed individually.
+      expect(res.body).toEqual({ status: 'waitlist', waitlistPosition: 1, waitlistCount: 3 });
+    });
+
+    it('lehnt eine leere Teilnehmerliste mit 400 ab', async () => {
+      const tileId = createTile();
+      const res = await request(app).post(`/api/tiles/${tileId}/registrations/public`).send({ participants: [] });
+      expect(res.status).toBe(400);
+    });
+
+    it('liefert 404 für eine unbekannte Ausfahrt', async () => {
+      const res = await request(app)
+        .post(`/api/tiles/${randomUUID()}/registrations/public`)
+        .send({ participants: [{ firstName: 'Max', lastName: 'Mustermann' }] });
+      expect(res.status).toBe(404);
+    });
   });
 });

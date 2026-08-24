@@ -31,3 +31,22 @@ export interface TripRegistration {
 // memberId and isMember are recomputed server-side from email on every
 // write (see trip-registrations-service.ts) - never accepted from the client.
 export type TripRegistrationCreationParams = Omit<TripRegistration, 'id' | 'tileId' | 'memberId' | 'isMember' | 'boardingName'>;
+
+// One participant as submitted by the PUBLIC registration form (see
+// createPublicRegistrations in trip-registrations-service.ts). ageCategory
+// is derived server-side from birthday, not accepted from the client -
+// status/source/orderIndex are computed entirely server-side too.
+export interface PublicParticipantInput {
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone?: string;
+  birthday?: string;
+  boarding?: string;
+}
+
+export interface PublicRegistrationResult {
+  status: RegistrationStatus;
+  waitlistPosition?: number;
+  waitlistCount?: number;
+}

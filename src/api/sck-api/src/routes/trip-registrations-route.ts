@@ -4,6 +4,7 @@
 
 import { Router } from 'express';
 import {
+  createPublicTripRegistrations,
   createTripRegistration,
   deleteTripRegistration,
   listTripRegistrations,
@@ -15,6 +16,7 @@ const router = Router();
 
 router.get('/tiles/:tileId/registrations', requireAuth, listTripRegistrations);
 router.post('/tiles/:tileId/registrations', requireAuth, requirePermission('tiles:write'), createTripRegistration);
+router.post('/tiles/:tileId/registrations/public', createPublicTripRegistrations);
 router.put('/registrations/:id', requireAuth, requirePermission('tiles:write'), updateTripRegistration);
 router.delete('/registrations/:id', requireAuth, requirePermission('tiles:write'), deleteTripRegistration);
 
