@@ -7,6 +7,7 @@ import 'dotenv/config';
 import express from 'express';
 import authRoutes from './routes/auth-route.js';
 import boardingsRoutes from './routes/boardings-route.js';
+import courseRegistrationsRoutes from './routes/course-registrations-route.js';
 import emailRoutes from './routes/email-route.js';
 import imagesRoutes from './routes/images-route.js';
 import invitesRoutes from './routes/invites-route.js';
@@ -44,6 +45,7 @@ app.use('/api', invitesRoutes);
 app.use('/api', usersRoutes);
 app.use('/api', membersRoutes);
 app.use('/api', tripRegistrationsRoutes);
+app.use('/api', courseRegistrationsRoutes);
 app.use('/api', settingsRoutes);
 
 const PORT = 3000;

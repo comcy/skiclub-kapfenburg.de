@@ -133,6 +133,40 @@ db.exec(`
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
   );
 
+  -- Kursverwaltung Runde 1: admin-side registration register per Kurs,
+  -- parallel to trip_registrations but without a capacity/waitlist concept
+  -- (courses aren't seat-limited the way Ausfahrten are) - see the plan.
+  -- birthday/sport_type/level replace trip_registrations' boarding_id/
+  -- age_category, which don't apply to courses.
+  CREATE TABLE IF NOT EXISTS course_groups (
+    id TEXT PRIMARY KEY,
+    tile_id TEXT NOT NULL REFERENCES tiles (id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    instructor_name TEXT,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS course_registrations (
+    id TEXT PRIMARY KEY,
+    tile_id TEXT NOT NULL REFERENCES tiles (id) ON DELETE CASCADE,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT,
+    phone TEXT,
+    member_id TEXT REFERENCES members (id) ON DELETE SET NULL,
+    birthday TEXT,
+    sport_type TEXT,
+    level TEXT,
+    group_id TEXT REFERENCES course_groups (id) ON DELETE SET NULL,
+    is_member INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL CHECK (status IN ('confirmed', 'cancelled')) DEFAULT 'confirmed',
+    source TEXT NOT NULL CHECK (source IN ('manual', 'sheet-import')) DEFAULT 'manual',
+    notes TEXT,
+    order_index INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+  );
+
   -- Generic key-value settings, currently just the global notification BCC
   -- fallback (see settings-service.ts) - deliberately generic so future
   -- site-wide settings don't each need their own table.
