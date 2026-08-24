@@ -1,0 +1,62 @@
+<div class="page">
+    <div class="page-header">
+        <span class="page-title">Anmeldungen: Ausfahrten</span>
+    </div>
+
+    <div class="page-content">
+        <table class="overview-table">
+            <thead>
+                <tr>
+                    <th>Ausfahrt</th>
+                    <th>Datum</th>
+                    <th>Status</th>
+                    <th>Kapazität</th>
+                    <th style="width: 180px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (tile of tiles; track tile.id) {
+                    <tr class="row" [class.row-expired]="tile.expired">
+                        <td>{{ tile.title }}</td>
+                        <td>{{ tile.date }}</td>
+                        <td>
+                            <span
+                                class="chip"
+                                [class.chip-warn]="tile.status === tileStatusEnum.BookedUp || isOverCapacity(tile)"
+                                [class.chip-off]="tile.status === tileStatusEnum.Canceled"
+                            >
+                                {{ resolveStatusLabel(tile) }}
+                            </span>
+                        </td>
+                        <td>
+                            @if (tile.capacity) {
+                                <span [class.capacity-full]="isOverCapacity(tile)">
+                                    {{ confirmedCount(tile) }} / {{ tile.capacity }}
+                                    @if (isOverCapacity(tile)) {
+                                        <mat-icon class="capacity-warning-icon" inline>warning</mat-icon>
+                                    }
+                                </span>
+                            } @else {
+                                <span class="capacity-unlimited">{{ confirmedCount(tile) }} (unbegrenzt)</span>
+                            }
+                        </td>
+                        <td class="actions-cell">
+                            <a
+                                mat-stroked-button
+                                [routerLink]="['/event-management', 'tiles', tile.id, 'registrations']"
+                            >
+                                <mat-icon>how_to_reg</mat-icon>
+                                Anmeldungen
+                            </a>
+                        </td>
+                    </tr>
+                }
+                @if (loaded && !tiles.length) {
+                    <tr>
+                        <td colspan="5" class="empty">Noch keine Ausfahrten angelegt.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

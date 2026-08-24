@@ -7,6 +7,7 @@ import { BoardingManagementComponent } from './boardings-management/boarding-man
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MemberManagementComponent } from './member-management/member-management.component';
 import { MediaManagementComponent } from './tile-management/components/media-management/media-management.component';
+import { RegistrationsOverviewComponent } from './tile-management/components/registrations-overview/registrations-overview.component';
 import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
 import { TripRegistrationsComponent } from './tile-management/components/trip-registrations/trip-registrations.component';
 import { TileManagementComponent } from './tile-management/tile-management.component';
@@ -56,6 +57,10 @@ export const routes: Routes = [
             {
                 path: 'tiles/:tileId/registrations',
                 component: TripRegistrationsComponent,
+            },
+            {
+                path: 'registrations',
+                component: RegistrationsOverviewComponent,
             },
             {
                 path: 'boardings',
