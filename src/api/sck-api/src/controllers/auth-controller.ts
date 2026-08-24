@@ -2,10 +2,9 @@
  * @copyright Copyright (c) 2026 Christian Silfang
  */
 
-import { randomBytes } from 'node:crypto';
 import dotenv from 'dotenv';
 import { RequestHandler } from 'express';
-import { MagicLinkRequestBody, MagicLinkVerifyBody } from '../domain/auth.js';
+import { GoogleExchangeBody, MagicLinkRequestBody, MagicLinkVerifyBody } from '../domain/auth.js';
 import * as authService from '../services/auth-service.js';
 import { sendMail } from '../services/mailer.js';
 
@@ -65,7 +64,7 @@ export const verifyMagicLink: RequestHandler = (req, res) => {
 
 export const googleStart: RequestHandler = (req, res) => {
   try {
-    const state = randomBytes(16).toString('hex');
+    const state = authService.createOAuthState();
     res.redirect(authService.buildGoogleAuthUrl(state));
   } catch (error: any) {
     console.error('Fehler beim Starten der Google-Anmeldung:', error);
@@ -75,6 +74,14 @@ export const googleStart: RequestHandler = (req, res) => {
 
 export const googleCallback: RequestHandler = async (req, res) => {
   try {
+    const state = req.query.state ? String(req.query.state) : undefined;
+    if (!authService.consumeOAuthState(state)) {
+      // Missing/unknown/already-used/expired state - reject before even
+      // touching the Google code, this is the login-CSRF guard.
+      res.redirect(`${ADMIN_APP_URL}/auth/callback?error=invalid_state`);
+      return;
+    }
+
     const code = req.query.code ? String(req.query.code) : undefined;
     if (!code) {
       res.redirect(`${ADMIN_APP_URL}/auth/callback?error=missing_code`);
@@ -95,13 +102,36 @@ export const googleCallback: RequestHandler = async (req, res) => {
       return;
     }
 
-    // sessionToken (not token): the browser already has a fully-issued
-    // session here, unlike the magic-link callback where ?token= still needs
-    // to be exchanged via POST /auth/magic-link/verify.
-    res.redirect(`${ADMIN_APP_URL}/auth/callback?sessionToken=${result.sessionToken}`);
+    // Never put the real, live session token in a redirect URL (browser
+    // history, server/proxy logs) - hand back a short-lived, single-use
+    // exchange code instead; the frontend swaps it for the real token via
+    // POST /auth/google/exchange, same shape as the magic-link flow.
+    const exchangeCode = authService.createLoginExchangeCode(result.sessionToken);
+    res.redirect(`${ADMIN_APP_URL}/auth/callback?code=${exchangeCode}`);
   } catch (error: any) {
     console.error('Fehler bei der Google-Anmeldung:', error);
     res.redirect(`${ADMIN_APP_URL}/auth/callback?error=server_error`);
+  }
+};
+
+export const exchangeGoogleLoginCode: RequestHandler = (req, res) => {
+  try {
+    const { code } = req.body as GoogleExchangeBody;
+    if (!code) {
+      res.status(400).json({ error: 'Code ist erforderlich.' });
+      return;
+    }
+
+    const sessionToken = authService.consumeLoginExchangeCode(code);
+    if (!sessionToken) {
+      res.status(401).json({ error: 'Code ungültig oder abgelaufen.' });
+      return;
+    }
+
+    res.status(200).json({ sessionToken });
+  } catch (error: any) {
+    console.error('Fehler beim Einlösen des Anmelde-Codes:', error);
+    res.status(500).json({ error: 'Fehler beim Einlösen des Anmelde-Codes.' });
   }
 };
 

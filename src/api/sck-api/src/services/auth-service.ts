@@ -19,6 +19,45 @@ const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || '';
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 const MAGIC_LINK_TTL_MS = 15 * 60 * 1000; // 15 minutes
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const OAUTH_STATE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const LOGIN_EXCHANGE_TTL_MS = 60 * 1000; // 1 minute
+
+// Short-lived, single-use, in-memory (single server instance, see the
+// Dockerfile/CMD - no horizontal scaling to worry about) values for the two
+// round-trips that must never become a live credential or CSRF nonce
+// sitting in a URL/browser-history/log: the OAuth "state" nonce, and the
+// post-OAuth session exchange code. A DB table would be overkill for
+// values that live seconds to minutes and don't need to survive a restart.
+const oauthStates = new Map<string, number>(); // state -> expiresAt
+const loginExchangeCodes = new Map<string, { sessionToken: string; expiresAt: number }>();
+
+export const createOAuthState = (): string => {
+  const state = generateToken();
+  oauthStates.set(state, Date.now() + OAUTH_STATE_TTL_MS);
+  return state;
+};
+
+// Single-use: deletes the entry on first read regardless of outcome, so a
+// captured/replayed state can never be consumed twice.
+export const consumeOAuthState = (state: string | undefined): boolean => {
+  if (!state) return false;
+  const expiresAt = oauthStates.get(state);
+  oauthStates.delete(state);
+  return !!expiresAt && expiresAt > Date.now();
+};
+
+export const createLoginExchangeCode = (sessionToken: string): string => {
+  const code = generateToken();
+  loginExchangeCodes.set(code, { sessionToken, expiresAt: Date.now() + LOGIN_EXCHANGE_TTL_MS });
+  return code;
+};
+
+export const consumeLoginExchangeCode = (code: string): string | undefined => {
+  const entry = loginExchangeCodes.get(code);
+  loginExchangeCodes.delete(code);
+  if (!entry || entry.expiresAt < Date.now()) return undefined;
+  return entry.sessionToken;
+};
 
 const nowIso = (): string => new Date().toISOString();
 const addMs = (ms: number): string => new Date(Date.now() + ms).toISOString();

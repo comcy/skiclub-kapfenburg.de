@@ -52,5 +52,7 @@ app.listen(PORT, () => {
   console.log(`SMTP Server ${SMTP_SERVER}`);
   console.log(`SMTP Port ${SMTP_PORT}`);
   console.log(`Absender Mail-Adresse ${SENDER_MAIL}`);
-  console.log(`Absender Mail-Password ${SENDER_PW}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`Absender Mail-Password ${SENDER_PW}`);
+  }
 });

@@ -11,6 +11,7 @@ jest.unstable_mockModule('../services/mailer.js', () => ({
 }));
 
 const { db } = await import('../db/connection.js');
+const authService = await import('../services/auth-service.js');
 const { default: authRoutes } = await import('../routes/auth-route.js');
 const { default: invitesRoutes } = await import('../routes/invites-route.js');
 
@@ -103,6 +104,40 @@ describe('Auth Routes', () => {
 
     const secondAccept = await request(app).post('/api/invites/accept').send({ token: 'raw-invite-token' });
     expect(secondAccept.status).toBe(401);
+  });
+
+  it('GET /api/auth/google/callback - lehnt einen fehlenden/unbekannten state ab, bevor der Google-Code eingelöst wird (CSRF-Schutz)', async () => {
+    const res = await request(app).get('/api/auth/google/callback').query({ code: 'irrelevant-because-state-first' });
+
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toContain('error=invalid_state');
+  });
+
+  it('POST /api/auth/google/exchange - tauscht einen gültigen, einmal verwendbaren Code gegen das Session-Token', async () => {
+    const code = authService.createLoginExchangeCode('the-real-session-token');
+
+    const res = await request(app).post('/api/auth/google/exchange').send({ code });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ sessionToken: 'the-real-session-token' });
+
+    // single-use: a second exchange with the same code fails
+    const secondRes = await request(app).post('/api/auth/google/exchange').send({ code });
+    expect(secondRes.status).toBe(401);
+  });
+
+  it('POST /api/auth/google/exchange - lehnt einen unbekannten Code mit 401 ab', async () => {
+    const res = await request(app).post('/api/auth/google/exchange').send({ code: 'never-issued' });
+    expect(res.status).toBe(401);
+  });
+
+  it('consumeOAuthState/consumeLoginExchangeCode sind einmal verwendbar', () => {
+    const state = authService.createOAuthState();
+    expect(authService.consumeOAuthState(state)).toBe(true);
+    expect(authService.consumeOAuthState(state)).toBe(false);
+
+    const code = authService.createLoginExchangeCode('token-x');
+    expect(authService.consumeLoginExchangeCode(code)).toBe('token-x');
+    expect(authService.consumeLoginExchangeCode(code)).toBeUndefined();
   });
 
   it('GET /api/invites/:token - zeigt die eingeladene Adresse für einen offenen Einladungslink, sonst 404', async () => {

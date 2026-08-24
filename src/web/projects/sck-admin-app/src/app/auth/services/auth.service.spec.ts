@@ -53,6 +53,24 @@ describe('AuthService', () => {
         expect(service.getToken()).toBe('session-token');
     });
 
+    it('exchangeGoogleLoginCode swaps the one-time code for a session token and loads the session', () => {
+        service.exchangeGoogleLoginCode('one-time-code').subscribe();
+
+        const exchangeReq = httpMock.expectOne(`${environment.sckApiUrl}/auth/google/exchange`);
+        expect(exchangeReq.request.body).toEqual({ code: 'one-time-code' });
+        exchangeReq.flush({ sessionToken: 'session-token' });
+
+        expect(service.getToken()).toBe('session-token');
+        const meReq = httpMock.expectOne(`${environment.sckApiUrl}/auth/me`);
+        meReq.flush({ id: '1', email: 'member@example.com', isSuperAdmin: false, permissions: [] });
+
+        expect(service.session()).toEqual({
+            email: 'member@example.com',
+            isSuperAdmin: false,
+            permissions: [],
+        });
+    });
+
     it('checkSession attaches the stored token as a Bearer header and populates the session', () => {
         service.verifyMagicLink('magic-token').subscribe();
         httpMock.expectOne(`${environment.sckApiUrl}/auth/magic-link/verify`).flush({

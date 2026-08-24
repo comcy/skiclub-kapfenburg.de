@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, catchError, map, of, tap } from 'rxjs';
+import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Permission, Session } from '../domain/session';
 
@@ -47,12 +47,6 @@ export class AuthService {
         localStorage.setItem(TOKEN_KEY, token);
     }
 
-    /** Google's OAuth callback hands back an already-issued session token (no exchange step needed) — store it and load the session it belongs to. */
-    applySessionToken(sessionToken: string): Observable<Session | null> {
-        this.setToken(sessionToken);
-        return this.checkSession();
-    }
-
     private clearToken(): void {
         localStorage.removeItem(TOKEN_KEY);
     }
@@ -84,6 +78,14 @@ export class AuthService {
             tap((result) => this.setToken(result.sessionToken)),
             map((result) => toSession(result.user)),
             tap((session) => this._session.set(session)),
+        );
+    }
+
+    /** Exchanges the Google OAuth callback's short-lived, single-use code for the real session token (never carried directly in the callback URL). */
+    exchangeGoogleLoginCode(code: string): Observable<Session | null> {
+        return this.http.post<{ sessionToken: string }>(`${this.apiUrl}/auth/google/exchange`, { code }).pipe(
+            tap((result) => this.setToken(result.sessionToken)),
+            switchMap(() => this.checkSession()),
         );
     }
 

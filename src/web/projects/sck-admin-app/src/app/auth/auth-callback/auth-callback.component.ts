@@ -8,9 +8,11 @@ const CALLBACK_TIMEOUT_MS = 15000;
 
 /**
  * Landing page for both auth methods: the magic-link email points here with
- * ?token=... (still needs exchanging via POST /auth/magic-link/verify), and
- * the backend's Google OAuth callback redirects here with ?sessionToken=...
- * (already a live session, just needs storing).
+ * ?token=... (needs exchanging via POST /auth/magic-link/verify), and the
+ * backend's Google OAuth callback redirects here with ?code=... (a
+ * short-lived, single-use code that needs exchanging via
+ * POST /auth/google/exchange - the real session token is never carried in
+ * this URL).
  */
 @Component({
     selector: 'app-auth-callback',
@@ -35,11 +37,11 @@ export class AuthCallbackComponent implements OnInit {
 
     ngOnInit(): void {
         const params = this.route.snapshot.queryParamMap;
-        const sessionToken = params.get('sessionToken');
+        const googleExchangeCode = params.get('code');
         const magicLinkToken = params.get('token');
 
-        const result$ = sessionToken
-            ? this.auth.applySessionToken(sessionToken)
+        const result$ = googleExchangeCode
+            ? this.auth.exchangeGoogleLoginCode(googleExchangeCode)
             : magicLinkToken
               ? this.auth.verifyMagicLink(magicLinkToken)
               : this.auth.checkSession();

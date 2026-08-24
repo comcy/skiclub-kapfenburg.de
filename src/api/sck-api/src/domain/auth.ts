@@ -25,6 +25,10 @@ export interface MagicLinkVerifyBody {
   token?: string;
 }
 
+export interface GoogleExchangeBody {
+  code?: string;
+}
+
 export interface CreateInviteBody {
   email?: string;
 }
