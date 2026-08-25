@@ -112,6 +112,22 @@ describe('Members Routes', () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(1);
     expect(res.body[0].registrationId).toBe('reg-open');
+    expect(res.body[0].confirmed).toBe(false);
     expect(mockedListDataByType).toHaveBeenCalledWith('membership-registration');
+  });
+
+  it('GET /api/members/applications - markiert bestätigte Anträge als confirmed', async () => {
+    const token = createAuthedUser(['members:manage']);
+
+    mockedListDataByType.mockReturnValue([
+      { registrationId: 'reg-confirmed', firstName: 'Lea', lastName: 'Fischer', email: 'lea@test.com' },
+    ]);
+    db.prepare(
+      "INSERT INTO membership_confirmation_tokens (token_hash, registration_id, expires_at, confirmed_at) VALUES ('hash-1', 'reg-confirmed', ?, ?)",
+    ).run(new Date(Date.now() + 100000).toISOString(), new Date().toISOString());
+
+    const res = await request(app).get('/api/members/applications').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body[0].confirmed).toBe(true);
   });
 });

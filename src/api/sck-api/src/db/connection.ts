@@ -202,6 +202,17 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     expires_at TEXT NOT NULL
   );
+
+  -- Double-opt-in for membership registrations (see membership-confirmation-service.ts).
+  -- registration_id points at the NDJSON row (membership-registration.ndjson), not a
+  -- SQL row - that data stays append-only, this table only tracks confirmation state.
+  CREATE TABLE IF NOT EXISTS membership_confirmation_tokens (
+    token_hash TEXT PRIMARY KEY,
+    registration_id TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    expires_at TEXT NOT NULL,
+    confirmed_at TEXT
+  );
 `);
 
 // CREATE TABLE IF NOT EXISTS leaves an already-existing tiles table (from a

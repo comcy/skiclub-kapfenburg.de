@@ -7,6 +7,7 @@ import { db } from '../db/connection.js';
 import { Member, MemberCreationParams, MembershipApplication } from '../domain/member.js';
 import { PaginatedResponse } from '../domain/tile.js';
 import { listDataByType } from './data-service.js';
+import { listConfirmedRegistrationIds } from './membership-confirmation-service.js';
 
 interface MemberRow {
   id: string;
@@ -143,7 +144,9 @@ export const listMembershipApplications = (): MembershipApplication[] => {
     ).map((row) => row.id),
   );
 
-  return listDataByType<MembershipApplication>('membership-registration').filter(
-    (application) => !promoted.has(application.registrationId),
-  );
+  const confirmed = listConfirmedRegistrationIds();
+
+  return listDataByType<Omit<MembershipApplication, 'confirmed'>>('membership-registration')
+    .filter((application) => !promoted.has(application.registrationId))
+    .map((application) => ({ ...application, confirmed: confirmed.has(application.registrationId) }));
 };

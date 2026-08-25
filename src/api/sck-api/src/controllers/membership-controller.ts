@@ -5,16 +5,19 @@
 import { randomUUID } from 'crypto';
 import { RequestHandler } from 'express';
 import { FamilyMember, MembershipRegistrationRequestBody } from '../domain/membership.js';
-import { saveData, saveSepaData } from '../services/data-service.js';
+import { listDataByType, saveData, saveSepaData } from '../services/data-service.js';
 import { encryptField } from '../services/crypto-service.js';
 import { createMailTransporter, defaultSender } from '../services/mailer.js';
+import { confirmRegistration, createConfirmationToken } from '../services/membership-confirmation-service.js';
 import {
   MEMBERSHIP_BOARD_RECIPIENTS,
   getMembershipBoardNotificationMailSubject,
   getMembershipBoardNotificationMailText,
-  getMembershipConfirmationMailSubject,
-  getMembershipConfirmationMailText,
+  getMembershipOptInMailSubject,
+  getMembershipOptInMailText,
 } from '../services/membership-mail-service.js';
+
+const SCK_APP_URL = process.env.SCK_APP_URL || 'http://localhost:4200';
 
 const IBAN_REGEX = /^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/;
 
@@ -77,6 +80,13 @@ export const createMembershipRegistration: RequestHandler = async (req, res) => 
     await saveData('membership-registration', { registrationId, ...registrationWithoutIban });
     await saveSepaData({ registrationId, ibanEncrypted: encryptField(iban) });
 
+    // Double-Opt-in: der Vorstand wird erst benachrichtigt, wenn der
+    // Antragsteller über den Link in dieser Mail bestätigt (siehe
+    // confirmMembershipRegistration unten) - ein roher, unbestätigter
+    // Antrag erreicht den Vorstand nie.
+    const confirmationToken = createConfirmationToken(registrationId);
+    const confirmUrl = `${SCK_APP_URL}/mitgliedschaft/bestaetigen?token=${confirmationToken}`;
+
     // E-Mail-Versand ist Best-Effort: Der Antrag ist bereits gespeichert,
     // ein Mailversand-Fehler soll die erfolgreiche Registrierung nicht
     // rückgängig machen (kein eigener Notification-Service in diesem
@@ -87,18 +97,11 @@ export const createMembershipRegistration: RequestHandler = async (req, res) => 
       await transporter.sendMail({
         from: defaultSender(),
         to: registrationData.email,
-        subject: getMembershipConfirmationMailSubject(),
-        html: getMembershipConfirmationMailText(registrationData),
-      });
-
-      await transporter.sendMail({
-        from: defaultSender(),
-        to: MEMBERSHIP_BOARD_RECIPIENTS,
-        subject: getMembershipBoardNotificationMailSubject(registrationData),
-        html: getMembershipBoardNotificationMailText(registrationData),
+        subject: getMembershipOptInMailSubject(),
+        html: getMembershipOptInMailText(registrationData, confirmUrl),
       });
     } catch (mailError) {
-      console.error('Fehler beim Versand der Mitgliedsantrag-E-Mails:', mailError);
+      console.error('Fehler beim Versand der Mitgliedsantrag-Opt-in-Mail:', mailError);
     }
 
     res.status(201).json({
@@ -107,6 +110,49 @@ export const createMembershipRegistration: RequestHandler = async (req, res) => 
     });
   } catch (error: any) {
     console.error('Fehler bei der Erstellung des Mitgliedsantrags:', error);
+    res.status(500).json({ error: 'Fehler bei der Verarbeitung Ihrer Anfrage.' });
+  }
+};
+
+export const confirmMembershipRegistration: RequestHandler = async (req, res) => {
+  try {
+    const token = req.body?.token;
+    if (typeof token !== 'string' || !token) {
+      res.status(400).json({ error: 'Bestätigungs-Token fehlt.' });
+      return;
+    }
+
+    const result = confirmRegistration(token);
+    if (!result) {
+      res.status(404).json({ error: 'Der Bestätigungslink ist ungültig oder abgelaufen.' });
+      return;
+    }
+
+    // Board-Mail nur beim ersten erfolgreichen Klick, nicht bei jedem
+    // (idempotenten) Wiederaufruf desselben Links.
+    if (!result.alreadyConfirmed) {
+      const registrationData = listDataByType<MembershipRegistrationRequestBody & { registrationId: string }>(
+        'membership-registration',
+      ).find((registration) => registration.registrationId === result.registrationId);
+
+      if (registrationData) {
+        try {
+          const transporter = createMailTransporter();
+          await transporter.sendMail({
+            from: defaultSender(),
+            to: MEMBERSHIP_BOARD_RECIPIENTS,
+            subject: getMembershipBoardNotificationMailSubject(registrationData),
+            html: getMembershipBoardNotificationMailText(registrationData),
+          });
+        } catch (mailError) {
+          console.error('Fehler beim Versand der Vorstands-Benachrichtigung:', mailError);
+        }
+      }
+    }
+
+    res.status(200).json({ confirmed: true });
+  } catch (error: any) {
+    console.error('Fehler bei der Bestätigung des Mitgliedsantrags:', error);
     res.status(500).json({ error: 'Fehler bei der Verarbeitung Ihrer Anfrage.' });
   }
 };

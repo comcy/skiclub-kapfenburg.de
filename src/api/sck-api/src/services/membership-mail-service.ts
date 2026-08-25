@@ -30,21 +30,24 @@ const renderFamilyMembers = (familyMembers?: FamilyMember[]): string => {
   `;
 };
 
-export const getMembershipConfirmationMailSubject = (): string => {
-  return 'SC-Kapfenburg Mitgliedsantrag: Eingangsbestätigung';
+export const getMembershipOptInMailSubject = (): string => {
+  return 'SC-Kapfenburg Mitgliedsantrag: Bitte bestätigen';
 };
 
 /**
- * Bestätigungsmail an den Antragsteller: reine Eingangsbestätigung mit den
- * eingegebenen Daten zur Kontrolle (Vorbild: getTripConfirmationMailText).
+ * Double-Opt-in-Mail an den Antragsteller: Zusammenfassung zur Kontrolle
+ * (Vorbild: getTripConfirmationMailText) plus Bestätigen-Link. Erst der
+ * Klick auf diesen Link löst die Board-Benachrichtigung aus (siehe
+ * membership-controller.ts / membership-confirmation-service.ts) - ein roher,
+ * unbestätigter Antrag erreicht den Vorstand nie.
  */
-export const getMembershipConfirmationMailText = (data: MembershipRegistrationRequestBody): string => {
+export const getMembershipOptInMailText = (data: MembershipRegistrationRequestBody, confirmUrl: string): string => {
   return `
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding: 20px; background-color: #f4f4f4;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #dddddd;">
-        <h1 style="color: #3f51b5; font-size: 22px; margin-top: 0;">Mitgliedsantrag: Eingangsbestätigung</h1>
+        <h1 style="color: #3f51b5; font-size: 22px; margin-top: 0;">Mitgliedsantrag: Bitte bestätigen</h1>
         <p>Hallo ${data.firstName},</p>
-        <p>vielen Dank für deinen Mitgliedsantrag beim Skiclub Kapfenburg e.V. Bitte prüfe die folgenden Angaben auf Richtigkeit.</p>
+        <p>vielen Dank für deinen Mitgliedsantrag beim Skiclub Kapfenburg e.V. Bitte prüfe die folgenden Angaben auf Richtigkeit und bestätige deinen Antrag über den Button unten.</p>
 
         <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
           <tr><td style="padding: 4px 0; color: #555;">Name</td><td style="padding: 4px 0;"><strong>${data.firstName} ${data.lastName}</strong></td></tr>
@@ -58,7 +61,12 @@ export const getMembershipConfirmationMailText = (data: MembershipRegistrationRe
 
         ${renderFamilyMembers(data.familyMembers)}
 
-        <p style="margin-top: 24px;">Die Bearbeitung deines Antrags sowie die Verarbeitung des Lastschriftmandats erfolgt durch unseren Kassenwart. Bei Rückfragen kontaktiere uns bitte über registration@skiclub-kapfenburg.de.</p>
+        <p style="text-align: center; margin: 30px 0;">
+          <a href="${confirmUrl}" style="background-color: #3f51b5; color: #ffffff; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">Antrag bestätigen</a>
+        </p>
+        <p style="font-size: 12px; color: #999;">Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:<br>${confirmUrl}</p>
+
+        <p style="margin-top: 24px;">Erst nach der Bestätigung wird dein Antrag an unseren Vorstand weitergeleitet. Die Bearbeitung des Lastschriftmandats erfolgt anschließend durch unseren Kassenwart. Bei Rückfragen kontaktiere uns bitte über registration@skiclub-kapfenburg.de.</p>
 
         <p style="margin-top: 30px;">Schöne Grüße,<br><strong>Dein Team vom Skiclub Kapfenburg e.V.</strong></p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">

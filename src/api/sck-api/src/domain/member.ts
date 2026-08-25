@@ -38,4 +38,9 @@ export interface MembershipApplication {
   address?: string;
   isFamilyMembership?: boolean;
   familyMembers?: { firstName: string; lastName: string; birthday: string }[];
+  // Double-Opt-in-Status (membership_confirmation_tokens) - siehe
+  // membership-confirmation-service.ts. Ein Antrag wird erst nach
+  // Bestätigung an den Vorstand gemeldet; das Admin-UI gated "Promote"
+  // (Antrag zu members übernehmen) darauf.
+  confirmed: boolean;
 }

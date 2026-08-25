@@ -8,6 +8,7 @@ process.env.TURNSTILE_SECRET_KEY = 'test-secret';
 
 const mockedSaveData = jest.fn();
 const mockedSaveSepaData = jest.fn();
+const mockedListDataByType = jest.fn();
 const mockedSendMail = jest.fn();
 const mockedCreateTransport = jest.fn();
 // requireTurnstile now gates this route - Jest's node test environment
@@ -19,6 +20,8 @@ const mockFetch = jest.fn();
 jest.unstable_mockModule('../services/data-service', () => ({
   saveData: mockedSaveData,
   saveSepaData: mockedSaveSepaData,
+  listDataByType: mockedListDataByType,
+  dataDir: '/tmp',
 }));
 
 jest.unstable_mockModule('nodemailer', () => ({
@@ -53,10 +56,12 @@ describe('Membership Routes', () => {
   beforeEach(() => {
     mockedSaveData.mockClear();
     mockedSaveSepaData.mockClear();
+    mockedListDataByType.mockClear();
     mockedSendMail.mockClear();
     mockedCreateTransport.mockClear();
     mockedSaveData.mockResolvedValue(undefined);
     mockedSaveSepaData.mockResolvedValue(undefined);
+    mockedListDataByType.mockReturnValue([]);
     mockedSendMail.mockResolvedValue({ messageId: 'test-message-id' });
     mockedCreateTransport.mockReturnValue({ sendMail: mockedSendMail });
     // requireTurnstile now gates this route - mock Cloudflare's verify call
@@ -78,7 +83,7 @@ describe('Membership Routes', () => {
     expect(mockedSaveData).not.toHaveBeenCalled();
   });
 
-  it('POST /api/membership/register - sollte einen Antrag speichern, IBAN verschlüsselt getrennt ablegen und zwei E-Mails versenden', async () => {
+  it('POST /api/membership/register - sollte einen Antrag speichern, IBAN verschlüsselt getrennt ablegen und eine Opt-in-E-Mail versenden', async () => {
     const response = await request(app).post('/api/membership/register').send(validRegistration);
 
     expect(response.status).toBe(201);
@@ -101,15 +106,15 @@ describe('Membership Routes', () => {
     expect(sepaRecord.ibanEncrypted).toBeDefined();
     expect(sepaRecord.ibanEncrypted).not.toContain('DE89370400440532013000');
 
-    // Zwei E-Mails: Antragsteller + Vorstand/Kassenwart
-    expect(mockedSendMail).toHaveBeenCalledTimes(2);
+    // Nur eine E-Mail beim Antrag: die Opt-in-Mail an den Antragsteller. Der
+    // Vorstand wird erst nach Bestätigung benachrichtigt (siehe unten).
+    expect(mockedSendMail).toHaveBeenCalledTimes(1);
     const applicantMail = mockedSendMail.mock.calls[0][0] as any;
-    const boardMail = mockedSendMail.mock.calls[1][0] as any;
     expect(applicantMail.to).toBe('max@test.com');
-    expect(boardMail.to).toContain('registration@skiclub-kapfenburg.de');
+    expect(applicantMail.html).toContain('/mitgliedschaft/bestaetigen?token=');
 
-    // IBAN taucht in der Vorstandsmail nicht im Klartext auf
-    expect(boardMail.html).not.toContain('DE89370400440532013000');
+    // IBAN taucht auch in der maskierten Opt-in-Mail nicht im Klartext auf
+    expect(applicantMail.html).not.toContain('DE89370400440532013000');
   });
 
   it('POST /api/membership/register - sollte auch ohne weitere Familienmitglieder funktionieren', async () => {
@@ -168,5 +173,63 @@ describe('Membership Routes', () => {
 
     expect(response.status).toBe(500);
     expect(mockedSendMail).not.toHaveBeenCalled();
+  });
+
+  describe('POST /api/membership/confirm', () => {
+    // listDataByType is mocked module-wide (see top of file) - the confirm
+    // handler looks the registration back up via it to build the board mail.
+    // registrationId is generated server-side (randomUUID), so it's read
+    // back from the register response rather than hardcoded.
+    const registerAndGetToken = async (): Promise<string> => {
+      const registerResponse = await request(app).post('/api/membership/register').send(validRegistration);
+      mockedListDataByType.mockReturnValue([
+        {
+          registrationId: registerResponse.body.registrationId,
+          firstName: 'Max',
+          lastName: 'Mustermann',
+          email: 'max@test.com',
+        },
+      ]);
+      const optInMail = mockedSendMail.mock.calls[0][0] as { html: string };
+      mockedSendMail.mockClear();
+      return optInMail.html.match(/token=([a-f0-9]+)/)![1];
+    };
+
+    it('bestätigt einen gültigen Token und versendet erst dann die Vorstands-Mail', async () => {
+      const token = await registerAndGetToken();
+
+      const response = await request(app).post('/api/membership/confirm').send({ token });
+
+      expect(response.status).toBe(200);
+      expect(response.body.confirmed).toBe(true);
+      expect(mockedSendMail).toHaveBeenCalledTimes(1);
+      const boardMail = mockedSendMail.mock.calls[0][0] as { to: string };
+      expect(boardMail.to).toContain('registration@skiclub-kapfenburg.de');
+    });
+
+    it('bleibt bei erneutem Aufruf desselben Tokens idempotent erfolgreich, ohne die Vorstands-Mail erneut zu versenden', async () => {
+      const token = await registerAndGetToken();
+
+      await request(app).post('/api/membership/confirm').send({ token });
+      mockedSendMail.mockClear();
+      const secondResponse = await request(app).post('/api/membership/confirm').send({ token });
+
+      expect(secondResponse.status).toBe(200);
+      expect(secondResponse.body.confirmed).toBe(true);
+      expect(mockedSendMail).not.toHaveBeenCalled();
+    });
+
+    it('lehnt einen unbekannten Token mit 404 ab', async () => {
+      const response = await request(app).post('/api/membership/confirm').send({ token: 'unbekannt' });
+
+      expect(response.status).toBe(404);
+      expect(mockedSendMail).not.toHaveBeenCalled();
+    });
+
+    it('lehnt eine Anfrage ohne Token mit 400 ab', async () => {
+      const response = await request(app).post('/api/membership/confirm').send({});
+
+      expect(response.status).toBe(400);
+    });
   });
 });

@@ -50,6 +50,10 @@ services:
       # the "admin" service below is actually reachable from your browser
       # (e.g. http://<LXC-IP>:8081), not the container-internal address.
       ADMIN_APP_URL: ${ADMIN_APP_URL}
+      # Base URL embedded in the membership double-opt-in confirmation mail
+      # — must be wherever the "web" service below is actually reachable
+      # from your browser, not the container-internal address.
+      SCK_APP_URL: ${SCK_APP_URL}
       # Google login for the admin app — optional, magic-link works without
       # it. All three blank disables the "Sign in with Google" button's
       # backend route (it 500s instead of completing). See .env.example.
