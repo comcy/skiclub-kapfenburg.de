@@ -10,8 +10,9 @@ import {
     MembershipRegistrationFormServiceInterface,
 } from 'projects/membership-lib/src/lib/ui/membership-registration-form/membership-registration-form.interfaces';
 import { environment } from 'projects/sck-app/src/environments/environment';
+import { Observable } from 'rxjs';
 
-const SUCCESS_MESSAGE = `Dein Mitgliedsantrag wurde übermittelt. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
+const SUCCESS_MESSAGE = `Dein Mitgliedsantrag wurde übermittelt. Du erhälst eine E-Mail mit einem Bestätigungslink - erst nach dessen Bestätigung wird dein Antrag bearbeitet.
     Solltest du keine E-Mail erhalten haben, prüfe bitte deinen Spam-Ordner. Solltest du auch dort keine E-Mail finden, kontaktiere uns bitte über: registration@skiclub-kapfenburg.de`;
 
 @Injectable()
@@ -23,8 +24,9 @@ export class MembershipRegistrationFormService implements MembershipRegistration
 
     /**
      * Submits the registration to sck-api, which persists it (IBAN field-encrypted, stored
-     * separate from the rest) and sends both the applicant confirmation and the board
-     * notification mail itself - see membership-controller.ts / membership-mail-service.ts.
+     * separate from the rest) and sends the double-opt-in mail - see membership-controller.ts /
+     * membership-mail-service.ts. The board notification only goes out once confirmRegistration()
+     * below succeeds.
      */
     public submitRegistration(formValue: MembershipRegisterFormValue): void {
         this.http.post(`${environment.sckApiUrl}/membership/register`, formValue).subscribe({
@@ -40,6 +42,10 @@ export class MembershipRegistrationFormService implements MembershipRegistration
 
     public getTurnstileSiteKey(): string {
         return environment.turnstileSiteKey;
+    }
+
+    public confirmRegistration(token: string): Observable<void> {
+        return this.http.post<void>(`${environment.sckApiUrl}/membership/confirm`, { token });
     }
 }
 

@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, inject } fr
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable } from 'rxjs';
 import { MembershipApplication } from '../../domain/membership-application';
 import { MembersDataService } from '../../services/members-data.service';
@@ -10,7 +11,7 @@ import { MembersDataService } from '../../services/members-data.service';
 @Component({
     selector: 'app-application-list',
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatTooltipModule],
     templateUrl: './application-list.component.html',
     styleUrls: ['./application-list.component.scss'],
 })
@@ -21,7 +22,7 @@ export class ApplicationListComponent implements OnInit {
     @Output() promote = new EventEmitter<MembershipApplication>();
 
     public applications$!: Observable<MembershipApplication[]>;
-    public displayedColumns: string[] = ['name', 'email', 'submittedAt', 'actions'];
+    public displayedColumns: string[] = ['name', 'email', 'submittedAt', 'confirmed', 'actions'];
 
     ngOnInit(): void {
         this.refresh();

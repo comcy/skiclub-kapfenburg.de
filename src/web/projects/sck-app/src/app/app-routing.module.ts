@@ -14,6 +14,7 @@ import {
     GYM_ROUTE,
     HOME_ROUTE,
     IMPRESSUM_ROUTE,
+    MEMBERSHIP_CONFIRM_ROUTE,
     SKILIFT_ROUTE,
     TRIPS_ROUTE,
 } from './route-segments';
@@ -51,6 +52,13 @@ const routes: Routes = [
     {
         path: DSGVO_ROUTE,
         component: DatenschutzComponent,
+    },
+    {
+        path: MEMBERSHIP_CONFIRM_ROUTE,
+        loadComponent: () =>
+            import('./components/membership-confirm/membership-confirm.component').then(
+                (m) => m.MembershipConfirmComponent,
+            ),
     },
     // Auxiliary Routes for Dialogs
     {

@@ -10,5 +10,6 @@ export const GYM_ROUTE = 'gymnastik';
 
 export const IMPRESSUM_ROUTE = 'impressum';
 export const DSGVO_ROUTE = 'datenschutz';
+export const MEMBERSHIP_CONFIRM_ROUTE = 'mitgliedschaft/bestaetigen';
 
 export const EMPTY_ROUTE = '';

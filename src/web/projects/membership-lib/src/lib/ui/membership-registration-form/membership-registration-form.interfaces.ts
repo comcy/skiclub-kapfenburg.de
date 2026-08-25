@@ -3,6 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 export interface FamilyMember {
     firstName: string;
@@ -36,4 +37,6 @@ export abstract class MembershipRegistrationFormServiceInterface {
     // Public Turnstile site key (environment.turnstileSiteKey) - not a secret, only the
     // sck-api-side secret key needs protecting (see turnstile-middleware.ts).
     public abstract getTurnstileSiteKey(): string;
+    // Double-Opt-in: POST {sckApiUrl}/membership/confirm - see membership-confirmation-service.ts.
+    public abstract confirmRegistration(token: string): Observable<void>;
 }

@@ -71,4 +71,13 @@ describe('MembershipRegistrationFormService', () => {
     it('should return the configured Turnstile site key', () => {
         expect(service.getTurnstileSiteKey()).toBe(environment.turnstileSiteKey);
     });
+
+    it('should POST the token to /membership/confirm', () => {
+        service.confirmRegistration('confirm-token').subscribe();
+
+        const req = httpMock.expectOne(`${environment.sckApiUrl}/membership/confirm`);
+        expect(req.request.method).toBe('POST');
+        expect(req.request.body).toEqual({ token: 'confirm-token' });
+        req.flush(null);
+    });
 });

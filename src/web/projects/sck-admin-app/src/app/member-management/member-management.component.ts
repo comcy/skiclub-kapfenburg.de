@@ -25,6 +25,8 @@ export class MemberManagementComponent {
     }
 
     onPromote(application: MembershipApplication): void {
+        if (!application.confirmed) return;
+
         this.selectedMember = {
             id: '',
             firstName: application.firstName,
