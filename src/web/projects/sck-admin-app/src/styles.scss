@@ -6,13 +6,19 @@
 
 @include mat.core();
 
-// Three hand-designed themes (Ocean/Love/Snow, see docs/sck-themes.md and
-// theme-tokens.scss) replaced the earlier "pick any of Angular Material's
-// system palettes" switcher - Ocean is the unscoped default/brand color.
-// Each is a full, pre-generated --mat-sys-* token set (themes.angular-
-// material.dev), applied via mat.theme-overrides() rather than computed
-// from a single seed color the way the old system-palette version worked.
+// Four hand-designed themes (Ocean/Love/Snow/Purple & Amber, see
+// docs/sck-themes.md and theme-tokens.scss) replaced the earlier "pick any
+// of Angular Material's system palettes" switcher - Purple & Amber is the
+// unscoped default/brand color (see below), the rest (including Ocean, the
+// former default) are selectable via their own .theme-{name} class. Each is
+// a full, pre-generated --mat-sys-* token set (themes.angular-material.dev),
+// applied via mat.theme-overrides() rather than computed from a single seed
+// color the way the old system-palette version worked.
 $themes: (
+    'ocean': (
+        light: tokens.$ocean-light,
+        dark: tokens.$ocean-dark,
+    ),
     'love': (
         light: tokens.$love-light,
         dark: tokens.$love-dark,
@@ -60,17 +66,17 @@ $themes: (
     );
 }
 
-// Default (Ocean) - unscoped, so the page is already correctly colored
-// before ThemeService's first tick (it reads localStorage and may add
-// .theme-*/.dark-theme classes).
+// Default (Purple & Amber) - unscoped, so the page is already correctly
+// colored before ThemeService's first tick (it reads localStorage and may
+// add .theme-*/.dark-theme classes).
 html {
     color-scheme: light;
-    @include _emit-theme(tokens.$ocean-light);
+    @include _emit-theme(tokens.$purple-amber-light);
 }
 
 .dark-theme {
     color-scheme: dark;
-    @include _emit-theme(tokens.$ocean-dark);
+    @include _emit-theme(tokens.$purple-amber-dark);
 }
 
 @each $name, $pair in $themes {

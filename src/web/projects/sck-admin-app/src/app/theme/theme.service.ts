@@ -5,12 +5,14 @@ export interface ThemeOption {
     name: string;
 }
 
-// 'ocean' is the unscoped default theme defined directly on `html` in
-// styles.scss - it has no .theme-ocean class, see applyColor() below. The
-// rest match the .theme-{id} classes generated there. Three hand-designed
-// M3 token sets (see theme-tokens.scss / docs/sck-themes.md), not Angular
-// Material's generic system palettes.
+// 'purple-amber' is the unscoped default theme defined directly on `html`
+// in styles.scss - it has no .theme-purple-amber class, see applyColor()
+// below. The rest (including the former default, Ocean) match the
+// .theme-{id} classes generated there. Four hand-designed M3 token sets
+// (see theme-tokens.scss / docs/sck-themes.md), not Angular Material's
+// generic system palettes.
 export const THEMES: ThemeOption[] = [
+    { id: 'purple-amber', name: 'Purple & Amber' },
     { id: 'ocean', name: 'Ocean' },
     { id: 'love', name: 'Love' },
     { id: 'snow', name: 'Snow' },
@@ -18,7 +20,7 @@ export const THEMES: ThemeOption[] = [
 
 const THEME_STORAGE_KEY = 'sck-admin-theme';
 const DARK_STORAGE_KEY = 'sck-admin-dark-mode';
-const DEFAULT_THEME = 'ocean';
+const DEFAULT_THEME = 'purple-amber';
 const DARK_CLASS = 'dark-theme';
 
 @Injectable({
