@@ -35,6 +35,6 @@ table {
 }
 
 .chip-none {
-    color: rgba(0, 0, 0, 0.38);
+    color: var(--mat-sys-on-surface-variant);
     font-size: 13px;
 }

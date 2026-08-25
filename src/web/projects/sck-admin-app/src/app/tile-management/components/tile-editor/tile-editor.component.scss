@@ -31,13 +31,13 @@
 
 .preview-content {
     align-items: center;
-    background-color: #fafafa;
+    background-color: var(--mat-sys-surface-container);
 }
 
 .preview-toolbar {
     padding: 8px 16px;
-    border-bottom: 1px solid #e0e0e0;
-    background-color: white;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    background-color: var(--mat-sys-surface);
     flex-shrink: 0;
 }
 
@@ -46,8 +46,8 @@
     padding-left: 16px;
     padding-bottom: 10px;
     padding-top: 10px;
-    border-top: 1px solid #e0e0e0;
-    background-color: white;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    background-color: var(--mat-sys-surface);
     flex-shrink: 0;
     display: flex;
     justify-content: flex-end;
@@ -84,7 +84,7 @@
     margin: 8px 0 0;
     font-size: 14px;
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--mat-sys-on-surface-variant);
 }
 
 .pricing-header {
@@ -93,7 +93,7 @@
 
 .pricing-col-label {
     font-size: 12px;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--mat-sys-on-surface-variant);
 }
 
 .pricing-row-label {
@@ -102,7 +102,7 @@
 
 .preview-header {
     margin-bottom: 24px;
-    color: #666;
+    color: var(--mat-sys-on-surface-variant);
     font-weight: 500;
     margin-top: 16px;
 }

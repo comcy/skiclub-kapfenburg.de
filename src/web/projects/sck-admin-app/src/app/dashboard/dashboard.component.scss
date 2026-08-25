@@ -4,10 +4,11 @@ $color-primary: var(--mat-sys-primary);
 $color-on-primary: var(--mat-sys-on-primary);
 $color-primary-container: var(--mat-sys-primary-container);
 $color-on-primary-container: var(--mat-sys-on-primary-container);
-$divider: rgba(0, 0, 0, 0.12);
-$ink: rgba(0, 0, 0, 0.87);
-$ink-secondary: rgba(0, 0, 0, 0.6);
-$ink-hint: rgba(0, 0, 0, 0.38);
+$divider: var(--mat-sys-outline-variant);
+$ink: var(--mat-sys-on-surface);
+$ink-secondary: var(--mat-sys-on-surface-variant);
+$ink-hint: var(--mat-sys-on-surface-variant);
+$surface: var(--mat-sys-surface);
 
 .content-area {
     padding: 32px;
@@ -46,7 +47,7 @@ section + section {
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: #fff;
+    background: $surface;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -89,7 +90,7 @@ section + section {
     align-items: center;
     gap: 16px;
     cursor: pointer;
-    background: #fff;
+    background: $surface;
     text-decoration: none;
     color: inherit;
 

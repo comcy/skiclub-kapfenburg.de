@@ -7,25 +7,20 @@ export interface ThemeOption {
 
 // 'violet' is the unscoped default theme defined directly on `html` in
 // styles.scss (mat.define-theme()'s own default primary) - it has no
-// .theme-violet class, see setTheme() below. The rest match the classes
-// generated there from Angular Material's full set of M3 system palettes.
+// .theme-violet class, see applyColor() below. The rest match the
+// .theme-{id} classes generated there - curated down to four palettes
+// (see the theme-switcher plan), not the full set Angular Material ships.
 export const THEMES: ThemeOption[] = [
     { id: 'violet', name: 'Violett' },
-    { id: 'red', name: 'Rot' },
-    { id: 'green', name: 'Grün' },
-    { id: 'blue', name: 'Blau' },
-    { id: 'yellow', name: 'Gelb' },
-    { id: 'cyan', name: 'Cyan' },
     { id: 'magenta', name: 'Magenta' },
-    { id: 'orange', name: 'Orange' },
-    { id: 'chartreuse', name: 'Chartreuse' },
-    { id: 'spring-green', name: 'Frühlingsgrün' },
+    { id: 'cyan', name: 'Cyan' },
     { id: 'azure', name: 'Azur' },
-    { id: 'rose', name: 'Rosé' },
 ];
 
-const STORAGE_KEY = 'sck-admin-theme';
+const THEME_STORAGE_KEY = 'sck-admin-theme';
+const DARK_STORAGE_KEY = 'sck-admin-dark-mode';
 const DEFAULT_THEME = 'violet';
+const DARK_CLASS = 'dark-theme';
 
 @Injectable({
     providedIn: 'root',
@@ -33,19 +28,26 @@ const DEFAULT_THEME = 'violet';
 export class ThemeService {
     public readonly themes = THEMES;
     public readonly current = signal(DEFAULT_THEME);
+    public readonly isDark = signal(false);
 
     constructor() {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        const id = THEMES.some((theme) => theme.id === stored) ? (stored as string) : DEFAULT_THEME;
-        this.applyTheme(id);
+        const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+        const id = THEMES.some((theme) => theme.id === storedTheme) ? (storedTheme as string) : DEFAULT_THEME;
+        this.applyColor(id);
+        this.applyDarkMode(localStorage.getItem(DARK_STORAGE_KEY) === 'true');
     }
 
     setTheme(id: string): void {
-        localStorage.setItem(STORAGE_KEY, id);
-        this.applyTheme(id);
+        localStorage.setItem(THEME_STORAGE_KEY, id);
+        this.applyColor(id);
     }
 
-    private applyTheme(id: string): void {
+    setDarkMode(isDark: boolean): void {
+        localStorage.setItem(DARK_STORAGE_KEY, String(isDark));
+        this.applyDarkMode(isDark);
+    }
+
+    private applyColor(id: string): void {
         this.current.set(id);
         // classList is a live collection - snapshot it first, removing while
         // iterating would skip entries as indices shift.
@@ -56,5 +58,10 @@ export class ThemeService {
         if (id !== DEFAULT_THEME) {
             document.body.classList.add(`theme-${id}`);
         }
+    }
+
+    private applyDarkMode(isDark: boolean): void {
+        this.isDark.set(isDark);
+        document.body.classList.toggle(DARK_CLASS, isDark);
     }
 }
