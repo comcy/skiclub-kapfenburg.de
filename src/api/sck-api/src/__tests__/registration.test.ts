@@ -8,6 +8,11 @@ jest.unstable_mockModule('../services/data-service', () => ({
   saveData: mockedSaveData,
 }));
 
+// requireTurnstile fails open unless this is set (see turnstile-middleware.ts)
+// - set it before the dynamic import below so the enforcing path is what
+// gets tested here (the fail-open default has its own test file).
+process.env.TURNSTILE_SECRET_KEY = 'test-secret';
+
 const { default: registrationRoutes } = await import('../routes/registration-route');
 
 const app = express();

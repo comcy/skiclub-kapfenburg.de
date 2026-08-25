@@ -2,6 +2,11 @@ import { jest } from '@jest/globals';
 import express from 'express';
 import request from 'supertest';
 
+// isConfigured is read once at module load - must be set before the
+// dynamic import below (see turnstile-fail-open.test.ts for the
+// unconfigured/default behavior, tested in its own module instance).
+process.env.TURNSTILE_SECRET_KEY = 'test-secret';
+
 const { requireTurnstile } = await import('../middleware/turnstile-middleware.js');
 
 const app = express();

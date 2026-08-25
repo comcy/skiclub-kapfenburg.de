@@ -3,7 +3,13 @@ import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import express from 'express';
 import request from 'supertest';
 import { db } from '../db/connection.js';
-import tripRegistrationsRoutes from '../routes/trip-registrations-route.js';
+
+// requireTurnstile fails open unless this is set (see turnstile-middleware.ts)
+// - a static top-level `import` of the route below would be hoisted before
+// this line runs, so the route (and therefore the middleware) is imported
+// dynamically instead, same pattern as the other route test files.
+process.env.TURNSTILE_SECRET_KEY = 'test-secret';
+const { default: tripRegistrationsRoutes } = await import('../routes/trip-registrations-route.js');
 
 const app = express();
 app.use(express.json());

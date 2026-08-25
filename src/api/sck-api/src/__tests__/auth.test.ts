@@ -10,6 +10,9 @@ jest.unstable_mockModule('../services/mailer.js', () => ({
   sendMail: mockedSendMail,
 }));
 
+// requireTurnstile fails open unless this is set (see turnstile-middleware.ts).
+process.env.TURNSTILE_SECRET_KEY = 'test-secret';
+
 const { db } = await import('../db/connection.js');
 const authService = await import('../services/auth-service.js');
 const { default: authRoutes } = await import('../routes/auth-route.js');

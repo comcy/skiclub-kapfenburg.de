@@ -3,6 +3,8 @@ import request from 'supertest';
 import express from 'express';
 
 process.env.SEPA_ENCRYPTION_KEY = '0'.repeat(64);
+// requireTurnstile fails open unless this is set (see turnstile-middleware.ts).
+process.env.TURNSTILE_SECRET_KEY = 'test-secret';
 
 const mockedSaveData = jest.fn();
 const mockedSaveSepaData = jest.fn();
