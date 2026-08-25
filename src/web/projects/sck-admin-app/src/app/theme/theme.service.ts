@@ -5,21 +5,20 @@ export interface ThemeOption {
     name: string;
 }
 
-// 'violet' is the unscoped default theme defined directly on `html` in
-// styles.scss (mat.define-theme()'s own default primary) - it has no
-// .theme-violet class, see applyColor() below. The rest match the
-// .theme-{id} classes generated there - curated down to four palettes
-// (see the theme-switcher plan), not the full set Angular Material ships.
+// 'ocean' is the unscoped default theme defined directly on `html` in
+// styles.scss - it has no .theme-ocean class, see applyColor() below. The
+// rest match the .theme-{id} classes generated there. Three hand-designed
+// M3 token sets (see theme-tokens.scss / docs/sck-themes.md), not Angular
+// Material's generic system palettes.
 export const THEMES: ThemeOption[] = [
-    { id: 'violet', name: 'Violett' },
-    { id: 'magenta', name: 'Magenta' },
-    { id: 'cyan', name: 'Cyan' },
-    { id: 'azure', name: 'Azur' },
+    { id: 'ocean', name: 'Ocean' },
+    { id: 'love', name: 'Love' },
+    { id: 'snow', name: 'Snow' },
 ];
 
 const THEME_STORAGE_KEY = 'sck-admin-theme';
 const DARK_STORAGE_KEY = 'sck-admin-dark-mode';
-const DEFAULT_THEME = 'violet';
+const DEFAULT_THEME = 'ocean';
 const DARK_CLASS = 'dark-theme';
 
 @Injectable({

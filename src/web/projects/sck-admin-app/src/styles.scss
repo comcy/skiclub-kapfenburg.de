@@ -1,67 +1,58 @@
 /* You can add global styles to this file, and also import other style files */
 
+@use 'sass:map';
 @use '@angular/material' as mat;
+@use './theme-tokens' as tokens;
 
 @include mat.core();
 
-// One class per selectable M3 system palette - curated down to four
-// (Violet stays the unscoped default/brand color; the other three were
-// picked by hand, see the theme-switcher plan) out of the 11 Angular
-// Material ships (core/theming/_palettes.scss). Each is a full
-// all-component-themes() emission scoped under its own class, the
-// documented way to have several themes coexist and be switched at
-// runtime (see theme/theme.service.ts, which toggles classes on
-// document.body - not on an Angular element, since CDK overlays like
-// mat-menu/snackbar mount outside <app-root> and need the class to be an
-// ancestor of them too).
-// Keys quoted: unquoted red/green/orange/yellow are valid Sass color
-// literals, which would interpolate as their hex value below instead of
-// the word itself (not an issue for the four kept here, but keeping the
-// quoting habit avoids re-discovering this if more are added later).
+// Three hand-designed themes (Ocean/Love/Snow, see docs/sck-themes.md and
+// theme-tokens.scss) replaced the earlier "pick any of Angular Material's
+// system palettes" switcher - Ocean is the unscoped default/brand color.
+// Each is a full, pre-generated --mat-sys-* token set (themes.angular-
+// material.dev), applied via mat.theme-overrides() rather than computed
+// from a single seed color the way the old system-palette version worked.
 $themes: (
-    'magenta': mat.$magenta-palette,
-    'cyan': mat.$cyan-palette,
-    'azure': mat.$azure-palette,
+    'love': (
+        light: tokens.$love-light,
+        dark: tokens.$love-dark,
+    ),
+    'snow': (
+        light: tokens.$snow-light,
+        dark: tokens.$snow-dark,
+    ),
 );
 
 // Two calls per theme/mode, both needed:
-// - mat.theme() actually WRITES the --mat-sys-* custom properties (that's
-//   its whole job - without it there's nothing for var(--mat-sys-primary)
-//   to resolve to, no matter what the other call below does). theme-type
-//   is explicit (light/dark) - its own default is "color-scheme"
-//   (adaptive via the CSS light-dark() function, following the OS/browser
-//   preference), which would fight with our own manual dark-mode toggle.
+// - mat.theme-overrides() WRITES the --mat-sys-* custom properties from the
+//   literal token map (that's its whole job - without it there's nothing
+//   for var(--mat-sys-primary) to resolve to, no matter what the call
+//   below does).
 // - mat.all-component-themes(mat.define-theme(...)), with
 //   use-system-variables: true, makes every individual Material
 //   component's own tokens (card, button, chip, ...) REFERENCE those
 //   --mat-sys-* variables instead of baking a literal Sass-compile-time
 //   color (the default) - that's what makes e.g. mat-card actually follow
 //   the active theme instead of staying whatever color happened to be
-//   compiled in.
+//   compiled in. Its own primary/theme-type input is irrelevant here since
+//   use-system-variables turns every value into a var(--mat-sys-*)
+//   reference regardless - kept as violet/light only for a stable,
+//   arbitrary Sass-time default.
 //
 // Dark mode is a second, orthogonal .dark-theme class (see
 // theme.service.ts's setDarkMode()) combined with the color class rather
-// than a 5th "mode" per color - .dark-theme.theme-magenta etc. wins over
-// the plain .theme-magenta block purely because two classes outrank one,
-// same specificity mechanism, no !important needed. color-scheme is set
+// than a 5th "mode" per theme - .dark-theme.theme-love etc. wins over the
+// plain .theme-love block purely because two classes outrank one, same
+// specificity mechanism, no !important needed. color-scheme is set
 // explicitly on both branches so the light-dark() CSS function used for
 // our own non-Material status colors (see e.g. member-list.component.scss)
 // follows this toggle instead of the OS preference.
-@mixin _emit-theme($primary, $theme-type) {
-    @include mat.theme(
-        (
-            color: (
-                primary: $primary,
-                theme-type: $theme-type,
-            ),
-        )
-    );
+@mixin _emit-theme($token-map) {
+    @include mat.theme-overrides($token-map);
     @include mat.all-component-themes(
         mat.define-theme(
             (
                 color: (
-                    primary: $primary,
-                    theme-type: $theme-type,
                     use-system-variables: true,
                 ),
             )
@@ -69,26 +60,26 @@ $themes: (
     );
 }
 
-// Default (Violet, mat.define-theme()'s own default primary) - unscoped,
-// so the page is already correctly colored before ThemeService's first
-// tick (it reads localStorage and may add .theme-*/.dark-theme classes).
+// Default (Ocean) - unscoped, so the page is already correctly colored
+// before ThemeService's first tick (it reads localStorage and may add
+// .theme-*/.dark-theme classes).
 html {
     color-scheme: light;
-    @include _emit-theme(mat.$violet-palette, light);
+    @include _emit-theme(tokens.$ocean-light);
 }
 
 .dark-theme {
     color-scheme: dark;
-    @include _emit-theme(mat.$violet-palette, dark);
+    @include _emit-theme(tokens.$ocean-dark);
 }
 
-@each $name, $palette in $themes {
+@each $name, $pair in $themes {
     .theme-#{$name} {
-        @include _emit-theme($palette, light);
+        @include _emit-theme(map.get($pair, light));
     }
 
     .dark-theme.theme-#{$name} {
-        @include _emit-theme($palette, dark);
+        @include _emit-theme(map.get($pair, dark));
     }
 }
 
