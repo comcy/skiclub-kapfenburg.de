@@ -37,6 +37,10 @@ export class MembershipRegistrationFormService implements MembershipRegistration
             },
         });
     }
+
+    public getTurnstileSiteKey(): string {
+        return environment.turnstileSiteKey;
+    }
 }
 
 export const membershipRegistrationServiceProvider = {

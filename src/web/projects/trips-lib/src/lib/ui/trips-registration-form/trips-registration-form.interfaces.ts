@@ -54,9 +54,14 @@ export abstract class TripRegistrationFormServiceInterface {
     public abstract sendConfirmationMail(mailData: FormToMailInformation<TripRegisterFormValue>): void;
     // Parallel, capacity-aware write into sck-api's trip_registrations (see
     // the plan) - does NOT replace sendFormToSheetsIo, which keeps running
-    // unconditionally as before.
+    // unconditionally as before. turnstileToken is only verified here (the
+    // Sheets webhook is external, not ours to protect server-side).
     public abstract submitPublicRegistration(
         tileId: string,
         participants: PublicRegistrationParticipantInput[],
+        turnstileToken: string,
     ): Observable<WaitlistInfo>;
+    // Public Turnstile site key (environment.turnstileSiteKey) - not a secret, only the
+    // sck-api-side secret key needs protecting (see turnstile-middleware.ts).
+    public abstract getTurnstileSiteKey(): string;
 }

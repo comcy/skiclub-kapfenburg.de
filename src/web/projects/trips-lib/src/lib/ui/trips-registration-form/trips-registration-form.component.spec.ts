@@ -43,12 +43,13 @@ describe('TripsRegistrationFormComponent', () => {
             boarding: 'Kapfenburg (7:00 Uhr)',
         });
         component.tripRegisterForm.get('agbAccepted')?.setValue(true);
+        component.turnstileToken = 'test-turnstile-token';
     };
 
     beforeEach(async () => {
         serviceSpy = jasmine.createSpyObj<TripRegistrationFormServiceInterface>(
             'TripRegistrationFormServiceInterface',
-            ['sendFormToSheetsIo', 'sendConfirmationMail', 'submitPublicRegistration'],
+            ['sendFormToSheetsIo', 'sendConfirmationMail', 'submitPublicRegistration', 'getTurnstileSiteKey'],
         );
         serviceSpy.submitPublicRegistration.and.returnValue(of({ status: 'confirmed' } as WaitlistInfo));
 
@@ -85,6 +86,7 @@ describe('TripsRegistrationFormComponent', () => {
             expect(serviceSpy.submitPublicRegistration).toHaveBeenCalledWith(
                 'tile-1',
                 jasmine.arrayContaining([jasmine.objectContaining({ firstName: 'Max' })]),
+                'test-turnstile-token',
             );
             const mailData = serviceSpy.sendConfirmationMail.calls.mostRecent().args[0];
             expect(mailData.formValues.waitlistInfo).toEqual(waitlistInfo);

@@ -93,6 +93,10 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
     private getMailText(values: CourseRegisterFormFields): string {
         return getCourseConfirmationMailText(values);
     }
+
+    public getTurnstileSiteKey(): string {
+        return environment.turnstileSiteKey;
+    }
 }
 
 export const courseRegistrationServiceProvider = {

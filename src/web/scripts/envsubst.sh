@@ -12,6 +12,11 @@ echo "TRIP_SHEET_URL: $TRIP_SHEET_URL"
 export SCK_API_URL=$3
 echo "SCK_API_URL: $SCK_API_URL"
 
+# Public Cloudflare Turnstile site key (not a secret) - blank until the
+# account is set up, the widget component just stays inert then.
+export TURNSTILE_SITE_KEY=$5
+echo "TURNSTILE_SITE_KEY: $TURNSTILE_SITE_KEY"
+
 # DEPLOY_ENV: which pipeline this build came from - "TEST" (Dockerfile,
 # self-hosted-runner deploy to the sck-test LXC) or "PROD"
 # (sck-web-app-build-deploy.yml). Shown as the "#<ENV>:<hash>" build tag.
@@ -33,7 +38,7 @@ echo "BUILD_NUMBER: $BUILD_NUMBER"
 echo "GIT_COMMIT_HASH: $GIT_COMMIT_HASH"
 
 # Environment-Datei erzeugen
-envsubst ' ${COURSE_SHEET_URL} ${TRIP_SHEET_URL} ${SCK_API_URL} ${BUILD_DATE} ${BUILD_NUMBER} ${GIT_COMMIT_HASH} ${DEPLOY_ENV} ' \
+envsubst ' ${COURSE_SHEET_URL} ${TRIP_SHEET_URL} ${SCK_API_URL} ${TURNSTILE_SITE_KEY} ${BUILD_DATE} ${BUILD_NUMBER} ${GIT_COMMIT_HASH} ${DEPLOY_ENV} ' \
   < ../projects/sck-app/src/environments/environment.template.ts \
   > ../projects/sck-app/src/environments/environment.prod.ts
 

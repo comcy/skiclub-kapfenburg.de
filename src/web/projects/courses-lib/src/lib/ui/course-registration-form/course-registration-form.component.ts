@@ -20,6 +20,7 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { COURSE_REGISTRATION_FORM_ELEMENTS } from './course-registration-form-fields';
 import {
@@ -42,12 +43,16 @@ import {
         MatError,
         MatButton,
         AsyncPipe,
+        TurnstileWidgetComponent,
     ],
 })
 export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     private formBuilder = inject(FormBuilder);
     private courseRegistrationFormService = inject(CourseRegistrationFormServiceInterface);
     breakpointObserver = inject(BreakpointObserverService);
+
+    public turnstileSiteKey = this.courseRegistrationFormService.getTurnstileSiteKey();
+    public turnstileToken: string | null = null;
 
     @Input() presetLevel?: string;
     @Input() presetCustomBccList?: string[];
@@ -94,10 +99,11 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     }
 
     public isSubmitDisabled(): boolean {
-        if (this.courseRegisterForm.valid) {
-            return false;
-        }
-        return true;
+        return !this.courseRegisterForm.valid || !this.turnstileToken;
+    }
+
+    public onTurnstileToken(token: string | null): void {
+        this.turnstileToken = token;
     }
 
     public submit(): void {

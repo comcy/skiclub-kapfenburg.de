@@ -7,6 +7,10 @@ services:
         COURSE_SHEET_URL: ${COURSE_SHEET_URL}
         TRIP_SHEET_URL: ${TRIP_SHEET_URL}
         SCK_API_URL: ${SCK_API_URL}
+        # Public Cloudflare Turnstile site key (not a secret) - blank until
+        # the account is set up, the widget just stays inert (see
+        # turnstile-widget.component.ts).
+        TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY}
         # Set automatically by GitHub Actions when the self-hosted runner
         # builds this - blank for a manual `docker compose build` outside CI.
         BUILD_NUMBER: ${GITHUB_RUN_NUMBER}
@@ -52,6 +56,10 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
+      # Cloudflare Turnstile secret key - the public form Captcha check
+      # (see middleware/turnstile-middleware.ts) fails open and logs a
+      # warning instead of blocking submissions while this is blank.
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY}
     volumes:
       - sck-api-data:/app/data
     healthcheck:
@@ -75,6 +83,7 @@ services:
       dockerfile: src/web/projects/sck-admin-app/Dockerfile
       args:
         SCK_API_URL: ${SCK_API_URL}
+        TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY}
     restart: unless-stopped
     ports:
       - '8081:80'

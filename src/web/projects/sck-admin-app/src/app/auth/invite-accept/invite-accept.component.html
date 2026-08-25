@@ -21,7 +21,17 @@
                 </mat-card-header>
                 <mat-card-content>
                     <p>Wähle eine Anmeldemethode, um die Einladung anzunehmen und dich anzumelden.</p>
-                    <button mat-raised-button color="primary" class="full-width" (click)="acceptAndRequestMagicLink()">
+                    <shared-lib-turnstile-widget
+                        [siteKey]="turnstileSiteKey"
+                        (tokenChange)="onTurnstileToken($event)"
+                    ></shared-lib-turnstile-widget>
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        class="full-width"
+                        [disabled]="!turnstileToken"
+                        (click)="acceptAndRequestMagicLink()"
+                    >
                         <mat-icon>mail</mat-icon>
                         Annehmen &amp; Magic-Link senden
                     </button>

@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from 'projects/sck-admin-app/src/environments/environment';
+import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -20,6 +22,7 @@ import { AuthService } from '../services/auth.service';
         MatIconModule,
         MatInputModule,
         MatProgressSpinnerModule,
+        TurnstileWidgetComponent,
     ],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
@@ -33,6 +36,8 @@ export class LoginComponent {
     public isSending = false;
     public magicLinkSent = false;
     public errorMessage: string | null = null;
+    public turnstileSiteKey = environment.turnstileSiteKey;
+    public turnstileToken: string | null = null;
 
     constructor() {
         if (this.route.snapshot.queryParamMap.get('error') === 'auth-failed') {
@@ -46,10 +51,10 @@ export class LoginComponent {
     // this, the request still succeeds server-side but the form just sits
     // there with no visible feedback.
     requestMagicLink(): void {
-        if (!this.email) return;
+        if (!this.email || !this.turnstileToken) return;
         this.isSending = true;
         this.errorMessage = null;
-        this.auth.requestMagicLink(this.email).subscribe({
+        this.auth.requestMagicLink(this.email, this.turnstileToken).subscribe({
             next: () => {
                 this.isSending = false;
                 this.magicLinkSent = true;
@@ -61,6 +66,10 @@ export class LoginComponent {
                 this.cdr.markForCheck();
             },
         });
+    }
+
+    onTurnstileToken(token: string | null): void {
+        this.turnstileToken = token;
     }
 
     loginWithGoogle(): void {

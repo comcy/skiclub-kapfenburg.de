@@ -22,12 +22,17 @@
                         <input matInput type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
                     </mat-form-field>
 
+                    <shared-lib-turnstile-widget
+                        [siteKey]="turnstileSiteKey"
+                        (tokenChange)="onTurnstileToken($event)"
+                    ></shared-lib-turnstile-widget>
+
                     <button
                         mat-raised-button
                         color="primary"
                         type="submit"
                         class="full-width"
-                        [disabled]="!email || isSending"
+                        [disabled]="!email || !turnstileToken || isSending"
                     >
                         @if (isSending) {
                             <mat-spinner diameter="20"></mat-spinner>

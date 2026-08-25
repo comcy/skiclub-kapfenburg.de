@@ -15,6 +15,7 @@ RUN pnpm install --frozen-lockfile
 ARG COURSE_SHEET_URL
 ARG TRIP_SHEET_URL
 ARG SCK_API_URL
+ARG TURNSTILE_SITE_KEY
 ARG BUILD_NUMBER
 ARG GIT_COMMIT_HASH
 
@@ -24,7 +25,7 @@ ARG GIT_COMMIT_HASH
 # GITHUB_RUN_NUMBER and GIT_COMMIT_HASH don't cross the docker build
 # isolation boundary on their own (.git is excluded via .dockerignore, and
 # GITHUB_RUN_NUMBER is just a host env var) - both come in as build ARGs.
-RUN cd src/web/scripts && GITHUB_RUN_NUMBER="$BUILD_NUMBER" GIT_COMMIT_HASH="$GIT_COMMIT_HASH" ./envsubst.sh "$COURSE_SHEET_URL" "$TRIP_SHEET_URL" "$SCK_API_URL" "TEST"
+RUN cd src/web/scripts && GITHUB_RUN_NUMBER="$BUILD_NUMBER" GIT_COMMIT_HASH="$GIT_COMMIT_HASH" ./envsubst.sh "$COURSE_SHEET_URL" "$TRIP_SHEET_URL" "$SCK_API_URL" "TEST" "$TURNSTILE_SITE_KEY"
 RUN pnpm --filter web run build
 
 FROM nginx:alpine

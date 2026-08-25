@@ -87,10 +87,16 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
     public submitPublicRegistration(
         tileId: string,
         participants: PublicRegistrationParticipantInput[],
+        turnstileToken: string,
     ): Observable<WaitlistInfo> {
         return this.http.post<WaitlistInfo>(`${environment.sckApiUrl}/tiles/${tileId}/registrations/public`, {
             participants,
+            turnstileToken,
         });
+    }
+
+    public getTurnstileSiteKey(): string {
+        return environment.turnstileSiteKey;
     }
 }
 

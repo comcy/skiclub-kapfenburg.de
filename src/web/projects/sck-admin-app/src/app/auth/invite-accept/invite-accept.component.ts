@@ -4,6 +4,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from 'projects/sck-admin-app/src/environments/environment';
+import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { AuthService } from '../services/auth.service';
 
 type InviteState = 'loading' | 'invalid' | 'ready' | 'accepted';
@@ -11,7 +13,7 @@ type InviteState = 'loading' | 'invalid' | 'ready' | 'accepted';
 @Component({
     selector: 'app-invite-accept',
     standalone: true,
-    imports: [MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule],
+    imports: [MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, TurnstileWidgetComponent],
     templateUrl: './invite-accept.component.html',
     styleUrl: './invite-accept.component.scss',
 })
@@ -22,6 +24,8 @@ export class InviteAcceptComponent implements OnInit {
 
     public state: InviteState = 'loading';
     public email = '';
+    public turnstileSiteKey = environment.turnstileSiteKey;
+    public turnstileToken: string | null = null;
 
     ngOnInit(): void {
         this.token = this.route.snapshot.paramMap.get('token') ?? '';
@@ -39,10 +43,15 @@ export class InviteAcceptComponent implements OnInit {
         });
     }
 
+    onTurnstileToken(token: string | null): void {
+        this.turnstileToken = token;
+    }
+
     acceptAndRequestMagicLink(): void {
+        if (!this.turnstileToken) return;
         this.auth.acceptInvite(this.token).subscribe({
             next: () => {
-                this.auth.requestMagicLink(this.email).subscribe();
+                this.auth.requestMagicLink(this.email, this.turnstileToken as string).subscribe();
                 this.state = 'accepted';
             },
             error: () => (this.state = 'invalid'),

@@ -34,6 +34,7 @@ import {
     GERMAN_DATE_FORMATS,
 } from 'projects/shared-lib/src/lib/date-time';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
+import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { TripParticipant } from '../../domain/models';
@@ -74,6 +75,7 @@ interface CourseOption {
         MatTooltipModule,
         MatSlideToggleModule,
         MatDialogModule,
+        TurnstileWidgetComponent,
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     providers: [
@@ -96,6 +98,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     public firstPartSelected = false;
     public tripRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
+    public turnstileToken: string | null = null;
 
     public sportTypeList = ['Ski Alpin', 'Snowboard'];
 
@@ -106,6 +109,8 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
     private dialog = inject(MatDialog);
     private router = inject(Router);
+
+    public turnstileSiteKey = this.tripRegistrationFormService.getTurnstileSiteKey();
 
     ngOnInit(): void {
         this.tripRegisterForm = this.formBuilder.group({
@@ -410,10 +415,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public isSubmitDisabled(): boolean {
-        if (this.tripRegisterForm.valid) {
-            return false;
-        }
-        return true;
+        return !this.tripRegisterForm.valid || !this.turnstileToken;
+    }
+
+    public onTurnstileToken(token: string | null): void {
+        this.turnstileToken = token;
     }
 
     public openPricingDialog() {
@@ -489,13 +495,15 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 }),
             );
 
-            this.tripRegistrationFormService.submitPublicRegistration(tileId, publicParticipants).subscribe({
-                next: (waitlistInfo) => this.sendConfirmationMail(rawValue, contactPerson, waitlistInfo),
-                error: (error) => {
-                    console.error('Kapazitätsprüfung fehlgeschlagen:', error);
-                    this.sendConfirmationMail(rawValue, contactPerson, undefined);
-                },
-            });
+            this.tripRegistrationFormService
+                .submitPublicRegistration(tileId, publicParticipants, this.turnstileToken as string)
+                .subscribe({
+                    next: (waitlistInfo) => this.sendConfirmationMail(rawValue, contactPerson, waitlistInfo),
+                    error: (error) => {
+                        console.error('Kapazitätsprüfung fehlgeschlagen:', error);
+                        this.sendConfirmationMail(rawValue, contactPerson, undefined);
+                    },
+                });
         } else {
             this.sendConfirmationMail(rawValue, contactPerson, undefined);
         }

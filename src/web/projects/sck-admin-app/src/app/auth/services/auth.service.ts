@@ -69,8 +69,8 @@ export class AuthService {
         );
     }
 
-    requestMagicLink(email: string): Observable<void> {
-        return this.http.post<void>(`${this.apiUrl}/auth/magic-link`, { email });
+    requestMagicLink(email: string, turnstileToken: string): Observable<void> {
+        return this.http.post<void>(`${this.apiUrl}/auth/magic-link`, { email, turnstileToken });
     }
 
     verifyMagicLink(token: string): Observable<Session> {

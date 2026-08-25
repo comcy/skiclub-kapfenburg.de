@@ -31,4 +31,8 @@ export interface CourseRegisterForm {
 export abstract class CourseRegistrationFormServiceInterface {
     public abstract sendFormToSheetsIo(formData: FormData): void;
     public abstract sendConfirmationMail(mailData: FormToMailInformation<CourseRegisterFormFields>): void;
+    // Public Turnstile site key (environment.turnstileSiteKey) - not a secret. Client-side gate
+    // only for now: courses submit straight to the Sheets webhook, no sck-api endpoint exists yet
+    // to verify the token against (see Kursverwaltung plan).
+    public abstract getTurnstileSiteKey(): string;
 }

@@ -6,3 +6,4 @@ export * from './comcy-copyright';
 export * from './site-footer';
 export * from './site-header';
 export * from './site-navigation';
+export * from './turnstile-widget';

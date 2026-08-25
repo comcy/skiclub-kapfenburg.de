@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
+import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { Subject, takeUntil } from 'rxjs';
 import {
@@ -44,6 +45,7 @@ const IBAN_PATTERN = /^[A-Z]{2}[0-9]{2}[A-Z0-9 ]{10,34}$/;
         MatDatepickerModule,
         MatCheckboxModule,
         MatTooltipModule,
+        TurnstileWidgetComponent,
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     providers: [
@@ -59,10 +61,13 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
     public isSending = false;
     public membershipRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
+    public turnstileToken: string | null = null;
 
     private formBuilder = inject(FormBuilder);
     private membershipRegistrationFormService = inject(MembershipRegistrationFormServiceInterface);
     private router = inject(Router);
+
+    public turnstileSiteKey = this.membershipRegistrationFormService.getTurnstileSiteKey();
 
     ngOnInit(): void {
         this.membershipRegisterForm = this.formBuilder.group({
@@ -123,7 +128,11 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public isSubmitDisabled(): boolean {
-        return !this.membershipRegisterForm.valid;
+        return !this.membershipRegisterForm.valid || !this.turnstileToken;
+    }
+
+    public onTurnstileToken(token: string | null): void {
+        this.turnstileToken = token;
     }
 
     public openDeclarationDialog(): void {
@@ -138,7 +147,10 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const formValues = this.membershipRegisterForm.getRawValue() as MembershipRegisterFormValue;
+        const formValues = {
+            ...this.membershipRegisterForm.getRawValue(),
+            turnstileToken: this.turnstileToken,
+        } as MembershipRegisterFormValue;
 
         this.membershipRegistrationFormService.submitRegistration(formValues);
 

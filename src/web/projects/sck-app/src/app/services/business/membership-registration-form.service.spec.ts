@@ -22,6 +22,7 @@ const testFormValue: MembershipRegisterFormValue = {
     sepaMandateAccepted: true,
     termsAccepted: true,
     privacyAccepted: true,
+    turnstileToken: 'test-turnstile-token',
 };
 
 describe('MembershipRegistrationFormService', () => {
@@ -65,5 +66,9 @@ describe('MembershipRegistrationFormService', () => {
         req.error(new ErrorEvent('network-error'));
 
         expect(snackBarSpy.open).toHaveBeenCalledWith('Fehler beim Speichern des Mitgliedsantrags', 'Ok');
+    });
+
+    it('should return the configured Turnstile site key', () => {
+        expect(service.getTurnstileSiteKey()).toBe(environment.turnstileSiteKey);
     });
 });

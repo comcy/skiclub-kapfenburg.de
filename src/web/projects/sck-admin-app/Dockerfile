@@ -11,11 +11,15 @@ COPY . .
 RUN pnpm install --frozen-lockfile
 
 ARG SCK_API_URL
+ARG TURNSTILE_SITE_KEY
 
 # sck-admin-app talks to the same sck-api instance as sck-app, so it reuses
 # the same SCK_API_URL value rather than needing its own template/envsubst
-# script for a single field - a plain in-place substitute is enough.
+# script for a single field - a plain in-place substitute is enough. Same
+# reasoning for the public Turnstile site key (see turnstile-widget.component.ts).
 RUN sed -i "s|sckApiUrl: ''|sckApiUrl: '$SCK_API_URL'|" \
+  src/web/projects/sck-admin-app/src/environments/environment.prod.ts
+RUN sed -i "s|turnstileSiteKey: ''|turnstileSiteKey: '$TURNSTILE_SITE_KEY'|" \
   src/web/projects/sck-admin-app/src/environments/environment.prod.ts
 RUN pnpm --filter web run build:admin
 

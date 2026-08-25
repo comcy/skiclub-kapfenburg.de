@@ -11,6 +11,9 @@ export const environment = {
     sckApiUrl: 'http://sck-api.5i1f4ng.de/api',
     courseSheetUrl: '',
     tripSheetUrl: '',
+    // Cloudflare's official "always passes" test site key - no real
+    // Turnstile account needed for local dev (see turnstile-widget.component.ts).
+    turnstileSiteKey: '1x00000000000000000000AA',
     buildDate: '2025-06-24T12:34:56Z',
     buildNumber: 'DEV', // oder aus Git,
     // Not substituted for a plain `ng serve`/local build - no envsubst.sh

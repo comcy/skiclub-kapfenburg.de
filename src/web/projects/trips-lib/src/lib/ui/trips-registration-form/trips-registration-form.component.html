@@ -264,6 +264,11 @@
             <mat-error> Bitte alle erfordelichen Felder (*) ausfüllen. </mat-error>
         }
 
+        <shared-lib-turnstile-widget
+            [siteKey]="turnstileSiteKey"
+            (tokenChange)="onTurnstileToken($event)"
+        ></shared-lib-turnstile-widget>
+
         <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
 
         @if (isSending) {

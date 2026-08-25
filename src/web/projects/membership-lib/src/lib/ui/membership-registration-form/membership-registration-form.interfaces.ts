@@ -25,6 +25,7 @@ export interface MembershipRegisterFormValue {
     sepaMandateAccepted: boolean;
     termsAccepted: boolean;
     privacyAccepted: boolean;
+    turnstileToken: string;
 }
 
 // sck-api persists the registration (SEPA/IBAN field-encrypted, separate from the rest) and sends
@@ -32,4 +33,7 @@ export interface MembershipRegisterFormValue {
 @Injectable()
 export abstract class MembershipRegistrationFormServiceInterface {
     public abstract submitRegistration(formValue: MembershipRegisterFormValue): void;
+    // Public Turnstile site key (environment.turnstileSiteKey) - not a secret, only the
+    // sck-api-side secret key needs protecting (see turnstile-middleware.ts).
+    public abstract getTurnstileSiteKey(): string;
 }
