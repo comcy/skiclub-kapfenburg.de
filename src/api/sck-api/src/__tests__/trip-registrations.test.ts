@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import express from 'express';
 import request from 'supertest';
@@ -6,7 +7,26 @@ import tripRegistrationsRoutes from '../routes/trip-registrations-route.js';
 
 const app = express();
 app.use(express.json());
+// requireTurnstile now gates POST /tiles/:tileId/registrations/public (see
+// routes/trip-registrations-route.ts) - auto-fill a token on every request
+// here instead of touching each of this file's many .send() calls; the
+// middleware's own behavior is covered by turnstile.test.ts, and Cloudflare's
+// verify call is mocked to always succeed below.
+app.use((req, _res, next) => {
+  if (req.body && typeof req.body === 'object') (req.body as Record<string, unknown>).turnstileToken = 'test-token';
+  next();
+});
 app.use('/api', tripRegistrationsRoutes);
+
+// Jest's node test environment doesn't expose native `fetch` as an own
+// property, so jest.spyOn(globalThis, 'fetch') fails - assign directly.
+const mockFetch = jest.fn();
+(globalThis as unknown as { fetch: typeof fetch }).fetch = mockFetch as unknown as typeof fetch;
+beforeEach(() => {
+  mockFetch.mockReset().mockResolvedValue({
+    json: () => Promise.resolve({ success: true }),
+  });
+});
 
 const hashToken = (token: string): string => createHash('sha256').update(token).digest('hex');
 

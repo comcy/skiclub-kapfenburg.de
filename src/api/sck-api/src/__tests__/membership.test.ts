@@ -8,6 +8,11 @@ const mockedSaveData = jest.fn();
 const mockedSaveSepaData = jest.fn();
 const mockedSendMail = jest.fn();
 const mockedCreateTransport = jest.fn();
+// requireTurnstile now gates this route - Jest's node test environment
+// doesn't expose native `fetch` as an own property, so
+// jest.spyOn(globalThis, 'fetch') fails; assign a mock directly instead.
+const mockFetch = jest.fn();
+(globalThis as unknown as { fetch: typeof fetch }).fetch = mockFetch as unknown as typeof fetch;
 
 jest.unstable_mockModule('../services/data-service', () => ({
   saveData: mockedSaveData,
@@ -39,6 +44,7 @@ const validRegistration = {
   sepaMandateAccepted: true,
   termsAccepted: true,
   privacyAccepted: true,
+  turnstileToken: 'test-token',
 };
 
 describe('Membership Routes', () => {
@@ -51,6 +57,23 @@ describe('Membership Routes', () => {
     mockedSaveSepaData.mockResolvedValue(undefined);
     mockedSendMail.mockResolvedValue({ messageId: 'test-message-id' });
     mockedCreateTransport.mockReturnValue({ sendMail: mockedSendMail });
+    // requireTurnstile now gates this route - mock Cloudflare's verify call
+    // (see turnstile.test.ts for dedicated middleware coverage). Jest's node
+    // test environment doesn't expose native `fetch` as an own property, so
+    // jest.spyOn(globalThis, 'fetch') fails - assign directly.
+    mockFetch.mockReset().mockResolvedValue({
+      json: () => Promise.resolve({ success: true }),
+    });
+  });
+
+  it('POST /api/membership/register - lehnt eine Anfrage ohne turnstileToken ab, bevor der Controller läuft', async () => {
+    const { turnstileToken, ...withoutToken } = validRegistration;
+    void turnstileToken;
+
+    const response = await request(app).post('/api/membership/register').send(withoutToken);
+
+    expect(response.status).toBe(400);
+    expect(mockedSaveData).not.toHaveBeenCalled();
   });
 
   it('POST /api/membership/register - sollte einen Antrag speichern, IBAN verschlüsselt getrennt ablegen und zwei E-Mails versenden', async () => {
@@ -99,7 +122,7 @@ describe('Membership Routes', () => {
   it('POST /api/membership/register - sollte einen Fehler zurückgeben, wenn Pflichtfelder fehlen', async () => {
     const response = await request(app)
       .post('/api/membership/register')
-      .send({ firstName: 'Max' });
+      .send({ firstName: 'Max', turnstileToken: 'test-token' });
 
     expect(response.status).toBe(400);
     expect(mockedSaveData).not.toHaveBeenCalled();

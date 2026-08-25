@@ -17,8 +17,25 @@ const { default: invitesRoutes } = await import('../routes/invites-route.js');
 
 const app = express();
 app.use(express.json());
+// requireTurnstile now gates POST /auth/magic-link (see routes/auth-route.ts) -
+// auto-fill a token here rather than touching every request in this file;
+// the middleware's own behavior is covered by turnstile.test.ts.
+app.use((req, _res, next) => {
+  if (req.body && typeof req.body === 'object') (req.body as Record<string, unknown>).turnstileToken = 'test-token';
+  next();
+});
 app.use('/api', authRoutes);
 app.use('/api', invitesRoutes);
+
+// Jest's node test environment doesn't expose native `fetch` as an own
+// property, so jest.spyOn(globalThis, 'fetch') fails - assign directly.
+const mockFetch = jest.fn();
+(globalThis as unknown as { fetch: typeof fetch }).fetch = mockFetch as unknown as typeof fetch;
+beforeEach(() => {
+  mockFetch.mockReset().mockResolvedValue({
+    json: () => Promise.resolve({ success: true }),
+  });
+});
 
 const hashToken = (token: string): string => createHash('sha256').update(token).digest('hex');
 
