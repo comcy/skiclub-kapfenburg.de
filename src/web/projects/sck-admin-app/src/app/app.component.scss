@@ -11,8 +11,14 @@
     // Under Angular Material's M3 theming, mat-toolbar's color input no
     // longer auto-colors the toolbar (that was M2-only) - set explicitly so
     // this follows the active theme like everything else in the shell.
-    background: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    // Neutral surface, not a solid primary fill: M3 reserves the primary
+    // color for small accents (buttons, the active nav item below) rather
+    // than painting whole chrome surfaces with it - large saturated-color
+    // areas read as "loud"/omnipresent. Regions are told apart by a
+    // contrast border instead of a color clash between two filled areas.
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
 
     .logo {
         height: 32px;
@@ -31,7 +37,7 @@
 
     .user-email {
         font-size: 14px;
-        opacity: 0.9;
+        color: var(--mat-sys-on-surface-variant);
         margin-right: 8px;
     }
 }
@@ -47,8 +53,12 @@
     width: 220px;
     display: flex;
     flex-direction: column;
-    background: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    // Same neutral surface as the top-bar and content area (see there for
+    // why) - told apart purely by the border, so no two filled regions are
+    // ever competing for attention next to each other.
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface-variant);
+    border-right: 1px solid var(--mat-sys-outline-variant);
     padding-top: 8px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -75,6 +85,7 @@
 
 .nav-items {
     flex: 1 1 auto;
+    padding: 0 8px;
 }
 
 .collapse-toggle {
@@ -82,10 +93,10 @@
     flex: 0 0 auto;
     margin: 8px;
     margin-top: auto;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--mat-sys-on-surface-variant);
 
     &:hover {
-        color: #fff;
+        color: var(--mat-sys-on-surface);
     }
 }
 
@@ -94,26 +105,28 @@
     align-items: center;
     gap: 16px;
     height: 48px;
-    padding: 0 24px;
-    color: rgba(255, 255, 255, 0.75);
+    padding: 0 16px;
+    margin: 2px 0;
+    border-radius: 24px;
+    color: var(--mat-sys-on-surface-variant);
     font-size: 14px;
     text-decoration: none;
     cursor: pointer;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff;
+        background: var(--mat-sys-surface-container);
+        color: var(--mat-sys-on-surface);
     }
 
+    // Tonal "pill" behind the active item instead of a full-bleed colored
+    // bar - the same selected-state pattern M3's own navigation drawer
+    // spec uses (a primary-container-colored, rounded highlight around
+    // just that row), so the primary color still marks "this is where you
+    // are" without recoloring the whole rail.
     &.active {
-        background: rgba(255, 255, 255, 0.16);
-        color: #fff;
+        background: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
         font-weight: 500;
-        // inverse-primary is the M3 role specifically meant for an accent
-        // on top of a primary-colored surface, guaranteed to contrast
-        // against it - works across all 12 themes, unlike the old fixed
-        // amber (which only worked against deeppurple-amber's own primary).
-        border-right: 3px solid var(--mat-sys-inverse-primary);
     }
 }
 
