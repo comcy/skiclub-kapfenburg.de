@@ -134,7 +134,6 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "projects/sck-admin-app/src/styles.scss"
             ]
           },
@@ -143,8 +142,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.5MB",
-                  "maximumError": "2MB"
+                  "maximumWarning": "2MB",
+                  "maximumError": "2.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -199,7 +198,6 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "projects/sck-admin-app/src/styles.scss"
             ]
           }

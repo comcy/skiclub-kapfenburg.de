@@ -8,6 +8,11 @@
 .top-bar {
     flex: 0 0 auto;
     z-index: 10;
+    // Under Angular Material's M3 theming, mat-toolbar's color input no
+    // longer auto-colors the toolbar (that was M2-only) - set explicitly so
+    // this follows the active theme like everything else in the shell.
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
 
     .logo {
         height: 32px;
@@ -42,7 +47,8 @@
     width: 220px;
     display: flex;
     flex-direction: column;
-    background: #673ab7;
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
     padding-top: 8px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -103,7 +109,11 @@
         background: rgba(255, 255, 255, 0.16);
         color: #fff;
         font-weight: 500;
-        border-right: 3px solid #ffd740;
+        // inverse-primary is the M3 role specifically meant for an accent
+        // on top of a primary-colored surface, guaranteed to contrast
+        // against it - works across all 12 themes, unlike the old fixed
+        // amber (which only worked against deeppurple-amber's own primary).
+        border-right: 3px solid var(--mat-sys-inverse-primary);
     }
 }
 

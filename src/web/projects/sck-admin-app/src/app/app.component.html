@@ -1,7 +1,8 @@
-<mat-toolbar color="primary" class="top-bar">
+<mat-toolbar class="top-bar">
     <img src="assets/logos/ski-logo.svg" alt="SCK" class="logo" />
     <span class="title">{{ title }}</span>
     <span class="spacer"></span>
+    <app-theme-switcher></app-theme-switcher>
     @if (auth.session(); as session) {
         <span class="user-email">{{ session.email }}</span>
         <button mat-button (click)="logout()">

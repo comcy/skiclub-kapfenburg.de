@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from './auth/services/auth.service';
+import { ThemeSwitcherComponent } from './theme/theme-switcher/theme-switcher.component';
 
 interface NavItem {
     name: string;
@@ -23,6 +24,7 @@ interface NavItem {
         MatIconModule,
         MatButtonModule,
         MatTooltipModule,
+        ThemeSwitcherComponent,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',

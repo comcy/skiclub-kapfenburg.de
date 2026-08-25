@@ -1,5 +1,94 @@
 /* You can add global styles to this file, and also import other style files */
 
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// One class per selectable M3 system palette (all 11 Angular Material
+// ships, see core/theming/_palettes.scss) - each is a full
+// all-component-themes() emission scoped under its own class, the
+// documented way to have several themes coexist and be switched at
+// runtime (see theme/theme.service.ts, which toggles the class on
+// document.body - not on an Angular element, since CDK overlays like
+// mat-menu/snackbar mount outside <app-root> and need the class to be an
+// ancestor of them too).
+// Keys quoted: unquoted red/green/orange/yellow are valid Sass color
+// literals, which would interpolate as their hex value below instead of
+// the word itself.
+$themes: (
+    'red': mat.$red-palette,
+    'green': mat.$green-palette,
+    'blue': mat.$blue-palette,
+    'yellow': mat.$yellow-palette,
+    'cyan': mat.$cyan-palette,
+    'magenta': mat.$magenta-palette,
+    'orange': mat.$orange-palette,
+    'chartreuse': mat.$chartreuse-palette,
+    'spring-green': mat.$spring-green-palette,
+    'azure': mat.$azure-palette,
+    'rose': mat.$rose-palette,
+);
+
+// Two calls per theme, both needed:
+// - mat.theme() actually WRITES the --mat-sys-* custom properties (that's
+//   its whole job - without it there's nothing for var(--mat-sys-primary)
+//   to resolve to, no matter what the other call below does). theme-type:
+//   light is explicit - its own default is "color-scheme" (adaptive via
+//   the CSS light-dark() function, following the OS/browser preference),
+//   which isn't what was asked for here (light only, no dark mode).
+// - mat.all-component-themes(mat.define-theme(...)), with
+//   use-system-variables: true, makes every individual Material
+//   component's own tokens (card, button, chip, ...) REFERENCE those
+//   --mat-sys-* variables instead of baking a literal Sass-compile-time
+//   color (the default) - that's what makes e.g. mat-card actually follow
+//   the active theme instead of staying whatever color happened to be
+//   compiled in.
+// Default (Violet, mat.define-theme()'s own default primary) - unscoped,
+// so the page is already correctly colored before ThemeService's first
+// tick (it reads localStorage and may add a .theme-* class to body).
+html {
+    @include mat.theme(
+        (
+            color: (
+                primary: mat.$violet-palette,
+                theme-type: light,
+            ),
+        )
+    );
+    @include mat.all-component-themes(
+        mat.define-theme(
+            (
+                color: (
+                    use-system-variables: true,
+                ),
+            )
+        )
+    );
+}
+
+@each $name, $palette in $themes {
+    .theme-#{$name} {
+        @include mat.theme(
+            (
+                color: (
+                    primary: $palette,
+                    theme-type: light,
+                ),
+            )
+        );
+        @include mat.all-component-themes(
+            mat.define-theme(
+                (
+                    color: (
+                        primary: $palette,
+                        use-system-variables: true,
+                    ),
+                )
+            )
+        );
+    }
+}
+
 html,
 body {
     height: 100%;

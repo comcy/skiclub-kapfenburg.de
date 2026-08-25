@@ -25,13 +25,13 @@ table {
 }
 
 .chip-superadmin {
-    background: #673ab7;
-    color: #fff;
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
 }
 
 .chip-perm {
-    background: #d1c4e9;
-    color: #512da8;
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
 }
 
 .chip-none {

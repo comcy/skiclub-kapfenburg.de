@@ -1,9 +1,9 @@
-$color-primary: #673ab7;
-$color-primary-dark: #512da8;
-$color-primary-light: #9575cd;
-$color-primary-50: #ede7f6;
-$color-primary-100: #d1c4e9;
-$color-tint: #f3effa;
+// Theme-reactive (see theme/theme.service.ts) - real CSS custom properties,
+// not Sass variables, so they follow whichever palette is active.
+$color-primary: var(--mat-sys-primary);
+$color-on-primary: var(--mat-sys-on-primary);
+$color-primary-container: var(--mat-sys-primary-container);
+$color-on-primary-container: var(--mat-sys-on-primary-container);
 $divider: rgba(0, 0, 0, 0.12);
 $ink: rgba(0, 0, 0, 0.87);
 $ink-secondary: rgba(0, 0, 0, 0.6);
@@ -34,7 +34,7 @@ section + section {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, $color-primary-50 0%, $color-primary-100 100%);
+    background: $color-primary-container;
     border-radius: 8px;
     padding: 20px;
     display: flex;
@@ -50,14 +50,14 @@ section + section {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $color-primary-dark;
+    color: $color-on-primary-container;
 }
 
 .stat-number {
     font-size: 32px;
     font-weight: 700;
     line-height: 1;
-    color: $color-primary-dark;
+    color: $color-on-primary-container;
 }
 
 .stat-label {
@@ -94,8 +94,8 @@ section + section {
     color: inherit;
 
     &:hover {
-        border-color: $color-primary-light;
-        background: $color-tint;
+        border-color: $color-primary;
+        background: $color-primary-container;
     }
 }
 
@@ -104,7 +104,7 @@ section + section {
     height: 44px;
     border-radius: 50%;
     background: $color-primary;
-    color: #fff;
+    color: $color-on-primary;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,8 +140,8 @@ section + section {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: $color-primary-50;
-    color: $color-primary-dark;
+    background: $color-primary-container;
+    color: $color-on-primary-container;
     display: flex;
     align-items: center;
     justify-content: center;
