@@ -14,6 +14,21 @@
 <div class="body">
     @if (auth.session()) {
         <nav class="side-nav" [class.collapsed]="!navExpanded">
+            <div class="nav-items">
+                @for (item of navItems; track item.route) {
+                    <a
+                        class="nav-item"
+                        [routerLink]="item.route"
+                        routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [matTooltip]="navExpanded ? '' : item.name"
+                        matTooltipPosition="right"
+                    >
+                        <mat-icon>{{ item.icon }}</mat-icon>
+                        <span class="nav-label">{{ item.name }}</span>
+                    </a>
+                }
+            </div>
             <button
                 mat-icon-button
                 class="collapse-toggle"
@@ -22,19 +37,6 @@
             >
                 <mat-icon>{{ navExpanded ? 'chevron_left' : 'chevron_right' }}</mat-icon>
             </button>
-            @for (item of navItems; track item.route) {
-                <a
-                    class="nav-item"
-                    [routerLink]="item.route"
-                    routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    [matTooltip]="navExpanded ? '' : item.name"
-                    matTooltipPosition="right"
-                >
-                    <mat-icon>{{ item.icon }}</mat-icon>
-                    <span class="nav-label">{{ item.name }}</span>
-                </a>
-            }
         </nav>
     }
 

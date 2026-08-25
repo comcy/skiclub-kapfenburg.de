@@ -40,6 +40,8 @@
 .side-nav {
     flex: 0 0 auto;
     width: 220px;
+    display: flex;
+    flex-direction: column;
     background: #673ab7;
     padding-top: 8px;
     overflow-y: auto;
@@ -50,7 +52,7 @@
         width: 64px;
 
         .collapse-toggle {
-            margin: 0 auto 8px;
+            margin: 8px auto;
         }
 
         .nav-item {
@@ -65,9 +67,15 @@
     }
 }
 
+.nav-items {
+    flex: 1 1 auto;
+}
+
 .collapse-toggle {
     display: flex;
-    margin: 0 8px 8px auto;
+    flex: 0 0 auto;
+    margin: 8px;
+    margin-top: auto;
     color: rgba(255, 255, 255, 0.75);
 
     &:hover {

@@ -14,6 +14,16 @@ body {
     z-index: 1000;
 }
 
+// shared-lib-site-header is shared with the public sck-app, where it
+// defaults to the primary (purple) color - here it sits directly under the
+// already-purple top-bar/side-nav (see app.component.html), so each usage
+// overrides [color]="undefined" to fall back to plain content coloring, and
+// this just adds the separating line that color used to provide visually.
+shared-lib-site-header {
+    display: block;
+    border-bottom: 1px solid #e0e0e0;
+}
+
 // Print support (first use of this pattern in the app - trip-registrations'
 // "Drucken" button just calls window.print()): hide the app chrome and any
 // element opted out via .no-print, let the printed content flow naturally
