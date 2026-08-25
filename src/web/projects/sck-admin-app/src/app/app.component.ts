@@ -37,13 +37,10 @@ export class AppComponent implements OnInit {
     navExpanded = true;
     navItems: NavItem[] = [
         { name: 'Übersicht', route: '/dashboard', icon: 'dashboard' },
-        { name: 'Ausfahrten', route: '/event-management/tiles', icon: 'grid_view' },
-        { name: 'Anmeldungen', route: '/event-management/registrations', icon: 'how_to_reg' },
-        { name: 'Kurse', route: '/course-management/tiles', icon: 'school' },
-        { name: 'Boardings', route: '/event-management/boardings', icon: 'directions_bus' },
-        { name: 'Media', route: '/event-management/media', icon: 'photo_library' },
-        { name: 'Users', route: '/user-management', icon: 'group' },
-        { name: 'Mitglieder', route: '/member-management', icon: 'badge' },
+        { name: 'Anmeldungen', route: '/registrations', icon: 'how_to_reg' },
+        { name: 'Event-Management', route: '/event-management', icon: 'grid_view' },
+        { name: 'Kurs-Management', route: '/course-management', icon: 'school' },
+        { name: 'Vereinsverwaltung', route: '/member-management', icon: 'badge' },
         { name: 'Einstellungen', route: '/settings', icon: 'settings' },
     ];
 

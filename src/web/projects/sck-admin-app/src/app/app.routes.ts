@@ -6,6 +6,8 @@ import { LoginComponent } from './auth/login/login.component';
 import { BoardingManagementComponent } from './boardings-management/boarding-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MemberManagementComponent } from './member-management/member-management.component';
+import { CourseRegistrationsOverviewComponent } from './tile-management/components/course-registrations-overview/course-registrations-overview.component';
+import { CourseRegistrationsComponent } from './tile-management/components/course-registrations/course-registrations.component';
 import { MediaManagementComponent } from './tile-management/components/media-management/media-management.component';
 import { RegistrationsOverviewComponent } from './tile-management/components/registrations-overview/registrations-overview.component';
 import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
@@ -41,10 +43,26 @@ export const routes: Routes = [
         canActivate: [authGuard],
     },
     {
+        path: 'registrations',
+        component: RegistrationsOverviewComponent,
+        canActivate: [authGuard],
+    },
+    {
+        path: 'registrations/:tileId',
+        component: TripRegistrationsComponent,
+        canActivate: [authGuard],
+    },
+    {
         path: 'event-management',
         component: TileManagementComponent,
         canActivate: [authGuard],
-        data: { title: 'Event Konfiguration' },
+        data: {
+            title: 'Event-Management',
+            navLinks: [
+                { label: 'Ausfahrten', link: 'tiles' },
+                { label: 'Boardings', link: 'boardings' },
+            ],
+        },
         children: [
             {
                 path: 'tiles',
@@ -55,24 +73,8 @@ export const routes: Routes = [
                 component: TileManagerComponent,
             },
             {
-                path: 'registrations',
-                component: RegistrationsOverviewComponent,
-            },
-            // Lives under registrations/:tileId (not tiles/:tileId/registrations)
-            // so the URL - and therefore the left nav's routerLinkActive
-            // highlight - stays on "Anmeldungen" instead of jumping to "Tiles"
-            // when you drill into one Ausfahrt's registrations from there.
-            {
-                path: 'registrations/:tileId',
-                component: TripRegistrationsComponent,
-            },
-            {
                 path: 'boardings',
                 component: BoardingManagementComponent,
-            },
-            {
-                path: 'media',
-                component: MediaManagementComponent,
             },
             {
                 path: '',
@@ -85,7 +87,13 @@ export const routes: Routes = [
         path: 'course-management',
         component: TileManagementComponent,
         canActivate: [authGuard],
-        data: { title: 'Kurse' },
+        data: {
+            title: 'Kurs-Management',
+            navLinks: [
+                { label: 'Kurse', link: 'tiles' },
+                { label: 'Anmeldungen', link: 'registrations' },
+            ],
+        },
         children: [
             {
                 path: 'tiles',
@@ -98,16 +106,19 @@ export const routes: Routes = [
                 data: { fixedType: 'course' },
             },
             {
+                path: 'registrations',
+                component: CourseRegistrationsOverviewComponent,
+            },
+            {
+                path: 'registrations/:tileId',
+                component: CourseRegistrationsComponent,
+            },
+            {
                 path: '',
                 redirectTo: 'tiles',
                 pathMatch: 'full',
             },
         ],
-    },
-    {
-        path: 'user-management',
-        component: UserManagementComponent,
-        canActivate: [authGuard],
     },
     {
         path: 'member-management',
@@ -116,8 +127,35 @@ export const routes: Routes = [
     },
     {
         path: 'settings',
-        component: SettingsComponent,
+        component: TileManagementComponent,
         canActivate: [authGuard],
+        data: {
+            title: 'Einstellungen',
+            navLinks: [
+                { label: 'Allgemein', link: 'general' },
+                { label: 'Users', link: 'users' },
+                { label: 'Media', link: 'media' },
+            ],
+        },
+        children: [
+            {
+                path: 'general',
+                component: SettingsComponent,
+            },
+            {
+                path: 'users',
+                component: UserManagementComponent,
+            },
+            {
+                path: 'media',
+                component: MediaManagementComponent,
+            },
+            {
+                path: '',
+                redirectTo: 'general',
+                pathMatch: 'full',
+            },
+        ],
     },
     {
         path: '**',

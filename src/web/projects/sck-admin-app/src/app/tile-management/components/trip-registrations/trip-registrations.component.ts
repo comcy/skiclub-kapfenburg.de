@@ -101,7 +101,7 @@ export class TripRegistrationsComponent implements OnInit {
     }
 
     onBack(): void {
-        this.router.navigate(['event-management', 'tiles', this.tileId]);
+        this.router.navigate(['registrations']);
     }
 
     onCreate(): void {

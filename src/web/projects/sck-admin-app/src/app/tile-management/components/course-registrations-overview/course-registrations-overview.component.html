@@ -1,0 +1,36 @@
+<div class="page">
+    <div class="page-header">
+        <span class="page-title">Anmeldungen: Kurse</span>
+    </div>
+
+    <div class="page-content">
+        <table class="overview-table">
+            <thead>
+                <tr>
+                    <th>Kurs</th>
+                    <th>Anmeldungen</th>
+                    <th style="width: 180px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (tile of tiles; track tile.id) {
+                    <tr class="row" [class.row-expired]="tile.expired">
+                        <td>{{ tile.title }}</td>
+                        <td>{{ confirmedCount(tile) }}</td>
+                        <td class="actions-cell">
+                            <a mat-stroked-button [routerLink]="['/course-management', 'registrations', tile.id]">
+                                <mat-icon>how_to_reg</mat-icon>
+                                Anmeldungen
+                            </a>
+                        </td>
+                    </tr>
+                }
+                @if (loaded && !tiles.length) {
+                    <tr>
+                        <td colspan="3" class="empty">Noch keine Kurse angelegt.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

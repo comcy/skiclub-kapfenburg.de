@@ -61,61 +61,6 @@
     display: none;
 }
 
-.capacity-row {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    margin-bottom: 24px;
-}
-
-.capacity-bar-wrap {
-    flex: 1;
-}
-
-.capacity-label {
-    font-size: 13px;
-    color: var(--mat-sys-on-surface-variant);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.capacity-label-full {
-    color: light-dark(#c62828, #ffb4a8);
-    font-weight: 500;
-}
-
-.capacity-warning-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-    color: light-dark(#c62828, #ffb4a8);
-}
-
-.capacity-bar {
-    height: 8px;
-    border-radius: 4px;
-    background: var(--mat-sys-primary-container);
-    overflow: hidden;
-}
-
-.capacity-bar-fill {
-    height: 100%;
-    background: var(--mat-sys-primary);
-    border-radius: 4px;
-}
-
-.capacity-bar-fill-full {
-    background: light-dark(#c62828, #ffb4a8);
-}
-
-.capacity-warning-text {
-    margin-top: 6px;
-    font-size: 12px;
-    color: light-dark(#c62828, #ffb4a8);
-}
-
 .toolbar {
     display: flex;
     justify-content: flex-end;
@@ -149,13 +94,6 @@
     }
 }
 
-.group-heading {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--mat-sys-on-primary-container);
-    background: var(--mat-sys-primary-container);
-}
-
 .empty {
     text-align: center;
     color: var(--mat-sys-on-surface-variant);
@@ -178,11 +116,6 @@
     color: light-dark(#1e7d32, #8ee6a0);
 }
 
-.chip-waitlist {
-    background: light-dark(#fff3cd, #4a3c0a);
-    color: light-dark(#8a6a00, #e6c15a);
-}
-
 .chip-cancelled {
     background: var(--mat-sys-surface-container);
     color: var(--mat-sys-on-surface-variant);
@@ -201,21 +134,6 @@
 .meta-item strong {
     font-weight: 500;
     color: var(--mat-sys-on-surface);
-}
-
-.chip-tile-status {
-    background: light-dark(#dcf3e0, #1b3a20);
-    color: light-dark(#1e7d32, #8ee6a0);
-}
-
-.chip-warn {
-    background: light-dark(#fff3cd, #4a3c0a);
-    color: light-dark(#8a6a00, #e6c15a);
-}
-
-.chip-off {
-    background: var(--mat-sys-surface-container);
-    color: var(--mat-sys-on-surface-variant);
 }
 
 .badge-member {
@@ -245,10 +163,6 @@
 .editor-overlay {
     position: absolute;
     inset: 0;
-    // Without an explicit z-index, mat-button's internal ripple/focus layer
-    // (position: relative, z-index: auto, deep inside .toolbar) ends up
-    // painted above this overlay in some browsers - the "Drucken" button
-    // then visibly floats on top of the editor panel and stays clickable.
     z-index: 10;
     background: rgba(0, 0, 0, 0.32);
     display: flex;
@@ -275,10 +189,5 @@
         font-size: 22px;
         font-weight: 700;
         margin-bottom: 16px;
-    }
-
-    .group-heading {
-        background: none;
-        padding: 14px 12px 4px;
     }
 }

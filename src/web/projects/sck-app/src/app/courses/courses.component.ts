@@ -43,6 +43,7 @@ export class CoursesComponent implements OnInit {
     public registrationOpen = false;
     public selectedLevel: string | undefined;
     public selectedCustomBccList: string[] | undefined;
+    public selectedTileId: string | undefined;
 
     public markdown = inject(MarkdownRenderService);
     private readonly courseTilesApi = inject(CourseTilesApiServiceInterface);
@@ -52,6 +53,10 @@ export class CoursesComponent implements OnInit {
     // time and keyed by the STATIC level id (not the possibly-admin-renamed
     // title) so a later lookup by id is unaffected by content edits.
     private bccByLevelId = new Map<string, string[] | undefined>();
+    // level.id -> the matching admin tile's real id (see
+    // course-registration-form.component.ts's presetTileId), same lookup
+    // pattern as bccByLevelId above.
+    private tileIdByLevelId = new Map<string, string | undefined>();
 
     @ViewChild('registrationSection') registrationSection?: ElementRef<HTMLElement>;
 
@@ -65,6 +70,7 @@ export class CoursesComponent implements OnInit {
                 const code = level.title.split(' ')[0];
                 const match = apiTiles.find((tile) => tile.title === code);
                 this.bccByLevelId.set(level.id, match?.courseConfig?.customBccList);
+                this.tileIdByLevelId.set(level.id, match?.id);
                 return mergeCourseTile(level, match);
             });
             this.cdr.markForCheck();
@@ -79,6 +85,7 @@ export class CoursesComponent implements OnInit {
         const staticLevel = COURSE_LEVEL_TILES.find((l) => l.id === level.id);
         this.selectedLevel = staticLevel?.title ?? level.title;
         this.selectedCustomBccList = this.bccByLevelId.get(level.id);
+        this.selectedTileId = this.tileIdByLevelId.get(level.id);
         this.registrationOpen = true;
         setTimeout(() => {
             this.registrationSection?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });

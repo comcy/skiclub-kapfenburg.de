@@ -62,6 +62,13 @@ const getConfirmedRegistrationsCount = (tileId: string): number => {
   return row.count;
 };
 
+const getConfirmedCourseRegistrationsCount = (tileId: string): number => {
+  const row = db
+    .prepare(`SELECT COUNT(*) AS count FROM course_registrations WHERE tile_id = ? AND status = 'confirmed'`)
+    .get(tileId) as { count: number };
+  return row.count;
+};
+
 const getBoardingNamesForTile = (tileId: string): string[] => {
   const rows = db
     .prepare(
@@ -101,7 +108,12 @@ const rowToTile = (row: TileRow): Tile => {
     updatedAt: row.updated_at,
     capacity: row.capacity ?? undefined,
     organizerUserId: row.organizer_user_id ?? undefined,
-    confirmedRegistrationsCount: row.type === 'event' ? getConfirmedRegistrationsCount(row.id) : undefined,
+    confirmedRegistrationsCount:
+      row.type === 'event'
+        ? getConfirmedRegistrationsCount(row.id)
+        : row.type === 'course'
+          ? getConfirmedCourseRegistrationsCount(row.id)
+          : undefined,
     ...extra,
   };
 };

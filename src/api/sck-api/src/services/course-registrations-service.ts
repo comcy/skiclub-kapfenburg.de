@@ -146,6 +146,35 @@ export const deleteRegistration = (id: string): boolean => {
   return result.changes > 0;
 };
 
+export interface PublicCourseRegistrationInput {
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone?: string;
+  sportType?: string;
+  level?: string;
+  notes?: string;
+}
+
+// Courses have no capacity/waitlist concept (unlike trip-registrations-
+// service.ts's createPublicRegistrations), so this is a plain insert -
+// always 'confirmed'. 'sheet-import' is reused (not a new enum value) as
+// the source for "came in through the public website form", same
+// convention already established for trips.
+export const createPublicRegistration = (tileId: string, params: PublicCourseRegistrationInput): CourseRegistration =>
+  createRegistration(tileId, {
+    firstName: params.firstName,
+    lastName: params.lastName,
+    email: params.email,
+    phone: params.phone,
+    sportType: params.sportType,
+    level: params.level,
+    status: 'confirmed',
+    source: 'sheet-import',
+    notes: params.notes,
+    orderIndex: 0,
+  });
+
 interface CourseGroupRow {
   id: string;
   tile_id: string;

@@ -6,6 +6,7 @@ import { Image } from '../domain/image';
 import { PaginatedResponse } from '../domain/paginated-response';
 import { Tile, TileCreationParams } from '../domain/tile';
 import { TripRegistration, TripRegistrationCreationParams } from '../domain/trip-registration';
+import { CourseRegistration, CourseRegistrationCreationParams } from '../domain/course-registration';
 
 @Injectable({
     providedIn: 'root',
@@ -90,5 +91,24 @@ export class TilesDataService {
 
     deleteRegistration(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/registrations/${id}`);
+    }
+
+    getCourseRegistrations(tileId: string): Observable<CourseRegistration[]> {
+        return this.http.get<CourseRegistration[]>(`${this.apiUrl}/${this.endpoint}/${tileId}/course-registrations`);
+    }
+
+    createCourseRegistration(tileId: string, params: CourseRegistrationCreationParams): Observable<CourseRegistration> {
+        return this.http.post<CourseRegistration>(
+            `${this.apiUrl}/${this.endpoint}/${tileId}/course-registrations`,
+            params,
+        );
+    }
+
+    updateCourseRegistration(id: string, params: CourseRegistrationCreationParams): Observable<CourseRegistration> {
+        return this.http.put<CourseRegistration>(`${this.apiUrl}/course-registrations/${id}`, params);
+    }
+
+    deleteCourseRegistration(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/course-registrations/${id}`);
     }
 }

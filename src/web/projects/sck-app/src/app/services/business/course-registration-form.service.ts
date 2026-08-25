@@ -16,6 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
     CourseRegisterFormFields,
     CourseRegistrationFormServiceInterface,
+    PublicCourseRegistrationInput,
 } from 'projects/courses-lib/src/lib/ui/course-registration-form';
 import {
     getCourseConfirmationMailBcc,
@@ -28,6 +29,7 @@ import {
     FormToMailInformation,
     MailInformation,
 } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class CourseRegistrationFormService implements CourseRegistrationFormServiceInterface {
@@ -96,6 +98,17 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
 
     public getTurnstileSiteKey(): string {
         return environment.turnstileSiteKey;
+    }
+
+    public submitPublicRegistration(
+        tileId: string,
+        input: PublicCourseRegistrationInput,
+        turnstileToken: string,
+    ): Observable<void> {
+        return this.http.post<void>(`${environment.sckApiUrl}/tiles/${tileId}/course-registrations/public`, {
+            ...input,
+            turnstileToken,
+        });
     }
 }
 

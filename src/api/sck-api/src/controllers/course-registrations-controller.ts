@@ -5,11 +5,20 @@
 import { RequestHandler } from 'express';
 import { CourseGroupCreationParams, CourseRegistrationCreationParams } from '../domain/course-registration.js';
 import * as registrationsService from '../services/course-registrations-service.js';
+import { PublicCourseRegistrationInput } from '../services/course-registrations-service.js';
+import { TileStatus } from '../domain/tile.js';
+import { getTile } from '../services/tiles-service.js';
 
 const isValidRegistrationParams = (body: CourseRegistrationCreationParams): boolean =>
   !!body.firstName?.trim() && !!body.lastName?.trim();
 
 const isValidGroupParams = (body: CourseGroupCreationParams): boolean => !!body.name?.trim();
+
+const isValidPublicParams = (body: unknown): body is PublicCourseRegistrationInput => {
+  if (!body || typeof body !== 'object') return false;
+  const p = body as Record<string, unknown>;
+  return typeof p.firstName === 'string' && p.firstName.trim().length > 0 && typeof p.lastName === 'string' && p.lastName.trim().length > 0;
+};
 
 export const listCourseRegistrations: RequestHandler = (req, res) => {
   try {
@@ -31,6 +40,31 @@ export const createCourseRegistration: RequestHandler = (req, res) => {
   } catch (error: any) {
     console.error('Fehler beim Erstellen der Kurs-Anmeldung:', error);
     res.status(500).json({ error: 'Fehler beim Erstellen der Kurs-Anmeldung.' });
+  }
+};
+
+export const createPublicCourseRegistration: RequestHandler = (req, res) => {
+  try {
+    const tileId = String(req.params.tileId);
+    const tile = getTile(tileId);
+    if (!tile) {
+      res.status(404).json({ error: 'Kurs nicht gefunden.' });
+      return;
+    }
+    if (tile.status === TileStatus.Canceled || tile.expired) {
+      res.status(400).json({ error: 'Für diesen Kurs ist keine Anmeldung mehr möglich.' });
+      return;
+    }
+
+    if (!isValidPublicParams(req.body)) {
+      res.status(400).json({ error: 'Vor- und Nachname sind erforderlich.' });
+      return;
+    }
+
+    res.status(201).json(registrationsService.createPublicRegistration(tileId, req.body));
+  } catch (error: any) {
+    console.error('Fehler beim Speichern der öffentlichen Kurs-Anmeldung:', error);
+    res.status(500).json({ error: 'Fehler beim Speichern der Anmeldung.' });
   }
 };
 

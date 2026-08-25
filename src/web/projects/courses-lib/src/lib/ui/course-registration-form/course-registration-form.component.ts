@@ -56,6 +56,11 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
 
     @Input() presetLevel?: string;
     @Input() presetCustomBccList?: string[];
+    // The matching admin-managed course tile's real id (see
+    // CoursesComponent.tileIdByLevelId) - undefined when no admin tile
+    // matches the static level, in which case the public sck-api write
+    // below is simply skipped (Sheets webhook + mail keep working as before).
+    @Input() presetTileId?: string;
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public courseRegisterForm: FormGroup = new FormGroup({});
@@ -126,6 +131,29 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
                 };
 
                 this.courseRegistrationFormService.sendConfirmationMail(mailToFormData);
+
+                if (this.presetTileId) {
+                    const rawValue = this.courseRegisterForm.getRawValue();
+                    this.courseRegistrationFormService
+                        .submitPublicRegistration(
+                            this.presetTileId,
+                            {
+                                firstName: rawValue.firstName,
+                                lastName: rawValue.lastName,
+                                email: rawValue.email,
+                                phone: rawValue.phone,
+                                sportType: rawValue.sportType,
+                                level: rawValue.level,
+                                notes: [rawValue.age ? `Alter: ${rawValue.age}` : '', rawValue.additionalText]
+                                    .filter(Boolean)
+                                    .join(' — '),
+                            },
+                            this.turnstileToken as string,
+                        )
+                        .subscribe({
+                            error: (error) => console.error('Fehler beim Speichern der Kurs-Anmeldung:', error),
+                        });
+                }
             } else {
                 console.error('No data provided');
             }

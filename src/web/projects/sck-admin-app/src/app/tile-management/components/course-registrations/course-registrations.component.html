@@ -1,0 +1,104 @@
+<div class="page">
+    <div class="page-header no-print">
+        <button class="back-button" mat-icon-button (click)="onBack()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="page-title">Anmeldungen: {{ tile?.title }}</span>
+    </div>
+
+    <div class="page-content">
+        <div class="print-title">{{ tile?.title }} — Anmeldungsliste</div>
+
+        <div class="tile-meta no-print">
+            @if (tile?.date) {
+                <span class="meta-item"><strong>Datum:</strong> {{ tile!.date }}</span>
+            }
+            @if (tile?.subTitle) {
+                <span class="meta-item"><strong>Untertitel:</strong> {{ tile!.subTitle }}</span>
+            }
+            <span class="meta-item"><strong>Anmeldungen:</strong> {{ confirmedCount }}</span>
+        </div>
+
+        <div class="toolbar no-print">
+            <button mat-stroked-button (click)="onPrint()">
+                <mat-icon>print</mat-icon>
+                Drucken
+            </button>
+            @if (auth.hasPermission('tiles:write')) {
+                <button mat-raised-button color="primary" (click)="onCreate()">
+                    <mat-icon>add</mat-icon>
+                    Neue Anmeldung
+                </button>
+            }
+        </div>
+
+        <table class="registrations-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Sportart</th>
+                    <th>Könnerstufe</th>
+                    <th class="no-print">Mitglied</th>
+                    <th>Status</th>
+                    <th class="no-print" style="width: 88px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (registration of registrations; track registration.id) {
+                    <tr class="row">
+                        <td>{{ registration.firstName }} {{ registration.lastName }}</td>
+                        <td>{{ registration.sportType || '–' }}</td>
+                        <td>{{ registration.level || '–' }}</td>
+                        <td class="no-print">
+                            @if (registration.isMember) {
+                                <span class="badge-member"><mat-icon>check</mat-icon> Mitglied</span>
+                            } @else {
+                                <span class="badge-nonmember">kein Mitglied</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="chip chip-{{ registration.status }}">
+                                @switch (registration.status) {
+                                    @case ('confirmed') {
+                                        Bestätigt
+                                    }
+                                    @case ('cancelled') {
+                                        Storniert
+                                    }
+                                }
+                            </span>
+                        </td>
+                        <td class="no-print actions-cell">
+                            @if (auth.hasPermission('tiles:write')) {
+                                <button mat-icon-button (click)="onEdit(registration)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="onDelete(registration)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!registrations.length) {
+                    <tr>
+                        <td colspan="6" class="empty">Noch keine Anmeldungen.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (selectedRegistration) {
+        <div class="editor-overlay no-print">
+            <div class="editor-panel">
+                <app-course-registration-editor
+                    [tileId]="tileId"
+                    [registration]="selectedRegistration"
+                    (saved)="onSaved()"
+                    (cancelled)="selectedRegistration = null"
+                ></app-course-registration-editor>
+            </div>
+        </div>
+    }
+</div>

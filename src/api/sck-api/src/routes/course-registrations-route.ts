@@ -6,6 +6,7 @@ import { Router } from 'express';
 import {
   createCourseGroup,
   createCourseRegistration,
+  createPublicCourseRegistration,
   deleteCourseGroup,
   deleteCourseRegistration,
   listCourseGroups,
@@ -14,6 +15,8 @@ import {
   updateCourseRegistration,
 } from '../controllers/course-registrations-controller.js';
 import { requireAuth, requirePermission } from '../middleware/auth-middleware.js';
+import { publicWriteLimiter } from '../middleware/rate-limit.js';
+import { requireTurnstile } from '../middleware/turnstile-middleware.js';
 
 const router = Router();
 
@@ -23,6 +26,12 @@ router.post(
   requireAuth,
   requirePermission('tiles:write'),
   createCourseRegistration,
+);
+router.post(
+  '/tiles/:tileId/course-registrations/public',
+  publicWriteLimiter,
+  requireTurnstile,
+  createPublicCourseRegistration,
 );
 router.put('/course-registrations/:id', requireAuth, requirePermission('tiles:write'), updateCourseRegistration);
 router.delete('/course-registrations/:id', requireAuth, requirePermission('tiles:write'), deleteCourseRegistration);

@@ -132,6 +132,46 @@ describe('Course Registrations Routes', () => {
     expect(createRes.body.memberId).toBe(memberId);
   });
 
+  describe('POST /api/tiles/:tileId/course-registrations/public', () => {
+    it('ist öffentlich (keine Anmeldung nötig) und bestätigt sofort', async () => {
+      const tileId = createTile();
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/course-registrations/public`)
+        .send({ firstName: 'Max', lastName: 'Mustermann', sportType: 'Ski Alpin' });
+
+      expect(res.status).toBe(201);
+      expect(res.body.status).toBe('confirmed');
+      expect(res.body.source).toBe('sheet-import');
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/course-registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body).toHaveLength(1);
+    });
+
+    it('lehnt eine Anmeldung ohne Vor-/Nachname mit 400 ab', async () => {
+      const tileId = createTile();
+      const res = await request(app).post(`/api/tiles/${tileId}/course-registrations/public`).send({});
+      expect(res.status).toBe(400);
+    });
+
+    it('liefert 404 für einen unbekannten Kurs', async () => {
+      const res = await request(app)
+        .post(`/api/tiles/${randomUUID()}/course-registrations/public`)
+        .send({ firstName: 'Max', lastName: 'Mustermann' });
+      expect(res.status).toBe(404);
+    });
+
+    it('lehnt eine Anmeldung für einen abgesagten Kurs mit 400 ab', async () => {
+      const tileId = createTile();
+      db.prepare("UPDATE tiles SET status = 'canceled' WHERE id = ?").run(tileId);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/course-registrations/public`)
+        .send({ firstName: 'Max', lastName: 'Mustermann' });
+      expect(res.status).toBe(400);
+    });
+  });
+
   describe('Kursgruppen', () => {
     it('erstellt, listet, aktualisiert und löscht eine Kursgruppe mit tiles:write', async () => {
       const tileId = createTile();
