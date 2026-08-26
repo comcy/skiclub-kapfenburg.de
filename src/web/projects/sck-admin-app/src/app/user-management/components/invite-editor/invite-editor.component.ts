@@ -14,11 +14,16 @@ import { UsersDataService } from '../../services/users-data.service';
 })
 export class InviteEditorComponent {
     @Output() saved = new EventEmitter<void>();
-    @Output() cancelled = new EventEmitter<void>();
 
     private readonly dataService = inject(UsersDataService);
 
     public email = '';
+
+    // Read by the dialog's own "Einladen" button (outside this component,
+    // in the dialog shell's sticky actions area).
+    get canSave(): boolean {
+        return !!this.email;
+    }
 
     onSave(): void {
         if (!this.email) return;
@@ -27,10 +32,5 @@ export class InviteEditorComponent {
             this.email = '';
             this.saved.emit();
         });
-    }
-
-    onCancel(): void {
-        this.email = '';
-        this.cancelled.emit();
     }
 }

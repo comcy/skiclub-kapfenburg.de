@@ -1,9 +1,10 @@
-.full-width {
-    width: 100%;
+.editor-form {
+    // Material zeroes mat-dialog-content's padding-top right after
+    // mat-dialog-title (see member-editor.component.scss's identical
+    // rule), which otherwise clips an outline field's floated label.
+    padding-top: 8px;
 }
 
-.actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
+.full-width {
+    width: 100%;
 }

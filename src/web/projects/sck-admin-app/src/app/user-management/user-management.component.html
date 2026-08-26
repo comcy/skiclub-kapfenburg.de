@@ -19,16 +19,8 @@
 
         <section class="pair">
             <div class="list-area">
-                <app-invite-list (createRequested)="isInviting = true" #inviteList></app-invite-list>
+                <app-invite-list></app-invite-list>
             </div>
-            @if (isInviting) {
-                <div class="editor-area">
-                    <app-invite-editor
-                        (saved)="onInviteSaved(inviteList)"
-                        (cancelled)="isInviting = false"
-                    ></app-invite-editor>
-                </div>
-            }
         </section>
     </div>
 } @else {

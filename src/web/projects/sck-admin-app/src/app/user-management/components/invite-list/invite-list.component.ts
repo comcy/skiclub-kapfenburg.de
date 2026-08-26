@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Invite } from '../../domain/invite';
 import { UsersDataService } from '../../services/users-data.service';
+import { InviteEditDialogComponent } from '../invite-edit-dialog/invite-edit-dialog.component';
 
 @Component({
     selector: 'app-invite-list',
@@ -18,9 +20,8 @@ import { UsersDataService } from '../../services/users-data.service';
 export class InviteListComponent implements OnInit {
     private readonly dataService = inject(UsersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly dialog = inject(MatDialog);
     public readonly auth = inject(AuthService);
-
-    @Output() createRequested = new EventEmitter<void>();
 
     public invites$!: Observable<Invite[]>;
     public displayedColumns: string[] = ['email', 'createdAt', 'expiresAt', 'status'];
@@ -45,6 +46,9 @@ export class InviteListComponent implements OnInit {
     }
 
     onCreate(): void {
-        this.createRequested.emit();
+        const dialogRef = this.dialog.open(InviteEditDialogComponent, { width: '480px', maxWidth: '95vw' });
+        dialogRef.afterClosed().subscribe((changed: boolean | undefined) => {
+            if (changed) this.refresh();
+        });
     }
 }

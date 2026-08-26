@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { SiteHeaderComponent } from '@shared/ui-common';
 import { AuthService } from '../auth/services/auth.service';
-import { InviteEditorComponent } from './components/invite-editor/invite-editor.component';
 import { InviteListComponent } from './components/invite-list/invite-list.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { UserPermissionsEditorComponent } from './components/user-permissions-editor/user-permissions-editor.component';
@@ -10,13 +9,7 @@ import { AdminUser } from './domain/user';
 @Component({
     selector: 'app-user-management',
     standalone: true,
-    imports: [
-        SiteHeaderComponent,
-        UserListComponent,
-        UserPermissionsEditorComponent,
-        InviteListComponent,
-        InviteEditorComponent,
-    ],
+    imports: [SiteHeaderComponent, UserListComponent, UserPermissionsEditorComponent, InviteListComponent],
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.scss'],
 })
@@ -25,7 +18,6 @@ export class UserManagementComponent {
     private readonly cdr = inject(ChangeDetectorRef);
 
     selectedUser: AdminUser | null = null;
-    isInviting = false;
 
     onUserSelected(user: AdminUser): void {
         // Clone to avoid mutating the list's row directly before save.
@@ -39,11 +31,5 @@ export class UserManagementComponent {
         this.selectedUser = null;
         this.cdr.markForCheck();
         userList.refresh();
-    }
-
-    onInviteSaved(inviteList: InviteListComponent): void {
-        this.isInviting = false;
-        this.cdr.markForCheck();
-        inviteList.refresh();
     }
 }

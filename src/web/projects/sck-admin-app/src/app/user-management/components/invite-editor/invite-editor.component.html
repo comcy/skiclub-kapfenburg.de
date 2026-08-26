@@ -1,13 +1,6 @@
-<div>
-    <h3>Neue Einladung</h3>
-
+<div class="editor-form">
     <mat-form-field appearance="outline" class="full-width">
         <mat-label>E-Mail</mat-label>
         <input matInput type="email" [(ngModel)]="email" placeholder="name@example.com" />
     </mat-form-field>
-
-    <div class="actions">
-        <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!email">Einladen</button>
-        <button mat-button (click)="onCancel()">Abbrechen</button>
-    </div>
 </div>
