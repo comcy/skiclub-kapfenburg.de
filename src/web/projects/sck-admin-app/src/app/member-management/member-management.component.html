@@ -1,28 +1,36 @@
 <shared-lib-site-header title="Mitglieder" [color]="undefined"></shared-lib-site-header>
 
 @if (auth.hasPermission('members:manage')) {
-    <div class="content-area">
-        <section class="pair">
-            <div class="list-area">
-                <app-member-list (memberSelected)="onMemberSelected($event)" #memberList></app-member-list>
-            </div>
-            @if (selectedMember) {
-                <div class="editor-area">
-                    <app-member-editor
-                        [member]="selectedMember"
-                        (saved)="onMemberSaved(memberList, applicationList)"
-                        (cancelled)="selectedMember = null"
-                    ></app-member-editor>
+    @if (importOpen) {
+        <app-member-import (imported)="importOpen = false" (cancelled)="importOpen = false"></app-member-import>
+    } @else {
+        <div class="content-area">
+            <section class="pair">
+                <div class="list-area">
+                    <app-member-list
+                        (memberSelected)="onMemberSelected($event)"
+                        (importRequested)="importOpen = true"
+                        #memberList
+                    ></app-member-list>
                 </div>
-            }
-        </section>
+                @if (selectedMember) {
+                    <div class="editor-area">
+                        <app-member-editor
+                            [member]="selectedMember"
+                            (saved)="onMemberSaved(memberList, applicationList)"
+                            (cancelled)="selectedMember = null"
+                        ></app-member-editor>
+                    </div>
+                }
+            </section>
 
-        <section class="pair">
-            <div class="list-area full-width">
-                <app-application-list (promote)="onPromote($event)" #applicationList></app-application-list>
-            </div>
-        </section>
-    </div>
+            <section class="pair">
+                <div class="list-area full-width">
+                    <app-application-list (promote)="onPromote($event)" #applicationList></app-application-list>
+                </div>
+            </section>
+        </div>
+    }
 } @else {
     <div class="no-access">Keine Berechtigung, Mitglieder zu verwalten.</div>
 }

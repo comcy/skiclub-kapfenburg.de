@@ -5,6 +5,11 @@
     margin-bottom: 8px;
 }
 
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
 table {
     width: 100%;
 }
@@ -48,4 +53,9 @@ table {
 .chip-paper {
     background: light-dark(#fff3cd, #4a3c0a);
     color: light-dark(#8a6a00, #e6c15a);
+}
+
+.chip-imported {
+    background: var(--mat-sys-tertiary-container);
+    color: var(--mat-sys-on-tertiary-container);
 }

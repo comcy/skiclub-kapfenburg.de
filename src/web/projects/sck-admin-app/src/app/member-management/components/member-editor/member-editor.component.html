@@ -28,6 +28,10 @@
                 <input matInput [(ngModel)]="member.phone" />
             </mat-form-field>
             <mat-form-field appearance="outline">
+                <mat-label>Mobil</mat-label>
+                <input matInput [(ngModel)]="member.mobile" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
                 <mat-label>Geburtsdatum</mat-label>
                 <input matInput placeholder="TT.MM.JJJJ" [(ngModel)]="member.birthday" />
             </mat-form-field>
@@ -40,10 +44,16 @@
 
         <mat-checkbox [(ngModel)]="member.isFamilyMembership" class="checkbox-row">Familienmitgliedschaft</mat-checkbox>
 
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Mitglied seit</mat-label>
-            <input matInput placeholder="TT.MM.JJJJ" [(ngModel)]="member.memberSince" />
-        </mat-form-field>
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Mitglied seit</mat-label>
+                <input matInput placeholder="TT.MM.JJJJ" [(ngModel)]="member.memberSince" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Mitgliedsnummer</mat-label>
+                <input matInput [(ngModel)]="member.externalId" />
+            </mat-form-field>
+        </div>
 
         <div class="field-row">
             <mat-form-field appearance="outline">
@@ -59,9 +69,36 @@
                     <mat-option value="online">Online</mat-option>
                     <mat-option value="manual">Manuell</mat-option>
                     <mat-option value="paper">Papierform</mat-option>
+                    <mat-option value="imported">Importiert</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
+
+        <h4>Bankdaten</h4>
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Bank</mat-label>
+                <input matInput [(ngModel)]="member.bankName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>BIC</mat-label>
+                <input matInput [(ngModel)]="member.bic" />
+            </mat-form-field>
+        </div>
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>IBAN</mat-label>
+                <input matInput [(ngModel)]="member.iban" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Kontoinhaber</mat-label>
+                <input matInput [(ngModel)]="member.accountHolder" />
+            </mat-form-field>
+        </div>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Zahlungsbedingung</mat-label>
+            <input matInput [(ngModel)]="member.paymentMethod" />
+        </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Notizen</mat-label>

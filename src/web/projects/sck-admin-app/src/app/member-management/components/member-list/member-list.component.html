@@ -1,10 +1,16 @@
 <div class="header">
     <h2>Mitgliederliste</h2>
     @if (auth.hasPermission('members:manage')) {
-        <button mat-raised-button color="primary" (click)="onCreate()">
-            <mat-icon>add</mat-icon>
-            Neues Mitglied
-        </button>
+        <div class="header-actions">
+            <button mat-stroked-button (click)="importRequested.emit()">
+                <mat-icon>upload_file</mat-icon>
+                Importieren
+            </button>
+            <button mat-raised-button color="primary" (click)="onCreate()">
+                <mat-icon>add</mat-icon>
+                Neues Mitglied
+            </button>
+        </div>
     }
 </div>
 
@@ -44,6 +50,9 @@
                 }
                 @case ('paper') {
                     <span class="chip chip-paper">Papierform</span>
+                }
+                @case ('imported') {
+                    <span class="chip chip-imported">Importiert</span>
                 }
                 @default {
                     <span class="chip chip-manual">Manuell</span>

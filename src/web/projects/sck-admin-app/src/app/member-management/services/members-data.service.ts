@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PaginatedResponse } from '../../tile-management/domain/paginated-response';
+import { MemberImportApplyResult, MemberImportCollisionOverride, MemberImportPreview } from '../domain/member-import';
 import { Member, MemberCreationParams } from '../domain/member';
 import { MembershipApplication } from '../domain/membership-application';
 
@@ -37,5 +38,21 @@ export class MembersDataService {
 
     getMembershipApplications(): Observable<MembershipApplication[]> {
         return this.http.get<MembershipApplication[]>(`${this.apiUrl}/members/applications`);
+    }
+
+    previewMembersImport(file: File): Observable<MemberImportPreview> {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this.http.post<MemberImportPreview>(`${this.apiUrl}/members/import/preview`, formData);
+    }
+
+    applyMembersImport(
+        importId: string,
+        collisionOverrides: MemberImportCollisionOverride[],
+    ): Observable<MemberImportApplyResult> {
+        return this.http.post<MemberImportApplyResult>(`${this.apiUrl}/members/import/apply`, {
+            importId,
+            collisionOverrides,
+        });
     }
 }

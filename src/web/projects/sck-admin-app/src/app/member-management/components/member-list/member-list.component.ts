@@ -21,6 +21,7 @@ export class MemberListComponent implements OnInit {
     public readonly auth = inject(AuthService);
 
     @Output() memberSelected = new EventEmitter<Member>();
+    @Output() importRequested = new EventEmitter<void>();
 
     public members$!: Observable<Member[]>;
     public displayedColumns: string[] = ['name', 'email', 'status', 'source', 'memberSince', 'actions'];

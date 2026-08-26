@@ -39,6 +39,7 @@ export class MemberEditorComponent {
             lastName: this.member.lastName,
             email: this.member.email || undefined,
             phone: this.member.phone || undefined,
+            mobile: this.member.mobile || undefined,
             birthday: this.member.birthday || undefined,
             address: this.member.address || undefined,
             isFamilyMembership: this.member.isFamilyMembership,
@@ -48,6 +49,12 @@ export class MemberEditorComponent {
             applicationRegistrationId: this.member.applicationRegistrationId || undefined,
             notes: this.member.notes || undefined,
             memberSince: this.member.memberSince || undefined,
+            externalId: this.member.externalId || undefined,
+            iban: this.member.iban || undefined,
+            bic: this.member.bic || undefined,
+            bankName: this.member.bankName || undefined,
+            accountHolder: this.member.accountHolder || undefined,
+            paymentMethod: this.member.paymentMethod || undefined,
         };
 
         // Zoneless change detection (see app.config.ts) - without
