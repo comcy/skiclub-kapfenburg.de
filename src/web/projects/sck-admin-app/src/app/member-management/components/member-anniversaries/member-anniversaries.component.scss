@@ -21,6 +21,7 @@ h2 {
 .filter-row {
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
     gap: 16px;
     margin-bottom: 16px;
     flex-shrink: 0;

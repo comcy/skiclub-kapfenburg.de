@@ -4,13 +4,13 @@
     <span class="spacer"></span>
     <app-theme-switcher></app-theme-switcher>
     @if (auth.session(); as session) {
-        <button mat-button class="user-email" disableRipple>
+        <button mat-button class="user-email" disableRipple [matTooltip]="session.email" matTooltipPosition="below">
             <mat-icon>person</mat-icon>
-            {{ session.email }}
+            <span class="email-text">{{ session.email }}</span>
         </button>
-        <button mat-flat-button class="logout-button" (click)="logout()">
+        <button mat-flat-button class="logout-button" (click)="logout()" matTooltip="Logout" matTooltipPosition="below">
             <mat-icon>logout</mat-icon>
-            Logout
+            <span class="logout-text">Logout</span>
         </button>
     }
 </mat-toolbar>

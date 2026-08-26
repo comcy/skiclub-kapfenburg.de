@@ -65,6 +65,10 @@ section + section {
     font-size: 14px;
     font-weight: 500;
     color: $ink;
+    // A single long compound word (e.g. "Fahrgemeinschaften") has no space
+    // to wrap at, so on a narrow card it otherwise overflows the card
+    // instead of wrapping - break mid-word as a last resort.
+    overflow-wrap: break-word;
 }
 
 .stat-sub {

@@ -10,6 +10,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    // Title + two action buttons don't fit on one row on a phone-width
+    // screen - let the actions drop to their own row instead of
+    // overflowing past the viewport edge.
+    flex-wrap: wrap;
+    row-gap: 8px;
     margin-bottom: 8px;
     flex-shrink: 0;
 }
@@ -22,11 +27,16 @@
 .filters {
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
     gap: 8px;
     flex-shrink: 0;
 
     mat-form-field {
-        width: 220px;
+        // A fixed 220px per field (660px+ for three fields) badly overflows
+        // a phone-width screen - flex-basis lets each field shrink instead,
+        // while still preferring 220px when there's room for it.
+        flex: 1 1 220px;
+        min-width: 140px;
     }
 }
 

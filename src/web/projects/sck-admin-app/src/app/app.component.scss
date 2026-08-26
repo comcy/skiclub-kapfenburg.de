@@ -66,6 +66,35 @@
         color: rgba(0, 0, 0, 0.87);
         border-radius: 20px;
     }
+
+    // The title, the full email address, and "Logout" text together are
+    // more copy than a phone-width toolbar can hold without everything
+    // overlapping (confirmed: content overflows the toolbar by ~20px at
+    // 390px wide) - drop the two least essential text bits, icons/tooltips
+    // still carry the same information (session email is now in the
+    // user-email button's own matTooltip).
+    @media (max-width: 600px) {
+        padding: 0 8px;
+
+        .title {
+            display: none;
+        }
+
+        .email-text,
+        .logout-text {
+            display: none;
+        }
+
+        .user-email {
+            min-width: unset;
+            padding: 0 8px;
+        }
+
+        .logout-button {
+            min-width: unset;
+            padding: 0 12px;
+        }
+    }
 }
 
 .body {
@@ -95,6 +124,31 @@
 
         .collapse-toggle {
             margin: 8px auto;
+        }
+
+        .nav-item {
+            justify-content: center;
+            padding: 0;
+            gap: 0;
+        }
+
+        .nav-label {
+            display: none;
+        }
+    }
+
+    // On a phone-width screen, the expanded 220px rail eats over half the
+    // viewport (confirmed: ~220px of a 390px screen) and pushes everything
+    // else off-screen instead of just being a nice-to-have. Force the
+    // already-built collapsed/icon-only look unconditionally here rather
+    // than relying on the manual navExpanded toggle - labels are still
+    // reachable via each item's matTooltip. The toggle button itself is
+    // hidden since there's nothing left to toggle.
+    @media (max-width: 768px) {
+        width: 64px !important;
+
+        .collapse-toggle {
+            display: none;
         }
 
         .nav-item {
