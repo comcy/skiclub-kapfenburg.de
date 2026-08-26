@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -8,7 +9,7 @@ import { RegistrationAgeCategory, TripRegistration } from '../../domain/trip-reg
 import { Tile } from '../../domain/tile';
 import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
-import { RegistrationEditorComponent } from './registration-editor/registration-editor.component';
+import { RegistrationEditDialogComponent } from './registration-edit-dialog/registration-edit-dialog.component';
 
 interface RegistrationGroup {
     boardingName: string;
@@ -18,7 +19,7 @@ interface RegistrationGroup {
 @Component({
     selector: 'app-trip-registrations',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, RegistrationEditorComponent],
+    imports: [CommonModule, MatButtonModule, MatIconModule],
     templateUrl: './trip-registrations.component.html',
     styleUrls: ['./trip-registrations.component.scss'],
 })
@@ -27,11 +28,11 @@ export class TripRegistrationsComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly dialog = inject(MatDialog);
     public readonly auth = inject(AuthService);
 
     public tile: Tile | null = null;
     public registrations: TripRegistration[] = [];
-    public selectedRegistration: TripRegistration | null = null;
     public tileId!: string;
     public readonly tileStatusEnum = TileStatus;
 
@@ -105,7 +106,7 @@ export class TripRegistrationsComponent implements OnInit {
     }
 
     onCreate(): void {
-        this.selectedRegistration = {
+        this.openEditor({
             id: '',
             tileId: this.tileId,
             firstName: '',
@@ -115,21 +116,27 @@ export class TripRegistrationsComponent implements OnInit {
             status: 'confirmed',
             source: 'manual',
             orderIndex: 0,
-        };
+        });
     }
 
     onEdit(registration: TripRegistration): void {
-        this.selectedRegistration = { ...registration };
+        this.openEditor({ ...registration });
+    }
+
+    private openEditor(registration: TripRegistration): void {
+        const dialogRef = this.dialog.open(RegistrationEditDialogComponent, {
+            data: { tileId: this.tileId, registration },
+            width: '640px',
+            maxWidth: '95vw',
+        });
+        dialogRef.afterClosed().subscribe((changed: boolean | undefined) => {
+            if (changed) this.refresh();
+        });
     }
 
     onDelete(registration: TripRegistration): void {
         if (!confirm(`Anmeldung von ${registration.firstName} ${registration.lastName} löschen?`)) return;
         this.dataService.deleteRegistration(registration.id).subscribe(() => this.refresh());
-    }
-
-    onSaved(): void {
-        this.selectedRegistration = null;
-        this.refresh();
     }
 
     onPrint(): void {

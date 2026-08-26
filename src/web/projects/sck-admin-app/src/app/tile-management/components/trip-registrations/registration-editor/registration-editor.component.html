@@ -1,7 +1,5 @@
 @if (registration) {
-    <div>
-        <h3>{{ registration.id ? 'Anmeldung bearbeiten' : 'Neue Anmeldung' }}</h3>
-
+    <div class="editor-form">
         @if (registration.id && registration.isMember) {
             <div class="member-hint">
                 <mat-icon>check_circle</mat-icon>
@@ -74,17 +72,5 @@
             <mat-label>Notizen</mat-label>
             <textarea matInput rows="3" [(ngModel)]="registration.notes"></textarea>
         </mat-form-field>
-
-        <div class="actions">
-            <button
-                mat-raised-button
-                color="primary"
-                (click)="onSave()"
-                [disabled]="!registration.firstName || !registration.lastName"
-            >
-                Speichern
-            </button>
-            <button mat-button (click)="onCancel()">Abbrechen</button>
-        </div>
     </div>
 }

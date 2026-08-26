@@ -129,17 +129,4 @@
             </tbody>
         </table>
     </div>
-
-    @if (selectedRegistration) {
-        <div class="editor-overlay no-print">
-            <div class="editor-panel">
-                <app-registration-editor
-                    [tileId]="tileId"
-                    [registration]="selectedRegistration"
-                    (saved)="onSaved()"
-                    (cancelled)="selectedRegistration = null"
-                ></app-registration-editor>
-            </div>
-        </div>
-    }
 </div>

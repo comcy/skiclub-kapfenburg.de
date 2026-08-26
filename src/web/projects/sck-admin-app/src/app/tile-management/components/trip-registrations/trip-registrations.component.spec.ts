@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -41,6 +42,7 @@ describe('TripRegistrationsComponent', () => {
                     },
                 },
                 { provide: AuthService, useValue: { hasPermission: () => true } },
+                { provide: MatDialog, useValue: jasmine.createSpyObj<MatDialog>('MatDialog', ['open']) },
             ],
         }).compileComponents();
 

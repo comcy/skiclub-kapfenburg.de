@@ -35,7 +35,6 @@ export class RegistrationEditorComponent {
     @Input() tileId!: string;
     @Input() registration: TripRegistration | null = null;
     @Output() saved = new EventEmitter<void>();
-    @Output() cancelled = new EventEmitter<void>();
 
     private readonly dataService = inject(TilesDataService);
     private readonly boardingsService = inject(BoardingsDataService);
@@ -51,6 +50,12 @@ export class RegistrationEditorComponent {
         youthUntil16: 'Jugend (bis 16)',
         childUntil6: 'Kind (bis 6)',
     };
+
+    // Read by the dialog's own Speichern button (outside this component, in
+    // the dialog shell's sticky actions area).
+    get canSave(): boolean {
+        return !!this.registration?.firstName && !!this.registration?.lastName;
+    }
 
     onSave(): void {
         if (!this.registration) return;
@@ -81,9 +86,5 @@ export class RegistrationEditorComponent {
                 this.cdr.markForCheck();
             });
         }
-    }
-
-    onCancel(): void {
-        this.cancelled.emit();
     }
 }

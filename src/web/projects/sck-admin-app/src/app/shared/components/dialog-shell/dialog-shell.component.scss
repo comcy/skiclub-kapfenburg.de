@@ -8,10 +8,12 @@
 .dialog-shell-header {
     margin: 0;
     padding: 16px 24px;
-    // One tonal step up from the dialog surface itself - subtle, not a
-    // strong color block, same M3 "surface-container" ladder used
-    // elsewhere in this app (see e.g. app.component.scss's top-bar).
-    background: var(--mat-sys-surface-container-highest);
+    // Same tonal treatment as the active nav item in the side-nav (see
+    // app.component.scss's .nav-item.active) rather than a neutral
+    // surface step - ties the dialog chrome back to the app's theme color
+    // instead of a generic "elevated panel" look.
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
     border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
 
@@ -23,6 +25,12 @@
     padding: 12px 24px;
     margin: 0;
     min-height: unset;
-    background: var(--mat-sys-surface-container-highest);
+    background: var(--mat-sys-primary-container);
+    // A plain (unthemed) mat-button's text color falls back to
+    // --mat-sys-primary, which can read poorly against this same-family
+    // container color - on-primary-container is the token this background
+    // is actually designed to pair with, same reasoning as .top-bar's
+    // on-primary override for its own icon buttons.
+    color: var(--mat-sys-on-primary-container);
     border-top: 1px solid var(--mat-sys-outline-variant);
 }
