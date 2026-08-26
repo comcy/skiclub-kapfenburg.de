@@ -35,6 +35,17 @@
         flex: 1 1 auto;
     }
 
+    // app-theme-switcher's mat-icon-buttons don't pick up the
+    // --mat-sys-on-surface(-variant) redeclaration above the way plain text
+    // does - MDC's icon-button icon color comes from its own dedicated
+    // token, so it needs setting directly (same on-primary value already
+    // used for the email/logout text) to stay visible against the primary
+    // fill in every theme/light-dark combination.
+    app-theme-switcher {
+        --mat-icon-button-icon-color: var(--mat-sys-on-primary);
+        --mdc-icon-button-icon-color: var(--mat-sys-on-primary);
+    }
+
     .user-email {
         font-size: 14px;
         // Matches the plain nav items in sck-app's own header (icon + label,

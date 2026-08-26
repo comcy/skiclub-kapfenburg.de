@@ -15,42 +15,44 @@
         <button mat-raised-button color="primary" [disabled]="isLoading" (click)="onSearch()">Anzeigen</button>
     </div>
 
-    @if (error) {
-        <div class="error-banner">{{ error }}</div>
-    }
+    <div class="results-area">
+        @if (error) {
+            <div class="error-banner">{{ error }}</div>
+        }
 
-    @if (searched && groups) {
-        @for (group of groups; track group.years) {
-            <h3>{{ group.years }}-jähriges Jubiläum (Eintritt {{ group.cutoffYear }} oder früher)</h3>
-            @if (group.members.length) {
-                <table class="simple-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Eintrittsdatum</th>
-                            <th>E-Mail</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (member of group.members; track member.id) {
+        @if (searched && groups) {
+            @for (group of groups; track group.years) {
+                <h3>{{ group.years }}-jähriges Jubiläum (Eintritt {{ group.cutoffYear }} oder früher)</h3>
+                @if (group.members.length) {
+                    <table class="simple-table">
+                        <thead>
                             <tr>
-                                <td>{{ member.firstName }} {{ member.lastName }}</td>
-                                <td>{{ member.memberSince }}</td>
-                                <td>{{ member.email || '–' }}</td>
-                                <td>
-                                    <button mat-stroked-button (click)="onMarkHonored(group, member)">
-                                        <mat-icon>military_tech</mat-icon>
-                                        Als geehrt markieren
-                                    </button>
-                                </td>
+                                <th>Name</th>
+                                <th>Eintrittsdatum</th>
+                                <th>E-Mail</th>
+                                <th></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            } @else {
-                <p class="empty">Keine offenen Jubiläen für dieses Jahr.</p>
+                        </thead>
+                        <tbody>
+                            @for (member of group.members; track member.id) {
+                                <tr>
+                                    <td>{{ member.firstName }} {{ member.lastName }}</td>
+                                    <td>{{ member.memberSince }}</td>
+                                    <td>{{ member.email || '–' }}</td>
+                                    <td>
+                                        <button mat-stroked-button (click)="onMarkHonored(group, member)">
+                                            <mat-icon>military_tech</mat-icon>
+                                            Als geehrt markieren
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                } @else {
+                    <p class="empty">Keine offenen Jubiläen für dieses Jahr.</p>
+                }
             }
         }
-    }
+    </div>
 </div>

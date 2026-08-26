@@ -39,6 +39,17 @@
     min-height: 0;
 }
 
+// [matHeaderRowDef]="...; sticky: true" never actually applies its
+// position:sticky class in this Angular version (verified: the header
+// row's computed position stays "static" even with sticky:true set) -
+// plain CSS sticky sidesteps CDK's non-functional JS mechanism entirely.
+tr.mat-mdc-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--mat-sys-surface);
+}
+
 // ...
 .paginator-container {
     display: flex;

@@ -1,3 +1,12 @@
+.editor-form {
+    // Material's own dialog CSS zeroes mat-dialog-content's padding-top
+    // whenever it directly follows mat-dialog-title (higher specificity
+    // than anything scoped to this component, so overriding the dialog's
+    // own padding doesn't work) - the outline field's floated label pokes
+    // above its own top edge and needs this room instead, from inside.
+    padding-top: 8px;
+}
+
 .full-width {
     width: 100%;
 }

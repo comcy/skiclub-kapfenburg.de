@@ -1,8 +1,17 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 8px;
+    flex-shrink: 0;
 }
 
 .header-actions {
@@ -10,8 +19,46 @@
     gap: 8px;
 }
 
+.filters {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-shrink: 0;
+
+    mat-form-field {
+        width: 220px;
+    }
+}
+
+// Only this box scrolls - the header row (sticky) stays pinned at its top,
+// and the paginator below sits outside it entirely so it's never part of
+// the scroll, always visible at the bottom of the table.
+.table-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.paginator-container {
+    flex-shrink: 0;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
 table {
     width: 100%;
+}
+
+// CDK's own JS-driven sticky ([matHeaderRowDef]="...; sticky: true") never
+// actually applies its position:sticky class in this Angular version
+// (verified: the header row's computed position stays "static" even with
+// sticky:true set, same in the pre-existing tile-list.component that this
+// pattern was copied from) - plain CSS sticky, same approach already used
+// for member-anniversaries' table, sidesteps it entirely and just works.
+tr.mat-mdc-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--mat-sys-surface);
 }
 
 .family-hint {

@@ -9,6 +9,14 @@
 .content-area {
     flex: 1;
     min-height: 0;
+    // display:flex is what makes app-member-list's own flex:1;min-height:0
+    // take effect at all (those properties are no-ops on a child of a
+    // non-flex parent) - without it, app-member-list sizes to its content
+    // like any block element and this overflow-y:auto ends up scrolling
+    // the whole thing instead of the list owning its own internal scroll
+    // (sticky header/pinned paginator, plain content in between).
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     padding: 16px;
 }

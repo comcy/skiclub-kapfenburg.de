@@ -1,5 +1,21 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
 .page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
     padding: 24px 32px;
+}
+
+h2 {
+    flex-shrink: 0;
 }
 
 .filter-row {
@@ -7,10 +23,20 @@
     align-items: flex-start;
     gap: 16px;
     margin-bottom: 16px;
+    flex-shrink: 0;
 
     button {
         margin-top: 8px;
     }
+}
+
+// A plain div, not :host, owns the scroll - position:sticky on the table
+// headers below only reliably sticks against a plain scrolling ancestor in
+// this setup (mirrors member-list's .table-container, which works).
+.results-area {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .error-banner {
@@ -32,7 +58,14 @@ h3 {
 }
 
 .simple-table {
-    border-collapse: collapse;
+    // NOT collapse: position:sticky on a <th> silently never actually
+    // sticks (computed style says "sticky", it just never moves) when its
+    // table uses border-collapse - a long-standing browser limitation.
+    // separate + border-spacing:0 renders identically but keeps sticky
+    // working; the per-cell border-bottom below still draws the same
+    // dividing lines either way.
+    border-collapse: separate;
+    border-spacing: 0;
     width: 100%;
 
     th {
@@ -43,6 +76,12 @@ h3 {
         padding: 0 12px;
         height: 36px;
         border-bottom: 1px solid var(--mat-sys-outline-variant);
+        // Only the rows scroll within .results-area - the header row stays
+        // pinned at the top of each table as you scroll past it.
+        position: sticky;
+        top: 0;
+        background: var(--mat-sys-surface);
+        z-index: 1;
     }
 
     td {
