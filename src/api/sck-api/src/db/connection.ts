@@ -266,10 +266,12 @@ const permissionsTableSql = (
     | undefined
 )?.sql;
 if (permissionsTableSql && !permissionsTableSql.includes('members:manage')) {
+  // Build the replacement under a temp name and rename IT into place,
+  // rather than renaming "permissions" away - see the members rebuild
+  // below for why the naive rename-old/create-new order is a trap.
   db.exec(`
     BEGIN;
-    ALTER TABLE permissions RENAME TO permissions_old;
-    CREATE TABLE permissions (
+    CREATE TABLE permissions_rebuilt (
       user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
       permission TEXT NOT NULL CHECK (
         permission IN ('tiles:write', 'boardings:write', 'users:manage', 'members:manage')
@@ -278,8 +280,9 @@ if (permissionsTableSql && !permissionsTableSql.includes('members:manage')) {
       granted_by TEXT,
       PRIMARY KEY (user_id, permission)
     );
-    INSERT INTO permissions SELECT * FROM permissions_old;
-    DROP TABLE permissions_old;
+    INSERT INTO permissions_rebuilt SELECT * FROM permissions;
+    DROP TABLE permissions;
+    ALTER TABLE permissions_rebuilt RENAME TO permissions;
     COMMIT;
   `);
 }
@@ -298,10 +301,21 @@ const membersTableSql = (
     | undefined
 )?.sql;
 if (membersTableSql && !membersTableSql.includes("'imported'")) {
+  // NOT "RENAME members TO members_old; CREATE TABLE members (...)": with
+  // PRAGMA foreign_keys=ON, renaming a table that others hold a FOREIGN KEY
+  // on (trip_registrations.member_id, course_registrations.member_id)
+  // silently rewrites THEIR stored REFERENCES clause to the new name too -
+  // so after members_old was dropped, both child tables were left pointing
+  // at a "members_old" that no longer existed ("no such table: main.
+  // members_old" the moment a query touched a row with a non-null
+  // member_id, e.g. a tile delete cascading into trip_registrations). Build
+  // the replacement under a temp name and rename IT into place instead -
+  // nothing references "members_rebuilt", so no rewrite happens, and
+  // children's untouched "REFERENCES members" resolves correctly again
+  // once the temp table is renamed to "members".
   db.exec(`
     BEGIN;
-    ALTER TABLE members RENAME TO members_old;
-    CREATE TABLE members (
+    CREATE TABLE members_rebuilt (
       id TEXT PRIMARY KEY,
       first_name TEXT NOT NULL,
       last_name TEXT NOT NULL,
@@ -319,11 +333,82 @@ if (membersTableSql && !membersTableSql.includes("'imported'")) {
       created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
     );
-    INSERT INTO members SELECT * FROM members_old;
-    DROP TABLE members_old;
+    INSERT INTO members_rebuilt SELECT * FROM members;
+    DROP TABLE members;
+    ALTER TABLE members_rebuilt RENAME TO members;
     COMMIT;
   `);
 }
+
+// Repair for databases that already ran the buggy rename-based members
+// rebuild above (anywhere this deployed before the fix): trip_registrations
+// and/or course_registrations were left with a dangling "REFERENCES
+// members_old". Detect it directly off the stored schema and rebuild
+// whichever table is affected, same safe temp-name-then-rename order,
+// preserving all rows.
+const repairDanglingMembersOldFk = (table: 'trip_registrations' | 'course_registrations', createSql: string): void => {
+  const sql = (
+    db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = ?").get(table) as
+      | { sql: string }
+      | undefined
+  )?.sql;
+  if (!sql || !sql.includes('members_old')) return;
+  const rebuiltName = `${table}_rebuilt`;
+  db.exec(`
+    BEGIN;
+    ${createSql.replace(table, rebuiltName)}
+    INSERT INTO ${rebuiltName} SELECT * FROM ${table};
+    DROP TABLE ${table};
+    ALTER TABLE ${rebuiltName} RENAME TO ${table};
+    COMMIT;
+  `);
+};
+
+repairDanglingMembersOldFk(
+  'trip_registrations',
+  `CREATE TABLE trip_registrations (
+    id TEXT PRIMARY KEY,
+    tile_id TEXT NOT NULL REFERENCES tiles (id) ON DELETE CASCADE,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT,
+    phone TEXT,
+    member_id TEXT REFERENCES members (id) ON DELETE SET NULL,
+    boarding_id TEXT REFERENCES boardings (id) ON DELETE SET NULL,
+    age_category TEXT NOT NULL CHECK (age_category IN ('adult', 'youthUntil16', 'childUntil6')) DEFAULT 'adult',
+    is_member INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL CHECK (status IN ('confirmed', 'waitlist', 'cancelled')) DEFAULT 'confirmed',
+    source TEXT NOT NULL CHECK (source IN ('manual', 'phone', 'paper', 'sheet-import')) DEFAULT 'manual',
+    notes TEXT,
+    order_index INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+  );`,
+);
+
+repairDanglingMembersOldFk(
+  'course_registrations',
+  `CREATE TABLE course_registrations (
+    id TEXT PRIMARY KEY,
+    tile_id TEXT NOT NULL REFERENCES tiles (id) ON DELETE CASCADE,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT,
+    phone TEXT,
+    member_id TEXT REFERENCES members (id) ON DELETE SET NULL,
+    birthday TEXT,
+    sport_type TEXT,
+    level TEXT,
+    group_id TEXT REFERENCES course_groups (id) ON DELETE SET NULL,
+    is_member INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL CHECK (status IN ('confirmed', 'cancelled')) DEFAULT 'confirmed',
+    source TEXT NOT NULL CHECK (source IN ('manual', 'sheet-import')) DEFAULT 'manual',
+    notes TEXT,
+    order_index INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+  );`,
+);
 
 // Members: JSON-importer columns (Runde A) - plain nullable columns, no
 // CHECK involved, so a guarded ALTER TABLE is enough (same pattern as the
