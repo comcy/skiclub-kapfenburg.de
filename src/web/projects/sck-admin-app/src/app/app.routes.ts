@@ -6,6 +6,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { BoardingManagementComponent } from './boardings-management/boarding-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MemberAnniversariesComponent } from './member-management/components/member-anniversaries/member-anniversaries.component';
+import { MemberNewsletterComponent } from './member-management/components/member-newsletter/member-newsletter.component';
 import { MemberManagementComponent } from './member-management/member-management.component';
 import { CourseRegistrationsOverviewComponent } from './tile-management/components/course-registrations-overview/course-registrations-overview.component';
 import { CourseRegistrationsComponent } from './tile-management/components/course-registrations/course-registrations.component';
@@ -130,6 +131,7 @@ export const routes: Routes = [
             navLinks: [
                 { label: 'Mitglieder', link: 'mitglieder' },
                 { label: 'Jubiläen', link: 'jubilaeen' },
+                { label: 'Newsletter', link: 'newsletter' },
             ],
         },
         children: [
@@ -140,6 +142,10 @@ export const routes: Routes = [
             {
                 path: 'jubilaeen',
                 component: MemberAnniversariesComponent,
+            },
+            {
+                path: 'newsletter',
+                component: MemberNewsletterComponent,
             },
             {
                 path: '',

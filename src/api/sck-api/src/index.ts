@@ -12,6 +12,7 @@ import emailRoutes from './routes/email-route.js';
 import imagesRoutes from './routes/images-route.js';
 import invitesRoutes from './routes/invites-route.js';
 import membersRoutes from './routes/members-route.js';
+import newsletterRoutes from './routes/newsletter-route.js';
 import registrationRoutes from './routes/registration-route.js';
 import membershipRoutes from './routes/membership-route.js';
 import settingsRoutes from './routes/settings-route.js';
@@ -47,6 +48,7 @@ app.use('/api', membersRoutes);
 app.use('/api', tripRegistrationsRoutes);
 app.use('/api', courseRegistrationsRoutes);
 app.use('/api', settingsRoutes);
+app.use('/api', newsletterRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

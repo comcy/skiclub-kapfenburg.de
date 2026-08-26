@@ -6,6 +6,7 @@ import { PaginatedResponse } from '../../tile-management/domain/paginated-respon
 import { MemberImportApplyResult, MemberImportCollisionOverride, MemberImportPreview } from '../domain/member-import';
 import { AnniversaryGroup, Member, MemberCreationParams } from '../domain/member';
 import { MembershipApplication } from '../domain/membership-application';
+import { NewsletterSignup } from '../domain/newsletter-signup';
 
 @Injectable({
     providedIn: 'root',
@@ -60,5 +61,13 @@ export class MembersDataService {
             importId,
             collisionOverrides,
         });
+    }
+
+    getNewsletterSignups(): Observable<NewsletterSignup[]> {
+        return this.http.get<NewsletterSignup[]>(`${this.apiUrl}/newsletter/signups`);
+    }
+
+    deleteNewsletterSignup(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/newsletter/signups/${id}`);
     }
 }

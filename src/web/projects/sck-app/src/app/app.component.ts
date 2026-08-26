@@ -4,9 +4,11 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, signal, ChangeDetectionStrategy, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { setGlobalBccList } from '@data';
 import { NavigationItem, NavigationItemTypes } from 'projects/shared-lib/src/lib/components';
 import { environment } from '../environments/environment';
+import { NewsletterSignupDialogComponent } from './components/newsletter-signup-dialog/newsletter-signup-dialog.component';
 import {
     COURSES_ROUTE,
     DSGVO_ROUTE,
@@ -31,6 +33,7 @@ interface NotificationBccSettingResponse {
 })
 export class AppComponent implements OnInit {
     private readonly http = inject(HttpClient);
+    private readonly dialog = inject(MatDialog);
 
     public title = 'Skiclub Kapfenburg e.V.';
     public logoPath = 'assets/img/sck_logo.svg';
@@ -66,5 +69,9 @@ export class AppComponent implements OnInit {
                 // keep the hardcoded fallback in mail-templates/*.ts
             },
         });
+    }
+
+    openNewsletterDialog(): void {
+        this.dialog.open(NewsletterSignupDialogComponent);
     }
 }
