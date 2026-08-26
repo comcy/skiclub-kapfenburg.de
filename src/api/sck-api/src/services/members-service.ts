@@ -6,6 +6,7 @@ import { randomUUID } from 'node:crypto';
 import { db } from '../db/connection.js';
 import { Member, MemberCreationParams, MembershipApplication } from '../domain/member.js';
 import { PaginatedResponse } from '../domain/tile.js';
+import { decryptField, encryptField } from './crypto-service.js';
 import { listDataByType } from './data-service.js';
 import { listConfirmedRegistrationIds } from './membership-confirmation-service.js';
 
@@ -15,6 +16,7 @@ interface MemberRow {
   last_name: string;
   email: string | null;
   phone: string | null;
+  mobile: string | null;
   birthday: string | null;
   address: string | null;
   is_family_membership: number;
@@ -24,6 +26,12 @@ interface MemberRow {
   application_registration_id: string | null;
   notes: string | null;
   member_since: string | null;
+  external_id: string | null;
+  iban_encrypted: string | null;
+  bic: string | null;
+  bank_name: string | null;
+  account_holder: string | null;
+  payment_method: string | null;
 }
 
 const rowToMember = (row: MemberRow): Member => ({
@@ -32,6 +40,7 @@ const rowToMember = (row: MemberRow): Member => ({
   lastName: row.last_name,
   email: row.email ?? undefined,
   phone: row.phone ?? undefined,
+  mobile: row.mobile ?? undefined,
   birthday: row.birthday ?? undefined,
   address: row.address ?? undefined,
   isFamilyMembership: row.is_family_membership === 1,
@@ -41,6 +50,12 @@ const rowToMember = (row: MemberRow): Member => ({
   applicationRegistrationId: row.application_registration_id ?? undefined,
   notes: row.notes ?? undefined,
   memberSince: row.member_since ?? undefined,
+  externalId: row.external_id ?? undefined,
+  iban: row.iban_encrypted ? decryptField(row.iban_encrypted) : undefined,
+  bic: row.bic ?? undefined,
+  bankName: row.bank_name ?? undefined,
+  accountHolder: row.account_holder ?? undefined,
+  paymentMethod: row.payment_method ?? undefined,
 });
 
 export const listMembers = (page: number, limit: number): PaginatedResponse<Member> => {
@@ -64,16 +79,18 @@ export const createMember = (params: MemberCreationParams): Member => {
   const id = randomUUID();
   db.prepare(
     `INSERT INTO members (
-      id, first_name, last_name, email, phone, birthday, address,
+      id, first_name, last_name, email, phone, mobile, birthday, address,
       is_family_membership, family_group_id, status, source,
-      application_registration_id, notes, member_since
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      application_registration_id, notes, member_since, external_id,
+      iban_encrypted, bic, bank_name, account_holder, payment_method
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     params.firstName,
     params.lastName,
     params.email ?? null,
     params.phone ?? null,
+    params.mobile ?? null,
     params.birthday ?? null,
     params.address ?? null,
     params.isFamilyMembership ? 1 : 0,
@@ -83,6 +100,12 @@ export const createMember = (params: MemberCreationParams): Member => {
     params.applicationRegistrationId ?? null,
     params.notes ?? null,
     params.memberSince ?? null,
+    params.externalId ?? null,
+    params.iban ? encryptField(params.iban) : null,
+    params.bic ?? null,
+    params.bankName ?? null,
+    params.accountHolder ?? null,
+    params.paymentMethod ?? null,
   );
   return { id, ...params };
 };
@@ -91,9 +114,10 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
   const result = db
     .prepare(
       `UPDATE members SET
-        first_name = ?, last_name = ?, email = ?, phone = ?, birthday = ?, address = ?,
+        first_name = ?, last_name = ?, email = ?, phone = ?, mobile = ?, birthday = ?, address = ?,
         is_family_membership = ?, family_group_id = ?, status = ?, source = ?,
-        application_registration_id = ?, notes = ?, member_since = ?,
+        application_registration_id = ?, notes = ?, member_since = ?, external_id = ?,
+        iban_encrypted = ?, bic = ?, bank_name = ?, account_holder = ?, payment_method = ?,
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
@@ -102,6 +126,7 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
       params.lastName,
       params.email ?? null,
       params.phone ?? null,
+      params.mobile ?? null,
       params.birthday ?? null,
       params.address ?? null,
       params.isFamilyMembership ? 1 : 0,
@@ -111,6 +136,12 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
       params.applicationRegistrationId ?? null,
       params.notes ?? null,
       params.memberSince ?? null,
+      params.externalId ?? null,
+      params.iban ? encryptField(params.iban) : null,
+      params.bic ?? null,
+      params.bankName ?? null,
+      params.accountHolder ?? null,
+      params.paymentMethod ?? null,
       id,
     );
   if (result.changes === 0) return undefined;
@@ -127,6 +158,15 @@ export const deleteMember = (id: string): boolean => {
 // the full member list to whoever is just managing that roster.
 export const findMemberByEmail = (email: string): Member | undefined => {
   const row = db.prepare('SELECT * FROM members WHERE email = ? COLLATE NOCASE').get(email) as
+    | MemberRow
+    | undefined;
+  return row ? rowToMember(row) : undefined;
+};
+
+// Match key for the JSON importer (members-import-service.ts) - the
+// legacy membership number, if the imported record carries one.
+export const findMemberByExternalId = (externalId: string): Member | undefined => {
+  const row = db.prepare('SELECT * FROM members WHERE external_id = ?').get(externalId) as
     | MemberRow
     | undefined;
   return row ? rowToMember(row) : undefined;

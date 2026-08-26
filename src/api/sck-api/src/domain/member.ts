@@ -3,7 +3,7 @@
  */
 
 export type MemberStatus = 'active' | 'inactive';
-export type MemberSource = 'online' | 'manual' | 'paper';
+export type MemberSource = 'online' | 'manual' | 'paper' | 'imported';
 
 export interface Member {
   id: string;
@@ -11,6 +11,7 @@ export interface Member {
   lastName: string;
   email?: string;
   phone?: string;
+  mobile?: string;
   birthday?: string;
   address?: string;
   isFamilyMembership: boolean;
@@ -20,6 +21,17 @@ export interface Member {
   applicationRegistrationId?: string;
   notes?: string;
   memberSince?: string;
+  // Legacy membership number ("Nr") from the JSON importer - the primary
+  // match key for re-running an import without creating duplicates.
+  externalId?: string;
+  // Decrypted on read (members-service.ts) - never stored in plain text,
+  // see crypto-service.ts. Access is already fully gated by members:manage,
+  // same as every other field here, so no separate masking layer.
+  iban?: string;
+  bic?: string;
+  bankName?: string;
+  accountHolder?: string;
+  paymentMethod?: string;
 }
 
 export type MemberCreationParams = Omit<Member, 'id'>;

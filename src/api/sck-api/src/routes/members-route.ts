@@ -11,6 +11,7 @@ import {
   listMembershipApplications,
   updateMember,
 } from '../controllers/members-controller.js';
+import { applyMembersImport, previewMembersImport } from '../controllers/members-import-controller.js';
 import { requireAuth, requirePermission } from '../middleware/auth-middleware.js';
 
 const router = Router();
@@ -24,5 +25,10 @@ router.get('/members/:id', requireAuth, requirePermission('members:manage'), get
 router.post('/members', requireAuth, requirePermission('members:manage'), createMember);
 router.put('/members/:id', requireAuth, requirePermission('members:manage'), updateMember);
 router.delete('/members/:id', requireAuth, requirePermission('members:manage'), deleteMember);
+
+// Order matters: these must come before /members/:id so 'import' isn't
+// swallowed as an :id.
+router.post('/members/import/preview', requireAuth, requirePermission('members:manage'), previewMembersImport);
+router.post('/members/import/apply', requireAuth, requirePermission('members:manage'), applyMembersImport);
 
 export default router;

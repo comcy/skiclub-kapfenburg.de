@@ -99,12 +99,25 @@ db.exec(`
     -- membership -- no separate "families" table for just that.
     family_group_id TEXT,
     status TEXT NOT NULL CHECK (status IN ('active', 'inactive')) DEFAULT 'active',
-    source TEXT NOT NULL CHECK (source IN ('online', 'manual', 'paper')) DEFAULT 'manual',
+    source TEXT NOT NULL CHECK (source IN ('online', 'manual', 'paper', 'imported')) DEFAULT 'manual',
     -- registrationId from registrations.ndjson, if this member was promoted
     -- from an online Mitgliedsantrag -- not a DB FK, that log lives on disk.
     application_registration_id TEXT,
     notes TEXT,
     member_since TEXT,
+    -- Legacy membership number ("Nr") from the JSON importer - the primary
+    -- match key for re-running an import without creating duplicates.
+    external_id TEXT,
+    mobile TEXT,
+    -- AES-256-GCM ciphertext via crypto-service.ts's encryptField(), same
+    -- format/key ("iv:authTag:ciphertext" hex, SEPA_ENCRYPTION_KEY) as the
+    -- existing public membership application's sepa-data.ndjson - never a
+    -- plain column, decrypted on read behind members:manage.
+    iban_encrypted TEXT,
+    bic TEXT,
+    bank_name TEXT,
+    account_holder TEXT,
+    payment_method TEXT,
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
   );
@@ -259,4 +272,66 @@ if (permissionsTableSql && !permissionsTableSql.includes('members:manage')) {
     DROP TABLE permissions_old;
     COMMIT;
   `);
+}
+
+// members.source's CHECK constraint needs 'imported' too - SQLite can't
+// ALTER a CHECK, so an already-existing table needs the same
+// rename/rebuild/copy/drop rebuild as the permissions migration above.
+// Runs BEFORE the guarded column-ADDs below, and its CREATE TABLE matches
+// the table's PRE-Runde-A column list exactly (nothing added yet) - `SELECT
+// *` copies by position, so old/new column counts and order must match
+// exactly, which only holds if this rebuild happens before any new columns
+// exist on either side.
+const membersTableSql = (
+  db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'members'").get() as
+    | { sql: string }
+    | undefined
+)?.sql;
+if (membersTableSql && !membersTableSql.includes("'imported'")) {
+  db.exec(`
+    BEGIN;
+    ALTER TABLE members RENAME TO members_old;
+    CREATE TABLE members (
+      id TEXT PRIMARY KEY,
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      email TEXT COLLATE NOCASE,
+      phone TEXT,
+      birthday TEXT,
+      address TEXT,
+      is_family_membership INTEGER NOT NULL DEFAULT 0,
+      family_group_id TEXT,
+      status TEXT NOT NULL CHECK (status IN ('active', 'inactive')) DEFAULT 'active',
+      source TEXT NOT NULL CHECK (source IN ('online', 'manual', 'paper', 'imported')) DEFAULT 'manual',
+      application_registration_id TEXT,
+      notes TEXT,
+      member_since TEXT,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
+    INSERT INTO members SELECT * FROM members_old;
+    DROP TABLE members_old;
+    COMMIT;
+  `);
+}
+
+// Members: JSON-importer columns (Runde A) - plain nullable columns, no
+// CHECK involved, so a guarded ALTER TABLE is enough (same pattern as the
+// tiles capacity/organizer_user_id migration above). Runs after the rebuild
+// above so it always appends onto a table with the pre-Runde-A column
+// layout, regardless of whether that table was just rebuilt or already had
+// 'imported' in its CHECK from a previous run.
+const memberColumns = db.prepare("SELECT name FROM pragma_table_info('members')").all() as { name: string }[];
+for (const [column, ddl] of [
+  ['external_id', 'external_id TEXT'],
+  ['mobile', 'mobile TEXT'],
+  ['iban_encrypted', 'iban_encrypted TEXT'],
+  ['bic', 'bic TEXT'],
+  ['bank_name', 'bank_name TEXT'],
+  ['account_holder', 'account_holder TEXT'],
+  ['payment_method', 'payment_method TEXT'],
+] as const) {
+  if (!memberColumns.some((c) => c.name === column)) {
+    db.exec(`ALTER TABLE members ADD COLUMN ${ddl};`);
+  }
 }
