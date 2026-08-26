@@ -70,14 +70,16 @@
     // The title, the full email address, and "Logout" text together are
     // more copy than a phone-width toolbar can hold without everything
     // overlapping (confirmed: content overflows the toolbar by ~20px at
-    // 390px wide) - drop the two least essential text bits, icons/tooltips
-    // still carry the same information (session email is now in the
-    // user-email button's own matTooltip).
+    // 390px wide). "SCK Admin" stays visible (shrunk, tighter margin) -
+    // the email address and "Logout" text are the two dropped instead,
+    // icons/tooltips still carry that information (session email is now
+    // in the user-email button's own matTooltip).
     @media (max-width: 600px) {
         padding: 0 8px;
 
         .title {
-            display: none;
+            margin-left: 8px;
+            font-size: 15px;
         }
 
         .email-text,
