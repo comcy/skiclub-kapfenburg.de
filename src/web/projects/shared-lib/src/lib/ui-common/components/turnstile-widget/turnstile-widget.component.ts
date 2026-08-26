@@ -60,6 +60,22 @@ const loadScript = (): Promise<void> => {
     selector: 'shared-lib-turnstile-widget',
     standalone: true,
     template: `<div #container></div>`,
+    // Cloudflare renders a fixed-width iframe into #container in normal
+    // flow - without this, the host (a custom element, inline by default)
+    // just shrink-wraps that iframe and the widget ends up hanging off the
+    // start edge of whatever form row it sits in instead of lining up with
+    // the full-width fields/buttons around it. flex+justify-content is used
+    // rather than text-align/margin:auto since it centers the child
+    // regardless of whether Cloudflare's injected markup is inline or block.
+    styles: [
+        `
+            :host {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+            }
+        `,
+    ],
     changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class TurnstileWidgetComponent implements OnInit, OnDestroy {
