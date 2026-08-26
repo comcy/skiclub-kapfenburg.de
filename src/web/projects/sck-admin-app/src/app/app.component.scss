@@ -8,17 +8,17 @@
 .top-bar {
     flex: 0 0 auto;
     z-index: 10;
-    // Under Angular Material's M3 theming, mat-toolbar's color input no
-    // longer auto-colors the toolbar (that was M2-only) - set explicitly so
-    // this follows the active theme like everything else in the shell.
-    // Neutral surface, not a solid primary fill: M3 reserves the primary
-    // color for small accents (buttons, the active nav item below) rather
-    // than painting whole chrome surfaces with it - large saturated-color
-    // areas read as "loud"/omnipresent. Regions are told apart by a
-    // contrast border instead of a color clash between two filled areas.
-    background: var(--mat-sys-surface);
-    color: var(--mat-sys-on-surface);
-    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    // Solid primary fill, like M3's own primary-colored buttons - text/
+    // icons use on-primary for contrast. Every Material component inside
+    // (icon buttons, the plain "Logout" button, tooltips) references
+    // var(--mat-sys-on-surface) internally under use-system-variables, so
+    // redeclaring that custom property locally is what actually recolors
+    // them - a plain `color:` here would only affect this element's own
+    // text, not descendant Material components' baked token references.
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    --mat-sys-on-surface: var(--mat-sys-on-primary);
+    --mat-sys-on-surface-variant: var(--mat-sys-on-primary);
 
     .logo {
         height: 32px;
@@ -37,7 +37,8 @@
 
     .user-email {
         font-size: 14px;
-        color: var(--mat-sys-on-surface-variant);
+        color: var(--mat-sys-on-primary);
+        opacity: 0.85;
         margin-right: 8px;
     }
 }
