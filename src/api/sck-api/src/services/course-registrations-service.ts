@@ -29,6 +29,8 @@ interface CourseRegistrationRow {
   source: string;
   notes: string | null;
   order_index: number;
+  entered_by: string | null;
+  paid: number;
 }
 
 const rowToRegistration = (row: CourseRegistrationRow): CourseRegistration => ({
@@ -48,6 +50,8 @@ const rowToRegistration = (row: CourseRegistrationRow): CourseRegistration => ({
   source: row.source as CourseRegistration['source'],
   notes: row.notes ?? undefined,
   orderIndex: row.order_index,
+  enteredBy: row.entered_by ?? undefined,
+  paid: row.paid === 1,
 });
 
 export const listRegistrationsForTile = (tileId: string): CourseRegistration[] => {
@@ -74,6 +78,7 @@ const resolveMember = (email: string | undefined): { id: string | null; isMember
 export const createRegistration = (
   tileId: string,
   params: CourseRegistrationCreationParams,
+  enteredBy?: string,
 ): CourseRegistration => {
   const id = randomUUID();
   const { id: memberId, isMember } = resolveMember(params.email);
@@ -81,8 +86,9 @@ export const createRegistration = (
   db.prepare(
     `INSERT INTO course_registrations (
       id, tile_id, first_name, last_name, email, phone, member_id, birthday,
-      sport_type, level, group_id, is_member, status, source, notes, order_index
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      sport_type, level, group_id, is_member, status, source, notes, order_index,
+      entered_by, paid
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -100,11 +106,16 @@ export const createRegistration = (
     params.source,
     params.notes ?? null,
     params.orderIndex ?? 0,
+    enteredBy ?? null,
+    params.paid ? 1 : 0,
   );
 
   return getRegistration(id) as CourseRegistration;
 };
 
+// entered_by is deliberately absent from this UPDATE - it's set once at
+// creation and never overwritten, same reasoning as members-service.ts
+// excluding honored_years from its own update statement.
 export const updateRegistration = (
   id: string,
   params: CourseRegistrationCreationParams,
@@ -116,7 +127,7 @@ export const updateRegistration = (
       `UPDATE course_registrations SET
         first_name = ?, last_name = ?, email = ?, phone = ?, member_id = ?, birthday = ?,
         sport_type = ?, level = ?, group_id = ?, is_member = ?, status = ?, source = ?,
-        notes = ?, order_index = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+        notes = ?, order_index = ?, paid = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
     .run(
@@ -134,6 +145,7 @@ export const updateRegistration = (
       params.source,
       params.notes ?? null,
       params.orderIndex ?? 0,
+      params.paid ? 1 : 0,
       id,
     );
 
@@ -173,6 +185,7 @@ export const createPublicRegistration = (tileId: string, params: PublicCourseReg
     source: 'sheet-import',
     notes: params.notes,
     orderIndex: 0,
+    paid: false,
   });
 
 interface CourseGroupRow {

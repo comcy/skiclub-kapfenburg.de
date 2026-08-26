@@ -36,7 +36,7 @@ export const createCourseRegistration: RequestHandler = (req, res) => {
       res.status(400).json({ error: 'Vor- und Nachname sind erforderlich.' });
       return;
     }
-    res.status(201).json(registrationsService.createRegistration(String(req.params.tileId), body));
+    res.status(201).json(registrationsService.createRegistration(String(req.params.tileId), body, req.user?.email));
   } catch (error: any) {
     console.error('Fehler beim Erstellen der Kurs-Anmeldung:', error);
     res.status(500).json({ error: 'Fehler beim Erstellen der Kurs-Anmeldung.' });

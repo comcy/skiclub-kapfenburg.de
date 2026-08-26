@@ -180,6 +180,11 @@ db.exec(`
     source TEXT NOT NULL CHECK (source IN ('manual', 'sheet-import')) DEFAULT 'manual',
     notes TEXT,
     order_index INTEGER NOT NULL DEFAULT 0,
+    -- Admin email who created the row (requireAuth's req.user), set once at
+    -- creation and never overwritten - NULL for public self-registrations
+    -- (createPublicRegistration), which have no admin author.
+    entered_by TEXT,
+    paid INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
   );
@@ -448,4 +453,17 @@ if (!memberColumns.some((c) => c.name === 'honored_years')) {
     UPDATE members SET honored_years = '[25,40]'
     WHERE member_since IS NOT NULL AND member_since <= '1986-05-01';
   `);
+}
+
+// Kurs-Anmeldungstabelle: wer die Anmeldung erfasst hat (Admin-E-Mail,
+// automatisch beim Anlegen gesetzt) und ob bezahlt wurde - beides plain
+// nullable/defaulted columns, kein CHECK involviert, guarded ALTER reicht.
+const courseRegistrationColumns = db.prepare("SELECT name FROM pragma_table_info('course_registrations')").all() as {
+  name: string;
+}[];
+if (!courseRegistrationColumns.some((c) => c.name === 'entered_by')) {
+  db.exec('ALTER TABLE course_registrations ADD COLUMN entered_by TEXT;');
+}
+if (!courseRegistrationColumns.some((c) => c.name === 'paid')) {
+  db.exec('ALTER TABLE course_registrations ADD COLUMN paid INTEGER NOT NULL DEFAULT 0;');
 }

@@ -24,11 +24,21 @@ export interface CourseRegistration {
   source: CourseRegistrationSource;
   notes?: string;
   orderIndex: number;
+  // Admin email who created the row - set once server-side from the
+  // authenticated session (see the controller), never client-supplied.
+  // undefined for public self-registrations (no admin author).
+  enteredBy?: string;
+  paid: boolean;
 }
 
 // memberId and isMember are recomputed server-side from email on every
-// write (see course-registrations-service.ts) - never accepted from the client.
-export type CourseRegistrationCreationParams = Omit<CourseRegistration, 'id' | 'tileId' | 'memberId' | 'isMember'>;
+// write (see course-registrations-service.ts) - never accepted from the
+// client. enteredBy is likewise always server-derived, never trusted from
+// the client - see createRegistration's separate enteredBy parameter.
+export type CourseRegistrationCreationParams = Omit<
+  CourseRegistration,
+  'id' | 'tileId' | 'memberId' | 'isMember' | 'enteredBy'
+>;
 
 export interface CourseGroup {
   id: string;

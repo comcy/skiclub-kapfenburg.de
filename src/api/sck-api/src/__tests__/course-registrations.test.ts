@@ -76,6 +76,8 @@ describe('Course Registrations Routes', () => {
     expect(createRes.status).toBe(201);
     expect(createRes.body.isMember).toBe(false);
     expect(createRes.body.sportType).toBe('Ski Alpin');
+    expect(createRes.body.paid).toBe(false);
+    expect(createRes.body.enteredBy).toContain('@test.com');
     const id = createRes.body.id as string;
 
     const listRes = await request(app)
@@ -88,9 +90,12 @@ describe('Course Registrations Routes', () => {
     const updateRes = await request(app)
       .put(`/api/course-registrations/${id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...validRegistration, status: 'cancelled' });
+      .send({ ...validRegistration, status: 'cancelled', paid: true });
     expect(updateRes.status).toBe(200);
     expect(updateRes.body.status).toBe('cancelled');
+    expect(updateRes.body.paid).toBe(true);
+    // entered_by is set once at creation and never overwritten by later updates
+    expect(updateRes.body.enteredBy).toBe(createRes.body.enteredBy);
 
     const deleteRes = await request(app)
       .delete(`/api/course-registrations/${id}`)
@@ -142,6 +147,9 @@ describe('Course Registrations Routes', () => {
       expect(res.status).toBe(201);
       expect(res.body.status).toBe('confirmed');
       expect(res.body.source).toBe('sheet-import');
+      // No admin authored a public self-registration.
+      expect(res.body.enteredBy).toBeUndefined();
+      expect(res.body.paid).toBe(false);
 
       const list = await request(app)
         .get(`/api/tiles/${tileId}/course-registrations`)
