@@ -1,0 +1,49 @@
+<div class="page">
+    <h2>Jubiläen</h2>
+
+    <div class="filter-row">
+        <mat-form-field appearance="outline">
+            <mat-label>Stichtag</mat-label>
+            <input matInput [matDatepicker]="stichtagPicker" [(ngModel)]="stichtag" />
+            <mat-datepicker-toggle matIconSuffix [for]="stichtagPicker"></mat-datepicker-toggle>
+            <mat-datepicker #stichtagPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Jahre (kommagetrennt)</mat-label>
+            <input matInput placeholder="z. B. 25, 40" [(ngModel)]="yearsText" />
+        </mat-form-field>
+        <button mat-raised-button color="primary" [disabled]="isLoading" (click)="onSearch()">Anzeigen</button>
+    </div>
+
+    @if (error) {
+        <div class="error-banner">{{ error }}</div>
+    }
+
+    @if (searched && groups) {
+        @for (group of groups; track group.years) {
+            <h3>{{ group.years }}-jähriges Jubiläum (Eintritt {{ group.joinYear }})</h3>
+            @if (group.members.length) {
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Eintrittsdatum</th>
+                            <th>E-Mail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (member of group.members; track member.id) {
+                            <tr>
+                                <td>{{ member.firstName }} {{ member.lastName }}</td>
+                                <td>{{ member.memberSince }}</td>
+                                <td>{{ member.email || '–' }}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            } @else {
+                <p class="empty">Keine Mitglieder mit diesem Jubiläum.</p>
+            }
+        }
+    }
+</div>

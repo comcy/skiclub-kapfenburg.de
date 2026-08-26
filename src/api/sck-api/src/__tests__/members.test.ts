@@ -116,6 +116,39 @@ describe('Members Routes', () => {
     expect(mockedListDataByType).toHaveBeenCalledWith('membership-registration');
   });
 
+  it('GET /api/members/anniversaries - gruppiert Mitglieder nach Eintrittsjahr je Jahreszahl', async () => {
+    const token = createAuthedUser(['members:manage']);
+    await request(app)
+      .post('/api/members')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validMember, firstName: 'Lea', memberSince: '2001-09-01' });
+    await request(app)
+      .post('/api/members')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validMember, firstName: 'Tom', memberSince: '1986-01-15' });
+    await request(app)
+      .post('/api/members')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validMember, firstName: 'Ohne Datum', memberSince: undefined });
+
+    const res = await request(app)
+      .get('/api/members/anniversaries')
+      .query({ date: '2026-06-01', years: '25,40' })
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([
+      { years: 25, joinYear: 2001, members: [expect.objectContaining({ firstName: 'Lea' })] },
+      { years: 40, joinYear: 1986, members: [expect.objectContaining({ firstName: 'Tom' })] },
+    ]);
+  });
+
+  it('GET /api/members/anniversaries - lehnt fehlende Parameter mit 400 ab', async () => {
+    const token = createAuthedUser(['members:manage']);
+    const res = await request(app).get('/api/members/anniversaries').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(400);
+  });
+
   it('GET /api/members/applications - markiert bestätigte Anträge als confirmed', async () => {
     const token = createAuthedUser(['members:manage']);
 

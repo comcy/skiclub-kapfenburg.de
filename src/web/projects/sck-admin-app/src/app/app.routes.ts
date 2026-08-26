@@ -5,6 +5,7 @@ import { InviteAcceptComponent } from './auth/invite-accept/invite-accept.compon
 import { LoginComponent } from './auth/login/login.component';
 import { BoardingManagementComponent } from './boardings-management/boarding-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { MemberAnniversariesComponent } from './member-management/components/member-anniversaries/member-anniversaries.component';
 import { MemberManagementComponent } from './member-management/member-management.component';
 import { CourseRegistrationsOverviewComponent } from './tile-management/components/course-registrations-overview/course-registrations-overview.component';
 import { CourseRegistrationsComponent } from './tile-management/components/course-registrations/course-registrations.component';
@@ -122,8 +123,30 @@ export const routes: Routes = [
     },
     {
         path: 'member-management',
-        component: MemberManagementComponent,
+        component: TileManagementComponent,
         canActivate: [authGuard],
+        data: {
+            title: 'Vereinsverwaltung',
+            navLinks: [
+                { label: 'Mitglieder', link: 'mitglieder' },
+                { label: 'Jubiläen', link: 'jubilaeen' },
+            ],
+        },
+        children: [
+            {
+                path: 'mitglieder',
+                component: MemberManagementComponent,
+            },
+            {
+                path: 'jubilaeen',
+                component: MemberAnniversariesComponent,
+            },
+            {
+                path: '',
+                redirectTo: 'mitglieder',
+                pathMatch: 'full',
+            },
+        ],
     },
     {
         path: 'settings',

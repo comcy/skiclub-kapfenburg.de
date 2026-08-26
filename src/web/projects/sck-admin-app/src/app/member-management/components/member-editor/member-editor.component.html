@@ -33,7 +33,9 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Geburtsdatum</mat-label>
-                <input matInput placeholder="TT.MM.JJJJ" [(ngModel)]="member.birthday" />
+                <input matInput [matDatepicker]="birthdayPicker" [(ngModel)]="birthdayDate" name="birthday" />
+                <mat-datepicker-toggle matIconSuffix [for]="birthdayPicker"></mat-datepicker-toggle>
+                <mat-datepicker #birthdayPicker></mat-datepicker>
             </mat-form-field>
         </div>
 
@@ -47,7 +49,9 @@
         <div class="field-row">
             <mat-form-field appearance="outline">
                 <mat-label>Mitglied seit</mat-label>
-                <input matInput placeholder="TT.MM.JJJJ" [(ngModel)]="member.memberSince" />
+                <input matInput [matDatepicker]="memberSincePicker" [(ngModel)]="memberSinceDate" name="memberSince" />
+                <mat-datepicker-toggle matIconSuffix [for]="memberSincePicker"></mat-datepicker-toggle>
+                <mat-datepicker #memberSincePicker></mat-datepicker>
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Mitgliedsnummer</mat-label>

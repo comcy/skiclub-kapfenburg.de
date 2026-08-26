@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PaginatedResponse } from '../../tile-management/domain/paginated-response';
 import { MemberImportApplyResult, MemberImportCollisionOverride, MemberImportPreview } from '../domain/member-import';
-import { Member, MemberCreationParams } from '../domain/member';
+import { AnniversaryGroup, Member, MemberCreationParams } from '../domain/member';
 import { MembershipApplication } from '../domain/membership-application';
 
 @Injectable({
@@ -38,6 +38,12 @@ export class MembersDataService {
 
     getMembershipApplications(): Observable<MembershipApplication[]> {
         return this.http.get<MembershipApplication[]>(`${this.apiUrl}/members/applications`);
+    }
+
+    getAnniversaries(date: string, years: number[]): Observable<AnniversaryGroup[]> {
+        return this.http.get<AnniversaryGroup[]>(`${this.apiUrl}/members/anniversaries`, {
+            params: { date, years: years.join(',') },
+        });
     }
 
     previewMembersImport(file: File): Observable<MemberImportPreview> {

@@ -29,3 +29,11 @@ export interface Member {
 }
 
 export type MemberCreationParams = Omit<Member, 'id'>;
+
+// One entry per requested year-count (Jubiläumsfunktion) - see
+// members-service.ts's getAnniversaries() on the backend.
+export interface AnniversaryGroup {
+    years: number;
+    joinYear: number;
+    members: Member[];
+}

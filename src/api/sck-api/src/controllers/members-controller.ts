@@ -81,6 +81,26 @@ export const deleteMember: RequestHandler = (req, res) => {
   }
 };
 
+export const getAnniversaries: RequestHandler = (req, res) => {
+  try {
+    const date = String(req.query.date ?? '');
+    const years = String(req.query.years ?? '')
+      .split(',')
+      .map((value) => parseInt(value.trim(), 10))
+      .filter((value) => !isNaN(value) && value > 0);
+
+    if (!date || years.length === 0) {
+      res.status(400).json({ error: 'date und years sind erforderlich.' });
+      return;
+    }
+
+    res.status(200).json(membersService.getAnniversaries(date, years));
+  } catch (error: any) {
+    console.error('Fehler beim Laden der Jubiläen:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der Jubiläen.', details: error.message });
+  }
+};
+
 export const listMembershipApplications: RequestHandler = (_req, res) => {
   try {
     res.status(200).json(membersService.listMembershipApplications());

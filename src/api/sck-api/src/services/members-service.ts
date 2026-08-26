@@ -4,7 +4,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { db } from '../db/connection.js';
-import { Member, MemberCreationParams, MembershipApplication } from '../domain/member.js';
+import { AnniversaryGroup, Member, MemberCreationParams, MembershipApplication } from '../domain/member.js';
 import { PaginatedResponse } from '../domain/tile.js';
 import { decryptField, encryptField } from './crypto-service.js';
 import { listDataByType } from './data-service.js';
@@ -170,6 +170,35 @@ export const findMemberByExternalId = (externalId: string): Member | undefined =
     | MemberRow
     | undefined;
   return row ? rowToMember(row) : undefined;
+};
+
+// Leading "YYYY" of an ISO date string, read directly rather than via
+// `new Date(...).getFullYear()` - the latter parses date-only strings as
+// UTC midnight, which can shift into the wrong calendar year for
+// dates near Dec 31/Jan 1 depending on the server's local timezone.
+const yearOf = (isoDate: string): number | null => {
+  const match = /^(\d{4})/.exec(isoDate);
+  return match ? Number(match[1]) : null;
+};
+
+// Jubiläumsfunktion: for each requested year-count N, everyone whose
+// memberSince falls in the calendar year (referenceDate's year - N) - a
+// calendar-year match, not an exact day-of-year one, matching how a
+// Vereinsjubiläum is actually celebrated in practice.
+export const getAnniversaries = (referenceDate: string, years: number[]): AnniversaryGroup[] => {
+  const refYear = yearOf(referenceDate) ?? new Date().getFullYear();
+  const members = (db.prepare('SELECT * FROM members ORDER BY last_name, first_name').all() as unknown as MemberRow[]).map(
+    rowToMember,
+  );
+
+  return years.map((n) => {
+    const joinYear = refYear - n;
+    return {
+      years: n,
+      joinYear,
+      members: members.filter((m) => m.memberSince && yearOf(m.memberSince) === joinYear),
+    };
+  });
 };
 
 // Online Mitgliedsanträge (registrations.ndjson) that haven't been promoted

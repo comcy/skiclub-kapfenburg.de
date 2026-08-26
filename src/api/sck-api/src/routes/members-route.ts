@@ -6,6 +6,7 @@ import { Router } from 'express';
 import {
   createMember,
   deleteMember,
+  getAnniversaries,
   getMember,
   listMembers,
   listMembershipApplications,
@@ -21,6 +22,7 @@ const router = Router();
 // admin user.
 router.get('/members', requireAuth, requirePermission('members:manage'), listMembers);
 router.get('/members/applications', requireAuth, requirePermission('members:manage'), listMembershipApplications);
+router.get('/members/anniversaries', requireAuth, requirePermission('members:manage'), getAnniversaries);
 router.get('/members/:id', requireAuth, requirePermission('members:manage'), getMember);
 router.post('/members', requireAuth, requirePermission('members:manage'), createMember);
 router.put('/members/:id', requireAuth, requirePermission('members:manage'), updateMember);

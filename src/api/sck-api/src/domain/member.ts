@@ -36,6 +36,16 @@ export interface Member {
 
 export type MemberCreationParams = Omit<Member, 'id'>;
 
+// One entry per requested year-count (Jubiläumsfunktion) - joinYear is
+// years-count years before the reference date's year, members are every
+// member whose memberSince falls in that calendar year (see
+// members-service.ts's getAnniversaries()).
+export interface AnniversaryGroup {
+  years: number;
+  joinYear: number;
+  members: Member[];
+}
+
 // Rows from registrations.ndjson (type: 'membership-registration') that
 // haven't been promoted into a `members` row yet - see members-service.ts's
 // listMembershipApplications().
