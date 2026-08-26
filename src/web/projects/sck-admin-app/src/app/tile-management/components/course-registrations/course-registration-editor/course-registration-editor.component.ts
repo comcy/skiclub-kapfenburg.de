@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -20,6 +21,7 @@ import { TilesDataService } from '../../../services/tiles-data.service';
         MatSelectModule,
         MatButtonModule,
         MatIconModule,
+        MatCheckboxModule,
     ],
     templateUrl: './course-registration-editor.component.html',
     styleUrls: ['./course-registration-editor.component.scss'],
@@ -51,6 +53,7 @@ export class CourseRegistrationEditorComponent {
             source: this.registration.source,
             notes: this.registration.notes || undefined,
             orderIndex: this.registration.orderIndex,
+            paid: this.registration.paid,
         };
 
         // Zoneless change detection (see app.config.ts) - without

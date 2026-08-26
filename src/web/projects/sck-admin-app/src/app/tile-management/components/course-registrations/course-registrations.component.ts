@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
+import { calculateAge } from 'projects/shared-lib/src/lib/date-time';
 import { AuthService } from '../../../auth/services/auth.service';
 import { CourseRegistration } from '../../domain/course-registration';
 import { Tile } from '../../domain/tile';
@@ -54,6 +55,20 @@ export class CourseRegistrationsComponent implements OnInit {
         return this.registrations.filter((r) => r.status === 'confirmed').length;
     }
 
+    age(registration: CourseRegistration): number | null {
+        const age = calculateAge(registration.birthday);
+        return isNaN(age) ? null : age;
+    }
+
+    // Member vs. non-member price is set once per course tile (see the
+    // "Dies ist ein Pilates-/Gymnastik-Kurs" editor section) - free text
+    // (e.g. "80 €", not a number), so read as-is rather than computed here.
+    price(registration: CourseRegistration): string | null {
+        const prices = this.tile?.course?.prices;
+        if (!prices) return null;
+        return registration.isMember ? prices.member : prices.nonMember;
+    }
+
     onBack(): void {
         this.router.navigate(['course-management', 'registrations']);
     }
@@ -68,6 +83,7 @@ export class CourseRegistrationsComponent implements OnInit {
             status: 'confirmed',
             source: 'manual',
             orderIndex: 0,
+            paid: false,
         };
     }
 

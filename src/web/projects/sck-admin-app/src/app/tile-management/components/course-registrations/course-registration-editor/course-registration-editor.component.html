@@ -68,6 +68,8 @@
             </mat-form-field>
         </div>
 
+        <mat-checkbox [(ngModel)]="registration.paid" class="checkbox-row">Bezahlt</mat-checkbox>
+
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Notizen</mat-label>
             <textarea matInput rows="3" [(ngModel)]="registration.notes"></textarea>

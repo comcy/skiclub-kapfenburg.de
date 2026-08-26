@@ -36,19 +36,26 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Sportart</th>
-                    <th>Könnerstufe</th>
+                    <th>Vorname</th>
+                    <th>Alter</th>
+                    <th>E-Mail</th>
+                    <th>Telefon</th>
                     <th class="no-print">Mitglied</th>
-                    <th>Status</th>
+                    <th>Preis</th>
+                    <th class="no-print">Eingetragen von</th>
+                    <th>Bezahlt</th>
+                    <th>Kommentar</th>
                     <th class="no-print" style="width: 88px"></th>
                 </tr>
             </thead>
             <tbody>
                 @for (registration of registrations; track registration.id) {
                     <tr class="row">
-                        <td>{{ registration.firstName }} {{ registration.lastName }}</td>
-                        <td>{{ registration.sportType || '–' }}</td>
-                        <td>{{ registration.level || '–' }}</td>
+                        <td>{{ registration.lastName }}</td>
+                        <td>{{ registration.firstName }}</td>
+                        <td>{{ age(registration) ?? '–' }}</td>
+                        <td>{{ registration.email || '–' }}</td>
+                        <td>{{ registration.phone || '–' }}</td>
                         <td class="no-print">
                             @if (registration.isMember) {
                                 <span class="badge-member"><mat-icon>check</mat-icon> Mitglied</span>
@@ -56,18 +63,16 @@
                                 <span class="badge-nonmember">kein Mitglied</span>
                             }
                         </td>
+                        <td>{{ price(registration) ?? '–' }}</td>
+                        <td class="no-print">{{ registration.enteredBy || '–' }}</td>
                         <td>
-                            <span class="chip chip-{{ registration.status }}">
-                                @switch (registration.status) {
-                                    @case ('confirmed') {
-                                        Bestätigt
-                                    }
-                                    @case ('cancelled') {
-                                        Storniert
-                                    }
-                                }
-                            </span>
+                            @if (registration.paid) {
+                                <span class="badge-member"><mat-icon>check</mat-icon> Bezahlt</span>
+                            } @else {
+                                <span class="badge-nonmember">Offen</span>
+                            }
                         </td>
+                        <td>{{ registration.notes || '–' }}</td>
                         <td class="no-print actions-cell">
                             @if (auth.hasPermission('tiles:write')) {
                                 <button mat-icon-button (click)="onEdit(registration)">
@@ -82,7 +87,7 @@
                 }
                 @if (!registrations.length) {
                     <tr>
-                        <td colspan="6" class="empty">Noch keine Anmeldungen.</td>
+                        <td colspan="11" class="empty">Noch keine Anmeldungen.</td>
                     </tr>
                 }
             </tbody>
