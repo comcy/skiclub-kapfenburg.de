@@ -22,6 +22,7 @@ export class TilePreviewComponent {
 
     public tileStatusEnum = TileStatus;
     public tileActionsEnum = TileActions;
+    public readonly weekdayLabels = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
 
     public getImageUrl(imagePath: string | undefined): string {
         if (!imagePath) return '';

@@ -12,6 +12,8 @@ import { MemberNewsletterComponent } from './member-management/components/member
 import { MemberManagementComponent } from './member-management/member-management.component';
 import { CourseRegistrationsOverviewComponent } from './tile-management/components/course-registrations-overview/course-registrations-overview.component';
 import { CourseRegistrationsComponent } from './tile-management/components/course-registrations/course-registrations.component';
+import { CourseTileEditRoutingDialogComponent } from './tile-management/components/course-tile-edit-routing-dialog/course-tile-edit-routing-dialog.component';
+import { CourseTileListComponent } from './tile-management/components/course-tile-list/course-tile-list.component';
 import { MediaManagementComponent } from './tile-management/components/media-management/media-management.component';
 import { RegistrationsOverviewComponent } from './tile-management/components/registrations-overview/registrations-overview.component';
 import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
@@ -94,20 +96,21 @@ export const routes: Routes = [
         data: {
             title: 'Kurs-Management',
             navLinks: [
-                { label: 'Kurse', link: 'tiles' },
+                { label: 'Sportkurse', link: 'sportkurse' },
+                { label: 'Ski-/Snowboardkurse', link: 'skikurse' },
                 { label: 'Anmeldungen', link: 'registrations' },
             ],
         },
         children: [
             {
-                path: 'tiles',
-                component: TileManagerComponent,
-                data: { fixedType: 'course' },
+                path: 'sportkurse',
+                component: CourseTileListComponent,
+                data: { courseKind: 'sport' },
             },
             {
-                path: 'tiles/:id',
-                component: TileManagerComponent,
-                data: { fixedType: 'course' },
+                path: 'skikurse',
+                component: CourseTileListComponent,
+                data: { courseKind: 'ski' },
             },
             {
                 path: 'registrations',
@@ -119,7 +122,7 @@ export const routes: Routes = [
             },
             {
                 path: '',
-                redirectTo: 'tiles',
+                redirectTo: 'sportkurse',
                 pathMatch: 'full',
             },
         ],
@@ -202,6 +205,24 @@ export const routes: Routes = [
         component: MemberEditRoutingDialogComponent,
         outlet: 'modal',
         canActivate: [authGuard],
+    },
+    // Same aux-route pattern for the Sportkurse/Ski-Snowboardkurse editor
+    // panel (see course-tile-edit-routing-dialog.component.ts) - two entries
+    // rather than one with a :kind param, so the URL segment itself stays
+    // self-descriptive (mirrors mitglieder-bearbeiten above).
+    {
+        path: 'sportkurs-bearbeiten/:id',
+        component: CourseTileEditRoutingDialogComponent,
+        outlet: 'modal',
+        canActivate: [authGuard],
+        data: { courseKind: 'sport' },
+    },
+    {
+        path: 'skikurs-bearbeiten/:id',
+        component: CourseTileEditRoutingDialogComponent,
+        outlet: 'modal',
+        canActivate: [authGuard],
+        data: { courseKind: 'ski' },
     },
     {
         path: '**',

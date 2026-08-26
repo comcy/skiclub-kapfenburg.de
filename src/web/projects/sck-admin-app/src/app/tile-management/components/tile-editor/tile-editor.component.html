@@ -299,10 +299,8 @@
                             <mat-hint>Kommagetrennt. Leer = Standard-Verteiler wird verwendet.</mat-hint>
                         </mat-form-field>
 
-                        <h4 class="section-title">Pilates- / Gymnastik-Kurs</h4>
-                        <mat-checkbox [(ngModel)]="isGymCourse">Dies ist ein Pilates-/Gymnastik-Kurs</mat-checkbox>
-
                         @if (tile.course) {
+                            <h4 class="section-title">Pilates- / Gymnastik-Kurs</h4>
                             <mat-form-field>
                                 <mat-label>Termine / Details (Markdown, z. B. "**Termine**\n- ...")</mat-label>
                                 <textarea matInput rows="6" [(ngModel)]="tile.details"></textarea>

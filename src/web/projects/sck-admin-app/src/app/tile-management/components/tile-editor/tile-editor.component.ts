@@ -97,30 +97,6 @@ export class TileEditorComponent implements OnInit, OnChanges {
         this.tile.courseConfig = this.tile.courseConfig ?? {};
     }
 
-    // Whether the "Dies ist ein Pilates-/Gymnastik-Kurs" section is shown -
-    // driven purely by whether tile.course is currently set, so ski-level
-    // tiles (never toggled on) never carry an empty course object.
-    get isGymCourse(): boolean {
-        return !!this.tile?.course;
-    }
-
-    set isGymCourse(value: boolean) {
-        if (!this.tile) return;
-        if (value) {
-            this.tile.course = this.tile.course ?? {
-                name: this.tile.title,
-                description: this.tile.description,
-                details: '',
-                time: '',
-                location: '',
-                contact: '',
-                prices: { member: '', nonMember: '' },
-            };
-        } else {
-            this.tile.course = undefined;
-        }
-    }
-
     public readonly weekdayLabels = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
     public readonly weekdays = [0, 1, 2, 3, 4, 5, 6];
 

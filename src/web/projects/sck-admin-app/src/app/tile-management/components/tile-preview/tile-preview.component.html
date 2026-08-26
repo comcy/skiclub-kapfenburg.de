@@ -24,6 +24,41 @@
 
         <mat-card-content class="mat-card-content">
             <p [innerHTML]="renderMarkdown(tile.description)"></p>
+
+            @if (tile.details) {
+                <p [innerHTML]="renderMarkdown(tile.details)"></p>
+            }
+
+            @if (tile.course) {
+                <div class="course-info">
+                    @if (tile.course.time) {
+                        <p><strong>Zeit:</strong> {{ tile.course.time }}</p>
+                    }
+                    @if (tile.course.location) {
+                        <p><strong>Ort:</strong> {{ tile.course.location }}</p>
+                    }
+                    @if (tile.course.contact) {
+                        <p><strong>Kontakt:</strong> {{ tile.course.contact }}</p>
+                    }
+                    @if (tile.course.prices) {
+                        <p>
+                            <strong>Preis:</strong>
+                            Mitglied {{ tile.course.prices.member || '–' }} / Nicht-Mitglied
+                            {{ tile.course.prices.nonMember || '–' }}
+                        </p>
+                    }
+                    @if (tile.course.schedule; as schedule) {
+                        <p>
+                            <strong>Termin-Serie:</strong>
+                            {{ weekdayLabels[schedule.weekday] }}, {{ schedule.startDate | date: 'dd.MM.yyyy' }} –
+                            {{ schedule.endDate | date: 'dd.MM.yyyy' }}
+                            @if (schedule.excludedDates?.length) {
+                                (ohne: {{ schedule.excludedDates.join(', ') }})
+                            }
+                        </p>
+                    }
+                </div>
+            }
         </mat-card-content>
 
         <mat-card-actions class="actions">
