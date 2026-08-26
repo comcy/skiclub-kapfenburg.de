@@ -1,0 +1,28 @@
+// mat-dialog-title/mat-dialog-actions already sit outside mat-dialog-content
+// in Material's own dialog structure, so "only the content scrolls" is the
+// default the moment actions actually live in a real mat-dialog-actions
+// block (the bug being fixed here: an app dialog with buttons INSIDE
+// mat-dialog-content just scrolled them away with everything else) - no
+// extra sticky positioning needed, just the right structure.
+
+.dialog-shell-header {
+    margin: 0;
+    padding: 16px 24px;
+    // One tonal step up from the dialog surface itself - subtle, not a
+    // strong color block, same M3 "surface-container" ladder used
+    // elsewhere in this app (see e.g. app.component.scss's top-bar).
+    background: var(--mat-sys-surface-container-highest);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.dialog-shell-content {
+    padding: 20px 24px;
+}
+
+.dialog-shell-actions {
+    padding: 12px 24px;
+    margin: 0;
+    min-height: unset;
+    background: var(--mat-sys-surface-container-highest);
+    border-top: 1px solid var(--mat-sys-outline-variant);
+}

@@ -17,7 +17,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
-import { AuthService } from '../../../auth/services/auth.service';
 import { Member, MemberCreationParams } from '../../domain/member';
 import { MembersDataService } from '../../services/members-data.service';
 
@@ -67,11 +66,9 @@ const toIsoDate = (date: Date): string => {
 export class MemberEditorComponent implements OnChanges {
     @Input() member: Member | null = null;
     @Output() saved = new EventEmitter<void>();
-    @Output() cancelled = new EventEmitter<void>();
 
     private readonly dataService = inject(MembersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
-    public readonly auth = inject(AuthService);
 
     // The datepicker (provideNativeDateAdapter) needs a real Date, but
     // Member.birthday/memberSince are ISO strings (the wire format every
@@ -84,6 +81,12 @@ export class MemberEditorComponent implements OnChanges {
     // or from an application both start with id: '', same as boardings.
     get isFromApplication(): boolean {
         return !this.member?.id && !!this.member?.applicationRegistrationId;
+    }
+
+    // Read by member-edit-dialog's own Speichern button (now outside this
+    // component, in the dialog shell's sticky actions area).
+    get canSave(): boolean {
+        return !!this.member?.firstName && !!this.member?.lastName;
     }
 
     // member-list can swap `member` to a different row's object while this
@@ -136,9 +139,5 @@ export class MemberEditorComponent implements OnChanges {
                 this.cdr.markForCheck();
             });
         }
-    }
-
-    onCancel(): void {
-        this.cancelled.emit();
     }
 }

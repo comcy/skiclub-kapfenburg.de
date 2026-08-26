@@ -106,19 +106,5 @@
             <mat-label>Notizen</mat-label>
             <textarea matInput rows="3" [(ngModel)]="member.notes"></textarea>
         </mat-form-field>
-
-        <div class="actions">
-            @if (auth.hasPermission('members:manage')) {
-                <button
-                    mat-raised-button
-                    color="primary"
-                    (click)="onSave()"
-                    [disabled]="!member.firstName || !member.lastName"
-                >
-                    Speichern
-                </button>
-            }
-            <button mat-button (click)="onCancel()">Abbrechen</button>
-        </div>
     </div>
 }

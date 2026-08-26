@@ -1,9 +1,12 @@
-<h2 mat-dialog-title>{{ data.member.id ? 'Mitglied bearbeiten' : 'Mitglied anlegen' }}</h2>
+<app-dialog-shell [title]="title">
+    <app-member-editor #editor [member]="data.member" (saved)="onSaved()"></app-member-editor>
 
-<mat-dialog-content>
-    <app-member-editor
-        [member]="data.member"
-        (saved)="onSaved()"
-        (cancelled)="dialogRef.close(false)"
-    ></app-member-editor>
-</mat-dialog-content>
+    <ng-container dialogActions>
+        @if (auth.hasPermission('members:manage')) {
+            <button mat-raised-button color="primary" (click)="editor.onSave()" [disabled]="!editor.canSave">
+                Speichern
+            </button>
+        }
+        <button mat-button (click)="dialogRef.close(false)">Abbrechen</button>
+    </ng-container>
+</app-dialog-shell>
