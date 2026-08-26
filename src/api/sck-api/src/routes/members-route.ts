@@ -10,6 +10,7 @@ import {
   getMember,
   listMembers,
   listMembershipApplications,
+  markHonored,
   updateMember,
 } from '../controllers/members-controller.js';
 import { applyMembersImport, previewMembersImport } from '../controllers/members-import-controller.js';
@@ -27,6 +28,7 @@ router.get('/members/:id', requireAuth, requirePermission('members:manage'), get
 router.post('/members', requireAuth, requirePermission('members:manage'), createMember);
 router.put('/members/:id', requireAuth, requirePermission('members:manage'), updateMember);
 router.delete('/members/:id', requireAuth, requirePermission('members:manage'), deleteMember);
+router.post('/members/:id/honor', requireAuth, requirePermission('members:manage'), markHonored);
 
 // Order matters: these must come before /members/:id so 'import' isn't
 // swallowed as an :id.

@@ -118,6 +118,10 @@ db.exec(`
     bank_name TEXT,
     account_holder TEXT,
     payment_method TEXT,
+    -- JSON array of year-thresholds (e.g. "[25,40]") this member has already
+    -- received a Jubiläums-Ehrung for - see members-service.ts's
+    -- getAnniversaries()/markHonored().
+    honored_years TEXT NOT NULL DEFAULT '[]',
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
   );
@@ -340,4 +344,23 @@ for (const [column, ddl] of [
   if (!memberColumns.some((c) => c.name === column)) {
     db.exec(`ALTER TABLE members ADD COLUMN ${ddl};`);
   }
+}
+
+// Jubiläumsfunktion's honored_years, plus a one-time backfill (only runs
+// the moment the column is first added, guarded the same way as the loop
+// above): as of the 2026-05-01 Stichtag, every member already ≥25/≥40
+// years in is treated as already honored, so the report only ever surfaces
+// new anniversaries going forward instead of this whole backlog. Relies on
+// member_since being a clean ISO date string (guaranteed for anything
+// written through the importer or the Round-C datepicker; any pre-existing
+// non-ISO free text just won't match either UPDATE below and is silently
+// left un-backfilled).
+if (!memberColumns.some((c) => c.name === 'honored_years')) {
+  db.exec(`ALTER TABLE members ADD COLUMN honored_years TEXT NOT NULL DEFAULT '[]';`);
+  db.exec(`
+    UPDATE members SET honored_years = '[25]'
+    WHERE member_since IS NOT NULL AND member_since <= '2001-05-01' AND member_since > '1986-05-01';
+    UPDATE members SET honored_years = '[25,40]'
+    WHERE member_since IS NOT NULL AND member_since <= '1986-05-01';
+  `);
 }

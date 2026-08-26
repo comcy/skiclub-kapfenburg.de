@@ -32,7 +32,17 @@ interface MemberRow {
   bank_name: string | null;
   account_holder: string | null;
   payment_method: string | null;
+  honored_years: string;
 }
+
+const parseHonoredYears = (json: string): number[] => {
+  try {
+    const parsed = JSON.parse(json);
+    return Array.isArray(parsed) ? parsed.filter((n) => typeof n === 'number') : [];
+  } catch {
+    return [];
+  }
+};
 
 const rowToMember = (row: MemberRow): Member => ({
   id: row.id,
@@ -56,6 +66,7 @@ const rowToMember = (row: MemberRow): Member => ({
   bankName: row.bank_name ?? undefined,
   accountHolder: row.account_holder ?? undefined,
   paymentMethod: row.payment_method ?? undefined,
+  honoredYears: parseHonoredYears(row.honored_years),
 });
 
 export const listMembers = (page: number, limit: number): PaginatedResponse<Member> => {
@@ -107,7 +118,11 @@ export const createMember = (params: MemberCreationParams): Member => {
     params.accountHolder ?? null,
     params.paymentMethod ?? null,
   );
-  return { id, ...params };
+  // Re-fetch rather than trusting `{ id, ...params }` - honoredYears is
+  // deliberately not part of MemberCreationParams (only markHonored() sets
+  // it, an ordinary save must never touch it), so the input params alone
+  // would misreport it as undefined instead of the column's real default.
+  return getMember(id) as Member;
 };
 
 export const updateMember = (id: string, params: MemberCreationParams): Member | undefined => {
@@ -145,7 +160,9 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
       id,
     );
   if (result.changes === 0) return undefined;
-  return { id, ...params };
+  // See createMember() - re-fetch so honoredYears (never part of an
+  // ordinary save) reflects what's actually still in the DB, not undefined.
+  return getMember(id);
 };
 
 export const deleteMember = (id: string): boolean => {
@@ -181,10 +198,13 @@ const yearOf = (isoDate: string): number | null => {
   return match ? Number(match[1]) : null;
 };
 
-// Jubiläumsfunktion: for each requested year-count N, everyone whose
-// memberSince falls in the calendar year (referenceDate's year - N) - a
-// calendar-year match, not an exact day-of-year one, matching how a
-// Vereinsjubiläum is actually celebrated in practice.
+// Jubiläumsfunktion: for each requested year-count N, everyone who has been
+// a member for *at least* N years as of the reference date (memberSince
+// year <= referenceYear - N) and hasn't been marked honored for that
+// specific N yet - a calendar-year comparison, not an exact day-of-year
+// one, matching how a Vereinsjubiläum is actually celebrated. Someone
+// entitled to both 25 and 40 years but only honored for 25 still shows up
+// under a 40-years query - each year-count is tracked independently.
 export const getAnniversaries = (referenceDate: string, years: number[]): AnniversaryGroup[] => {
   const refYear = yearOf(referenceDate) ?? new Date().getFullYear();
   const members = (db.prepare('SELECT * FROM members ORDER BY last_name, first_name').all() as unknown as MemberRow[]).map(
@@ -192,13 +212,30 @@ export const getAnniversaries = (referenceDate: string, years: number[]): Annive
   );
 
   return years.map((n) => {
-    const joinYear = refYear - n;
+    const cutoffYear = refYear - n;
     return {
       years: n,
-      joinYear,
-      members: members.filter((m) => m.memberSince && yearOf(m.memberSince) === joinYear),
+      cutoffYear,
+      members: members.filter((m) => {
+        const joinYear = m.memberSince ? yearOf(m.memberSince) : null;
+        return joinYear !== null && joinYear <= cutoffYear && !m.honoredYears?.includes(n);
+      }),
     };
   });
+};
+
+// Marks a member as honored for a given year-count (Jubiläumsfunktion) -
+// idempotent, adding an already-present year is a no-op.
+export const markHonored = (id: string, years: number): Member | undefined => {
+  const member = getMember(id);
+  if (!member) return undefined;
+  if (member.honoredYears?.includes(years)) return member;
+
+  const honoredYears = [...(member.honoredYears ?? []), years].sort((a, b) => a - b);
+  db.prepare(
+    `UPDATE members SET honored_years = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ?`,
+  ).run(JSON.stringify(honoredYears), id);
+  return getMember(id);
 };
 
 // Online Mitgliedsanträge (registrations.ndjson) that haven't been promoted

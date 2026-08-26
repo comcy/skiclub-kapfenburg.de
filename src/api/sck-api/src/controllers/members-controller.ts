@@ -101,6 +101,25 @@ export const getAnniversaries: RequestHandler = (req, res) => {
   }
 };
 
+export const markHonored: RequestHandler = (req, res) => {
+  try {
+    const years = parseInt(String(req.body?.years ?? ''), 10);
+    if (isNaN(years) || years <= 0) {
+      res.status(400).json({ error: 'years ist erforderlich.' });
+      return;
+    }
+    const member = membersService.markHonored(String(req.params.id), years);
+    if (!member) {
+      res.status(404).json({ error: 'Mitglied nicht gefunden.' });
+      return;
+    }
+    res.status(200).json(member);
+  } catch (error: any) {
+    console.error('Fehler beim Markieren als geehrt:', error);
+    res.status(500).json({ error: 'Fehler beim Markieren als geehrt.', details: error.message });
+  }
+};
+
 export const listMembershipApplications: RequestHandler = (_req, res) => {
   try {
     res.status(200).json(membersService.listMembershipApplications());

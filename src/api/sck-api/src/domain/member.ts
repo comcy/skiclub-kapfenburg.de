@@ -32,17 +32,24 @@ export interface Member {
   bankName?: string;
   accountHolder?: string;
   paymentMethod?: string;
+  // Year-thresholds (e.g. [25, 40]) this member has already been honored
+  // for at a JHV - see getAnniversaries()/markHonored() below. Optional
+  // (defaults to []) so every existing MemberCreationParams call site
+  // doesn't need to know about it - only markHonored() ever sets it.
+  honoredYears?: number[];
 }
 
 export type MemberCreationParams = Omit<Member, 'id'>;
 
-// One entry per requested year-count (Jubiläumsfunktion) - joinYear is
-// years-count years before the reference date's year, members are every
-// member whose memberSince falls in that calendar year (see
-// members-service.ts's getAnniversaries()).
+// One entry per requested year-count (Jubiläumsfunktion) - cutoffYear is
+// the reference date's year minus that year-count; members are everyone
+// who has been in *at least* that long (memberSince year <= cutoffYear)
+// and hasn't been marked honored for this specific year-count yet - a
+// member entitled to both 25 and 40 years, honored only for 25, still
+// shows up under a 40-years query.
 export interface AnniversaryGroup {
   years: number;
-  joinYear: number;
+  cutoffYear: number;
   members: Member[];
 }
 

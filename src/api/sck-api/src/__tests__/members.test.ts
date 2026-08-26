@@ -116,7 +116,7 @@ describe('Members Routes', () => {
     expect(mockedListDataByType).toHaveBeenCalledWith('membership-registration');
   });
 
-  it('GET /api/members/anniversaries - gruppiert Mitglieder nach Eintrittsjahr je Jahreszahl', async () => {
+  it('GET /api/members/anniversaries - meldet jeden, der mindestens N Jahre dabei und dafür noch nicht geehrt ist', async () => {
     const token = createAuthedUser(['members:manage']);
     await request(app)
       .post('/api/members')
@@ -137,10 +137,73 @@ describe('Members Routes', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual([
-      { years: 25, joinYear: 2001, members: [expect.objectContaining({ firstName: 'Lea' })] },
-      { years: 40, joinYear: 1986, members: [expect.objectContaining({ firstName: 'Tom' })] },
-    ]);
+    // Tom (seit 1986) ist auch für die 25-Jahre-Abfrage dabei - über 25
+    // Jahre Mitglied UND noch nicht für 25 Jahre geehrt zählt genauso wie
+    // "genau" 25 Jahre.
+    expect(res.body[0]).toEqual(
+      expect.objectContaining({
+        years: 25,
+        cutoffYear: 2001,
+        members: expect.arrayContaining([
+          expect.objectContaining({ firstName: 'Lea' }),
+          expect.objectContaining({ firstName: 'Tom' }),
+        ]),
+      }),
+    );
+    expect(res.body[0].members).toHaveLength(2);
+    expect(res.body[1]).toEqual({
+      years: 40,
+      cutoffYear: 1986,
+      members: [expect.objectContaining({ firstName: 'Tom' })],
+    });
+  });
+
+  it('GET /api/members/anniversaries - blendet bereits geehrte Mitglieder für dieses Jahr aus', async () => {
+    const token = createAuthedUser(['members:manage']);
+    const createRes = await request(app)
+      .post('/api/members')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validMember, firstName: 'Tom', memberSince: '1986-01-15' });
+    const id = createRes.body.id as string;
+
+    const honorRes = await request(app)
+      .post(`/api/members/${id}/honor`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ years: 25 });
+    expect(honorRes.status).toBe(200);
+    expect(honorRes.body.honoredYears).toEqual([25]);
+
+    const res = await request(app)
+      .get('/api/members/anniversaries')
+      .query({ date: '2026-06-01', years: '25,40' })
+      .set('Authorization', `Bearer ${token}`);
+
+    // Für 25 Jahre bereits geehrt -> taucht dort nicht mehr auf, für 40
+    // Jahre (noch nicht geehrt) weiterhin.
+    expect(res.body[0]).toEqual({ years: 25, cutoffYear: 2001, members: [] });
+    expect(res.body[1].members).toEqual([expect.objectContaining({ firstName: 'Tom' })]);
+  });
+
+  it('POST /api/members/:id/honor - ist idempotent und liefert 404 für unbekannte id', async () => {
+    const token = createAuthedUser(['members:manage']);
+    const createRes = await request(app)
+      .post('/api/members')
+      .set('Authorization', `Bearer ${token}`)
+      .send(validMember);
+    const id = createRes.body.id as string;
+
+    await request(app).post(`/api/members/${id}/honor`).set('Authorization', `Bearer ${token}`).send({ years: 25 });
+    const secondRes = await request(app)
+      .post(`/api/members/${id}/honor`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ years: 25 });
+    expect(secondRes.body.honoredYears).toEqual([25]);
+
+    const notFoundRes = await request(app)
+      .post('/api/members/does-not-exist/honor')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ years: 25 });
+    expect(notFoundRes.status).toBe(404);
   });
 
   it('GET /api/members/anniversaries - lehnt fehlende Parameter mit 400 ab', async () => {
