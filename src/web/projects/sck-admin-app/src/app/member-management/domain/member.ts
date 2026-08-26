@@ -26,14 +26,19 @@ export interface Member {
     bankName?: string;
     accountHolder?: string;
     paymentMethod?: string;
+    // Year-thresholds (e.g. [25, 40]) already honored at a JHV - only ever
+    // set via MembersDataService.markHonored(), never through a normal save.
+    honoredYears?: number[];
 }
 
 export type MemberCreationParams = Omit<Member, 'id'>;
 
-// One entry per requested year-count (Jubiläumsfunktion) - see
+// One entry per requested year-count (Jubiläumsfunktion) - members are
+// everyone who has been in *at least* that long as of the reference date
+// and hasn't been marked honored for this specific year-count yet - see
 // members-service.ts's getAnniversaries() on the backend.
 export interface AnniversaryGroup {
     years: number;
-    joinYear: number;
+    cutoffYear: number;
     members: Member[];
 }

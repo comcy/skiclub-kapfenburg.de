@@ -5,7 +5,9 @@ import { InviteAcceptComponent } from './auth/invite-accept/invite-accept.compon
 import { LoginComponent } from './auth/login/login.component';
 import { BoardingManagementComponent } from './boardings-management/boarding-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ApplicationListComponent } from './member-management/components/application-list/application-list.component';
 import { MemberAnniversariesComponent } from './member-management/components/member-anniversaries/member-anniversaries.component';
+import { MemberEditRoutingDialogComponent } from './member-management/components/member-edit-routing-dialog/member-edit-routing-dialog.component';
 import { MemberNewsletterComponent } from './member-management/components/member-newsletter/member-newsletter.component';
 import { MemberManagementComponent } from './member-management/member-management.component';
 import { CourseRegistrationsOverviewComponent } from './tile-management/components/course-registrations-overview/course-registrations-overview.component';
@@ -130,6 +132,7 @@ export const routes: Routes = [
             title: 'Vereinsverwaltung',
             navLinks: [
                 { label: 'Mitglieder', link: 'mitglieder' },
+                { label: 'Anträge', link: 'antraege' },
                 { label: 'Jubiläen', link: 'jubilaeen' },
                 { label: 'Newsletter', link: 'newsletter' },
             ],
@@ -138,6 +141,10 @@ export const routes: Routes = [
             {
                 path: 'mitglieder',
                 component: MemberManagementComponent,
+            },
+            {
+                path: 'antraege',
+                component: ApplicationListComponent,
             },
             {
                 path: 'jubilaeen',
@@ -185,6 +192,16 @@ export const routes: Routes = [
                 pathMatch: 'full',
             },
         ],
+    },
+    // Auxiliary route for the member editor dialog (outlet: 'modal', see
+    // app.component.html) - same pattern sck-app uses for its AGB/Satzung/
+    // register dialogs. :id is a real member id or 'neu' (create), with an
+    // optional ?antragId= to prefill from a pending Mitgliedsantrag.
+    {
+        path: 'mitglieder-bearbeiten/:id',
+        component: MemberEditRoutingDialogComponent,
+        outlet: 'modal',
+        canActivate: [authGuard],
     },
     {
         path: '**',

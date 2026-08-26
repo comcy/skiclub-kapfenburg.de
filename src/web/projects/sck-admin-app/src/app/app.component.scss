@@ -45,19 +45,14 @@
 
     // Filled, rounded highlight - the same treatment sck-app's own header
     // gives its "Skilift" nav item (a solid accent-colored pill standing
-    // out from the plain icon+text items next to it). M3 has no "accent"
-    // role (Angular Material's color="accent" button input isn't wired to
-    // anything under this use-system-variables setup), so this uses the
-    // tertiary role directly - redeclaring mat-flat-button's own MDC
-    // variables, since a plain `background:` here would lose to Material's
-    // more specific baked rule.
+    // out from the plain icon+text items next to it). Explicit highlight
+    // color (not a theme role) per request - an "unthemed" mat-flat-button
+    // (no color input) here fills with var(--mat-sys-primary) directly, not
+    // through the MDC container-color variable one might expect, so
+    // background-color needs the explicit override regardless.
     .logout-button {
-        // An "unthemed" mat-flat-button (no color input) here fills with
-        // var(--mat-sys-primary) directly, not through the MDC container-
-        // color variable one might expect - background-color needs the
-        // explicit override.
-        background-color: var(--mat-sys-tertiary);
-        color: var(--mat-sys-on-tertiary);
+        background-color: #ffd740;
+        color: rgba(0, 0, 0, 0.87);
         border-radius: 20px;
     }
 }

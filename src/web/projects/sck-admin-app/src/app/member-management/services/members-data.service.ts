@@ -47,6 +47,10 @@ export class MembersDataService {
         });
     }
 
+    markHonored(id: string, years: number): Observable<Member> {
+        return this.http.post<Member>(`${this.apiUrl}/members/${id}/honor`, { years });
+    }
+
     previewMembersImport(file: File): Observable<MemberImportPreview> {
         const formData = new FormData();
         formData.append('file', file);

@@ -5,9 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
-import { AnniversaryGroup } from '../../domain/member';
+import { AnniversaryGroup, Member } from '../../domain/member';
 import { MembersDataService } from '../../services/members-data.service';
 
 const toIsoDate = (date: Date): string => {
@@ -20,7 +21,15 @@ const toIsoDate = (date: Date): string => {
 @Component({
     selector: 'app-member-anniversaries',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatDatepickerModule],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatDatepickerModule,
+    ],
     providers: [
         provideNativeDateAdapter(),
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
@@ -65,6 +74,16 @@ export class MemberAnniversariesComponent {
                 this.isLoading = false;
                 this.cdr.markForCheck();
             },
+        });
+    }
+
+    onMarkHonored(group: AnniversaryGroup, member: Member): void {
+        this.dataService.markHonored(member.id, group.years).subscribe(() => {
+            // Optimistic removal from this group's list - a fresh onSearch()
+            // would drop them too (now honored for this year-count), no
+            // reason to make the admin re-run the search to see it.
+            group.members = group.members.filter((m) => m.id !== member.id);
+            this.cdr.markForCheck();
         });
     }
 }

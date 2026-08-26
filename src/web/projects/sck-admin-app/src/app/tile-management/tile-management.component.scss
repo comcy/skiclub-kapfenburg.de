@@ -12,8 +12,25 @@ shared-lib-site-header {
 .content-area {
     flex: 1;
     min-height: 0;
-    /* Critical for nested flex scrolling */
+    /* Critical for nested flex scrolling - without this, a routed child
+       with more content than fits just grows this container instead of
+       scrolling internally (its own overflow:auto never kicks in, since
+       this container never actually clips it). */
+    overflow: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+// mat-tab-nav-panel sits directly in this template (between .content-area
+// and the routed child), so a plain type selector reaches it without
+// ::ng-deep - it's Angular Material's own wrapper and ships with no flex/
+// height participation of its own, which otherwise breaks the scroll chain
+// above right before it reaches the actual routed content.
+mat-tab-nav-panel {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
 }

@@ -68,6 +68,17 @@
         </td>
     </ng-container>
 
+    <ng-container matColumnDef="honored">
+        <th mat-header-cell *matHeaderCellDef>Geehrt</th>
+        <td mat-cell *matCellDef="let member">
+            @if (member.honoredYears?.length) {
+                {{ member.honoredYears.join(', ') }} Jahre
+            } @else {
+                –
+            }
+        </td>
+    </ng-container>
+
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let member">
