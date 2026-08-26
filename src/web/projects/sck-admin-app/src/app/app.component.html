@@ -4,8 +4,11 @@
     <span class="spacer"></span>
     <app-theme-switcher></app-theme-switcher>
     @if (auth.session(); as session) {
-        <span class="user-email">{{ session.email }}</span>
-        <button mat-button (click)="logout()">
+        <button mat-button class="user-email" disableRipple>
+            <mat-icon>person</mat-icon>
+            {{ session.email }}
+        </button>
+        <button mat-flat-button class="logout-button" (click)="logout()">
             <mat-icon>logout</mat-icon>
             Logout
         </button>
