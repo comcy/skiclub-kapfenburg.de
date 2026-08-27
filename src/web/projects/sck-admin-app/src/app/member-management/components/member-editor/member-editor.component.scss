@@ -13,10 +13,14 @@
 
 .field-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 16px;
 
+    // A flex-basis gives flex-wrap something to actually wrap at, instead
+    // of both fields fighting over space neither can shrink below on a
+    // narrow dialog panel and overflowing past the edge.
     mat-form-field {
-        flex: 1;
+        flex: 1 1 200px;
     }
 }
 

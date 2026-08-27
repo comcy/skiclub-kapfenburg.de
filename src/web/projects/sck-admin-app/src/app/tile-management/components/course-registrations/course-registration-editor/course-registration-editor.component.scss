@@ -4,10 +4,12 @@
 
 .field-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 16px;
 
+    // See member-editor.component.scss's identical rule.
     mat-form-field {
-        flex: 1;
+        flex: 1 1 200px;
     }
 }
 

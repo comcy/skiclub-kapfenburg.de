@@ -56,10 +56,15 @@
 
 .form-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 16px;
 
+    // flex:1 with no basis and no wrap let two fields (e.g. Event Date +
+    // Expiration Date) fight over space neither could shrink below on a
+    // narrow dialog panel, overflowing past the edge instead of wrapping -
+    // a real flex-basis gives flex-wrap something to actually wrap at.
     .half-width {
-        flex: 1;
+        flex: 1 1 200px;
     }
 }
 
