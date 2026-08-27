@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { SiteHeaderComponent } from '@shared/ui-common';
 import { AuthService } from '../auth/services/auth.service';
 import { InviteListComponent } from './components/invite-list/invite-list.component';
 import { UserListComponent } from './components/user-list/user-list.component';
@@ -9,7 +8,7 @@ import { AdminUser } from './domain/user';
 @Component({
     selector: 'app-user-management',
     standalone: true,
-    imports: [SiteHeaderComponent, UserListComponent, UserPermissionsEditorComponent, InviteListComponent],
+    imports: [UserListComponent, UserPermissionsEditorComponent, InviteListComponent],
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.scss'],
 })

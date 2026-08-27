@@ -3,14 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { SiteHeaderComponent } from '@shared/ui-common';
 import { AuthService } from '../auth/services/auth.service';
 import { SettingsDataService } from './services/settings-data.service';
 
 @Component({
     selector: 'app-settings',
     standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, SiteHeaderComponent],
+    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
 })
