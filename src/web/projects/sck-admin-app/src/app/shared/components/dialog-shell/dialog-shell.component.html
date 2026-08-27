@@ -1,4 +1,9 @@
-<h2 mat-dialog-title class="dialog-shell-header">{{ title }}</h2>
+<div class="dialog-shell-header">
+    <h2 mat-dialog-title class="dialog-shell-title">{{ title }}</h2>
+    <button mat-icon-button (click)="onClose()" aria-label="Schließen">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
 
 <mat-dialog-content class="dialog-shell-content">
     <ng-content></ng-content>

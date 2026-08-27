@@ -6,15 +6,27 @@
 // extra sticky positioning needed, just the right structure.
 
 .dialog-shell-header {
-    margin: 0;
-    padding: 16px 24px;
-    // Same tonal treatment as the active nav item in the side-nav (see
-    // app.component.scss's .nav-item.active) rather than a neutral
-    // surface step - ties the dialog chrome back to the app's theme color
-    // instead of a generic "elevated panel" look.
-    background: var(--mat-sys-primary-container);
-    color: var(--mat-sys-on-primary-container);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 8px 8px 24px;
+    // Secondary rather than primary - keeps the dialog's own close button
+    // visually distinct from the primary-colored action button below it
+    // (e.g. Speichern), same reasoning course-tile-edit-dialog's toolbar
+    // already used before this became the shared shell's own header too.
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
     border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+    button {
+        color: var(--mat-sys-on-secondary-container);
+    }
+}
+
+.dialog-shell-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
 }
 
 .dialog-shell-content {

@@ -10,12 +10,21 @@
     justify-content: space-between;
     padding: 8px 8px 8px 16px;
     border-bottom: 1px solid var(--mat-sys-outline-variant);
-    background-color: var(--mat-sys-surface-container);
+    // Same secondary-container treatment as dialog-shell.component.scss's
+    // header, so every dialog's title/close row reads consistently -
+    // course-tile dialogs just aren't built on DialogShellComponent (see
+    // course-tile-edit-dialog.component.ts's own reasoning).
+    background-color: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
     flex-shrink: 0;
 
     .title {
         font-size: 16px;
         font-weight: 500;
+    }
+
+    button {
+        color: var(--mat-sys-on-secondary-container);
     }
 }
 
