@@ -42,9 +42,15 @@ export const COURSE_REGISTRATION_FORM_ELEMENTS: BaseFormElements[] = [
         cols: 2,
     },
     {
-        id: 'age',
-        label: 'Alter',
+        id: 'birthday',
+        label: 'Geburtsdatum',
         validation: [{ type: 'required', message: 'is required' }],
+        cols: 1,
+    },
+    {
+        id: 'isMember',
+        label: 'Mitglied',
+        validation: [],
         cols: 1,
     },
     {

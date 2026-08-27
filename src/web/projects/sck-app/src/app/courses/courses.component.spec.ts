@@ -16,7 +16,20 @@ describe('CoursesComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule, CoursesComponent],
-            providers: [{ provide: CourseTilesApiServiceInterface, useValue: { getAllCourseTiles: () => of([]) } }],
+            providers: [
+                {
+                    provide: CourseTilesApiServiceInterface,
+                    useValue: {
+                        getAllCourseTiles: () => of([]),
+                        getSkiCoursePricing: () =>
+                            of({
+                                childUntilAge: 16,
+                                snowboard: { adult: { member: 0, nonMember: 0 }, child: { member: 0, nonMember: 0 } },
+                                alpine: { adult: { member: 0, nonMember: 0 }, child: { member: 0, nonMember: 0 } },
+                            }),
+                    },
+                },
+            ],
         }).compileComponents();
     });
 

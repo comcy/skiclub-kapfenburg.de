@@ -50,7 +50,7 @@ export const getCourseConfirmationMailText = (values: CourseRegisterFormFields):
                 <!-- Rechte Spalte -->
                 <div style="flex: 1; padding-left: 16px;">
                     <p style="margin: 4px 0;">Sportart: <span style="font-weight: bold; color: #333;">${values.sportType}</span></p>
-                    <p style="margin: 4px 0;">Alter: <span style="font-weight: bold; color: #333;">${values.age}</span></p>
+                    <p style="margin: 4px 0;">Geburtsdatum: <span style="font-weight: bold; color: #333;">${values.birthday}</span></p>
                     <p style="margin: 4px 0;">Zusatzangaben:</p>
                     <div style="padding: 8px; background-color: #0073e610; border-radius: 4px; border: 1px solid #ddd;">
                         <p style="margin: 0; color: #333; padding-left: 8px;">${values.additionalText}</p>

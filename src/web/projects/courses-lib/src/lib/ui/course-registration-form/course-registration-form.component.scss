@@ -21,3 +21,18 @@
 td {
     padding-right: 8px;
 }
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0 24px;
+    padding: 16px 20px;
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+
+    .total-amount {
+        color: #2e7d32;
+        font-size: 1.4em;
+    }
+}

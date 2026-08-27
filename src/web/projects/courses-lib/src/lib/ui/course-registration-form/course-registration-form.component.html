@@ -64,8 +64,10 @@
                     <tr>
                         <td>
                             <mat-form-field class="full-width" appearance="fill">
-                                <mat-label>Alter</mat-label>
-                                <input matInput formControlName="age" value="1" />
+                                <mat-label>Geburtsdatum</mat-label>
+                                <input matInput [matDatepicker]="birthdayPicker" formControlName="birthday" />
+                                <mat-datepicker-toggle matIconSuffix [for]="birthdayPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #birthdayPicker></mat-datepicker>
                             </mat-form-field>
                         </td>
                         <td>
@@ -86,8 +88,10 @@
         @if (breakpointObserver.handsetBreakpoint$ | async) {
             <div>
                 <mat-form-field class="full-width" appearance="fill">
-                    <mat-label>Alter</mat-label>
-                    <input matInput formControlName="age" value="1" />
+                    <mat-label>Geburtsdatum</mat-label>
+                    <input matInput [matDatepicker]="birthdayPickerMobile" formControlName="birthday" />
+                    <mat-datepicker-toggle matIconSuffix [for]="birthdayPickerMobile"></mat-datepicker-toggle>
+                    <mat-datepicker #birthdayPickerMobile></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field class="full-width" appearance="fill">
                     <mat-label>Könnerstufe</mat-label>
@@ -101,6 +105,10 @@
         }
 
         <p>
+            <mat-checkbox formControlName="isMember">Ich bin Mitglied</mat-checkbox>
+        </p>
+
+        <p>
             <mat-form-field class="full-width" appearance="fill">
                 <mat-label>Zusatzinformationen</mat-label>
                 <textarea matInput formControlName="additionalText" rows="8"></textarea>
@@ -108,6 +116,15 @@
         </p>
         @if (!courseRegisterForm.valid && courseRegisterForm.touched) {
             <mat-error> Bitte alle erfordelichen Felder (*) ausfüllen. </mat-error>
+        }
+
+        @if (
+            skiCoursePricing && courseRegisterForm.get('sportType')?.value && courseRegisterForm.get('birthday')?.value
+        ) {
+            <div class="summary-total">
+                <strong>Preis</strong>
+                <strong class="total-amount">{{ getPrice() | currency: 'EUR' }}</strong>
+            </div>
         }
 
         <shared-lib-turnstile-widget

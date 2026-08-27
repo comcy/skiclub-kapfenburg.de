@@ -14,7 +14,10 @@ export interface CourseRegisterFormFields {
     sportType: string;
     email: string;
     phone: string;
-    age: string;
+    // Formatted display string ("DD.MM.YYYY (Alter)"), not a raw Date - see
+    // CourseRegistrationFormComponent.submit().
+    birthday: string;
+    isMember: boolean;
     additionalText: string;
     level: string;
     // Resolved from the matching admin-managed course tile (see

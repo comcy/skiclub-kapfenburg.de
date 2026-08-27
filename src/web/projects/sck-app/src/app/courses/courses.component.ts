@@ -23,7 +23,7 @@ import {
     CourseTilesApiServiceInterface,
 } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
 import { mergeCourseTile } from 'projects/courses-lib/src/lib/domain/merge-course-tile';
-import { Price } from 'projects/courses-lib/src/lib/domain/models';
+import { Price, SkiCoursePricing } from 'projects/courses-lib/src/lib/domain/models';
 import { InfoTile } from 'projects/shared-lib/src/lib/ui-common/models';
 
 @Component({
@@ -44,6 +44,7 @@ export class CoursesComponent implements OnInit {
     public selectedLevel: string | undefined;
     public selectedCustomBccList: string[] | undefined;
     public selectedTileId: string | undefined;
+    public skiCoursePricing: SkiCoursePricing | null = null;
 
     public markdown = inject(MarkdownRenderService);
     private readonly courseTilesApi = inject(CourseTilesApiServiceInterface);
@@ -73,6 +74,10 @@ export class CoursesComponent implements OnInit {
                 this.tileIdByLevelId.set(level.id, match?.id);
                 return mergeCourseTile(level, match);
             });
+            this.cdr.markForCheck();
+        });
+        this.courseTilesApi.getSkiCoursePricing().subscribe((pricing) => {
+            this.skiCoursePricing = pricing;
             this.cdr.markForCheck();
         });
     }
