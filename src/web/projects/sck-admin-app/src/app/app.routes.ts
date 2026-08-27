@@ -14,9 +14,10 @@ import { CourseRegistrationsOverviewComponent } from './tile-management/componen
 import { CourseRegistrationsComponent } from './tile-management/components/course-registrations/course-registrations.component';
 import { CourseTileEditRoutingDialogComponent } from './tile-management/components/course-tile-edit-routing-dialog/course-tile-edit-routing-dialog.component';
 import { CourseTileListComponent } from './tile-management/components/course-tile-list/course-tile-list.component';
+import { EventTileEditRoutingDialogComponent } from './tile-management/components/event-tile-edit-routing-dialog/event-tile-edit-routing-dialog.component';
 import { MediaManagementComponent } from './tile-management/components/media-management/media-management.component';
 import { RegistrationsOverviewComponent } from './tile-management/components/registrations-overview/registrations-overview.component';
-import { TileManagerComponent } from './tile-management/components/tile-manager/tile-manager.component';
+import { TileListComponent } from './tile-management/components/tile-list/tile-list.component';
 import { TripRegistrationsComponent } from './tile-management/components/trip-registrations/trip-registrations.component';
 import { TileManagementComponent } from './tile-management/tile-management.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -72,11 +73,7 @@ export const routes: Routes = [
         children: [
             {
                 path: 'tiles',
-                component: TileManagerComponent,
-            },
-            {
-                path: 'tiles/:id',
-                component: TileManagerComponent,
+                component: TileListComponent,
             },
             {
                 path: 'boardings',
@@ -172,7 +169,7 @@ export const routes: Routes = [
             title: 'Einstellungen',
             navLinks: [
                 { label: 'Allgemein', link: 'general' },
-                { label: 'Users', link: 'users' },
+                { label: 'Nutzerverwaltung', link: 'users' },
                 { label: 'Media', link: 'media' },
             ],
         },
@@ -223,6 +220,15 @@ export const routes: Routes = [
         outlet: 'modal',
         canActivate: [authGuard],
         data: { courseKind: 'ski' },
+    },
+    // Same pattern again for Ausfahrten (Event-Management) - the "hover
+    // like Sportkurse" panel this whole aux-route/MatDialog approach was
+    // built for in the first place.
+    {
+        path: 'event-bearbeiten/:id',
+        component: EventTileEditRoutingDialogComponent,
+        outlet: 'modal',
+        canActivate: [authGuard],
     },
     {
         path: '**',

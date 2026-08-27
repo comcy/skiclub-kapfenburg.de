@@ -1,0 +1,8 @@
+<div class="editor-toolbar">
+    <span class="title">{{ title }}</span>
+    <button mat-icon-button (click)="dialogRef.close(false)" aria-label="Schließen">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<app-tile-editor [tile]="data.tile" (tileSaved)="onSaved()"></app-tile-editor>

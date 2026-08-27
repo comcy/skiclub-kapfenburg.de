@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Tile } from '../../domain/tile';
 import { TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
-import { CourseTileChangesService } from '../../services/course-tile-changes.service';
+import { TileChangesService } from '../../services/tile-changes.service';
 import { PaginatedResponse } from '../../domain/paginated-response';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { CourseTileListComponent } from './course-tile-list.component';
@@ -39,7 +39,7 @@ describe('CourseTileListComponent', () => {
             providers: [
                 { provide: TilesDataService, useValue: dataServiceSpy },
                 { provide: Router, useValue: jasmine.createSpyObj<Router>('Router', ['navigate']) },
-                { provide: CourseTileChangesService, useValue: { changed$: of() } },
+                { provide: TileChangesService, useValue: { changed$: of() } },
                 { provide: AuthService, useValue: { hasPermission: () => true } },
                 { provide: ActivatedRoute, useValue: { snapshot: { data: { courseKind } } } },
             ],

@@ -5,13 +5,12 @@ import { Tile } from '../../domain/tile';
 import { TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
 import { TileChangesService } from '../../services/tile-changes.service';
 import { TilesDataService } from '../../services/tiles-data.service';
-import { CourseKind } from '../course-tile-list/course-tile-list.component';
-import { CourseTileEditDialogComponent } from '../course-tile-edit-dialog/course-tile-edit-dialog.component';
+import { EventTileEditDialogComponent } from '../event-tile-edit-dialog/event-tile-edit-dialog.component';
 
 const buildBlankTile = (): Tile => ({
     id: `new-${Date.now()}`,
     order: 0,
-    type: TileType.Course,
+    type: TileType.Event,
     title: '',
     date: new Date().toISOString(),
     subTitle: '',
@@ -24,56 +23,38 @@ const buildBlankTile = (): Tile => ({
     visible: true,
 });
 
-// Aux-route (outlet: 'modal') driven dialog opener - same pattern as
-// member-edit-routing-dialog.component.ts. :id is either a real tile id
-// (edit) or 'neu' (create). courseKind comes from the route's own `data`
-// (see app.routes.ts's sportkurs-bearbeiten/skikurs-bearbeiten entries) -
-// for a new Sportkurs, tile.course is seeded upfront here (replacing the
-// old "Dies ist ein Pilates-/Gymnastik-Kurs" checkbox); a new Ski-/
-// Snowboardkurs never gets it. tile.courseConfig is left unset - that's
-// TileEditorComponent.ngOnChanges()'s own job once it receives the tile.
+// Same aux-route (outlet: 'modal') pattern as course-tile-edit-routing-
+// dialog.component.ts, for Ausfahrten instead of Kurse - no courseKind to
+// resolve, just an event-type draft or an existing tile by id.
 @Component({
-    selector: 'app-course-tile-edit-routing-dialog',
+    selector: 'app-event-tile-edit-routing-dialog',
     standalone: true,
     template: '',
 })
-export class CourseTileEditRoutingDialogComponent implements OnInit {
+export class EventTileEditRoutingDialogComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
     private readonly dialog = inject(MatDialog);
     private readonly dataService = inject(TilesDataService);
-    private readonly courseTileChanges = inject(TileChangesService);
+    private readonly tileChanges = inject(TileChangesService);
 
     ngOnInit(): void {
         const id = this.route.snapshot.paramMap.get('id');
-        const courseKind = this.route.snapshot.data['courseKind'] as CourseKind;
 
         if (id && id !== 'neu') {
             this.dataService.getTile(id).subscribe({
-                next: (tile) => this.open(tile, courseKind),
+                next: (tile) => this.open(tile),
                 error: () => this.close(),
             });
             return;
         }
 
-        const tile = buildBlankTile();
-        if (courseKind === 'sport') {
-            tile.course = {
-                name: '',
-                description: '',
-                details: '',
-                time: '',
-                location: '',
-                contact: '',
-                prices: { member: '', nonMember: '' },
-            };
-        }
-        this.open(tile, courseKind);
+        this.open(buildBlankTile());
     }
 
-    private open(tile: Tile, courseKind: CourseKind): void {
-        const dialogRef = this.dialog.open(CourseTileEditDialogComponent, {
-            data: { tile, courseKind },
+    private open(tile: Tile): void {
+        const dialogRef = this.dialog.open(EventTileEditDialogComponent, {
+            data: { tile },
             panelClass: 'tile-dialog-panel',
             position: { top: '0', right: '0', bottom: '0' },
             width: '640px',
@@ -84,7 +65,7 @@ export class CourseTileEditRoutingDialogComponent implements OnInit {
             exitAnimationDuration: '150ms',
         });
         dialogRef.afterClosed().subscribe((changed: boolean | undefined) => {
-            if (changed) this.courseTileChanges.notifyChanged();
+            if (changed) this.tileChanges.notifyChanged();
             this.close();
         });
     }

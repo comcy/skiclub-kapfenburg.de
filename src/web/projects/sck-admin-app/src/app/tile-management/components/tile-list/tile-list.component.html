@@ -1,22 +1,22 @@
 <div class="container">
     <div class="header">
         @if (auth.hasPermission('tiles:write')) {
-            <button mat-raised-button color="primary" (click)="onCreate()">{{ createButtonLabel }}</button>
+            <button mat-raised-button color="primary" (click)="onCreate()">Event erstellen</button>
         }
     </div>
 
-    <div class="filters">
-        <mat-form-field appearance="outline">
-            <mat-label>Search</mat-label>
-            <input
-                matInput
-                [(ngModel)]="filterSearch"
-                (ngModelChange)="onFilterChange()"
-                placeholder="Title or Subtitle"
-            />
-        </mat-form-field>
+    <app-collapsible-filters>
+        <div class="filters">
+            <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
+                <input
+                    matInput
+                    [(ngModel)]="filterSearch"
+                    (ngModelChange)="onFilterChange()"
+                    placeholder="Title or Subtitle"
+                />
+            </mat-form-field>
 
-        @if (!fixedType) {
             <mat-form-field appearance="outline">
                 <mat-label>Type</mat-label>
                 <mat-select [(ngModel)]="filterType" (selectionChange)="onFilterChange()">
@@ -26,18 +26,18 @@
                     }
                 </mat-select>
             </mat-form-field>
-        }
 
-        <mat-form-field appearance="outline">
-            <mat-label>Status</mat-label>
-            <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
-                <mat-option value="">All</mat-option>
-                @for (status of tileStatuses; track status) {
-                    <mat-option [value]="status">{{ status }}</mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
-    </div>
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
+                    <mat-option value="">All</mat-option>
+                    @for (status of tileStatuses; track status) {
+                        <mat-option [value]="status">{{ status }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </app-collapsible-filters>
 
     <div class="table-container">
         <table
@@ -120,12 +120,7 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr
-                mat-row
-                *matRowDef="let row; columns: displayedColumns"
-                (click)="onEdit(row)"
-                [class.selected]="selectedTileId === row.id"
-            ></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onEdit(row)"></tr>
         </table>
     </div>
     <div class="paginator-container">

@@ -5,27 +5,29 @@
         }
     </div>
 
-    <div class="filters">
-        <mat-form-field appearance="outline">
-            <mat-label>Suche</mat-label>
-            <input
-                matInput
-                [(ngModel)]="filterSearch"
-                (ngModelChange)="onFilterChange()"
-                placeholder="Titel oder Untertitel"
-            />
-        </mat-form-field>
+    <app-collapsible-filters>
+        <div class="filters">
+            <mat-form-field appearance="outline">
+                <mat-label>Suche</mat-label>
+                <input
+                    matInput
+                    [(ngModel)]="filterSearch"
+                    (ngModelChange)="onFilterChange()"
+                    placeholder="Titel oder Untertitel"
+                />
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Status</mat-label>
-            <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
-                <mat-option value="">Alle</mat-option>
-                @for (status of tileStatuses; track status) {
-                    <mat-option [value]="status">{{ status }}</mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
-    </div>
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
+                    <mat-option value="">Alle</mat-option>
+                    @for (status of tileStatuses; track status) {
+                        <mat-option [value]="status">{{ status }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </app-collapsible-filters>
 
     <div class="table-container">
         <table mat-table [dataSource]="pagedTiles" class="mat-elevation-z8">

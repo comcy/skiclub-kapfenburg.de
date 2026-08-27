@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,8 +15,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AuthService } from '../../../auth/services/auth.service';
+import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
 import { Tile } from '../../domain/tile';
-import { TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
+import { TileStatus, TileType } from '../../domain/tile-enums';
+import { TileChangesService } from '../../services/tile-changes.service';
 import { TilesDataService } from '../../services/tiles-data.service';
 
 @Component({
@@ -33,6 +36,7 @@ import { TilesDataService } from '../../services/tiles-data.service';
         MatSelectModule,
         MatTooltipModule,
         RouterLink,
+        CollapsibleFiltersComponent,
         FormsModule,
     ],
     templateUrl: './tile-list.component.html',
@@ -43,14 +47,12 @@ export class TileListComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly tileChanges = inject(TileChangesService);
     public readonly auth = inject(AuthService);
 
-    @Output() tileSelected = new EventEmitter<Tile>();
-    @Input() selectedTileId: string | undefined;
-    // Locks this list to one tile type (e.g. the "Kurse" section, separate
-    // from the Ausfahrten/Tiles list) - hides the type filter and forces
-    // new tiles to this type instead of TileType.Event.
-    @Input() fixedType: TileType | undefined;
+    private readonly changesSubscription = this.tileChanges.changed$
+        .pipe(takeUntilDestroyed())
+        .subscribe(() => this.loadTiles());
 
     public tiles$!: Observable<Tile[]>;
     public totalItems = 0;
@@ -62,10 +64,6 @@ export class TileListComponent implements OnInit {
     public filterSearch = '';
     public filterType: string = '';
     public filterStatus: string = '';
-
-    public get createButtonLabel(): string {
-        return this.fixedType === TileType.Course ? 'Kurs erstellen' : 'Event erstellen';
-    }
 
     public readonly tileTypes = Object.values(TileType);
     public readonly tileStatuses = Object.values(TileStatus);
@@ -89,7 +87,7 @@ export class TileListComponent implements OnInit {
             this.sortField = params['sort'] || 'order';
             this.sortDirection = params['direction'] || 'asc';
             this.filterSearch = params['search'] || '';
-            this.filterType = this.fixedType ?? params['type'] ?? '';
+            this.filterType = params['type'] || '';
             this.filterStatus = params['status'] || '';
             this.loadTiles();
         });
@@ -97,9 +95,9 @@ export class TileListComponent implements OnInit {
 
     // Zoneless change detection (see app.config.ts) doesn't track a plain
     // HttpClient subscribe callback - loadTiles() is also called from
-    // onDelete()'s async callback and from the parent TileManagerComponent
-    // after a save, both outside any tracked context, so mark here to cover
-    // every call site uniformly.
+    // onDelete()'s async callback and from the TileChangesService
+    // subscription above (after the aux-routed dialog saves), both outside
+    // any tracked context, so mark here to cover every call site uniformly.
     loadTiles(): void {
         this.tiles$ = this.dataService
             .getTiles(
@@ -151,7 +149,7 @@ export class TileListComponent implements OnInit {
     }
 
     onEdit(tile: Tile): void {
-        this.tileSelected.emit(tile);
+        this.router.navigate([{ outlets: { modal: ['event-bearbeiten', tile.id] } }]);
     }
 
     onDelete(tile: Tile): void {
@@ -161,23 +159,6 @@ export class TileListComponent implements OnInit {
     }
 
     onCreate(): void {
-        const newTile: Tile = {
-            id: `new-${Date.now()}`,
-            order: 0,
-            // Event is the default type for the Ausfahrten/Tiles list -
-            // fixedType overrides this for a locked-type section (e.g. Kurse).
-            type: this.fixedType ?? TileType.Event,
-            title: 'New Tile',
-            date: new Date().toISOString(),
-            subTitle: '',
-            image: '',
-            imageDescription: '',
-            description: '',
-            status: TileStatus.Open,
-            expiration: new Date().toISOString(),
-            behavior: TileBehavior.View,
-            visible: true,
-        };
-        this.tileSelected.emit(newTile);
+        this.router.navigate([{ outlets: { modal: ['event-bearbeiten', 'neu'] } }]);
     }
 }

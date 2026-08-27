@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
-import { CourseTileChangesService } from '../../services/course-tile-changes.service';
+import { TileChangesService } from '../../services/tile-changes.service';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { CourseTileEditRoutingDialogComponent } from './course-tile-edit-routing-dialog.component';
 
@@ -23,7 +23,7 @@ describe('CourseTileEditRoutingDialogComponent', () => {
                     provide: TilesDataService,
                     useValue: jasmine.createSpyObj<TilesDataService>('TilesDataService', ['getTile']),
                 },
-                { provide: CourseTileChangesService, useValue: { notifyChanged: () => {} } },
+                { provide: TileChangesService, useValue: { notifyChanged: () => {} } },
                 {
                     provide: ActivatedRoute,
                     useValue: {

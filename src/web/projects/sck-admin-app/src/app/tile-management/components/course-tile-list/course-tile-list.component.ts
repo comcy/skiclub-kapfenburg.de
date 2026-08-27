@@ -12,9 +12,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
+import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
 import { Tile } from '../../domain/tile';
 import { TileStatus, TileType } from '../../domain/tile-enums';
-import { CourseTileChangesService } from '../../services/course-tile-changes.service';
+import { TileChangesService } from '../../services/tile-changes.service';
 import { TilesDataService } from '../../services/tiles-data.service';
 
 export type CourseKind = 'sport' | 'ski';
@@ -33,6 +34,7 @@ export type CourseKind = 'sport' | 'ski';
         MatSelectModule,
         MatPaginatorModule,
         MatTooltipModule,
+        CollapsibleFiltersComponent,
     ],
     templateUrl: './course-tile-list.component.html',
     styleUrls: ['./course-tile-list.component.scss'],
@@ -42,7 +44,7 @@ export class CourseTileListComponent implements OnInit {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
-    private readonly courseTileChanges = inject(CourseTileChangesService);
+    private readonly courseTileChanges = inject(TileChangesService);
     public readonly auth = inject(AuthService);
 
     // Set via route `data` (see app.routes.ts's course-management children)

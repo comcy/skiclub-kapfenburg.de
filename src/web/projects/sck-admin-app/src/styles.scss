@@ -109,21 +109,22 @@ body {
     z-index: 1000;
 }
 
-// Sportkurse/Ski-Snowboardkurse editor: a right-anchored, full-height
-// MatDialog (position:{top:0,right:0,bottom:0}, height:100vh) made to read
-// as a floating panel sliding in from the right rather than a centered
-// modal - the dialog's own backdrop already gives the "list fades behind
-// it" effect for free. panelClass has to be styled globally: the CDK
-// overlay it attaches to sits outside any component's view encapsulation.
-.course-tile-dialog-panel .mat-mdc-dialog-container {
+// Tile editor (Ausfahrten, Sportkurse, Ski-/Snowboardkurse): a right-
+// anchored, full-height MatDialog (position:{top:0,right:0,bottom:0},
+// height:100vh) made to read as a floating panel sliding in from the right
+// rather than a centered modal - the dialog's own backdrop already gives
+// the "list fades behind it" effect for free. panelClass has to be styled
+// globally: the CDK overlay it attaches to sits outside any component's
+// view encapsulation.
+.tile-dialog-panel .mat-mdc-dialog-container {
     border-radius: 0;
 }
-.course-tile-dialog-panel .mdc-dialog__surface {
+.tile-dialog-panel .mdc-dialog__surface {
     height: 100%;
     border-radius: 0;
-    animation: course-tile-dialog-slide-in 200ms ease-out;
+    animation: tile-dialog-slide-in 200ms ease-out;
 }
-@keyframes course-tile-dialog-slide-in {
+@keyframes tile-dialog-slide-in {
     from {
         transform: translateX(100%);
         opacity: 0;
