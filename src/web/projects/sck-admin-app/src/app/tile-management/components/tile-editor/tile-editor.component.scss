@@ -77,12 +77,6 @@
     &.two-columns {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
-
-    &.three-columns {
-        grid-template-columns: 2fr 1fr 1fr;
-        align-items: center;
-        gap: 8px 16px;
-    }
 }
 
 .section-title {
@@ -92,17 +86,10 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
-.pricing-header {
-    margin-bottom: -8px;
-}
-
-.pricing-col-label {
-    font-size: 12px;
+.hint-text {
     color: var(--mat-sys-on-surface-variant);
-}
-
-.pricing-row-label {
-    font-size: 14px;
+    font-size: 13px;
+    margin: -8px 0 0;
 }
 
 .preview-header {

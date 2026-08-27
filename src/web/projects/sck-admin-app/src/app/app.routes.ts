@@ -20,6 +20,7 @@ import { RegistrationsOverviewComponent } from './tile-management/components/reg
 import { TileListComponent } from './tile-management/components/tile-list/tile-list.component';
 import { TripRegistrationsComponent } from './tile-management/components/trip-registrations/trip-registrations.component';
 import { TileManagementComponent } from './tile-management/tile-management.component';
+import { PriceManagementComponent } from './settings/components/price-management/price-management.component';
 import { SettingsComponent } from './settings/settings.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 
@@ -170,6 +171,7 @@ export const routes: Routes = [
             navLinks: [
                 { label: 'Allgemein', link: 'general' },
                 { label: 'Nutzerverwaltung', link: 'users' },
+                { label: 'Preismanagement', link: 'preise' },
                 { label: 'Media', link: 'media' },
             ],
         },
@@ -181,6 +183,10 @@ export const routes: Routes = [
             {
                 path: 'users',
                 component: UserManagementComponent,
+            },
+            {
+                path: 'preise',
+                component: PriceManagementComponent,
             },
             {
                 path: 'media',

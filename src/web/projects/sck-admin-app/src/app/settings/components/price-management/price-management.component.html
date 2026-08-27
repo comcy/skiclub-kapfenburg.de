@@ -1,0 +1,163 @@
+@if (auth.hasPermission('tiles:write')) {
+    <div class="content-area">
+        <h3>Ski-/Snowboardkurse</h3>
+        <p class="hint-text">
+            Gilt für alle A1-F2-Kurse, unabhängig von der einzelnen Kachel. Nur die Preise ändern sich von Saison zu
+            Saison, die Einteilung bleibt gleich.
+        </p>
+
+        <mat-form-field appearance="outline" class="age-field">
+            <mat-label>Kinder bis (Jahre)</mat-label>
+            <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.childUntilAge" />
+        </mat-form-field>
+
+        <div class="form-grid three-columns pricing-header">
+            <span></span>
+            <span class="pricing-col-label">Mitglied</span>
+            <span class="pricing-col-label">Nicht-Mitglied</span>
+        </div>
+
+        <div class="form-grid three-columns">
+            <span class="pricing-row-label">Snowboard (6 Stunden) – Erwachsene</span>
+            <mat-form-field>
+                <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.snowboard.adult.member" />
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.snowboard.adult.nonMember" />
+            </mat-form-field>
+        </div>
+
+        <div class="form-grid three-columns">
+            <span class="pricing-row-label">Snowboard (6 Stunden) – Kinder</span>
+            <mat-form-field>
+                <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.snowboard.child.member" />
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.snowboard.child.nonMember" />
+            </mat-form-field>
+        </div>
+
+        <div class="form-grid three-columns">
+            <span class="pricing-row-label">Alpin (8 Stunden) – Erwachsene</span>
+            <mat-form-field>
+                <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.alpine.adult.member" />
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.alpine.adult.nonMember" />
+            </mat-form-field>
+        </div>
+
+        <div class="form-grid three-columns">
+            <span class="pricing-row-label">Alpin (8 Stunden) – Kinder</span>
+            <mat-form-field>
+                <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.alpine.child.member" />
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.alpine.child.nonMember" />
+            </mat-form-field>
+        </div>
+
+        <div class="actions">
+            <button mat-raised-button color="primary" (click)="onSaveSkiCoursePricing()">Speichern</button>
+            @if (isSkiCoursePricingSaved) {
+                <span class="saved-hint">Gespeichert.</span>
+            }
+        </div>
+
+        <h3>Ausfahrten mit Kursmöglichkeit</h3>
+        <p class="hint-text">
+            Wird automatisch jeder Ausfahrt hinzugefügt, die im Event-Management als "Ausfahrt mit Kursmöglichkeit"
+            markiert wurde. Bus+Lift und Nur Busfahrt gelten für jede Ausfahrt, die restlichen Zeilen nur für
+            kursmarkierte Ausfahrten.
+        </p>
+
+        @if (tripPricing.busLift) {
+            <div class="form-grid three-columns pricing-header">
+                <span></span>
+                <span class="pricing-col-label">Mitglied</span>
+                <span class="pricing-col-label">Nicht-Mitglied</span>
+            </div>
+
+            @for (category of ageCategories; track category) {
+                <div class="form-grid three-columns">
+                    <span class="pricing-row-label">Bus + Liftkarte — {{ ageCategoryLabels[category] }}</span>
+                    <mat-form-field>
+                        <input matInput type="number" min="0" [(ngModel)]="tripPricing.busLift![category].member" />
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput type="number" min="0" [(ngModel)]="tripPricing.busLift![category].nonMember" />
+                    </mat-form-field>
+                </div>
+            }
+
+            <div class="form-grid three-columns">
+                <span class="pricing-row-label">Nur Busfahrt</span>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.busOnly!.member" />
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.busOnly!.nonMember" />
+                </mat-form-field>
+            </div>
+
+            <div class="form-grid three-columns">
+                <span class="pricing-row-label">Anfängerkurs</span>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.courseBeginner!.member" />
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.courseBeginner!.nonMember" />
+                </mat-form-field>
+            </div>
+
+            <div class="form-grid three-columns">
+                <span class="pricing-row-label">Fortgeschrittenenkurs</span>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.courseAdvanced!.member" />
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.courseAdvanced!.nonMember" />
+                </mat-form-field>
+            </div>
+
+            <div class="form-grid three-columns">
+                <span class="pricing-row-label">Techniktraining (1/2 Tag)</span>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.technikHalf!.member" />
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.technikHalf!.nonMember" />
+                </mat-form-field>
+            </div>
+
+            <div class="form-grid three-columns">
+                <span class="pricing-row-label">Techniktraining (ganzer Tag)</span>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.technikFull!.member" />
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.technikFull!.nonMember" />
+                </mat-form-field>
+            </div>
+
+            <div class="form-grid three-columns">
+                <span class="pricing-row-label">Schneeschuhe</span>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.snowshoes!.member" />
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.snowshoes!.nonMember" />
+                </mat-form-field>
+            </div>
+        }
+
+        <div class="actions">
+            <button mat-raised-button color="primary" (click)="onSaveTripPricing()">Speichern</button>
+            @if (isTripPricingSaved) {
+                <span class="saved-hint">Gespeichert.</span>
+            }
+        </div>
+    </div>
+} @else {
+    <div class="no-access">Keine Berechtigung, Preise zu verwalten.</div>
+}

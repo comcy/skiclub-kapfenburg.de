@@ -3,6 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { NotificationBccSetting } from '../domain/notification-bcc-setting';
+import { SkiCoursePricingSetting } from '../domain/ski-course-pricing-setting';
+import { TripPricingSetting } from '../domain/trip-pricing-setting';
 
 @Injectable({
     providedIn: 'root',
@@ -17,5 +19,21 @@ export class SettingsDataService {
 
     updateNotificationBcc(setting: NotificationBccSetting): Observable<NotificationBccSetting> {
         return this.http.put<NotificationBccSetting>(`${this.apiUrl}/settings/notification-bcc`, setting);
+    }
+
+    getSkiCoursePricing(): Observable<SkiCoursePricingSetting> {
+        return this.http.get<SkiCoursePricingSetting>(`${this.apiUrl}/settings/ski-course-pricing`);
+    }
+
+    updateSkiCoursePricing(setting: SkiCoursePricingSetting): Observable<SkiCoursePricingSetting> {
+        return this.http.put<SkiCoursePricingSetting>(`${this.apiUrl}/settings/ski-course-pricing`, setting);
+    }
+
+    getTripPricing(): Observable<TripPricingSetting> {
+        return this.http.get<TripPricingSetting>(`${this.apiUrl}/settings/trip-pricing`);
+    }
+
+    updateTripPricing(setting: TripPricingSetting): Observable<TripPricingSetting> {
+        return this.http.put<TripPricingSetting>(`${this.apiUrl}/settings/trip-pricing`, setting);
     }
 }

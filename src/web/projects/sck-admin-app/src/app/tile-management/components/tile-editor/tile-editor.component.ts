@@ -24,7 +24,6 @@ import { Boarding } from '../../../boardings-management/domain/boarding';
 import { AuthService } from '../../../auth/services/auth.service';
 import { UsersDataService } from '../../../user-management/services/users-data.service';
 import { UserDirectoryEntry } from '../../../user-management/domain/user-directory-entry';
-import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-base';
 
 @Component({
     selector: 'app-tile-editor',
@@ -68,12 +67,6 @@ export class TileEditorComponent implements OnInit, OnChanges {
     public readonly tileStatus = Object.values(TileStatus);
     public readonly tileBehaviors = Object.values(TileBehavior);
     public readonly tileActions = Object.values(TileActions);
-    public readonly ageCategories: AgeCategory[] = ['adult', 'youthUntil16', 'childUntil6'];
-    public readonly ageCategoryLabels: Record<AgeCategory, string> = {
-        adult: 'Adult',
-        youthUntil16: 'Youth (up to 16)',
-        childUntil6: 'Child (up to 6)',
-    };
 
     ngOnInit(): void {
         // Load all boardings/users for the dropdowns (up to 1000)
@@ -85,7 +78,7 @@ export class TileEditorComponent implements OnInit, OnChanges {
         if (this.fixedType === TileType.Course) {
             this.ensureCourseConfigShape();
         } else {
-            this.ensurePricingShape();
+            this.ensureTripConfigShape();
         }
     }
 
@@ -126,32 +119,13 @@ export class TileEditorComponent implements OnInit, OnChanges {
             : undefined;
     }
 
-    // The pricing form binds directly to nested tripConfig.pricing.* paths,
-    // so every field it renders needs a real object to bind into - tripConfig
-    // is still opaque passthrough server-side (extra_json) and may be
-    // entirely absent on an existing tile that predates this editor section.
-    private ensurePricingShape(): void {
+    // The "Ausfahrt mit Kursmöglichkeit" checkbox binds into tripConfig -
+    // tripConfig is still opaque passthrough server-side (extra_json) and
+    // may be entirely absent on a brand-new event tile. Prices themselves
+    // are no longer edited per-tile, see Einstellungen → Preismanagement.
+    private ensureTripConfigShape(): void {
         if (!this.tile) return;
-        const zero = () => ({ member: 0, nonMember: 0 });
-        const pricing = this.tile.tripConfig?.pricing;
-        this.tile.tripConfig = {
-            ...this.tile.tripConfig,
-            pricing: {
-                busLift: {
-                    adult: pricing?.busLift?.adult ?? zero(),
-                    youthUntil16: pricing?.busLift?.youthUntil16 ?? zero(),
-                    childUntil6: pricing?.busLift?.childUntil6 ?? zero(),
-                },
-                busOnly: pricing?.busOnly ?? zero(),
-                addons: {
-                    snowshoes: pricing?.addons?.snowshoes ?? zero(),
-                    technikHalf: pricing?.addons?.technikHalf ?? zero(),
-                    technikFull: pricing?.addons?.technikFull ?? zero(),
-                    courseBeginner: pricing?.addons?.courseBeginner ?? zero(),
-                    courseAdvanced: pricing?.addons?.courseAdvanced ?? zero(),
-                },
-            },
-        };
+        this.tile.tripConfig = this.tile.tripConfig ?? {};
     }
 
     // tile.tripConfig.customBccList is a string[] (see trip-config.ts) - the
