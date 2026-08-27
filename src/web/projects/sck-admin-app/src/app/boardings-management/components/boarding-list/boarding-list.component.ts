@@ -1,7 +1,8 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
@@ -9,6 +10,7 @@ import { map, tap } from 'rxjs/operators';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Boarding } from '../../domain/boarding';
 import { BoardingsDataService } from '../../services/boardings-data.service';
+import { BoardingEditDialogComponent } from '../boarding-edit-dialog/boarding-edit-dialog.component';
 
 @Component({
     selector: 'app-boarding-list',
@@ -75,9 +77,8 @@ import { BoardingsDataService } from '../../services/boardings-data.service';
 export class BoardingListComponent implements OnInit {
     private readonly dataService = inject(BoardingsDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly dialog = inject(MatDialog);
     public readonly auth = inject(AuthService);
-
-    @Output() boardingSelected = new EventEmitter<Boarding>();
 
     public boardings$!: Observable<Boarding[]>;
     public displayedColumns: string[] = ['name', 'actions'];
@@ -108,12 +109,22 @@ export class BoardingListComponent implements OnInit {
     }
 
     onCreate(): void {
-        const newBoarding: Boarding = { id: '', name: '' };
-        this.boardingSelected.emit(newBoarding);
+        this.openEditor({ id: '', name: '' });
     }
 
     onEdit(boarding: Boarding): void {
-        this.boardingSelected.emit(boarding);
+        this.openEditor({ ...boarding });
+    }
+
+    private openEditor(boarding: Boarding): void {
+        const dialogRef = this.dialog.open(BoardingEditDialogComponent, {
+            data: { boarding },
+            width: '480px',
+            maxWidth: '95vw',
+        });
+        dialogRef.afterClosed().subscribe((changed: boolean | undefined) => {
+            if (changed) this.refresh();
+        });
     }
 
     onDelete(boarding: Boarding): void {

@@ -13,34 +13,25 @@ import { BoardingsDataService } from '../../services/boardings-data.service';
     imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
     template: `
         @if (boarding) {
-            <div>
-                <h3>{{ boarding.id ? 'Edit Boarding' : 'Create Boarding' }}</h3>
-
+            <div class="editor-form">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Name</mat-label>
                     <input matInput [(ngModel)]="boarding.name" placeholder="E.g. Westhausen Turnhalle (5:15 Uhr)" />
                 </mat-form-field>
-
-                <div class="actions">
-                    @if (auth.hasPermission('boardings:write')) {
-                        <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!boarding.name">
-                            Save
-                        </button>
-                    }
-                    <button mat-button (click)="onCancel()">Cancel</button>
-                </div>
             </div>
         }
     `,
     styles: [
         `
+            .editor-form {
+                // Material zeroes mat-dialog-content's padding-top right
+                // after mat-dialog-title (see member-editor.component.scss's
+                // identical rule), which otherwise clips an outline field's
+                // floated label at the very top.
+                padding-top: 8px;
+            }
             .full-width {
                 width: 100%;
-            }
-            .actions {
-                display: flex;
-                gap: 8px;
-                margin-top: 16px;
             }
         `,
     ],
@@ -48,11 +39,16 @@ import { BoardingsDataService } from '../../services/boardings-data.service';
 export class BoardingEditorComponent {
     @Input() boarding: Boarding | null = null;
     @Output() saved = new EventEmitter<void>();
-    @Output() cancelled = new EventEmitter<void>();
 
     private readonly dataService = inject(BoardingsDataService);
     private readonly cdr = inject(ChangeDetectorRef);
     public readonly auth = inject(AuthService);
+
+    // Read by the dialog's own Speichern button (outside this component, in
+    // the dialog shell's sticky actions area).
+    get canSave(): boolean {
+        return !!this.boarding?.name;
+    }
 
     // Zoneless change detection (see app.config.ts) doesn't track a plain
     // HttpClient subscribe callback - without markForCheck() the parent's
@@ -73,9 +69,5 @@ export class BoardingEditorComponent {
                 this.cdr.markForCheck();
             });
         }
-    }
-
-    onCancel(): void {
-        this.cancelled.emit();
     }
 }
