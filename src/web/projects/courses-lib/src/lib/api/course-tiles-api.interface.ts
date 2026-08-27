@@ -5,6 +5,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CourseConfig } from '../domain/models/course-config';
+import { SkiCoursePricing } from '../domain/models/ski-course-pricing';
 
 export interface ApiCoursePricesDto {
     member: string;
@@ -62,4 +63,8 @@ export interface ApiCourseTile {
 @Injectable()
 export abstract class CourseTilesApiServiceInterface {
     public abstract getAllCourseTiles(): Observable<ApiCourseTile[]>;
+    // Global, once-per-season ski-course prices (see sck-api's
+    // /settings/ski-course-pricing) - independent of which A1-F2 tile was
+    // clicked, consumed by CourseRegistrationFormComponent's price summary.
+    public abstract getSkiCoursePricing(): Observable<SkiCoursePricing>;
 }
