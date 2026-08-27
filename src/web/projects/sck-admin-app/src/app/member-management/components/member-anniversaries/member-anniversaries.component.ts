@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
+import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
 import { AnniversaryGroup, Member } from '../../domain/member';
 import { MembersDataService } from '../../services/members-data.service';
 
@@ -29,6 +30,7 @@ const toIsoDate = (date: Date): string => {
         MatIconModule,
         MatInputModule,
         MatDatepickerModule,
+        CollapsibleFiltersComponent,
     ],
     providers: [
         provideNativeDateAdapter(),

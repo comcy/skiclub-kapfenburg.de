@@ -1,19 +1,21 @@
 <div class="page">
     <h2>Jubiläen</h2>
 
-    <div class="filter-row">
-        <mat-form-field appearance="outline">
-            <mat-label>Stichtag</mat-label>
-            <input matInput [matDatepicker]="stichtagPicker" [(ngModel)]="stichtag" />
-            <mat-datepicker-toggle matIconSuffix [for]="stichtagPicker"></mat-datepicker-toggle>
-            <mat-datepicker #stichtagPicker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Jahre (kommagetrennt)</mat-label>
-            <input matInput placeholder="z. B. 25, 40" [(ngModel)]="yearsText" />
-        </mat-form-field>
-        <button mat-raised-button color="primary" [disabled]="isLoading" (click)="onSearch()">Anzeigen</button>
-    </div>
+    <app-collapsible-filters>
+        <div class="filter-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Stichtag</mat-label>
+                <input matInput [matDatepicker]="stichtagPicker" [(ngModel)]="stichtag" />
+                <mat-datepicker-toggle matIconSuffix [for]="stichtagPicker"></mat-datepicker-toggle>
+                <mat-datepicker #stichtagPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Jahre (kommagetrennt)</mat-label>
+                <input matInput placeholder="z. B. 25, 40" [(ngModel)]="yearsText" />
+            </mat-form-field>
+            <button mat-raised-button color="primary" [disabled]="isLoading" (click)="onSearch()">Anzeigen</button>
+        </div>
+    </app-collapsible-filters>
 
     <div class="results-area">
         @if (error) {

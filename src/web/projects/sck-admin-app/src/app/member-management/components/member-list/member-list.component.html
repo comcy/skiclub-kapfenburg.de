@@ -14,33 +14,40 @@
     }
 </div>
 
-<div class="filters">
-    <mat-form-field appearance="outline">
-        <mat-label>Suche</mat-label>
-        <input matInput [(ngModel)]="searchText" (ngModelChange)="onFilterChange()" placeholder="Name oder E-Mail" />
-        <mat-icon matIconSuffix>search</mat-icon>
-    </mat-form-field>
+<app-collapsible-filters>
+    <div class="filters">
+        <mat-form-field appearance="outline">
+            <mat-label>Suche</mat-label>
+            <input
+                matInput
+                [(ngModel)]="searchText"
+                (ngModelChange)="onFilterChange()"
+                placeholder="Name oder E-Mail"
+            />
+            <mat-icon matIconSuffix>search</mat-icon>
+        </mat-form-field>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
-            <mat-option value="">Alle</mat-option>
-            <mat-option value="active">Aktiv</mat-option>
-            <mat-option value="inactive">Inaktiv</mat-option>
-        </mat-select>
-    </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
+                <mat-option value="">Alle</mat-option>
+                <mat-option value="active">Aktiv</mat-option>
+                <mat-option value="inactive">Inaktiv</mat-option>
+            </mat-select>
+        </mat-form-field>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Quelle</mat-label>
-        <mat-select [(ngModel)]="filterSource" (selectionChange)="onFilterChange()">
-            <mat-option value="">Alle</mat-option>
-            <mat-option value="online">Online</mat-option>
-            <mat-option value="manual">Manuell</mat-option>
-            <mat-option value="paper">Papierform</mat-option>
-            <mat-option value="imported">Importiert</mat-option>
-        </mat-select>
-    </mat-form-field>
-</div>
+        <mat-form-field appearance="outline">
+            <mat-label>Quelle</mat-label>
+            <mat-select [(ngModel)]="filterSource" (selectionChange)="onFilterChange()">
+                <mat-option value="">Alle</mat-option>
+                <mat-option value="online">Online</mat-option>
+                <mat-option value="manual">Manuell</mat-option>
+                <mat-option value="paper">Papierform</mat-option>
+                <mat-option value="imported">Importiert</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</app-collapsible-filters>
 
 <div class="table-container">
     <table mat-table [dataSource]="pagedMembers" class="mat-elevation-z8">

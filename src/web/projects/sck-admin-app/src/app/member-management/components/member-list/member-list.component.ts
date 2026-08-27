@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
+import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
 import { Member } from '../../domain/member';
 import { MemberChangesService } from '../../services/member-changes.service';
 import { MembersDataService } from '../../services/members-data.service';
@@ -28,6 +29,7 @@ import { MembersDataService } from '../../services/members-data.service';
         MatInputModule,
         MatSelectModule,
         MatPaginatorModule,
+        CollapsibleFiltersComponent,
     ],
     templateUrl: './member-list.component.html',
     styleUrls: ['./member-list.component.scss'],
