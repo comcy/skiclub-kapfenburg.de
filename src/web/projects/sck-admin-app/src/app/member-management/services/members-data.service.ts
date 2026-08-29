@@ -7,6 +7,7 @@ import { MemberImportApplyResult, MemberImportCollisionOverride, MemberImportPre
 import { AnniversaryGroup, Member, MemberCreationParams } from '../domain/member';
 import { MembershipApplication } from '../domain/membership-application';
 import { NewsletterSignup } from '../domain/newsletter-signup';
+import { SepaExportCandidate, SepaExportPreview, SepaSequenceType } from '../domain/sepa-export';
 
 @Injectable({
     providedIn: 'root',
@@ -73,5 +74,21 @@ export class MembersDataService {
 
     deleteNewsletterSignup(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/newsletter/signups/${id}`);
+    }
+
+    getSepaExportCandidates(): Observable<SepaExportCandidate[]> {
+        return this.http.get<SepaExportCandidate[]>(`${this.apiUrl}/sepa-export/candidates`);
+    }
+
+    previewSepaExport(memberIds: string[]): Observable<SepaExportPreview> {
+        return this.http.post<SepaExportPreview>(`${this.apiUrl}/sepa-export/preview`, { memberIds });
+    }
+
+    generateSepaExport(memberIds: string[], executionDate: string, sequenceType: SepaSequenceType): Observable<Blob> {
+        return this.http.post(
+            `${this.apiUrl}/sepa-export/generate`,
+            { memberIds, executionDate, sequenceType },
+            { responseType: 'blob' },
+        );
     }
 }

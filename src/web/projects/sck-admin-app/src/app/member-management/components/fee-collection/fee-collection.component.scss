@@ -1,0 +1,99 @@
+// Routed into tile-management's flex shell, which clips (overflow: hidden)
+// rather than scrolls by design - see price-management.component.scss for
+// the same fix applied there.
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.content-area {
+    width: 100%;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.content-inner {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hint-text {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 13px;
+}
+
+.form-grid {
+    display: grid;
+    gap: 8px 16px;
+
+    &.two-columns {
+        grid-template-columns: 1fr 1fr;
+        max-width: 700px;
+    }
+}
+
+.sequence-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+table.mat-elevation-z8 {
+    max-width: 700px;
+    margin-bottom: 16px;
+}
+
+.ok-icon {
+    color: light-dark(#1e7d32, #8ee6a0);
+}
+
+.warn-icon {
+    color: light-dark(#b26a00, #ffb74d);
+}
+
+.preview-table {
+    border-collapse: collapse;
+    max-width: 900px;
+    margin-bottom: 16px;
+
+    th,
+    td {
+        text-align: left;
+        padding: 6px 12px;
+        border-bottom: 1px solid var(--mat-sys-outline-variant);
+        font-size: 13px;
+    }
+}
+
+.warnings {
+    color: light-dark(#b26a00, #ffb74d);
+    font-size: 13px;
+}
+
+.error-hint {
+    color: light-dark(#b3261e, #ff8a80);
+    font-size: 13px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 24px;
+}
+
+.saved-hint {
+    color: light-dark(#1e7d32, #8ee6a0);
+    font-size: 13px;
+}
+
+.no-access {
+    padding: 32px;
+    color: var(--mat-sys-on-surface-variant);
+}

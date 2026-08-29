@@ -8,6 +8,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ApplicationListComponent } from './member-management/components/application-list/application-list.component';
 import { MemberAnniversariesComponent } from './member-management/components/member-anniversaries/member-anniversaries.component';
 import { MemberEditRoutingDialogComponent } from './member-management/components/member-edit-routing-dialog/member-edit-routing-dialog.component';
+import { FeeCollectionComponent } from './member-management/components/fee-collection/fee-collection.component';
 import { MemberNewsletterComponent } from './member-management/components/member-newsletter/member-newsletter.component';
 import { MemberManagementComponent } from './member-management/member-management.component';
 import { CourseRegistrationsOverviewComponent } from './tile-management/components/course-registrations-overview/course-registrations-overview.component';
@@ -137,6 +138,7 @@ export const routes: Routes = [
                 { label: 'Anträge', link: 'antraege' },
                 { label: 'Jubiläen', link: 'jubilaeen' },
                 { label: 'Newsletter', link: 'newsletter' },
+                { label: 'Beitragseinzug', link: 'beitragseinzug' },
             ],
         },
         children: [
@@ -155,6 +157,10 @@ export const routes: Routes = [
             {
                 path: 'newsletter',
                 component: MemberNewsletterComponent,
+            },
+            {
+                path: 'beitragseinzug',
+                component: FeeCollectionComponent,
             },
             {
                 path: '',

@@ -1,0 +1,181 @@
+@if (auth.hasPermission('sepa:export')) {
+    <div class="content-area">
+        <div class="content-inner">
+            <p class="hint-text">
+                Erzeugt eine SEPA-Sammellastschrift-Datei (pain.008) zum Import ins Online-Banking.
+                Familienmitgliedschaften (gleiche Familien-Gruppe) werden zu einer Lastschrift zusammengefasst und vom
+                ersten Mitglied mit hinterlegter IBAN abgebucht - Mitglieder ohne IBAN werden übersprungen und als
+                Warnung angezeigt.
+            </p>
+
+            <h3>SEPA-Gläubiger</h3>
+            <div class="form-grid two-columns">
+                <mat-form-field appearance="outline">
+                    <mat-label>Gläubiger-Name</mat-label>
+                    <input matInput [(ngModel)]="creditor.creditorName" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Gläubiger-ID</mat-label>
+                    <input matInput [(ngModel)]="creditor.creditorId" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Vereins-IBAN</mat-label>
+                    <input matInput [(ngModel)]="creditor.iban" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Vereins-BIC (optional)</mat-label>
+                    <input matInput [(ngModel)]="creditor.bic" />
+                </mat-form-field>
+            </div>
+            <div class="actions">
+                <button mat-raised-button color="primary" (click)="onSaveCreditor()">Speichern</button>
+                @if (isCreditorSaved) {
+                    <span class="saved-hint">Gespeichert.</span>
+                }
+            </div>
+
+            <h3>Beitragshöhen (jährlich)</h3>
+            <div class="form-grid two-columns">
+                <mat-form-field appearance="outline">
+                    <mat-label>Einzelmitgliedschaft (€)</mat-label>
+                    <input matInput type="number" min="0" [(ngModel)]="fees.individual" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Familienmitgliedschaft (€, pro Familie)</mat-label>
+                    <input matInput type="number" min="0" [(ngModel)]="fees.family" />
+                </mat-form-field>
+            </div>
+            <div class="actions">
+                <button mat-raised-button color="primary" (click)="onSaveFees()">Speichern</button>
+                @if (isFeeSaved) {
+                    <span class="saved-hint">Gespeichert.</span>
+                }
+            </div>
+
+            <h3>Mitgliedsauswahl</h3>
+            <div class="actions">
+                <button mat-stroked-button (click)="selectAll()">Alle auswählen</button>
+                <button mat-stroked-button (click)="selectNone()">Alle abwählen</button>
+                <span class="hint-text">{{ selectedIds.size }} von {{ candidates.length }} ausgewählt</span>
+            </div>
+
+            <table mat-table [dataSource]="candidates" class="mat-elevation-z8">
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let candidate">
+                        <mat-checkbox
+                            [checked]="isSelected(candidate.id)"
+                            (change)="toggleSelected(candidate.id)"
+                        ></mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let candidate">{{ candidate.firstName }} {{ candidate.lastName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="familyGroup">
+                    <th mat-header-cell *matHeaderCellDef>Familiengruppe</th>
+                    <td mat-cell *matCellDef="let candidate">{{ candidate.familyGroupId || '—' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="iban">
+                    <th mat-header-cell *matHeaderCellDef>IBAN</th>
+                    <td mat-cell *matCellDef="let candidate">
+                        @if (candidate.hasIban) {
+                            <mat-icon class="ok-icon">check_circle</mat-icon>
+                        } @else {
+                            <mat-icon class="warn-icon" matTooltip="Keine IBAN hinterlegt">warning</mat-icon>
+                        }
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="candidateColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: candidateColumns"></tr>
+            </table>
+
+            <h3>Export-Parameter</h3>
+            <div class="form-grid two-columns">
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Fälligkeitsdatum</mat-label>
+                        <input matInput [matDatepicker]="executionDatePicker" [(ngModel)]="executionDate" />
+                        <mat-datepicker-toggle matIconSuffix [for]="executionDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #executionDatePicker></mat-datepicker>
+                    </mat-form-field>
+                    @if (executionDate) {
+                        <!-- Freitext-Eingabe wie "01.11.2026" ist mehrdeutig (Tag/Monat-Reihenfolge) -
+                             diese Bestätigung zeigt das tatsächlich erkannte Datum, bevor Geld bewegt wird. -->
+                        <p class="hint-text date-confirm">
+                            Gewähltes Datum: <strong>{{ executionDate | date: 'dd.MM.yyyy' }}</strong>
+                        </p>
+                    }
+                </div>
+
+                <mat-radio-group [(ngModel)]="sequenceType" class="sequence-group">
+                    <mat-radio-button value="FRST">Erstlastschrift (FRST)</mat-radio-button>
+                    <mat-radio-button value="RCUR">Folgelastschrift (RCUR)</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <p class="hint-text">
+                Übliche Vorlaufzeiten (bankabhängig): Erstlastschrift mind. 5 Bankarbeitstage, Folgelastschrift mind. 2
+                Bankarbeitstage vor dem Fälligkeitsdatum.
+            </p>
+
+            <div class="actions">
+                <button mat-stroked-button [disabled]="!selectedIds.size" (click)="onPreview()">
+                    Vorschau berechnen
+                </button>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    [disabled]="!selectedIds.size || !executionDate || isGenerating"
+                    (click)="onDownload()"
+                >
+                    <mat-icon>download</mat-icon>
+                    SEPA-XML herunterladen
+                </button>
+            </div>
+
+            @if (errorMessage) {
+                <p class="error-hint">{{ errorMessage }}</p>
+            }
+
+            @if (preview) {
+                <h3>Vorschau</h3>
+                @if (preview.warnings.length) {
+                    <ul class="warnings">
+                        @for (warning of preview.warnings; track warning) {
+                            <li>{{ warning }}</li>
+                        }
+                    </ul>
+                }
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Zahler</th>
+                            <th>IBAN</th>
+                            <th>Betrag</th>
+                            <th>Mandatsreferenz</th>
+                            <th>Unterschriftsdatum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (t of preview.transactions; track t.memberId) {
+                            <tr>
+                                <td>{{ t.payerName }}{{ t.familyGroupId ? ' (Familie)' : '' }}</td>
+                                <td>{{ t.ibanMasked }}</td>
+                                <td>{{ t.amount | currency: 'EUR' }}</td>
+                                <td>{{ t.mandateReference }}</td>
+                                <td>{{ t.mandateSignatureDate | date: 'shortDate' }}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+} @else {
+    <div class="no-access">Keine Berechtigung, den SEPA-Beitragseinzug zu verwalten.</div>
+}
