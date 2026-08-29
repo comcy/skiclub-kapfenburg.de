@@ -74,7 +74,7 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS permissions (
     user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     permission TEXT NOT NULL CHECK (
-      permission IN ('tiles:write', 'boardings:write', 'users:manage', 'members:manage')
+      permission IN ('tiles:write', 'boardings:write', 'users:manage', 'members:manage', 'sepa:export')
     ),
     granted_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     granted_by TEXT,
@@ -262,15 +262,15 @@ if (!tileColumns.some((c) => c.name === 'organizer_user_id')) {
 }
 
 // SQLite can't ALTER a CHECK constraint, so an already-existing permissions
-// table (from before 'members:manage' existed) needs a full rebuild to
-// accept it — guarded by inspecting the table's stored CREATE TABLE SQL
-// rather than trying an insert and catching the failure.
+// table (from before 'members:manage'/'sepa:export' existed) needs a full
+// rebuild to accept it — guarded by inspecting the table's stored CREATE
+// TABLE SQL rather than trying an insert and catching the failure.
 const permissionsTableSql = (
   db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'permissions'").get() as
     | { sql: string }
     | undefined
 )?.sql;
-if (permissionsTableSql && !permissionsTableSql.includes('members:manage')) {
+if (permissionsTableSql && !permissionsTableSql.includes('sepa:export')) {
   // Build the replacement under a temp name and rename IT into place,
   // rather than renaming "permissions" away - see the members rebuild
   // below for why the naive rename-old/create-new order is a trap.
@@ -279,7 +279,7 @@ if (permissionsTableSql && !permissionsTableSql.includes('members:manage')) {
     CREATE TABLE permissions_rebuilt (
       user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
       permission TEXT NOT NULL CHECK (
-        permission IN ('tiles:write', 'boardings:write', 'users:manage', 'members:manage')
+        permission IN ('tiles:write', 'boardings:write', 'users:manage', 'members:manage', 'sepa:export')
       ),
       granted_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       granted_by TEXT,

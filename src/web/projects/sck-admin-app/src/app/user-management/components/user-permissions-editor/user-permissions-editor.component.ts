@@ -11,6 +11,7 @@ const PERMISSION_OPTIONS: { value: Permission; label: string }[] = [
     { value: 'boardings:write', label: 'Fahrgemeinschaften bearbeiten' },
     { value: 'users:manage', label: 'Nutzer verwalten' },
     { value: 'members:manage', label: 'Mitglieder verwalten' },
+    { value: 'sepa:export', label: 'SEPA-Beitragseinzug exportieren' },
 ];
 
 @Component({
@@ -33,6 +34,7 @@ export class UserPermissionsEditorComponent implements OnChanges {
         'boardings:write': false,
         'users:manage': false,
         'members:manage': false,
+        'sepa:export': false,
     };
 
     ngOnChanges(): void {
@@ -41,6 +43,7 @@ export class UserPermissionsEditorComponent implements OnChanges {
             'boardings:write': !!this.user?.permissions.includes('boardings:write'),
             'users:manage': !!this.user?.permissions.includes('users:manage'),
             'members:manage': !!this.user?.permissions.includes('members:manage'),
+            'sepa:export': !!this.user?.permissions.includes('sepa:export'),
         };
     }
 
