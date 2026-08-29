@@ -7,9 +7,13 @@ import {
   MAIL_TEMPLATE_SETTING_KEY,
   MailTemplateSettings,
   MailTemplateText,
+  MEMBERSHIP_FEE_SETTING_KEY,
+  MembershipFeeSettings,
   NOTIFICATION_BCC_SETTING_KEY,
   NotificationBccSetting,
   PriceByMembership,
+  SEPA_CREDITOR_SETTING_KEY,
+  SepaCreditorSettings,
   SKI_COURSE_PRICING_SETTING_KEY,
   SkiCoursePricing,
   TRIP_PRICING_SETTING_KEY,
@@ -163,5 +167,72 @@ export const updateMailTemplateSettings: RequestHandler = (req, res) => {
   } catch (error: any) {
     console.error('Fehler beim Speichern der Mailtexte:', error);
     res.status(500).json({ error: 'Fehler beim Speichern der Mailtexte.' });
+  }
+};
+
+const EMPTY_SEPA_CREDITOR: SepaCreditorSettings = { creditorName: '', creditorId: '', iban: '' };
+
+const isSepaCreditorSettings = (body: unknown): body is SepaCreditorSettings => {
+  if (typeof body !== 'object' || body === null) return false;
+  const value = body as SepaCreditorSettings;
+  return (
+    typeof value.creditorName === 'string' &&
+    typeof value.creditorId === 'string' &&
+    typeof value.iban === 'string' &&
+    (value.bic === undefined || typeof value.bic === 'string')
+  );
+};
+
+export const getSepaCreditorSettings: RequestHandler = (_req, res) => {
+  try {
+    res.status(200).json(getSetting<SepaCreditorSettings>(SEPA_CREDITOR_SETTING_KEY) ?? EMPTY_SEPA_CREDITOR);
+  } catch (error: any) {
+    console.error('Fehler beim Laden der SEPA-Gläubiger-Daten:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der SEPA-Gläubiger-Daten.' });
+  }
+};
+
+export const updateSepaCreditorSettings: RequestHandler = (req, res) => {
+  try {
+    if (!isSepaCreditorSettings(req.body)) {
+      res.status(400).json({ error: 'Ungültige SEPA-Gläubiger-Struktur.' });
+      return;
+    }
+    setSetting<SepaCreditorSettings>(SEPA_CREDITOR_SETTING_KEY, req.body);
+    res.status(200).json(req.body);
+  } catch (error: any) {
+    console.error('Fehler beim Speichern der SEPA-Gläubiger-Daten:', error);
+    res.status(500).json({ error: 'Fehler beim Speichern der SEPA-Gläubiger-Daten.' });
+  }
+};
+
+const EMPTY_MEMBERSHIP_FEE: MembershipFeeSettings = { individual: 0, family: 0 };
+
+const isMembershipFeeSettings = (body: unknown): body is MembershipFeeSettings =>
+  typeof body === 'object' &&
+  body !== null &&
+  typeof (body as MembershipFeeSettings).individual === 'number' &&
+  typeof (body as MembershipFeeSettings).family === 'number';
+
+export const getMembershipFeeSettings: RequestHandler = (_req, res) => {
+  try {
+    res.status(200).json(getSetting<MembershipFeeSettings>(MEMBERSHIP_FEE_SETTING_KEY) ?? EMPTY_MEMBERSHIP_FEE);
+  } catch (error: any) {
+    console.error('Fehler beim Laden der Mitgliedsbeiträge:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der Mitgliedsbeiträge.' });
+  }
+};
+
+export const updateMembershipFeeSettings: RequestHandler = (req, res) => {
+  try {
+    if (!isMembershipFeeSettings(req.body)) {
+      res.status(400).json({ error: 'Ungültige Mitgliedsbeitrags-Struktur.' });
+      return;
+    }
+    setSetting<MembershipFeeSettings>(MEMBERSHIP_FEE_SETTING_KEY, req.body);
+    res.status(200).json(req.body);
+  } catch (error: any) {
+    console.error('Fehler beim Speichern der Mitgliedsbeiträge:', error);
+    res.status(500).json({ error: 'Fehler beim Speichern der Mitgliedsbeiträge.' });
   }
 };

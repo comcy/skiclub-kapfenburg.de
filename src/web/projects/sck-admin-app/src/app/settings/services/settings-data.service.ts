@@ -3,7 +3,9 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MailTemplateSettings } from '../domain/mail-template-setting';
+import { MembershipFeeSetting } from '../domain/membership-fee-setting';
 import { NotificationBccSetting } from '../domain/notification-bcc-setting';
+import { SepaCreditorSetting } from '../domain/sepa-creditor-setting';
 import { SkiCoursePricingSetting } from '../domain/ski-course-pricing-setting';
 import { TripPricingSetting } from '../domain/trip-pricing-setting';
 
@@ -44,5 +46,21 @@ export class SettingsDataService {
 
     updateMailTemplates(setting: MailTemplateSettings): Observable<MailTemplateSettings> {
         return this.http.put<MailTemplateSettings>(`${this.apiUrl}/settings/mail-templates`, setting);
+    }
+
+    getSepaCreditor(): Observable<SepaCreditorSetting> {
+        return this.http.get<SepaCreditorSetting>(`${this.apiUrl}/settings/sepa-creditor`);
+    }
+
+    updateSepaCreditor(setting: SepaCreditorSetting): Observable<SepaCreditorSetting> {
+        return this.http.put<SepaCreditorSetting>(`${this.apiUrl}/settings/sepa-creditor`, setting);
+    }
+
+    getMembershipFee(): Observable<MembershipFeeSetting> {
+        return this.http.get<MembershipFeeSetting>(`${this.apiUrl}/settings/membership-fee`);
+    }
+
+    updateMembershipFee(setting: MembershipFeeSetting): Observable<MembershipFeeSetting> {
+        return this.http.put<MembershipFeeSetting>(`${this.apiUrl}/settings/membership-fee`, setting);
     }
 }

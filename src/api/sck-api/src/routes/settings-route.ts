@@ -5,11 +5,15 @@
 import { Router } from 'express';
 import {
   getMailTemplateSettings,
+  getMembershipFeeSettings,
   getNotificationBccSetting,
+  getSepaCreditorSettings,
   getSkiCoursePricingSetting,
   getTripPricingSetting,
   updateMailTemplateSettings,
+  updateMembershipFeeSettings,
   updateNotificationBccSetting,
+  updateSepaCreditorSettings,
   updateSkiCoursePricingSetting,
   updateTripPricingSetting,
 } from '../controllers/settings-controller.js';
@@ -48,5 +52,14 @@ router.put(
   requirePermission('tiles:write'),
   updateMailTemplateSettings,
 );
+
+// Admin-only, both directions - unlike the settings above, nothing on the
+// public site ever needs the club's Gläubiger-ID/creditor account or the
+// membership fee amounts.
+router.get('/settings/sepa-creditor', requireAuth, requirePermission('sepa:export'), getSepaCreditorSettings);
+router.put('/settings/sepa-creditor', requireAuth, requirePermission('sepa:export'), updateSepaCreditorSettings);
+
+router.get('/settings/membership-fee', requireAuth, requirePermission('sepa:export'), getMembershipFeeSettings);
+router.put('/settings/membership-fee', requireAuth, requirePermission('sepa:export'), updateMembershipFeeSettings);
 
 export default router;

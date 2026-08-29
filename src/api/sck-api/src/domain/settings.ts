@@ -64,3 +64,26 @@ export interface MailTemplateSettings {
   trip: TripMailTemplateText;
   gym: MailTemplateText;
 }
+
+export const SEPA_CREDITOR_SETTING_KEY = 'sepa-creditor';
+
+// The club's own SEPA creditor identity for direct debit collection -
+// admin-only (unlike pricing/mail-templates, the public site never needs
+// this). The IBAN here isn't secret - it's the same account already shown
+// publicly for course fee transfers - but the Gläubiger-ID and this
+// account's role as a collection target are treasurer-only concerns.
+export interface SepaCreditorSettings {
+  creditorName: string;
+  creditorId: string;
+  iban: string;
+  bic?: string;
+}
+
+export const MEMBERSHIP_FEE_SETTING_KEY = 'membership-fee';
+
+// Two fixed tiers - one shared amount per family group, not per family
+// member (see sepa-export-service.ts for the grouping logic).
+export interface MembershipFeeSettings {
+  individual: number;
+  family: number;
+}
