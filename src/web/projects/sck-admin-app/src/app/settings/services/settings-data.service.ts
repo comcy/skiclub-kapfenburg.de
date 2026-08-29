@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { MailTemplateSettings } from '../domain/mail-template-setting';
 import { NotificationBccSetting } from '../domain/notification-bcc-setting';
 import { SkiCoursePricingSetting } from '../domain/ski-course-pricing-setting';
 import { TripPricingSetting } from '../domain/trip-pricing-setting';
@@ -35,5 +36,13 @@ export class SettingsDataService {
 
     updateTripPricing(setting: TripPricingSetting): Observable<TripPricingSetting> {
         return this.http.put<TripPricingSetting>(`${this.apiUrl}/settings/trip-pricing`, setting);
+    }
+
+    getMailTemplates(): Observable<MailTemplateSettings> {
+        return this.http.get<MailTemplateSettings>(`${this.apiUrl}/settings/mail-templates`);
+    }
+
+    updateMailTemplates(setting: MailTemplateSettings): Observable<MailTemplateSettings> {
+        return this.http.put<MailTemplateSettings>(`${this.apiUrl}/settings/mail-templates`, setting);
     }
 }
