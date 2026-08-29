@@ -10,14 +10,14 @@ import { renderTemplate } from './template-engine';
 
 // Editable in Admin > Einstellungen > Mailtexte. Placeholders available here:
 // {{firstName}}, {{lastName}}, {{courseName}}, {{courseDate}}, {{priceMember}}, {{priceNonMember}}, {{additionalText}}
-const DEFAULT_GYM_INTRO_HTML = `<p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung.</p>
+export const DEFAULT_GYM_INTRO_HTML = `<p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung.</p>
 <p>Bitte prüfe die folgenden Daten auf Richtigkeit und beachte unsere nachstehenden Informationen und Teilnahmebedingungen.
     <br>
     <br>
     Solltest du Fehler in deinen Daten entdeckt haben oder sind dir die Teilnahmebedingungen noch nicht ganz klar, melde dich gerne bei uns. Du kannst direkt auf diese E-Mail antworten. Im Falle einer Stornierung verwende bitte ebenfalls diese Mail als Referenz.
     Wir kümmern uns umgehend um die Änderungen und setzen uns mit dir in Verbindung.</p>`;
 
-const DEFAULT_GYM_TERMS_HTML = `<h2>Aktuelle Teilnahmebedingungen</h2>
+export const DEFAULT_GYM_TERMS_HTML = `<h2>Aktuelle Teilnahmebedingungen</h2>
 
 <h3>Gültigkeit der Anmeldung, Anzahlung und Stornierung</h3>
 <ul>
@@ -39,7 +39,7 @@ const DEFAULT_GYM_TERMS_HTML = `<h2>Aktuelle Teilnahmebedingungen</h2>
 <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/gymnastik" style="color: #0073e6; text-decoration: none;">Kursinformation</a>
 </p>`;
 
-const DEFAULT_GYM_SIGNATURE_HTML = `<p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
+export const DEFAULT_GYM_SIGNATURE_HTML = `<p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
 <p style="margin: 0; font-weight: bold; font-size: 16px;">Das Team des Skiclub Kapfenburg e.V.</p>
 
 <div style="font-size: 14px;"></div>

@@ -11,12 +11,12 @@ import { TripRegisterFormValue } from 'projects/trips-lib/src/lib/ui/trips-regis
 
 // Editable in Admin > Einstellungen > Mailtexte. Placeholders available here:
 // {{firstName}}, {{destination}}, {{date}}, {{totalPrice}}, {{additionalText}}
-const DEFAULT_TRIP_INTRO_HTML = `<p>
+export const DEFAULT_TRIP_INTRO_HTML = `<p>
     wir freuen uns über eure Anmeldung! Bitte prüfe die folgenden Daten auf Richtigkeit.
 </p>`;
 
 // Additional placeholders: {{waitlistGroupText}} ("1 Person"/"2 Personen"), {{waitlistPosition}}
-const DEFAULT_TRIP_WAITLIST_HTML = `<div style="margin-bottom: 16px; padding: 16px; border: 1px solid #f5c400; border-radius: 8px; background-color: #fff8e1;">
+export const DEFAULT_TRIP_WAITLIST_HTML = `<div style="margin-bottom: 16px; padding: 16px; border: 1px solid #f5c400; border-radius: 8px; background-color: #fff8e1;">
     <strong>Du stehst aktuell auf der Warteliste.</strong><br>
     Diese Ausfahrt ist bereits ausgebucht. Deine Anmeldung wurde als Gruppe mit
     {{waitlistGroupText}}
@@ -24,7 +24,7 @@ const DEFAULT_TRIP_WAITLIST_HTML = `<div style="margin-bottom: 16px; padding: 16
     Solltest du nachrücken, melden wir uns bei dir.
 </div>`;
 
-const DEFAULT_TRIP_TERMS_HTML = `<h2>Aktuelle Teilnahmebedingungen</h2>
+export const DEFAULT_TRIP_TERMS_HTML = `<h2>Aktuelle Teilnahmebedingungen</h2>
 
 <h3>Gültigkeit der Anmeldung und Stornierung</h3>
 <ul>
@@ -48,7 +48,7 @@ const DEFAULT_TRIP_TERMS_HTML = `<h2>Aktuelle Teilnahmebedingungen</h2>
 <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/trips/information" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Ausfahrten</a>
 </p>`;
 
-const DEFAULT_TRIP_SIGNATURE_HTML = `<p style="margin-top: 30px;">Schöne Grüße,<br><strong>Dein Team vom Skiclub Kapfenburg e.V.</strong></p>`;
+export const DEFAULT_TRIP_SIGNATURE_HTML = `<p style="margin-top: 30px;">Schöne Grüße,<br><strong>Dein Team vom Skiclub Kapfenburg e.V.</strong></p>`;
 
 export const getTripConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.

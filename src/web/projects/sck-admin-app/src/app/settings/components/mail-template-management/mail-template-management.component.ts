@@ -4,9 +4,25 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {
+    DEFAULT_COURSE_INTRO_HTML,
+    DEFAULT_COURSE_SIGNATURE_HTML,
+    DEFAULT_COURSE_TERMS_HTML,
+} from 'projects/data/mail-templates/course-confirmation-mail.function';
+import {
+    DEFAULT_GYM_INTRO_HTML,
+    DEFAULT_GYM_SIGNATURE_HTML,
+    DEFAULT_GYM_TERMS_HTML,
+} from 'projects/data/mail-templates/pilates-confirmation-mail.function';
 // Reuses the exact substitution logic the public site uses to send these
 // mails, so the preview can never drift from what a subscriber actually gets.
 import { renderTemplate } from 'projects/data/mail-templates/template-engine';
+import {
+    DEFAULT_TRIP_INTRO_HTML,
+    DEFAULT_TRIP_SIGNATURE_HTML,
+    DEFAULT_TRIP_TERMS_HTML,
+    DEFAULT_TRIP_WAITLIST_HTML,
+} from 'projects/data/mail-templates/trip-confirmation-mail.function';
 import { AuthService } from '../../../auth/services/auth.service';
 import { MailTemplateSettings } from '../../domain/mail-template-setting';
 import { SettingsDataService } from '../../services/settings-data.service';
@@ -85,9 +101,34 @@ export class MailTemplateManagementComponent implements OnInit {
 
     ngOnInit(): void {
         this.dataService.getMailTemplates().subscribe((settings) => {
-            this.mailTemplates = settings;
+            this.mailTemplates = this.withDefaults(settings);
             this.cdr.markForCheck();
         });
+    }
+
+    // Pre-fills empty fields with the text that's actually live right now
+    // (the hardcoded DEFAULT_*_HTML the mail functions fall back to) instead
+    // of showing blank textareas - an admin editing this for the first time
+    // needs to see and tweak the current wording, not start from nothing.
+    private withDefaults(settings: MailTemplateSettings): MailTemplateSettings {
+        return {
+            course: {
+                introHtml: settings.course.introHtml || DEFAULT_COURSE_INTRO_HTML,
+                termsHtml: settings.course.termsHtml || DEFAULT_COURSE_TERMS_HTML,
+                signatureHtml: settings.course.signatureHtml || DEFAULT_COURSE_SIGNATURE_HTML,
+            },
+            trip: {
+                introHtml: settings.trip.introHtml || DEFAULT_TRIP_INTRO_HTML,
+                waitlistHtml: settings.trip.waitlistHtml || DEFAULT_TRIP_WAITLIST_HTML,
+                termsHtml: settings.trip.termsHtml || DEFAULT_TRIP_TERMS_HTML,
+                signatureHtml: settings.trip.signatureHtml || DEFAULT_TRIP_SIGNATURE_HTML,
+            },
+            gym: {
+                introHtml: settings.gym.introHtml || DEFAULT_GYM_INTRO_HTML,
+                termsHtml: settings.gym.termsHtml || DEFAULT_GYM_TERMS_HTML,
+                signatureHtml: settings.gym.signatureHtml || DEFAULT_GYM_SIGNATURE_HTML,
+            },
+        };
     }
 
     // Kept as a function (not inlined `{{ '{{' + p.token + '}}' }}` in the

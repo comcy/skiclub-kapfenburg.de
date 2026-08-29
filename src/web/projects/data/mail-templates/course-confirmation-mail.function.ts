@@ -9,9 +9,9 @@ import { renderTemplate } from './template-engine';
 
 // Editable in Admin > Einstellungen > Mailtexte. Placeholders available here:
 // {{firstName}}, {{lastName}}, {{sportType}}, {{level}}, {{birthday}}, {{email}}, {{phone}}, {{additionalText}}
-const DEFAULT_COURSE_INTRO_HTML = `<p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung zum Kurs "{{sportType}}".</p>`;
+export const DEFAULT_COURSE_INTRO_HTML = `<p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung zum Kurs "{{sportType}}".</p>`;
 
-const DEFAULT_COURSE_TERMS_HTML = `<h2>Allgemeine Informationen und Hinweise</h2>
+export const DEFAULT_COURSE_TERMS_HTML = `<h2>Allgemeine Informationen und Hinweise</h2>
 
 <h3>Kurse</h3>
 <ol>
@@ -38,7 +38,7 @@ const DEFAULT_COURSE_TERMS_HTML = `<h2>Allgemeine Informationen und Hinweise</h2
 <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/courses" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Kurse</a>
 </p>`;
 
-const DEFAULT_COURSE_SIGNATURE_HTML = `<p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
+export const DEFAULT_COURSE_SIGNATURE_HTML = `<p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
 <p style="margin: 0; font-weight: bold; font-size: 16px;">Das Team des Skiclub Kapfenburg e.V.</p>
 
 
