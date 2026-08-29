@@ -1,9 +1,22 @@
+// Routed into tile-management's flex shell, which clips (overflow: hidden)
+// rather than scrolls by design - this component must establish its own
+// bounded, scrollable region or its content just gets cut off.
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
 .content-area {
     padding: 16px;
     max-width: 1100px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    overflow-y: auto;
+    min-height: 0;
 }
 
 .hint-text {
