@@ -4,9 +4,11 @@
 
 import { Router } from 'express';
 import {
+  getMailTemplateSettings,
   getNotificationBccSetting,
   getSkiCoursePricingSetting,
   getTripPricingSetting,
+  updateMailTemplateSettings,
   updateNotificationBccSetting,
   updateSkiCoursePricingSetting,
   updateTripPricingSetting,
@@ -37,5 +39,14 @@ router.put(
 // Public - the public site merges this into every "Ausfahrt mit Kursmöglichkeit" tile.
 router.get('/settings/trip-pricing', publicReadLimiter, getTripPricingSetting);
 router.put('/settings/trip-pricing', requireAuth, requirePermission('tiles:write'), updateTripPricingSetting);
+
+// Public - the public site renders the confirmation mails from this.
+router.get('/settings/mail-templates', publicReadLimiter, getMailTemplateSettings);
+router.put(
+  '/settings/mail-templates',
+  requireAuth,
+  requirePermission('tiles:write'),
+  updateMailTemplateSettings,
+);
 
 export default router;

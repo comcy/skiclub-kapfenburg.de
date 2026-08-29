@@ -186,3 +186,60 @@ describe('Settings Routes - Ausfahrten-Preise', () => {
     expect(res.status).toBe(400);
   });
 });
+
+const VALID_MAIL_TEMPLATES = {
+  course: { introHtml: '<p>Kurs-Intro</p>', termsHtml: '<p>Kurs-Bedingungen</p>', signatureHtml: '<p>Team</p>' },
+  trip: {
+    introHtml: '<p>Ausfahrt-Intro</p>',
+    termsHtml: '<p>Ausfahrt-Bedingungen</p>',
+    signatureHtml: '<p>Team</p>',
+    waitlistHtml: '<p>Warteliste</p>',
+  },
+  gym: { introHtml: '<p>Gym-Intro</p>', termsHtml: '<p>Gym-Bedingungen</p>', signatureHtml: '<p>Team</p>' },
+};
+
+describe('Settings Routes - Mailtexte', () => {
+  it('GET /api/settings/mail-templates - ist öffentlich, leer wenn nichts gesetzt', async () => {
+    const res = await request(app).get('/api/settings/mail-templates');
+    expect(res.status).toBe(200);
+    expect(res.body.course).toEqual({ introHtml: '', termsHtml: '', signatureHtml: '' });
+    expect(res.body.trip).toEqual({ introHtml: '', termsHtml: '', signatureHtml: '', waitlistHtml: '' });
+  });
+
+  it('PUT /api/settings/mail-templates - erfordert Anmeldung', async () => {
+    const res = await request(app).put('/api/settings/mail-templates').send(VALID_MAIL_TEMPLATES);
+    expect(res.status).toBe(401);
+  });
+
+  it('PUT /api/settings/mail-templates - erfordert tiles:write', async () => {
+    const token = createAuthedUser(['members:manage']);
+    const res = await request(app)
+      .put('/api/settings/mail-templates')
+      .set('Authorization', `Bearer ${token}`)
+      .send(VALID_MAIL_TEMPLATES);
+    expect(res.status).toBe(403);
+  });
+
+  it('speichert und liest die Mailtexte mit tiles:write', async () => {
+    const token = createAuthedUser(['tiles:write']);
+
+    const putRes = await request(app)
+      .put('/api/settings/mail-templates')
+      .set('Authorization', `Bearer ${token}`)
+      .send(VALID_MAIL_TEMPLATES);
+    expect(putRes.status).toBe(200);
+
+    const getRes = await request(app).get('/api/settings/mail-templates');
+    expect(getRes.status).toBe(200);
+    expect(getRes.body).toEqual(VALID_MAIL_TEMPLATES);
+  });
+
+  it('lehnt eine ungültige Mailtext-Struktur mit 400 ab', async () => {
+    const token = createAuthedUser(['tiles:write']);
+    const res = await request(app)
+      .put('/api/settings/mail-templates')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ course: { introHtml: '<p>x</p>' } });
+    expect(res.status).toBe(400);
+  });
+});

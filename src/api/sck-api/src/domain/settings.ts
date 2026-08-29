@@ -42,3 +42,25 @@ export interface TripPricing {
     courseAdvanced?: PriceByMembership;
   };
 }
+
+export const MAIL_TEMPLATE_SETTING_KEY = 'mail-templates';
+
+// Editable prose blocks only - price tables, participant rendering and the
+// waitlist branch stay in code (mail-templates/*.function.ts). Empty string
+// means "not configured yet", the frontend falls back to its built-in
+// default text for that field (see DEFAULT_*_HTML in the .function.ts files).
+export interface MailTemplateText {
+  introHtml: string;
+  termsHtml: string;
+  signatureHtml: string;
+}
+
+export interface TripMailTemplateText extends MailTemplateText {
+  waitlistHtml: string;
+}
+
+export interface MailTemplateSettings {
+  course: MailTemplateText;
+  trip: TripMailTemplateText;
+  gym: MailTemplateText;
+}

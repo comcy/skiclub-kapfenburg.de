@@ -4,12 +4,16 @@
 
 import { RequestHandler } from 'express';
 import {
+  MAIL_TEMPLATE_SETTING_KEY,
+  MailTemplateSettings,
+  MailTemplateText,
   NOTIFICATION_BCC_SETTING_KEY,
   NotificationBccSetting,
   PriceByMembership,
   SKI_COURSE_PRICING_SETTING_KEY,
   SkiCoursePricing,
   TRIP_PRICING_SETTING_KEY,
+  TripMailTemplateText,
   TripPricing,
 } from '../domain/settings.js';
 import { getSetting, setSetting } from '../services/settings-service.js';
@@ -112,5 +116,52 @@ export const updateTripPricingSetting: RequestHandler = (req, res) => {
   } catch (error: any) {
     console.error('Fehler beim Speichern der Ausfahrten-Preise:', error);
     res.status(500).json({ error: 'Fehler beim Speichern der Ausfahrten-Preise.' });
+  }
+};
+
+const EMPTY_MAIL_TEMPLATE_TEXT: MailTemplateText = { introHtml: '', termsHtml: '', signatureHtml: '' };
+
+const EMPTY_MAIL_TEMPLATE_SETTINGS: MailTemplateSettings = {
+  course: EMPTY_MAIL_TEMPLATE_TEXT,
+  trip: { ...EMPTY_MAIL_TEMPLATE_TEXT, waitlistHtml: '' },
+  gym: EMPTY_MAIL_TEMPLATE_TEXT,
+};
+
+const isMailTemplateText = (value: unknown): value is MailTemplateText =>
+  typeof value === 'object' &&
+  value !== null &&
+  typeof (value as MailTemplateText).introHtml === 'string' &&
+  typeof (value as MailTemplateText).termsHtml === 'string' &&
+  typeof (value as MailTemplateText).signatureHtml === 'string';
+
+const isTripMailTemplateText = (value: unknown): value is TripMailTemplateText =>
+  isMailTemplateText(value) && typeof (value as TripMailTemplateText).waitlistHtml === 'string';
+
+const isMailTemplateSettings = (body: unknown): body is MailTemplateSettings => {
+  if (typeof body !== 'object' || body === null) return false;
+  const value = body as MailTemplateSettings;
+  return isMailTemplateText(value.course) && isTripMailTemplateText(value.trip) && isMailTemplateText(value.gym);
+};
+
+export const getMailTemplateSettings: RequestHandler = (_req, res) => {
+  try {
+    res.status(200).json(getSetting<MailTemplateSettings>(MAIL_TEMPLATE_SETTING_KEY) ?? EMPTY_MAIL_TEMPLATE_SETTINGS);
+  } catch (error: any) {
+    console.error('Fehler beim Laden der Mailtexte:', error);
+    res.status(500).json({ error: 'Fehler beim Laden der Mailtexte.' });
+  }
+};
+
+export const updateMailTemplateSettings: RequestHandler = (req, res) => {
+  try {
+    if (!isMailTemplateSettings(req.body)) {
+      res.status(400).json({ error: 'Ungültige Mailtext-Struktur.' });
+      return;
+    }
+    setSetting<MailTemplateSettings>(MAIL_TEMPLATE_SETTING_KEY, req.body);
+    res.status(200).json(req.body);
+  } catch (error: any) {
+    console.error('Fehler beim Speichern der Mailtexte:', error);
+    res.status(500).json({ error: 'Fehler beim Speichern der Mailtexte.' });
   }
 };
