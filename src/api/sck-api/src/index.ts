@@ -15,6 +15,7 @@ import membersRoutes from './routes/members-route.js';
 import newsletterRoutes from './routes/newsletter-route.js';
 import registrationRoutes from './routes/registration-route.js';
 import membershipRoutes from './routes/membership-route.js';
+import sepaExportRoutes from './routes/sepa-export-route.js';
 import settingsRoutes from './routes/settings-route.js';
 import tilesRoutes from './routes/tiles-route.js';
 import tripRegistrationsRoutes from './routes/trip-registrations-route.js';
@@ -49,6 +50,7 @@ app.use('/api', tripRegistrationsRoutes);
 app.use('/api', courseRegistrationsRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', newsletterRoutes);
+app.use('/api', sepaExportRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

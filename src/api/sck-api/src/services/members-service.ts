@@ -81,6 +81,15 @@ export const listMembers = (page: number, limit: number): PaginatedResponse<Memb
   return { items: rows.map(rowToMember), total };
 };
 
+// Unpaginated, unlike listMembers() - the SEPA export needs every active
+// member at once to build its selection list (sepa-export-service.ts).
+export const listActiveMembers = (): Member[] =>
+  (
+    db
+      .prepare("SELECT * FROM members WHERE status = 'active' ORDER BY last_name, first_name")
+      .all() as unknown as MemberRow[]
+  ).map(rowToMember);
+
 export const getMember = (id: string): Member | undefined => {
   const row = db.prepare('SELECT * FROM members WHERE id = ?').get(id) as MemberRow | undefined;
   return row ? rowToMember(row) : undefined;
