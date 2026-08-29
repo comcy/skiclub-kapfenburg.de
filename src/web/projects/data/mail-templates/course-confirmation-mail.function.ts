@@ -3,7 +3,52 @@
  */
 
 import { CourseRegisterFormFields } from 'projects/courses-lib/src/lib/ui/course-registration-form';
+import { getMailTemplateSettings } from '../mail-template-settings-store';
 import { getGlobalBccList } from '../notification-settings-store';
+import { renderTemplate } from './template-engine';
+
+// Editable in Admin > Einstellungen > Mailtexte. Placeholders available here:
+// {{firstName}}, {{lastName}}, {{sportType}}, {{level}}, {{birthday}}, {{email}}, {{phone}}, {{additionalText}}
+const DEFAULT_COURSE_INTRO_HTML = `<p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung zum Kurs "{{sportType}}".</p>`;
+
+const DEFAULT_COURSE_TERMS_HTML = `<h2>Allgemeine Informationen und Hinweise</h2>
+
+<h3>Kurse</h3>
+<ol>
+    <li>Bei geeigneter Wetterlage wirst du telefonisch mit allen nötigen Information benachrichtigt (das kann teilweise sehr kurzfristig passieren, da wir auf Wetteränderungen reagieren müssen)</li>
+    <li>Bei geeigneter Wetterlage finden die Kurse bei uns im heimischen Gelände (Skilift an der Kapfenburg) statt.</li>
+    <li>Lässt es die Wetterlage im heimischen Gelände nicht zu, bieten wir spezielle Kursausfahrten mit Kursen an:
+        <ul>
+            <li><b>Trainingstag ins Allgäu (09. Januar 2027)</b></li>
+            <li><b>Tagesausfahrt nach Ehrwald (23. Januar 2027)</b></li>
+        </ul>
+        <p style="color: #e60f00; font-weight: bold;">Wichtig: Hierzu muss eine Anmeldung zur jeweiligen Ausfahrt erfolgen, diese Registrierung reicht dazu nicht aus!</p>
+    </li>
+</ol>
+
+<h3>Preise</h3>
+<ul>
+    <li>Die aktuell gültigen Preise findest du auf unserer <a href="https://www.skiclub-kapfenburg.de/courses">Website</a></li>
+
+<p style="color: #0073e6; font-weight: bold;">Unsere Mitglieder erhalten vergünstigte Konditionen auf Kurse und Ausfahrten. Schon ein Kinderjahresbeitrag bringt ein echtes Ersparnis. Unseren Mitgliedsantrag findest du
+    <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: underline;">
+        hier.
+    </a>
+</p>
+<p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/courses" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Kurse</a>
+</p>`;
+
+const DEFAULT_COURSE_SIGNATURE_HTML = `<p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
+<p style="margin: 0; font-weight: bold; font-size: 16px;">Das Team des Skiclub Kapfenburg e.V.</p>
+
+
+<div style="font-size: 14px;"></div>
+<p style="margin: 15px 0 0 0;">Unseren Mitgliedsantrag findest du hier:</p>
+<p style="margin: 0;">
+    <a href="https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA" style="color: #0073e6; text-decoration: none;">
+        > Mitglied werden
+    </a>
+</p>`;
 
 export const getCourseConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
@@ -28,12 +73,27 @@ export const getCourseConfirmationMailBcc = (values: CourseRegisterFormFields): 
 };
 
 export const getCourseConfirmationMailText = (values: CourseRegisterFormFields): string => {
+    const placeholders: Record<string, string> = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        sportType: values.sportType,
+        level: values.level,
+        birthday: values.birthday,
+        email: values.email,
+        phone: values.phone,
+        additionalText: values.additionalText ?? '',
+    };
+    const cfg = getMailTemplateSettings()?.course;
+    const introHtml = renderTemplate(cfg?.introHtml || DEFAULT_COURSE_INTRO_HTML, placeholders);
+    const termsHtml = renderTemplate(cfg?.termsHtml || DEFAULT_COURSE_TERMS_HTML, placeholders);
+    const signatureHtml = renderTemplate(cfg?.signatureHtml || DEFAULT_COURSE_SIGNATURE_HTML, placeholders);
+
     return `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding-top: 8px; padding-bottom: 16px;">
             <h1 style="color: #0073e6;">${values.sportType} - Deine Anmeldung beim Skiclub Kapfenburg e.V.</h1>
             <p>Hallo ${values.firstName},</p>
-            
-            <p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung zum Kurs "${values.sportType}".</p>
+
+            ${introHtml}
 
             <p>Wir haben folgende Daten registriert:</p>
 
@@ -60,46 +120,10 @@ export const getCourseConfirmationMailText = (values: CourseRegisterFormFields):
             
             
             <div style="background-color: #f7f7f7; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0;">
-
-                <h2>Allgemeine Informationen und Hinweise</h2>
-                
-                <h3>Kurse</h3>
-                <ol>
-                    <li>Bei geeigneter Wetterlage wirst du telefonisch mit allen nötigen Information benachrichtigt (das kann teilweise sehr kurzfristig passieren, da wir auf Wetteränderungen reagieren müssen)</li>
-                    <li>Bei geeigneter Wetterlage finden die Kurse bei uns im heimischen Gelände (Skilift an der Kapfenburg) statt.</li>
-                    <li>Lässt es die Wetterlage im heimischen Gelände nicht zu, bieten wir spezielle Kursausfahrten mit Kursen an:
-                        <ul>
-                            <li><b>Trainingstag ins Allgäu (09. Januar 2027)</b></li>
-                            <li><b>Tagesausfahrt nach Ehrwald (23. Januar 2027)</b></li>
-                        </ul>
-                        <p style="color: #e60f00; font-weight: bold;">Wichtig: Hierzu muss eine Anmeldung zur jeweiligen Ausfahrt erfolgen, diese Registrierung reicht dazu nicht aus!</p>
-                    </li>
-                </ol>
-                
-                <h3>Preise</h3>
-                <ul>
-                    <li>Die aktuell gültigen Preise findest du auf unserer <a href="https://www.skiclub-kapfenburg.de/courses">Website</a></li>
-
-                <p style="color: #0073e6; font-weight: bold;">Unsere Mitglieder erhalten vergünstigte Konditionen auf Kurse und Ausfahrten. Schon ein Kinderjahresbeitrag bringt ein echtes Ersparnis. Unseren Mitgliedsantrag findest du 
-                    <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: underline;">
-                        hier. 
-                    </a>
-                </p>
-                <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/courses" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Kurse</a>
-                </p>
+                ${termsHtml}
             </div>
-            
-            <p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
-            <p style="margin: 0; font-weight: bold; font-size: 16px;">Das Team des Skiclub Kapfenburg e.V.</p>
-            
-            
-            <div style="font-size: 14px;"></div>
-            <p style="margin: 15px 0 0 0;">Unseren Mitgliedsantrag findest du hier:</p>
-            <p style="margin: 0;">
-                <a href="https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA" style="color: #0073e6; text-decoration: none;">
-                    > Mitglied werden
-                </a>
-            </p>
+
+            ${signatureHtml}
 
             <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
             <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert. Solltest du Fragen oder Probleme mit der Darstellung dieser E-Mail haben, nehme bitte baldmöglichst Kontakt mit uns auf.</small>

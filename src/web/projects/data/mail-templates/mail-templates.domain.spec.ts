@@ -2,8 +2,14 @@ import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-co
 import { CourseRegisterFormFields } from 'projects/courses-lib/src/lib/ui/course-registration-form/course-registration-form.interfaces';
 import { TripParticipant } from 'projects/trips-lib/src/lib/domain/models';
 import { TripRegisterFormValue } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
-import { getCourseConfirmationMailBcc, getCourseConfirmationMailSubject } from './course-confirmation-mail.function';
+import { setMailTemplateSettings } from '../mail-template-settings-store';
+import {
+    getCourseConfirmationMailBcc,
+    getCourseConfirmationMailSubject,
+    getCourseConfirmationMailText,
+} from './course-confirmation-mail.function';
 import { getGymConfirmationMailBcc, getGymConfirmationMailSubject } from './pilates-confirmation-mail.function';
+import { renderTemplate } from './template-engine';
 import {
     getTripConfirmationMailBcc,
     getTripConfirmationMailSubject,
@@ -116,6 +122,81 @@ describe('Mail Template Domain Logic', () => {
             });
 
             expect(getTripConfirmationMailText(values)).toContain('1 Person');
+        });
+    });
+
+    describe('renderTemplate', () => {
+        it('substitutes known tokens and leaves unknown ones untouched', () => {
+            expect(renderTemplate('Hallo {{firstName}}, {{unknown}}!', { firstName: 'Anna' })).toBe(
+                'Hallo Anna, {{unknown}}!',
+            );
+        });
+    });
+
+    describe('admin-editable mail template overrides', () => {
+        const EMPTY_TEXT = { introHtml: '', termsHtml: '', signatureHtml: '' };
+
+        afterEach(() => {
+            // Reset the module-level cache so later tests in this file see the
+            // hardcoded DEFAULT_*_HTML fallback again, not a leaked override.
+            setMailTemplateSettings({ course: EMPTY_TEXT, trip: { ...EMPTY_TEXT, waitlistHtml: '' }, gym: EMPTY_TEXT });
+        });
+
+        it('uses the admin-configured course intro text with placeholders substituted, once set', () => {
+            setMailTemplateSettings({
+                course: { ...EMPTY_TEXT, introHtml: '<p>Willkommen {{firstName}}, Kurs {{sportType}}!</p>' },
+                trip: { ...EMPTY_TEXT, waitlistHtml: '' },
+                gym: EMPTY_TEXT,
+            });
+
+            const course: CourseRegisterFormFields = {
+                firstName: 'Anna',
+                lastName: 'Test',
+                sportType: 'Snowboard',
+                email: 'anna@example.com',
+                phone: '456',
+                birthday: '01.01.2015 (10)',
+                isMember: false,
+                additionalText: '',
+                level: 'Beginner',
+            };
+
+            const text = getCourseConfirmationMailText(course);
+            expect(text).toContain('Willkommen Anna, Kurs Snowboard!');
+            expect(text).not.toContain('wir freuen uns, dass dir unser Angebot gefällt');
+        });
+
+        it('falls back to the hardcoded default intro text when nothing is configured (empty string)', () => {
+            const course: CourseRegisterFormFields = {
+                firstName: 'Anna',
+                lastName: 'Test',
+                sportType: 'Snowboard',
+                email: 'anna@example.com',
+                phone: '456',
+                birthday: '01.01.2015 (10)',
+                isMember: false,
+                additionalText: '',
+                level: 'Beginner',
+            };
+
+            expect(getCourseConfirmationMailText(course)).toContain('wir freuen uns, dass dir unser Angebot gefällt');
+        });
+
+        it('substitutes waitlistGroupText/waitlistPosition in an admin-configured waitlist text', () => {
+            setMailTemplateSettings({
+                course: EMPTY_TEXT,
+                trip: {
+                    ...EMPTY_TEXT,
+                    waitlistHtml: '<p>Warteliste: {{waitlistGroupText}} auf Platz {{waitlistPosition}}</p>',
+                },
+                gym: EMPTY_TEXT,
+            });
+
+            const values = makeTripValue({
+                waitlistInfo: { status: 'waitlist', waitlistPosition: 5, waitlistCount: 3 },
+            });
+
+            expect(getTripConfirmationMailText(values)).toContain('Warteliste: 3 Personen auf Platz 5');
         });
     });
 });

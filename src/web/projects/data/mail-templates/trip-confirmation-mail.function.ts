@@ -2,10 +2,53 @@
  * @copyright Copyright (c) 2024 Christian Silfang
  */
 
+import { getMailTemplateSettings } from '../mail-template-settings-store';
 import { getGlobalBccList } from '../notification-settings-store';
+import { renderTemplate } from './template-engine';
 import { calculateAge, formatDateByLocale } from 'projects/shared-lib/src/lib/date-time';
 import { TripParticipant } from 'projects/trips-lib/src/lib/domain/models';
 import { TripRegisterFormValue } from 'projects/trips-lib/src/lib/ui/trips-registration-form/trips-registration-form.interfaces';
+
+// Editable in Admin > Einstellungen > Mailtexte. Placeholders available here:
+// {{firstName}}, {{destination}}, {{date}}, {{totalPrice}}, {{additionalText}}
+const DEFAULT_TRIP_INTRO_HTML = `<p>
+    wir freuen uns über eure Anmeldung! Bitte prüfe die folgenden Daten auf Richtigkeit.
+</p>`;
+
+// Additional placeholders: {{waitlistGroupText}} ("1 Person"/"2 Personen"), {{waitlistPosition}}
+const DEFAULT_TRIP_WAITLIST_HTML = `<div style="margin-bottom: 16px; padding: 16px; border: 1px solid #f5c400; border-radius: 8px; background-color: #fff8e1;">
+    <strong>Du stehst aktuell auf der Warteliste.</strong><br>
+    Diese Ausfahrt ist bereits ausgebucht. Deine Anmeldung wurde als Gruppe mit
+    {{waitlistGroupText}}
+    auf Position {{waitlistPosition}} der Warteliste eingetragen.
+    Solltest du nachrücken, melden wir uns bei dir.
+</div>`;
+
+const DEFAULT_TRIP_TERMS_HTML = `<h2>Aktuelle Teilnahmebedingungen</h2>
+
+<h3>Gültigkeit der Anmeldung und Stornierung</h3>
+<ul>
+    <li>Die Anmeldung ist mit dem Absenden dieses Formulars gültig. Die Kosten werden vollständig bar im Bus am Tag der Ausfahrt eingesammelt.</li>
+    <li>Anmeldeschluss sowie die Möglichkeit zur Stornierung der Anmeldung besteht bis zum Dienstag vor der Ausfahrt.</li>
+    <li>Im Falle einer kurzfristigen Absage oder eines Nichterscheinens behalten wir uns vor, den Buspreis in Rechnung zu stellen</li>
+</ul>
+
+<h3>Teilnahme von Minderjährigen</h3>
+<ul>
+    <li>Für Minderjährige Teilnehmer besteht immer Helmpflicht, insbesondere bei Kursteilnahme</li>
+    <li>Minderjährige Teilnehmer unter 18 Jahren, aber über 16 Jahren müssen ohne erziehungsberechtigte Begleitung eine Einverständniserklärung (bspw. mittels <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: none;">
+        "Einverständniserklärung U18"</a>) der Eltern <span style="text-decoration: underline;">vor Reiseantritt per E-Mail</span> vorlegen</li>
+    <li>Minderjährige Teilnehmer unter 16 Jahren können nur in Begleitung einer erziehungsberechtigten Person oder einer vom Erziehungsberechtigten bestimmten Aufsichtsperson an den Ausfahrten teilnehmen.
+        Wir bestehen auf eine schrifliche Mitteilung (bspw. mittels SCK-Vordruck <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: none;">
+            "Übetragung Aufsichtspflicht")
+        </a><span style="text-decoration: underline;">vor Reiseantritt per E-Mail</span></li>
+</ul>
+
+<p style="color: #e60f00; font-weight: bold;">Die Teilnahme geschieht immer auf eigene Gefahr!</p>
+<p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/trips/information" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Ausfahrten</a>
+</p>`;
+
+const DEFAULT_TRIP_SIGNATURE_HTML = `<p style="margin-top: 30px;">Schöne Grüße,<br><strong>Dein Team vom Skiclub Kapfenburg e.V.</strong></p>`;
 
 export const getTripConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
@@ -164,6 +207,29 @@ export const getTripConfirmationMailText = (values: TripRegisterFormValue): stri
         totalPrice += calculateParticipantPrice(p, values);
     });
 
+    const placeholders: Record<string, string> = {
+        firstName: contactPerson.firstName,
+        destination: values.trip.destination,
+        date: values.trip.date,
+        totalPrice: formatCurrency(totalPrice),
+        additionalText: values.additionalText ?? '',
+    };
+    const cfg = getMailTemplateSettings()?.trip;
+    const termsHtml = renderTemplate(cfg?.termsHtml || DEFAULT_TRIP_TERMS_HTML, placeholders);
+    const signatureHtml = renderTemplate(cfg?.signatureHtml || DEFAULT_TRIP_SIGNATURE_HTML, placeholders);
+
+    const introOrWaitlistHtml =
+        values.waitlistInfo?.status === 'waitlist'
+            ? renderTemplate(cfg?.waitlistHtml || DEFAULT_TRIP_WAITLIST_HTML, {
+                  ...placeholders,
+                  waitlistGroupText:
+                      values.waitlistInfo.waitlistCount === 1
+                          ? '1 Person'
+                          : `${values.waitlistInfo.waitlistCount} Personen`,
+                  waitlistPosition: `${values.waitlistInfo.waitlistPosition}`,
+              })
+            : renderTemplate(cfg?.introHtml || DEFAULT_TRIP_INTRO_HTML, placeholders);
+
     return `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding: 20px; background-color: #f4f4f4;">
             
@@ -179,23 +245,7 @@ export const getTripConfirmationMailText = (values: TripRegisterFormValue): stri
 
                 <p>Hallo ${contactPerson.firstName},</p>
 
-                ${
-                    values.waitlistInfo?.status === 'waitlist'
-                        ? `
-                            <div style="margin-bottom: 16px; padding: 16px; border: 1px solid #f5c400; border-radius: 8px; background-color: #fff8e1;">
-                                <strong>Du stehst aktuell auf der Warteliste.</strong><br>
-                                Diese Ausfahrt ist bereits ausgebucht. Deine Anmeldung wurde als Gruppe mit
-                                ${values.waitlistInfo.waitlistCount === 1 ? '1 Person' : `${values.waitlistInfo.waitlistCount} Personen`}
-                                auf Position ${values.waitlistInfo.waitlistPosition} der Warteliste eingetragen.
-                                Solltest du nachrücken, melden wir uns bei dir.
-                            </div>
-                          `
-                        : `
-                            <p>
-                                wir freuen uns über eure Anmeldung! Bitte prüfe die folgenden Daten auf Richtigkeit.
-                            </p>
-                          `
-                }
+                ${introOrWaitlistHtml}
 
                 <div style="margin-top: 20px;">
                     ${renderParticipant(contactPerson, values, 'Ansprechpartner')}
@@ -232,34 +282,11 @@ export const getTripConfirmationMailText = (values: TripRegisterFormValue): stri
                 }
 
         <div style="background-color: #f7f7f7; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0;">
-
-                <h2>Aktuelle Teilnahmebedingungen</h2>
-                
-                <h3>Gültigkeit der Anmeldung und Stornierung</h3>
-                <ul>
-                    <li>Die Anmeldung ist mit dem Absenden dieses Formulars gültig. Die Kosten werden vollständig bar im Bus am Tag der Ausfahrt eingesammelt.</li>
-                    <li>Anmeldeschluss sowie die Möglichkeit zur Stornierung der Anmeldung besteht bis zum Dienstag vor der Ausfahrt.</li>
-                    <li>Im Falle einer kurzfristigen Absage oder eines Nichterscheinens behalten wir uns vor, den Buspreis in Rechnung zu stellen</li>
-                </ul>
-                    
-                <h3>Teilnahme von Minderjährigen</h3>
-                <ul>
-                    <li>Für Minderjährige Teilnehmer besteht immer Helmpflicht, insbesondere bei Kursteilnahme</li>
-                    <li>Minderjährige Teilnehmer unter 18 Jahren, aber über 16 Jahren müssen ohne erziehungsberechtigte Begleitung eine Einverständniserklärung (bspw. mittels <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: none;">
-                        "Einverständniserklärung U18"</a>) der Eltern <span style="text-decoration: underline;">vor Reiseantritt per E-Mail</span> vorlegen</li>
-                    <li>Minderjährige Teilnehmer unter 16 Jahren können nur in Begleitung einer erziehungsberechtigten Person oder einer vom Erziehungsberechtigten bestimmten Aufsichtsperson an den Ausfahrten teilnehmen. 
-                        Wir bestehen auf eine schrifliche Mitteilung (bspw. mittels SCK-Vordruck <a href="https://www.skiclub-kapfenburg.de/trips/downloads" style="color: #0073e6; text-decoration: none;">
-                            "Übetragung Aufsichtspflicht")
-                        </a><span style="text-decoration: underline;">vor Reiseantritt per E-Mail</span></li>
-                </ul>
-                
-                <p style="color: #e60f00; font-weight: bold;">Die Teilnahme geschieht immer auf eigene Gefahr!</p>
-                <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/trips/information" style="color: #0073e6; text-decoration: none;">Allgemeine Informationen zu unseren Ausfahrten</a>
-                </p>
+                    ${termsHtml}
             </div>
 
-                <p style="margin-top: 30px;">Schöne Grüße,<br><strong>Dein Team vom Skiclub Kapfenburg e.V.</strong></p>
-                
+                ${signatureHtml}
+
                 <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
                 <p style="font-size: 12px; color: #999;">Diese E-Mail wurde automatisch erstellt.</p>
             </div>

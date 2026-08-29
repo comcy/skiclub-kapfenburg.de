@@ -5,7 +5,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, signal, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { setGlobalBccList } from '@data';
+import { MailTemplateSettings, setGlobalBccList, setMailTemplateSettings } from '@data';
 import { NavigationItem, NavigationItemTypes } from 'projects/shared-lib/src/lib/components';
 import { environment } from '../environments/environment';
 import { NewsletterSignupDialogComponent } from './components/newsletter-signup-dialog/newsletter-signup-dialog.component';
@@ -67,6 +67,12 @@ export class AppComponent implements OnInit {
             next: (setting) => setGlobalBccList(setting.customBccList),
             error: () => {
                 // keep the hardcoded fallback in mail-templates/*.ts
+            },
+        });
+        this.http.get<MailTemplateSettings>(`${environment.sckApiUrl}/settings/mail-templates`).subscribe({
+            next: (settings) => setMailTemplateSettings(settings),
+            error: () => {
+                // keep the hardcoded DEFAULT_*_HTML fallback in mail-templates/*.ts
             },
         });
     }

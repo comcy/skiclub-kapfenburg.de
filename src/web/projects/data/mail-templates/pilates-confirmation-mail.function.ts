@@ -4,7 +4,51 @@
 
 import { GymCoursesRegisterFormFields } from 'projects/gym-lib/src/lib/ui/gym-courses-registration-form.interfaces';
 import { calculateAge, formatDateByLocale } from 'projects/shared-lib/src/lib/date-time';
+import { getMailTemplateSettings } from '../mail-template-settings-store';
 import { getGlobalBccList } from '../notification-settings-store';
+import { renderTemplate } from './template-engine';
+
+// Editable in Admin > Einstellungen > Mailtexte. Placeholders available here:
+// {{firstName}}, {{lastName}}, {{courseName}}, {{courseDate}}, {{priceMember}}, {{priceNonMember}}, {{additionalText}}
+const DEFAULT_GYM_INTRO_HTML = `<p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung.</p>
+<p>Bitte prüfe die folgenden Daten auf Richtigkeit und beachte unsere nachstehenden Informationen und Teilnahmebedingungen.
+    <br>
+    <br>
+    Solltest du Fehler in deinen Daten entdeckt haben oder sind dir die Teilnahmebedingungen noch nicht ganz klar, melde dich gerne bei uns. Du kannst direkt auf diese E-Mail antworten. Im Falle einer Stornierung verwende bitte ebenfalls diese Mail als Referenz.
+    Wir kümmern uns umgehend um die Änderungen und setzen uns mit dir in Verbindung.</p>`;
+
+const DEFAULT_GYM_TERMS_HTML = `<h2>Aktuelle Teilnahmebedingungen</h2>
+
+<h3>Gültigkeit der Anmeldung, Anzahlung und Stornierung</h3>
+<ul>
+    <li>Die Anmeldung ist erst gültig mit der Bezahlung der Kursgebühren von {{priceMember}} (Mitglieder) oder {{priceNonMember}} (Nicht-Mitglieder).
+
+        <div style="padding-left: 8px; border-left: 4px solid#ac1dee; margin-top: 16px; margin-bottom: 16px;">
+            <p style="margin: 0; font-weight: bold; font-size: 14px;">Skiclub Kapfenburg e.V.</p>
+            <p style="margin: 0;">BIC: <span style="font-weight: bold;">GENODES1AAV</span></p>
+            <p style="margin: 0;">IBAN: <span style="font-weight: bold;">DE61 6149 0150 0131 4700 00</span></p>
+            <p style="margin: 0;">Verwendungszweck: <em>Kurs-Wochentag + "Herbst 2026" + "Name des Kursteilnehmers"</em></p>
+        </div>
+
+    </li>
+    <li>Anmeldeschluss sowie die Möglichkeit zur Stornierung der Anmeldung besteht bis 14 Tage vor Kursbeginn. Die geleistete Zahlung wird dir in diesem Fall zurück erstattet</li>
+    <li>Bei zu geringer Teilnehmerzahl kann der Kurs ggfs. nicht stattfinden. Die geleistete Zahlung wird dir in diesem Fall selbstverständlich ebenfalls zurück erstattet</li>
+</ul>
+
+<p style="color: #e60f00; font-weight: bold;">Bitte bringe deine eigene Gymnastikmatte zum Kurs mit!</p>
+<p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/gymnastik" style="color: #0073e6; text-decoration: none;">Kursinformation</a>
+</p>`;
+
+const DEFAULT_GYM_SIGNATURE_HTML = `<p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
+<p style="margin: 0; font-weight: bold; font-size: 16px;">Das Team des Skiclub Kapfenburg e.V.</p>
+
+<div style="font-size: 14px;"></div>
+<p style="margin: 15px 0 0 0;">Unseren Mitgliedsantrag findest du unter:</p>
+<p style="margin: 0;">
+    <a href="https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA" style="color: #0073e6; text-decoration: none;">
+        > Mitglied werden
+    </a>
+</p>`;
 
 export const getGymConfirmationSuccessMessage = (): string => {
     return `Alle Angaben wurden übertragen. Du erhälst zur Kontrolle der Eingabe eine Bestätigungsmail.
@@ -30,17 +74,26 @@ export const getGymConfirmationMailBcc = (values: Partial<GymCoursesRegisterForm
 };
 
 export const getGymConfirmationMailText = (values: Partial<GymCoursesRegisterFormFields>): string => {
+    const placeholders: Record<string, string> = {
+        firstName: values.firstName ?? '',
+        lastName: values.lastName ?? '',
+        courseName: values.course?.name ?? '',
+        courseDate: values.course?.date ?? '',
+        priceMember: `${values.course?.prices?.member ?? ''}`,
+        priceNonMember: `${values.course?.prices?.nonMember ?? ''}`,
+        additionalText: values.additionalText ?? '',
+    };
+    const cfg = getMailTemplateSettings()?.gym;
+    const introHtml = renderTemplate(cfg?.introHtml || DEFAULT_GYM_INTRO_HTML, placeholders);
+    const termsHtml = renderTemplate(cfg?.termsHtml || DEFAULT_GYM_TERMS_HTML, placeholders);
+    const signatureHtml = renderTemplate(cfg?.signatureHtml || DEFAULT_GYM_SIGNATURE_HTML, placeholders);
+
     return `
         <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding-top: 8px; padding-bottom: 16px;">
             <h1 style="color: #0073e6;">Anmeldung beim Skiclub Kapfenburg e.V. zum Kurs "${values.course?.name}" - ${values.course?.date}</h1>
             <p>Hallo ${values.firstName},</p>
-            
-            <p>wir freuen uns, dass dir unser Angebot gefällt, und bestätigen hiermit deine Anmeldung.</p>
-            <p>Bitte prüfe die folgenden Daten auf Richtigkeit und beachte unsere nachstehenden Informationen und Teilnahmebedingungen.
-                <br>
-                <br>
-                Solltest du Fehler in deinen Daten entdeckt haben oder sind dir die Teilnahmebedingungen noch nicht ganz klar, melde dich gerne bei uns. Du kannst direkt auf diese E-Mail antworten. Im Falle einer Stornierung verwende bitte ebenfalls diese Mail als Referenz. 
-                Wir kümmern uns umgehend um die Änderungen und setzen uns mit dir in Verbindung.</p>
+
+            ${introHtml}
 
             <p>Wir haben folgende Daten registriert:</p>
 
@@ -67,41 +120,10 @@ export const getGymConfirmationMailText = (values: Partial<GymCoursesRegisterFor
             
             
             <div style="background-color: #f7f7f7; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0;">
-
-                <h2>Aktuelle Teilnahmebedingungen</h2>
-                
-                <h3>Gültigkeit der Anmeldung, Anzahlung und Stornierung</h3>
-                <ul>
-                    <li>Die Anmeldung ist erst gültig mit der Bezahlung der Kursgebühren von ${values.course?.prices?.member} (Mitglieder) oder ${values.course?.prices?.nonMember} (Nicht-Mitglieder).
-                        
-                        <div style="padding-left: 8px; border-left: 4px solid#ac1dee; margin-top: 16px; margin-bottom: 16px;">
-                            <p style="margin: 0; font-weight: bold; font-size: 14px;">Skiclub Kapfenburg e.V.</p>
-                            <p style="margin: 0;">BIC: <span style="font-weight: bold;">GENODES1AAV</span></p>
-                            <p style="margin: 0;">IBAN: <span style="font-weight: bold;">DE61 6149 0150 0131 4700 00</span></p>
-                            <p style="margin: 0;">Verwendungszweck: <em>Kurs-Wochentag + "Herbst 2026" + "Name des Kursteilnehmers"</em></p>
-                        </div>
-
-                    </li>
-                    <li>Anmeldeschluss sowie die Möglichkeit zur Stornierung der Anmeldung besteht bis 14 Tage vor Kursbeginn. Die geleistete Zahlung wird dir in diesem Fall zurück erstattet</li>
-                    <li>Bei zu geringer Teilnehmerzahl kann der Kurs ggfs. nicht stattfinden. Die geleistete Zahlung wird dir in diesem Fall selbstverständlich ebenfalls zurück erstattet</li>
-                </ul>                   
-                
-                <p style="color: #e60f00; font-weight: bold;">Bitte bringe deine eigene Gymnastikmatte zum Kurs mit!</p> 
-                <p>Weitere Informationen und Bedingungen findest du ebenfalls auf unserer Website unter: <a href="https://www.skiclub-kapfenburg.de/gymnastik" style="color: #0073e6; text-decoration: none;">Kursinformation</a>
-                </p>
+                ${termsHtml}
             </div>
 
-            
-            <p style="margin: 15px 0 0 0; font-size: 16px;">Schöne Grüße,</p>
-            <p style="margin: 0; font-weight: bold; font-size: 16px;">Das Team des Skiclub Kapfenburg e.V.</p>
-            
-            <div style="font-size: 14px;"></div>
-            <p style="margin: 15px 0 0 0;">Unseren Mitgliedsantrag findest du unter:</p>
-            <p style="margin: 0;">
-                <a href="https://1drv.ms/b/s!AlpybhuWN2nhge8dP6xXiAadleW0vw?e=lKCaLA" style="color: #0073e6; text-decoration: none;">
-                    > Mitglied werden
-                </a>
-            </p>
+            ${signatureHtml}
 
             <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
             <small style="color: #999; padding-bottom: 16px;">Diese Nachricht wurde automatisch generiert. Solltest du Fragen oder Probleme mit der Darstellung dieser E-Mail haben, nehme bitte baldmöglichst Kontakt mit uns auf.</small>
