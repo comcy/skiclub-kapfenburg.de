@@ -14,7 +14,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Anrede / Intro</mat-label>
-                    <textarea matInput rows="3" [(ngModel)]="mailTemplates.course.introHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        [(ngModel)]="mailTemplates.course.introHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewCourse('introHtml')"></div>
             </div>
@@ -22,7 +27,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Informationen und Hinweise</mat-label>
-                    <textarea matInput rows="10" [(ngModel)]="mailTemplates.course.termsHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="10"
+                        [(ngModel)]="mailTemplates.course.termsHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewCourse('termsHtml')"></div>
             </div>
@@ -30,7 +40,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Signatur</mat-label>
-                    <textarea matInput rows="6" [(ngModel)]="mailTemplates.course.signatureHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="6"
+                        [(ngModel)]="mailTemplates.course.signatureHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewCourse('signatureHtml')"></div>
             </div>
@@ -56,7 +71,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Anrede / Intro (bei bestätigter Anmeldung)</mat-label>
-                    <textarea matInput rows="3" [(ngModel)]="mailTemplates.trip.introHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        [(ngModel)]="mailTemplates.trip.introHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewTrip('introHtml')"></div>
             </div>
@@ -64,7 +84,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Hinweis bei Warteliste</mat-label>
-                    <textarea matInput rows="5" [(ngModel)]="mailTemplates.trip.waitlistHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="5"
+                        [(ngModel)]="mailTemplates.trip.waitlistHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewTrip('waitlistHtml')"></div>
             </div>
@@ -72,7 +97,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Teilnahmebedingungen</mat-label>
-                    <textarea matInput rows="10" [(ngModel)]="mailTemplates.trip.termsHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="10"
+                        [(ngModel)]="mailTemplates.trip.termsHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewTrip('termsHtml')"></div>
             </div>
@@ -80,7 +110,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Signatur</mat-label>
-                    <textarea matInput rows="3" [(ngModel)]="mailTemplates.trip.signatureHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        [(ngModel)]="mailTemplates.trip.signatureHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewTrip('signatureHtml')"></div>
             </div>
@@ -110,7 +145,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Anrede / Intro</mat-label>
-                    <textarea matInput rows="4" [(ngModel)]="mailTemplates.gym.introHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="4"
+                        [(ngModel)]="mailTemplates.gym.introHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewGym('introHtml')"></div>
             </div>
@@ -118,7 +158,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Teilnahmebedingungen</mat-label>
-                    <textarea matInput rows="10" [(ngModel)]="mailTemplates.gym.termsHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="10"
+                        [(ngModel)]="mailTemplates.gym.termsHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewGym('termsHtml')"></div>
             </div>
@@ -126,7 +171,12 @@
             <div class="field-with-preview">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Signatur</mat-label>
-                    <textarea matInput rows="6" [(ngModel)]="mailTemplates.gym.signatureHtml"></textarea>
+                    <textarea
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="6"
+                        [(ngModel)]="mailTemplates.gym.signatureHtml"
+                    ></textarea>
                 </mat-form-field>
                 <div class="preview" [innerHTML]="previewGym('signatureHtml')"></div>
             </div>

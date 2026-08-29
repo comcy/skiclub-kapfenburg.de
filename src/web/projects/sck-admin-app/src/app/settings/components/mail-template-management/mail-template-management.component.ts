@@ -1,5 +1,6 @@
+import { CdkTextareaAutosize, TextFieldModule } from '@angular/cdk/text-field';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,15 +39,20 @@ const EMPTY_TEXT = { introHtml: '', termsHtml: '', signatureHtml: '' };
 @Component({
     selector: 'app-mail-template-management',
     standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, TextFieldModule],
     templateUrl: './mail-template-management.component.html',
     styleUrls: ['./mail-template-management.component.scss'],
 })
-export class MailTemplateManagementComponent implements OnInit {
+export class MailTemplateManagementComponent implements OnInit, AfterViewInit {
     private readonly dataService = inject(SettingsDataService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly sanitizer = inject(DomSanitizer);
     public readonly auth = inject(AuthService);
+
+    // cdkTextareaAutosize only reacts to the user typing (native 'input'
+    // events) - it never notices a value we set programmatically once the
+    // settings fetch resolves, so that has to trigger a resize by hand.
+    @ViewChildren(CdkTextareaAutosize) private autosizeDirectives!: QueryList<CdkTextareaAutosize>;
 
     public mailTemplates: MailTemplateSettings = {
         course: { ...EMPTY_TEXT },
@@ -103,7 +109,14 @@ export class MailTemplateManagementComponent implements OnInit {
         this.dataService.getMailTemplates().subscribe((settings) => {
             this.mailTemplates = this.withDefaults(settings);
             this.cdr.markForCheck();
+            // Wait a tick so the new (usually much longer) text is actually
+            // in the DOM before asking each textarea to measure and resize.
+            setTimeout(() => this.autosizeDirectives?.forEach((autosize) => autosize.resizeToFitContent(true)));
         });
+    }
+
+    ngAfterViewInit(): void {
+        this.autosizeDirectives.forEach((autosize) => autosize.resizeToFitContent(true));
     }
 
     // Pre-fills empty fields with the text that's actually live right now
