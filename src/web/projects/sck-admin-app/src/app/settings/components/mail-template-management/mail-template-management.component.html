@@ -1,203 +1,199 @@
 @if (auth.hasPermission('tiles:write')) {
-    <div class="content-area">
-        <div class="content-inner">
-            <p class="hint-text">
-                Bearbeitet die Fließtext-Bausteine der drei öffentlichen Bestätigungsmails. Preisberechnung,
-                Teilnehmerliste und Wartelisten-Logik bleiben fest im Code - hier lassen sich nur Anrede,
-                Teilnahmebedingungen und Signatur anpassen, z.B. für saisonale Termine oder Preisänderungen im Text.
-                Platzhalter wie
-                <code>{{ exampleToken }}</code> werden beim Versand automatisch ersetzt.
-            </p>
+    <app-panel-shell>
+        <p class="hint-text">
+            Bearbeitet die Fließtext-Bausteine der drei öffentlichen Bestätigungsmails. Preisberechnung, Teilnehmerliste
+            und Wartelisten-Logik bleiben fest im Code - hier lassen sich nur Anrede, Teilnahmebedingungen und Signatur
+            anpassen, z.B. für saisonale Termine oder Preisänderungen im Text. Platzhalter wie
+            <code>{{ exampleToken }}</code> werden beim Versand automatisch ersetzt.
+        </p>
 
-            <h3>Kursanmeldung</h3>
+        <h3>Kursanmeldung</h3>
 
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Anrede / Intro</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="3"
-                        [(ngModel)]="mailTemplates.course.introHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewCourse('introHtml')"></div>
-            </div>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Informationen und Hinweise</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="10"
-                        [(ngModel)]="mailTemplates.course.termsHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewCourse('termsHtml')"></div>
-            </div>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Signatur</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="6"
-                        [(ngModel)]="mailTemplates.course.signatureHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewCourse('signatureHtml')"></div>
-            </div>
-
-            <div class="placeholder-legend">
-                <span class="legend-title">Verfügbare Platzhalter:</span>
-                @for (p of coursePlaceholders; track p.token) {
-                    <span class="legend-item"
-                        ><code>{{ wrapToken(p.token) }}</code> - {{ p.description }}</span
-                    >
-                }
-            </div>
-
-            <div class="actions">
-                <button mat-raised-button color="primary" (click)="onSaveCourse()">Speichern</button>
-                @if (isCourseSaved) {
-                    <span class="saved-hint">Gespeichert.</span>
-                }
-            </div>
-
-            <h3>Ausfahrten-Anmeldung</h3>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Anrede / Intro (bei bestätigter Anmeldung)</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="3"
-                        [(ngModel)]="mailTemplates.trip.introHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewTrip('introHtml')"></div>
-            </div>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Hinweis bei Warteliste</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="5"
-                        [(ngModel)]="mailTemplates.trip.waitlistHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewTrip('waitlistHtml')"></div>
-            </div>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Teilnahmebedingungen</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="10"
-                        [(ngModel)]="mailTemplates.trip.termsHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewTrip('termsHtml')"></div>
-            </div>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Signatur</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="3"
-                        [(ngModel)]="mailTemplates.trip.signatureHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewTrip('signatureHtml')"></div>
-            </div>
-
-            <div class="placeholder-legend">
-                <span class="legend-title">Verfügbare Platzhalter:</span>
-                @for (p of tripWaitlistPlaceholders; track p.token) {
-                    <span class="legend-item"
-                        ><code>{{ wrapToken(p.token) }}</code> - {{ p.description }}</span
-                    >
-                }
-                <span class="legend-hint"
-                    >(<code>waitlistGroupText</code>/<code>waitlistPosition</code> nur im Warteliste-Text
-                    verfügbar)</span
-                >
-            </div>
-
-            <div class="actions">
-                <button mat-raised-button color="primary" (click)="onSaveTrip()">Speichern</button>
-                @if (isTripSaved) {
-                    <span class="saved-hint">Gespeichert.</span>
-                }
-            </div>
-
-            <h3>Gymnastik-/Pilates-Anmeldung</h3>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Anrede / Intro</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="4"
-                        [(ngModel)]="mailTemplates.gym.introHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewGym('introHtml')"></div>
-            </div>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Teilnahmebedingungen</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="10"
-                        [(ngModel)]="mailTemplates.gym.termsHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewGym('termsHtml')"></div>
-            </div>
-
-            <div class="field-with-preview">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Signatur</mat-label>
-                    <textarea
-                        matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="6"
-                        [(ngModel)]="mailTemplates.gym.signatureHtml"
-                    ></textarea>
-                </mat-form-field>
-                <div class="preview" [innerHTML]="previewGym('signatureHtml')"></div>
-            </div>
-
-            <div class="placeholder-legend">
-                <span class="legend-title">Verfügbare Platzhalter:</span>
-                @for (p of gymPlaceholders; track p.token) {
-                    <span class="legend-item"
-                        ><code>{{ wrapToken(p.token) }}</code> - {{ p.description }}</span
-                    >
-                }
-            </div>
-
-            <div class="actions">
-                <button mat-raised-button color="primary" (click)="onSaveGym()">Speichern</button>
-                @if (isGymSaved) {
-                    <span class="saved-hint">Gespeichert.</span>
-                }
-            </div>
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Anrede / Intro</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="3"
+                    [(ngModel)]="mailTemplates.course.introHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewCourse('introHtml')"></div>
         </div>
-    </div>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Informationen und Hinweise</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="10"
+                    [(ngModel)]="mailTemplates.course.termsHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewCourse('termsHtml')"></div>
+        </div>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Signatur</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="6"
+                    [(ngModel)]="mailTemplates.course.signatureHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewCourse('signatureHtml')"></div>
+        </div>
+
+        <div class="placeholder-legend">
+            <span class="legend-title">Verfügbare Platzhalter:</span>
+            @for (p of coursePlaceholders; track p.token) {
+                <span class="legend-item"
+                    ><code>{{ wrapToken(p.token) }}</code> - {{ p.description }}</span
+                >
+            }
+        </div>
+
+        <div class="actions">
+            <button mat-raised-button color="primary" (click)="onSaveCourse()">Speichern</button>
+            @if (isCourseSaved) {
+                <span class="saved-hint">Gespeichert.</span>
+            }
+        </div>
+
+        <h3>Ausfahrten-Anmeldung</h3>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Anrede / Intro (bei bestätigter Anmeldung)</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="3"
+                    [(ngModel)]="mailTemplates.trip.introHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewTrip('introHtml')"></div>
+        </div>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Hinweis bei Warteliste</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="5"
+                    [(ngModel)]="mailTemplates.trip.waitlistHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewTrip('waitlistHtml')"></div>
+        </div>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Teilnahmebedingungen</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="10"
+                    [(ngModel)]="mailTemplates.trip.termsHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewTrip('termsHtml')"></div>
+        </div>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Signatur</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="3"
+                    [(ngModel)]="mailTemplates.trip.signatureHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewTrip('signatureHtml')"></div>
+        </div>
+
+        <div class="placeholder-legend">
+            <span class="legend-title">Verfügbare Platzhalter:</span>
+            @for (p of tripWaitlistPlaceholders; track p.token) {
+                <span class="legend-item"
+                    ><code>{{ wrapToken(p.token) }}</code> - {{ p.description }}</span
+                >
+            }
+            <span class="legend-hint"
+                >(<code>waitlistGroupText</code>/<code>waitlistPosition</code> nur im Warteliste-Text verfügbar)</span
+            >
+        </div>
+
+        <div class="actions">
+            <button mat-raised-button color="primary" (click)="onSaveTrip()">Speichern</button>
+            @if (isTripSaved) {
+                <span class="saved-hint">Gespeichert.</span>
+            }
+        </div>
+
+        <h3>Gymnastik-/Pilates-Anmeldung</h3>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Anrede / Intro</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="4"
+                    [(ngModel)]="mailTemplates.gym.introHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewGym('introHtml')"></div>
+        </div>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Teilnahmebedingungen</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="10"
+                    [(ngModel)]="mailTemplates.gym.termsHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewGym('termsHtml')"></div>
+        </div>
+
+        <div class="field-with-preview">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Signatur</mat-label>
+                <textarea
+                    matInput
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="6"
+                    [(ngModel)]="mailTemplates.gym.signatureHtml"
+                ></textarea>
+            </mat-form-field>
+            <div class="preview" [innerHTML]="previewGym('signatureHtml')"></div>
+        </div>
+
+        <div class="placeholder-legend">
+            <span class="legend-title">Verfügbare Platzhalter:</span>
+            @for (p of gymPlaceholders; track p.token) {
+                <span class="legend-item"
+                    ><code>{{ wrapToken(p.token) }}</code> - {{ p.description }}</span
+                >
+            }
+        </div>
+
+        <div class="actions">
+            <button mat-raised-button color="primary" (click)="onSaveGym()">Speichern</button>
+            @if (isGymSaved) {
+                <span class="saved-hint">Gespeichert.</span>
+            }
+        </div>
+    </app-panel-shell>
 } @else {
     <div class="no-access">Keine Berechtigung, Mailtexte zu verwalten.</div>
 }

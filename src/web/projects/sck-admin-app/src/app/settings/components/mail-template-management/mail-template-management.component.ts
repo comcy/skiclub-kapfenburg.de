@@ -25,6 +25,7 @@ import {
     DEFAULT_TRIP_WAITLIST_HTML,
 } from 'projects/data/mail-templates/trip-confirmation-mail.function';
 import { AuthService } from '../../../auth/services/auth.service';
+import { PanelShellComponent } from '../../../shared/components/panel-shell/panel-shell.component';
 import { MailTemplateSettings } from '../../domain/mail-template-setting';
 import { SettingsDataService } from '../../services/settings-data.service';
 
@@ -39,7 +40,7 @@ const EMPTY_TEXT = { introHtml: '', termsHtml: '', signatureHtml: '' };
 @Component({
     selector: 'app-mail-template-management',
     standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, TextFieldModule],
+    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, TextFieldModule, PanelShellComponent],
     templateUrl: './mail-template-management.component.html',
     styleUrls: ['./mail-template-management.component.scss'],
 })

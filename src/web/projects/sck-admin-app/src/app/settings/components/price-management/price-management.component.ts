@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-base';
 import { AuthService } from '../../../auth/services/auth.service';
+import { PanelShellComponent } from '../../../shared/components/panel-shell/panel-shell.component';
 import { SkiCoursePricingSetting } from '../../domain/ski-course-pricing-setting';
 import { TripPricingSetting } from '../../domain/trip-pricing-setting';
 import { SettingsDataService } from '../../services/settings-data.service';
@@ -17,7 +18,7 @@ const zero = () => ({ member: 0, nonMember: 0 });
 @Component({
     selector: 'app-price-management',
     standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, PanelShellComponent],
     templateUrl: './price-management.component.html',
     styleUrls: ['./price-management.component.scss'],
 })

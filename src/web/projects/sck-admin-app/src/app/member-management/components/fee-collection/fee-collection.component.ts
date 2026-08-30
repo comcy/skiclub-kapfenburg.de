@@ -13,6 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
 import { AuthService } from '../../../auth/services/auth.service';
+import { PanelShellComponent } from '../../../shared/components/panel-shell/panel-shell.component';
 import { MembershipFeeSetting } from '../../../settings/domain/membership-fee-setting';
 import { SepaCreditorSetting } from '../../../settings/domain/sepa-creditor-setting';
 import { SettingsDataService } from '../../../settings/services/settings-data.service';
@@ -44,6 +45,7 @@ const toIsoDate = (date: Date): string => {
         MatTooltipModule,
         CurrencyPipe,
         DatePipe,
+        PanelShellComponent,
     ],
     templateUrl: './fee-collection.component.html',
     styleUrls: ['./fee-collection.component.scss'],

@@ -1,5 +1,5 @@
 @if (auth.hasPermission('tiles:write')) {
-    <div class="content-area">
+    <app-panel-shell maxWidth="600px">
         <h3>Ski-/Snowboardkurse</h3>
         <p class="hint-text">
             Gilt für alle A1-F2-Kurse, unabhängig von der einzelnen Kachel. Nur die Preise ändern sich von Saison zu
@@ -157,7 +157,7 @@
                 <span class="saved-hint">Gespeichert.</span>
             }
         </div>
-    </div>
+    </app-panel-shell>
 } @else {
     <div class="no-access">Keine Berechtigung, Preise zu verwalten.</div>
 }

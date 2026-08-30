@@ -1,25 +1,14 @@
-// Routed into tile-management's flex shell, which clips (overflow: hidden)
-// rather than scrolls by design - see price-management.component.scss for
-// the same fix applied there.
+// This component is a direct child of tile-management's own flex shell
+// (mat-tab-nav-panel), so it must itself be a shrinkable flex item - a
+// child component's :host can't reach up and size ITS parent, so this
+// can't move into <app-panel-shell> even though the rules are identical
+// there. See CLAUDE.md "Neue Seite unter der tile-management-Shell".
 :host {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
     overflow: hidden;
-}
-
-.content-area {
-    width: 100%;
-    overflow-y: auto;
-    min-height: 0;
-}
-
-.content-inner {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
 }
 
 .hint-text {

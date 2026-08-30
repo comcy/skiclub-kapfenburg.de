@@ -1,0 +1,23 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+// Full-width scroll container - its scrollbar must sit flush against the
+// panel's true right edge, not stranded at .content-inner's max-width with
+// a dead, unscrollable strip of empty space beyond it.
+.content-area {
+    width: 100%;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.content-inner {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
