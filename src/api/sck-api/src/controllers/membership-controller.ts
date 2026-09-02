@@ -7,7 +7,7 @@ import { RequestHandler } from 'express';
 import { FamilyMember, MembershipRegistrationRequestBody } from '../domain/membership.js';
 import { listDataByType, saveData, saveSepaData } from '../services/data-service.js';
 import { encryptField } from '../services/crypto-service.js';
-import { createMailTransporter, defaultSender } from '../services/mailer.js';
+import { sendMail } from '../services/mailer.js';
 import { confirmRegistration, createConfirmationToken } from '../services/membership-confirmation-service.js';
 import {
   MEMBERSHIP_BOARD_RECIPIENTS,
@@ -92,14 +92,7 @@ export const createMembershipRegistration: RequestHandler = async (req, res) => 
     // rückgängig machen (kein eigener Notification-Service in diesem
     // Feature, siehe FEATURE_BRIEF.md).
     try {
-      const transporter = createMailTransporter();
-
-      await transporter.sendMail({
-        from: defaultSender(),
-        to: registrationData.email,
-        subject: getMembershipOptInMailSubject(),
-        html: getMembershipOptInMailText(registrationData, confirmUrl),
-      });
+      await sendMail(registrationData.email, getMembershipOptInMailSubject(), getMembershipOptInMailText(registrationData, confirmUrl));
     } catch (mailError) {
       console.error('Fehler beim Versand der Mitgliedsantrag-Opt-in-Mail:', mailError);
     }
@@ -137,13 +130,11 @@ export const confirmMembershipRegistration: RequestHandler = async (req, res) =>
 
       if (registrationData) {
         try {
-          const transporter = createMailTransporter();
-          await transporter.sendMail({
-            from: defaultSender(),
-            to: MEMBERSHIP_BOARD_RECIPIENTS,
-            subject: getMembershipBoardNotificationMailSubject(registrationData),
-            html: getMembershipBoardNotificationMailText(registrationData),
-          });
+          await sendMail(
+            MEMBERSHIP_BOARD_RECIPIENTS,
+            getMembershipBoardNotificationMailSubject(registrationData),
+            getMembershipBoardNotificationMailText(registrationData),
+          );
         } catch (mailError) {
           console.error('Fehler beim Versand der Vorstands-Benachrichtigung:', mailError);
         }
