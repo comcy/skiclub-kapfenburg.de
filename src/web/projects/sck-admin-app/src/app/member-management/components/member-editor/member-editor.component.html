@@ -44,6 +44,17 @@
 
         <mat-checkbox [(ngModel)]="member.isFamilyMembership" class="checkbox-row">Familienmitgliedschaft</mat-checkbox>
 
+        @if (member.isFamilyMembership) {
+            <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
+                <mat-label>Familiengruppe</mat-label>
+                <input matInput [(ngModel)]="member.familyGroupId" placeholder="z. B. Nachname + Adresse" />
+                <mat-hint
+                    >Bei allen Mitgliedern derselben Familie identisch eintragen — bestimmt die gemeinsame Abbuchung
+                    beim SEPA-Beitragseinzug.</mat-hint
+                >
+            </mat-form-field>
+        }
+
         <div class="field-row">
             <mat-form-field appearance="outline">
                 <mat-label>Mitglied seit</mat-label>
