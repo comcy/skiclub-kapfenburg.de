@@ -207,6 +207,27 @@ docker compose down -v
 docker compose up -d
 ```
 
+**Speicherplatz voll** (Deploy scheitert mit `No space left on device`,
+teils schon beim Runner selbst, bevor überhaupt gebaut wird): jeder
+Deploy baut drei Images neu, `docker image prune -f` im Workflow räumt
+danach nur ungetaggte Images weg, nicht den BuildKit-Cache — der wächst
+über viele Deploys hinweg unbemerkt, bis die LXC-Disk voll ist. Ab
+diesem Commit räumt der Workflow den Cache selbst auf
+(`docker builder prune -f` nach dem Image-Prune), das beugt einem
+erneuten Vollaufen vor — hilft aber nicht gegen eine **bereits volle**
+Disk, das einmalig manuell aufräumen:
+```bash
+df -h /                    # bestätigen, dass die Disk wirklich voll ist
+docker system df           # zeigt, wie viel davon Images/Build-Cache/Volumes sind
+docker builder prune -af   # kompletter Build-Cache, nicht nur ungenutzter
+docker image prune -af     # alle ungenutzten Images (nicht nur dangling)
+df -h /                    # zur Kontrolle
+```
+`docker system prune -af --volumes` wäre aggressiver, aber Vorsicht:
+`--volumes` würde auch das `sck-api-data`-Volume mit den Testdaten
+löschen — dafür lieber gezielt `docker builder prune`/`docker image
+prune` wie oben, Volumes nicht anfassen.
+
 **Manuell neu bauen/starten** (ohne CI, z. B. um einen anderen Branch
 zu testen):
 ```bash

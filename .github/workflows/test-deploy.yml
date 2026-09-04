@@ -72,6 +72,13 @@ jobs:
           echo "🧹 Pruning old images..."
           docker image prune -f
 
+          # image prune only drops dangling images, not the BuildKit layer
+          # cache from "docker compose build" above - that cache grows on
+          # every deploy and, left unchecked, eventually fills the LXC's
+          # disk (see infrastructure/TEST_DEPLOYMENT.md's disk-space note).
+          echo "🧹 Pruning unused build cache..."
+          docker builder prune -f
+
           sleep 5
           docker compose ps
 
