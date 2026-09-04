@@ -86,6 +86,17 @@ pct set <VMID> --memory 4096
 pct reboot <VMID>
 ```
 
+**Disk-Hinweis:** Der Default-Root-Disk (ca. 8G) reicht knapp nicht für
+drei Node/Angular-Images nacheinander plus Docker-Build-Cache — beobachtet
+als Deploy-Absturz mit `No space left on device`, teils schon beim
+Runner selbst statt erst beim Build (siehe „Speicherplatz voll" unten).
+Vergrößern auf dem Proxmox-Host, **relativ** zum aktuellen Stand
+(`pct resize` kennt kein absolutes Zielmaß), Filesystem wird bei LXCs
+automatisch mitvergrößert, kein Reboot nötig:
+```bash
+pct resize <VMID> rootfs +8G
+```
+
 ### 2. Proxy Hosts in Nginx Proxy Manager anlegen
 
 Im NPM-Web-UI, „Proxy Hosts" → „Add Proxy Host", für Web und API (Pflicht)
@@ -227,6 +238,20 @@ df -h /                    # zur Kontrolle
 `--volumes` würde auch das `sck-api-data`-Volume mit den Testdaten
 löschen — dafür lieber gezielt `docker builder prune`/`docker image
 prune` wie oben, Volumes nicht anfassen.
+
+Löst das Docker-Aufräumen allein nicht genug Platz (Docker selbst
+macht oft nur einen Bruchteil der belegten Disk aus - `du -xhd1 /
+| sort -rh` zeigt die tatsächlich großen Verzeichnisse), war bei uns
+am 2026-09-04 der eigentliche Übeltäter der **Self-Update-Cache des
+Runners** unter `_work/_update` (übrig gebliebenes, nie aufgeräumtes
+Runner-Package von einem durch die volle Disk abgebrochenen
+Selbstupdate - ~680M, reiner Update-Cache, nichts von Job-Daten):
+```bash
+cd /opt/github-runner
+sudo ./svc.sh stop
+rm -rf _work/_update
+sudo ./svc.sh start
+```
 
 **Manuell neu bauen/starten** (ohne CI, z. B. um einen anderen Branch
 zu testen):
