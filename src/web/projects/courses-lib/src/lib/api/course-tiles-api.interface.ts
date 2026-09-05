@@ -55,6 +55,18 @@ export interface ApiCourseTile {
     imageDescription: string;
     courseConfig?: CourseConfig;
     course?: ApiPilatesCourseDto;
+    // Raw tile metadata - GET /tiles?type=course already returns these on
+    // the wire, just not previously typed here since only content fields
+    // were needed. Needed now for courses.component.ts to list/filter
+    // admin-created ski-course tiles dynamically (see #183) instead of
+    // matching against exactly 4 hardcoded level titles.
+    order: number;
+    date: string;
+    status: string;
+    expiration: string;
+    behavior: string;
+    expired?: boolean;
+    visible?: boolean;
 }
 
 // Same DI-token pattern as TripTilesApiServiceInterface: interface lives
