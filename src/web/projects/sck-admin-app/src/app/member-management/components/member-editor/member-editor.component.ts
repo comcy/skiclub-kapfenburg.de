@@ -11,12 +11,12 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
+import { GERMAN_DATE_FORMATS, GermanDateAdapter } from 'projects/shared-lib/src/lib/date-time';
 import { Member, MemberCreationParams } from '../../domain/member';
 import { MembersDataService } from '../../services/members-data.service';
 
@@ -56,7 +56,7 @@ const toIsoDate = (date: Date): string => {
         MatDatepickerModule,
     ],
     providers: [
-        provideNativeDateAdapter(),
+        { provide: DateAdapter, useClass: GermanDateAdapter },
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
         { provide: MAT_DATE_FORMATS, useValue: GERMAN_DATE_FORMATS },
     ],
@@ -70,7 +70,7 @@ export class MemberEditorComponent implements OnChanges {
     private readonly dataService = inject(MembersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
 
-    // The datepicker (provideNativeDateAdapter) needs a real Date, but
+    // The datepicker (GermanDateAdapter) needs a real Date, but
     // Member.birthday/memberSince are ISO strings (the wire format every
     // other consumer of Member expects) - kept as separate local state
     // rather than changing that type, converted both ways at the edges.

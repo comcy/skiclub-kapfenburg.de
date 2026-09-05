@@ -5,13 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
+import { GERMAN_DATE_FORMATS, GermanDateAdapter } from 'projects/shared-lib/src/lib/date-time';
 import { AuthService } from '../../../auth/services/auth.service';
 import { PanelShellComponent } from '../../../shared/components/panel-shell/panel-shell.component';
 import { MembershipFeeSetting } from '../../../settings/domain/membership-fee-setting';
@@ -50,7 +50,7 @@ const toIsoDate = (date: Date): string => {
     templateUrl: './fee-collection.component.html',
     styleUrls: ['./fee-collection.component.scss'],
     providers: [
-        provideNativeDateAdapter(),
+        { provide: DateAdapter, useClass: GermanDateAdapter },
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
         { provide: MAT_DATE_FORMATS, useValue: GERMAN_DATE_FORMATS },
     ],
