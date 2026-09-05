@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -27,6 +28,7 @@ import { TilesDataService } from '../../../services/tiles-data.service';
         MatSelectModule,
         MatButtonModule,
         MatIconModule,
+        MatCheckboxModule,
     ],
     templateUrl: './registration-editor.component.html',
     styleUrls: ['./registration-editor.component.scss'],
@@ -71,6 +73,14 @@ export class RegistrationEditorComponent {
             source: this.registration.source,
             notes: this.registration.notes || undefined,
             orderIndex: this.registration.orderIndex,
+            transferredToExternalList: this.registration.transferredToExternalList,
+            // Not editable here (see the template) - carried through as-is
+            // so a save never wipes the registrant's own form choices (see
+            // the plan's critical correctness note on this exact bug).
+            busOnly: this.registration.busOnly,
+            snowshoes: this.registration.snowshoes,
+            courseRequested: this.registration.courseRequested,
+            level: this.registration.level,
         };
 
         // Zoneless change detection (see app.config.ts) - without

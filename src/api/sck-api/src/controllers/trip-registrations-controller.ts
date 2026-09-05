@@ -7,6 +7,13 @@ import { TileStatus } from '../domain/tile.js';
 import { PublicParticipantInput, TripRegistrationCreationParams } from '../domain/trip-registration.js';
 import * as registrationsService from '../services/trip-registrations-service.js';
 import { getTile } from '../services/tiles-service.js';
+import { sendMail } from '../services/mailer.js';
+import {
+  getTripConfirmationMailBcc,
+  getTripConfirmationMailSubject,
+  getTripConfirmationMailText,
+} from '../services/trip-registration-mail-service.js';
+import { calculateParticipantPrice, getCurrentTripPricing } from '../services/trip-pricing-service.js';
 
 const isValidParams = (body: TripRegistrationCreationParams): boolean =>
   !!body.firstName?.trim() && !!body.lastName?.trim();
@@ -50,7 +57,12 @@ export const createTripRegistration: RequestHandler = (req, res) => {
 // auth. Mirrors registration-route.ts's precedent: inline validation, then
 // a plain try/catch (an invalid tileId trips the tile_registrations FK
 // constraint and falls through to the 500 branch below).
-export const createPublicTripRegistrations: RequestHandler = (req, res) => {
+// Bestätigungsmail wird server-seitig verschickt (verlässlicher als der
+// frühere client-seitige Parallel-Request, siehe die Plan-Begründung) -
+// Speichern zuerst, Mailversand danach best-effort, analog zu
+// membership-controller.ts's createMembershipRegistration. Genau EINE Mail
+// pro Gesamt-Anmeldung (nicht pro Teilnehmer), an den Ansprechpartner.
+export const createPublicTripRegistrations: RequestHandler = async (req, res) => {
   try {
     const tileId = String(req.params.tileId);
     const tile = getTile(tileId);
@@ -73,7 +85,28 @@ export const createPublicTripRegistrations: RequestHandler = (req, res) => {
       return;
     }
 
-    res.status(201).json(registrationsService.createPublicRegistrations(tileId, participants));
+    const { registrationIds, ...publicResult } = registrationsService.createPublicRegistrations(tileId, participants);
+
+    const createdRegistrations = registrationIds
+      .map((id) => registrationsService.getRegistration(id))
+      .filter((r): r is NonNullable<typeof r> => r !== undefined);
+    const [contactPerson] = createdRegistrations;
+
+    if (contactPerson) {
+      try {
+        await sendMail(
+          contactPerson.email ?? '',
+          getTripConfirmationMailSubject(contactPerson.firstName, publicResult.status),
+          getTripConfirmationMailText(tile, contactPerson, createdRegistrations, publicResult),
+          getTripConfirmationMailBcc(),
+        );
+        registrationsService.markConfirmationMailSent(registrationIds);
+      } catch (mailError) {
+        console.error('Fehler beim Versand der Ausfahrten-Bestätigungsmail:', mailError);
+      }
+    }
+
+    res.status(201).json(publicResult);
   } catch (error: any) {
     console.error('Fehler beim Speichern der öffentlichen Anmeldung:', error);
     res.status(500).json({ error: 'Fehler beim Speichern der Anmeldung.' });
@@ -110,5 +143,55 @@ export const deleteTripRegistration: RequestHandler = (req, res) => {
   } catch (error: any) {
     console.error('Fehler beim Löschen der Anmeldung:', error);
     res.status(500).json({ error: 'Fehler beim Löschen der Anmeldung.' });
+  }
+};
+
+interface PricePreviewParticipant {
+  birthday?: string;
+  isMember?: boolean;
+  busOnly?: boolean;
+  snowshoes?: boolean;
+  courseRequested?: boolean;
+  level?: string;
+}
+
+const isValidPricePreviewParticipant = (participant: unknown): participant is PricePreviewParticipant =>
+  !!participant && typeof participant === 'object';
+
+// Public, read-only price computation - the website's registration form
+// calls this for its live price preview instead of duplicating
+// calculateParticipantPrice a third time (see the plan). No DB writes, so
+// no Turnstile gate (unlike the actual registration POST above).
+export const getTripPricePreview: RequestHandler = (req, res) => {
+  try {
+    const participants = req.body?.participants;
+    if (!Array.isArray(participants) || participants.length === 0 || !participants.every(isValidPricePreviewParticipant)) {
+      res.status(400).json({ error: 'Mindestens ein Teilnehmer ist erforderlich.' });
+      return;
+    }
+    if (participants.length > MAX_PARTICIPANTS_PER_REQUEST) {
+      res.status(400).json({ error: `Höchstens ${MAX_PARTICIPANTS_PER_REQUEST} Teilnehmer pro Anfrage.` });
+      return;
+    }
+
+    const pricing = getCurrentTripPricing();
+    const prices = (participants as PricePreviewParticipant[]).map((participant) =>
+      calculateParticipantPrice(
+        {
+          busOnly: participant.busOnly ?? false,
+          snowshoes: participant.snowshoes ?? false,
+          courseRequested: participant.courseRequested ?? false,
+          level: participant.level,
+          ageCategory: registrationsService.resolveAgeCategory(participant.birthday),
+          isMember: participant.isMember ?? false,
+        },
+        pricing,
+      ),
+    );
+
+    res.status(200).json({ prices, total: prices.reduce((sum, price) => sum + price, 0) });
+  } catch (error: any) {
+    console.error('Fehler bei der Preisvorschau:', error);
+    res.status(500).json({ error: 'Fehler bei der Preisberechnung.' });
   }
 };

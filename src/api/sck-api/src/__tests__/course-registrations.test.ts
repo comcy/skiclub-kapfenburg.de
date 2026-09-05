@@ -1,8 +1,21 @@
+import { jest } from '@jest/globals';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import express from 'express';
 import request from 'supertest';
 import { db } from '../db/connection.js';
-import courseRegistrationsRoutes from '../routes/course-registrations-route.js';
+
+// sendMail() only calls out to nodemailer when SMTP_SERVER is set (see
+// mailer.ts's dev-log fallback branch) - set it before the route (which
+// transitively imports mailer.ts) is loaded, so the mocked transporter below
+// is actually exercised instead of the console.log dev branch.
+process.env.SMTP_SERVER = 'smtp.test.local';
+const mockedSendMail = jest.fn();
+const mockedCreateTransport = jest.fn();
+jest.unstable_mockModule('nodemailer', () => ({
+  default: { createTransport: mockedCreateTransport },
+}));
+
+const { default: courseRegistrationsRoutes } = await import('../routes/course-registrations-route.js');
 
 const app = express();
 app.use(express.json());
@@ -46,6 +59,8 @@ beforeEach(() => {
   db.exec(
     'DELETE FROM course_registrations; DELETE FROM course_groups; DELETE FROM members; DELETE FROM tiles; DELETE FROM permissions; DELETE FROM sessions; DELETE FROM users;',
   );
+  mockedSendMail.mockClear().mockResolvedValue({ messageId: 'test-message-id' });
+  mockedCreateTransport.mockReset().mockReturnValue({ sendMail: mockedSendMail });
 });
 
 describe('Course Registrations Routes', () => {
@@ -78,6 +93,9 @@ describe('Course Registrations Routes', () => {
     expect(createRes.body.sportType).toBe('Ski Alpin');
     expect(createRes.body.paid).toBe(false);
     expect(createRes.body.enteredBy).toContain('@test.com');
+    // New status-tracking fields default to false on create.
+    expect(createRes.body.transferredToExternalList).toBe(false);
+    expect(createRes.body.confirmationMailSent).toBe(false);
     const id = createRes.body.id as string;
 
     const listRes = await request(app)
@@ -90,12 +108,16 @@ describe('Course Registrations Routes', () => {
     const updateRes = await request(app)
       .put(`/api/course-registrations/${id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...validRegistration, status: 'cancelled', paid: true });
+      .send({ ...validRegistration, status: 'cancelled', paid: true, transferredToExternalList: true, confirmationMailSent: true });
     expect(updateRes.status).toBe(200);
     expect(updateRes.body.status).toBe('cancelled');
     expect(updateRes.body.paid).toBe(true);
     // entered_by is set once at creation and never overwritten by later updates
     expect(updateRes.body.enteredBy).toBe(createRes.body.enteredBy);
+    // transferredToExternalList IS settable via PUT (admin accounting field)...
+    expect(updateRes.body.transferredToExternalList).toBe(true);
+    // ...but confirmationMailSent is silently ignored - server-only field.
+    expect(updateRes.body.confirmationMailSent).toBe(false);
 
     const deleteRes = await request(app)
       .delete(`/api/course-registrations/${id}`)
@@ -142,7 +164,7 @@ describe('Course Registrations Routes', () => {
       const tileId = createTile();
       const res = await request(app)
         .post(`/api/tiles/${tileId}/course-registrations/public`)
-        .send({ firstName: 'Max', lastName: 'Mustermann', sportType: 'Ski Alpin' });
+        .send({ firstName: 'Max', lastName: 'Mustermann', email: 'max@test.com', sportType: 'Ski Alpin' });
 
       expect(res.status).toBe(201);
       expect(res.body.status).toBe('confirmed');
@@ -150,11 +172,51 @@ describe('Course Registrations Routes', () => {
       // No admin authored a public self-registration.
       expect(res.body.enteredBy).toBeUndefined();
       expect(res.body.paid).toBe(false);
+      expect(res.body.transferredToExternalList).toBe(false);
 
       const list = await request(app)
         .get(`/api/tiles/${tileId}/course-registrations`)
         .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
       expect(list.body).toHaveLength(1);
+    });
+
+    it('verschickt genau eine Bestätigungsmail und markiert confirmationMailSent', async () => {
+      const tileId = createTile();
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/course-registrations/public`)
+        .send({ firstName: 'Max', lastName: 'Mustermann', email: 'max@test.com', sportType: 'Ski Alpin' });
+
+      expect(res.status).toBe(201);
+      expect(res.body.confirmationMailSent).toBe(true);
+      expect(mockedSendMail).toHaveBeenCalledTimes(1);
+      const sentMail = mockedSendMail.mock.calls[0][0] as any;
+      expect(sentMail.to).toBe('max@test.com');
+      expect(sentMail.subject).toContain('Ski Alpin');
+      // Global BCC fallback (no NotificationBccSetting configured in this test).
+      expect(sentMail.bcc).toContain('registration@skiclub-kapfenburg.de');
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/course-registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body[0].confirmationMailSent).toBe(true);
+    });
+
+    it('bleibt trotz fehlgeschlagenem Mailversand gespeichert (Best-Effort, kein Rollback, kein 500)', async () => {
+      mockedSendMail.mockRejectedValue(new Error('SMTP down'));
+
+      const tileId = createTile();
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/course-registrations/public`)
+        .send({ firstName: 'Max', lastName: 'Mustermann', email: 'max@test.com', sportType: 'Ski Alpin' });
+
+      expect(res.status).toBe(201);
+      expect(res.body.confirmationMailSent).toBe(false);
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/course-registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body).toHaveLength(1);
+      expect(list.body[0].confirmationMailSent).toBe(false);
     });
 
     it('lehnt eine Anmeldung ohne Vor-/Nachname mit 400 ab', async () => {

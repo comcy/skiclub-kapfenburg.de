@@ -242,6 +242,17 @@
     white-space: nowrap;
 }
 
+// Admin-Buchhaltung ("Extern erfasst"), togglebar per Klick - bewusst der
+// gleiche Badge-Stil wie "Mitglied"/"Bestätigungsmail", nicht der
+// Chip-Stil des Lifecycle-Status (siehe die Anmerkung im Plan).
+.badge-toggle-clickable {
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 @media print {
     .page-content {
         overflow: visible;

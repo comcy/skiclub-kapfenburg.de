@@ -54,6 +54,7 @@ export class CourseRegistrationEditorComponent {
             notes: this.registration.notes || undefined,
             orderIndex: this.registration.orderIndex,
             paid: this.registration.paid,
+            transferredToExternalList: this.registration.transferredToExternalList,
         };
 
         // Zoneless change detection (see app.config.ts) - without

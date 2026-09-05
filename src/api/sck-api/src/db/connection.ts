@@ -467,3 +467,43 @@ if (!courseRegistrationColumns.some((c) => c.name === 'entered_by')) {
 if (!courseRegistrationColumns.some((c) => c.name === 'paid')) {
   db.exec('ALTER TABLE course_registrations ADD COLUMN paid INTEGER NOT NULL DEFAULT 0;');
 }
+
+// Status-Tracking fürs Backend-seitige Bestätigungsmail-Feature (siehe
+// services/course-registration-mail-service.ts): ob die Zeile schon in eine
+// externe Liste übertragen wurde (Admin-Buchhaltung, wie 'paid') bzw. ob die
+// Bestätigungsmail bereits verschickt wurde (server-only, nie über UPDATE
+// gesetzt - siehe updateRegistration's Ausschluss).
+if (!courseRegistrationColumns.some((c) => c.name === 'transferred_to_external_list')) {
+  db.exec('ALTER TABLE course_registrations ADD COLUMN transferred_to_external_list INTEGER NOT NULL DEFAULT 0;');
+}
+if (!courseRegistrationColumns.some((c) => c.name === 'confirmation_mail_sent')) {
+  db.exec('ALTER TABLE course_registrations ADD COLUMN confirmation_mail_sent INTEGER NOT NULL DEFAULT 0;');
+}
+
+// trip_registrations' first guarded-migration block (no entered_by/paid
+// precedent here yet, unlike course_registrations above) - same
+// transferred_to_external_list/confirmation_mail_sent pair, plus the
+// registrant's own option choices (busOnly/snowshoes/courseRequested/level)
+// needed server-side to render the confirmation mail's price table (see
+// trip-pricing-service.ts) without re-deriving them from elsewhere.
+const tripRegistrationColumns = db.prepare("SELECT name FROM pragma_table_info('trip_registrations')").all() as {
+  name: string;
+}[];
+if (!tripRegistrationColumns.some((c) => c.name === 'transferred_to_external_list')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN transferred_to_external_list INTEGER NOT NULL DEFAULT 0;');
+}
+if (!tripRegistrationColumns.some((c) => c.name === 'confirmation_mail_sent')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN confirmation_mail_sent INTEGER NOT NULL DEFAULT 0;');
+}
+if (!tripRegistrationColumns.some((c) => c.name === 'bus_only')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN bus_only INTEGER NOT NULL DEFAULT 0;');
+}
+if (!tripRegistrationColumns.some((c) => c.name === 'snowshoes')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN snowshoes INTEGER NOT NULL DEFAULT 0;');
+}
+if (!tripRegistrationColumns.some((c) => c.name === 'course_requested')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN course_requested INTEGER NOT NULL DEFAULT 0;');
+}
+if (!tripRegistrationColumns.some((c) => c.name === 'level')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN level TEXT;');
+}

@@ -49,7 +49,7 @@ describe('TripDetailComponent', () => {
                 { provide: ActivatedRoute, useValue: { paramMap: paramMap$ } },
                 {
                     provide: TripRegistrationFormServiceInterface,
-                    useValue: { sendFormToSheetsIo: () => {}, sendConfirmationMail: () => {} },
+                    useValue: { sendFormToSheetsIo: () => {}, getTripPricePreview: () => of({ prices: [], total: 0 }) },
                 },
                 { provide: TripTilesApiServiceInterface, useValue: { getAllTrips: () => of([TEST_TILE]) } },
             ],

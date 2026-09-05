@@ -17,6 +17,11 @@ const makeRegistration = (overrides: Partial<TripRegistration> = {}): TripRegist
     status: 'confirmed',
     source: 'manual',
     orderIndex: 0,
+    transferredToExternalList: false,
+    confirmationMailSent: false,
+    busOnly: false,
+    snowshoes: false,
+    courseRequested: false,
     ...overrides,
 });
 

@@ -39,9 +39,9 @@ describe('TripsRegisterDialogComponent', () => {
                     provide: TripRegistrationFormServiceInterface,
                     useValue: {
                         sendFormToSheetsIo: () => {},
-                        sendConfirmationMail: () => {},
                         submitPublicRegistration: () => of({ status: 'confirmed' }),
                         getTurnstileSiteKey: () => '1x00000000000000000000AA',
+                        getTripPricePreview: () => of({ prices: [], total: 0 }),
                     },
                 },
             ],

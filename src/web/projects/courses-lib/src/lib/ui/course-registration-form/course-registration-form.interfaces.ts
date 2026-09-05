@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseFormElements } from 'projects/shared-lib/src/lib/components/forms';
-import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import { Observable } from 'rxjs';
 
 export interface CourseRegisterFormFields {
@@ -44,7 +43,6 @@ export interface PublicCourseRegistrationInput {
 @Injectable()
 export abstract class CourseRegistrationFormServiceInterface {
     public abstract sendFormToSheetsIo(formData: FormData): void;
-    public abstract sendConfirmationMail(mailData: FormToMailInformation<CourseRegisterFormFields>): void;
     // Parallel, non-blocking write into sck-api's course_registrations (see
     // the plan) - does NOT replace sendFormToSheetsIo, which keeps running
     // unconditionally. Only called when a tileId could be resolved (see

@@ -5,7 +5,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
-import { RegistrationAgeCategory, TripRegistration } from '../../domain/trip-registration';
+import {
+    RegistrationAgeCategory,
+    TripRegistration,
+    TripRegistrationCreationParams,
+} from '../../domain/trip-registration';
 import { Tile } from '../../domain/tile';
 import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
@@ -116,11 +120,48 @@ export class TripRegistrationsComponent implements OnInit {
             status: 'confirmed',
             source: 'manual',
             orderIndex: 0,
+            transferredToExternalList: false,
+            confirmationMailSent: false,
+            busOnly: false,
+            snowshoes: false,
+            courseRequested: false,
         });
     }
 
     onEdit(registration: TripRegistration): void {
         this.openEditor({ ...registration });
+    }
+
+    // Table-badge shortcut for the same field the editor's checkbox sets -
+    // built field-by-field (not a spread) so a forgotten field here is a
+    // compile error, matching the editor's onSave() style. Also the reason
+    // busOnly/snowshoes/courseRequested/level are carried through explicitly
+    // - a spread of a stale `registration` would be fine here since it's the
+    // same object as the row, but explicit fields keep this in sync with the
+    // editor and catch a future field added to TripRegistration at compile
+    // time instead of silently dropping it on the next toggle.
+    onToggleTransferred(registration: TripRegistration): void {
+        if (!this.auth.hasPermission('tiles:write')) return;
+
+        const params: TripRegistrationCreationParams = {
+            firstName: registration.firstName,
+            lastName: registration.lastName,
+            email: registration.email || undefined,
+            phone: registration.phone || undefined,
+            boardingId: registration.boardingId || undefined,
+            ageCategory: registration.ageCategory,
+            status: registration.status,
+            source: registration.source,
+            notes: registration.notes || undefined,
+            orderIndex: registration.orderIndex,
+            transferredToExternalList: !registration.transferredToExternalList,
+            busOnly: registration.busOnly,
+            snowshoes: registration.snowshoes,
+            courseRequested: registration.courseRequested,
+            level: registration.level,
+        };
+
+        this.dataService.updateRegistration(registration.id, params).subscribe(() => this.refresh());
     }
 
     private openEditor(registration: TripRegistration): void {

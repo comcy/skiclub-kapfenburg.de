@@ -17,21 +17,22 @@ import {
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { calculateAge, GERMAN_DATE_FORMATS, formatDateByLocale } from 'projects/shared-lib/src/lib/date-time';
-import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import {
+    calculateAge,
+    GERMAN_DATE_FORMATS,
+    GermanDateAdapter,
+    formatDateByLocale,
+} from 'projects/shared-lib/src/lib/date-time';
 import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { SkiCoursePricing } from '../../domain/models/ski-course-pricing';
 import { COURSE_REGISTRATION_FORM_ELEMENTS } from './course-registration-form-fields';
-import {
-    CourseRegisterFormFields,
-    CourseRegistrationFormServiceInterface,
-} from './course-registration-form.interfaces';
+import { CourseRegistrationFormServiceInterface } from './course-registration-form.interfaces';
 
 @Component({
     selector: 'lib-course-registration-form',
@@ -54,7 +55,7 @@ import {
         TurnstileWidgetComponent,
     ],
     providers: [
-        provideNativeDateAdapter(),
+        { provide: DateAdapter, useClass: GermanDateAdapter },
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
         { provide: MAT_DATE_FORMATS, useValue: GERMAN_DATE_FORMATS },
     ],
@@ -168,17 +169,6 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
             if (formData) {
                 this.submitForm.emit(true);
                 this.courseRegistrationFormService.sendFormToSheetsIo(formData);
-
-                const mailToFormData: FormToMailInformation<CourseRegisterFormFields> = {
-                    receiver: this.courseRegisterForm.controls['email'].getRawValue(),
-                    formValues: {
-                        ...rawValue,
-                        birthday: birthdayText,
-                        customBccList: this.presetCustomBccList,
-                    },
-                };
-
-                this.courseRegistrationFormService.sendConfirmationMail(mailToFormData);
 
                 if (this.presetTileId) {
                     this.courseRegistrationFormService

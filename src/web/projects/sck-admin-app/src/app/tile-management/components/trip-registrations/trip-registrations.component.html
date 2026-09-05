@@ -74,13 +74,15 @@
                     <th>Alterskategorie</th>
                     <th class="no-print">Mitglied</th>
                     <th>Status</th>
+                    <th class="no-print">Extern erfasst</th>
+                    <th class="no-print">Bestätigungsmail</th>
                     <th class="no-print" style="width: 88px"></th>
                 </tr>
             </thead>
             <tbody>
                 @for (group of groups; track group.boardingName) {
                     <tr>
-                        <td colspan="5" class="group-heading">{{ group.boardingName }}</td>
+                        <td colspan="7" class="group-heading">{{ group.boardingName }}</td>
                     </tr>
                     @for (registration of group.registrations; track registration.id) {
                         <tr class="row">
@@ -108,6 +110,26 @@
                                     }
                                 </span>
                             </td>
+                            <td class="no-print">
+                                <span
+                                    class="badge-toggle"
+                                    [class.badge-toggle-clickable]="auth.hasPermission('tiles:write')"
+                                    (click)="onToggleTransferred(registration)"
+                                >
+                                    @if (registration.transferredToExternalList) {
+                                        <span class="badge-member"><mat-icon>check</mat-icon> Erfasst</span>
+                                    } @else {
+                                        <span class="badge-nonmember">Offen</span>
+                                    }
+                                </span>
+                            </td>
+                            <td class="no-print">
+                                @if (registration.confirmationMailSent) {
+                                    <span class="badge-member"><mat-icon>check</mat-icon> Gesendet</span>
+                                } @else {
+                                    <span class="badge-nonmember">Ausstehend</span>
+                                }
+                            </td>
                             <td class="no-print actions-cell">
                                 @if (auth.hasPermission('tiles:write')) {
                                     <button mat-icon-button (click)="onEdit(registration)">
@@ -123,7 +145,7 @@
                 }
                 @if (!groups.length) {
                     <tr>
-                        <td colspan="5" class="empty">Noch keine Anmeldungen.</td>
+                        <td colspan="7" class="empty">Noch keine Anmeldungen.</td>
                     </tr>
                 }
             </tbody>

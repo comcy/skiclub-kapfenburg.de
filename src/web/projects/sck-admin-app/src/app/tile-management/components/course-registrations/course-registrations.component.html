@@ -44,6 +44,8 @@
                     <th>Preis</th>
                     <th class="no-print">Eingetragen von</th>
                     <th>Bezahlt</th>
+                    <th class="no-print">Extern erfasst</th>
+                    <th class="no-print">Bestätigungsmail</th>
                     <th>Kommentar</th>
                     <th class="no-print" style="width: 88px"></th>
                 </tr>
@@ -72,6 +74,26 @@
                                 <span class="badge-nonmember">Offen</span>
                             }
                         </td>
+                        <td class="no-print">
+                            <span
+                                class="badge-toggle"
+                                [class.badge-toggle-clickable]="auth.hasPermission('tiles:write')"
+                                (click)="onToggleTransferred(registration)"
+                            >
+                                @if (registration.transferredToExternalList) {
+                                    <span class="badge-member"><mat-icon>check</mat-icon> Erfasst</span>
+                                } @else {
+                                    <span class="badge-nonmember">Offen</span>
+                                }
+                            </span>
+                        </td>
+                        <td class="no-print">
+                            @if (registration.confirmationMailSent) {
+                                <span class="badge-member"><mat-icon>check</mat-icon> Gesendet</span>
+                            } @else {
+                                <span class="badge-nonmember">Ausstehend</span>
+                            }
+                        </td>
                         <td>{{ registration.notes || '–' }}</td>
                         <td class="no-print actions-cell">
                             @if (auth.hasPermission('tiles:write')) {
@@ -87,7 +109,7 @@
                 }
                 @if (!registrations.length) {
                     <tr>
-                        <td colspan="11" class="empty">Noch keine Anmeldungen.</td>
+                        <td colspan="13" class="empty">Noch keine Anmeldungen.</td>
                     </tr>
                 }
             </tbody>

@@ -22,12 +22,19 @@ export interface CourseRegistration {
     // public self-registrations (no admin author).
     enteredBy?: string;
     paid: boolean;
+    // Admin-Buchhaltung, wie 'paid' - über den Editor/das PUT setzbar.
+    transferredToExternalList: boolean;
+    // Server-only: nur nach erfolgreichem Mailversand serverseitig gesetzt,
+    // nie über ein PUT vom Client editierbar - siehe die Omit unten.
+    confirmationMailSent: boolean;
 }
 
 // memberId/isMember are always recomputed server-side from email - never
 // sent by the client, see course-registrations-service.ts on the API side.
 // enteredBy is likewise always server-derived from the session.
+// confirmationMailSent is likewise always server-derived - never sent by
+// the client (see the editor's onSave()).
 export type CourseRegistrationCreationParams = Omit<
     CourseRegistration,
-    'id' | 'tileId' | 'memberId' | 'isMember' | 'enteredBy'
+    'id' | 'tileId' | 'memberId' | 'isMember' | 'enteredBy' | 'confirmationMailSent'
 >;

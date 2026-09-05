@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { calculateAge } from 'projects/shared-lib/src/lib/date-time';
 import { AuthService } from '../../../auth/services/auth.service';
-import { CourseRegistration } from '../../domain/course-registration';
+import { CourseRegistration, CourseRegistrationCreationParams } from '../../domain/course-registration';
 import { Tile } from '../../domain/tile';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { CourseRegistrationEditorComponent } from './course-registration-editor/course-registration-editor.component';
@@ -84,11 +84,39 @@ export class CourseRegistrationsComponent implements OnInit {
             source: 'manual',
             orderIndex: 0,
             paid: false,
+            transferredToExternalList: false,
+            confirmationMailSent: false,
         };
     }
 
     onEdit(registration: CourseRegistration): void {
         this.selectedRegistration = { ...registration };
+    }
+
+    // Table-badge shortcut for the same field the editor's checkbox sets -
+    // built field-by-field (not a spread) so a forgotten field here is a
+    // compile error, matching the editor's onSave() style.
+    onToggleTransferred(registration: CourseRegistration): void {
+        if (!this.auth.hasPermission('tiles:write')) return;
+
+        const params: CourseRegistrationCreationParams = {
+            firstName: registration.firstName,
+            lastName: registration.lastName,
+            email: registration.email || undefined,
+            phone: registration.phone || undefined,
+            birthday: registration.birthday || undefined,
+            sportType: registration.sportType || undefined,
+            level: registration.level || undefined,
+            groupId: registration.groupId || undefined,
+            status: registration.status,
+            source: registration.source,
+            notes: registration.notes || undefined,
+            orderIndex: registration.orderIndex,
+            paid: registration.paid,
+            transferredToExternalList: !registration.transferredToExternalList,
+        };
+
+        this.dataService.updateCourseRegistration(registration.id, params).subscribe(() => this.refresh());
     }
 
     onDelete(registration: CourseRegistration): void {

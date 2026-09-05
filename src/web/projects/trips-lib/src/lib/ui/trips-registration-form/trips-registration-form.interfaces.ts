@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseFormElements } from 'projects/shared-lib/src/lib/components';
-import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import { Observable } from 'rxjs';
 import { TripParticipant } from '../../domain/models';
 import { Trip } from '../../domain/models/trip-base';
@@ -17,8 +16,9 @@ export interface TripRegisterForm {
 
 // Result of the parallel, capacity-aware sck-api submission (see
 // submitPublicRegistration below) - undefined when the tile has no id, the
-// request failed, or hasn't resolved yet: getTripConfirmationMailText()
-// then just renders its normal, non-waitlist text (never blocks sending).
+// request failed, or hasn't resolved yet. The server-side confirmation mail
+// (see trip-registration-mail-service.ts) then just renders its normal,
+// non-waitlist text (this never blocks the registration itself).
 export interface WaitlistInfo {
     status: 'confirmed' | 'waitlist';
     waitlistPosition?: number;
@@ -46,12 +46,35 @@ export interface PublicRegistrationParticipantInput {
     phone?: string;
     birthday?: string;
     boarding?: string;
+    // Own form choices - now persisted server-side (see the plan) so the
+    // server-sent confirmation mail can render the price table without
+    // duplicating pricing logic client-side.
+    busOnly?: boolean;
+    snowshoes?: boolean;
+    courseRequested?: boolean;
+    level?: string;
+}
+
+// One participant's price-relevant choices, sent to the live price preview
+// endpoint (see TripRegistrationFormServiceInterface.getTripPricePreview) -
+// mirrors sck-api's PricePreviewParticipant.
+export interface TripPricePreviewParticipant {
+    busOnly?: boolean;
+    snowshoes?: boolean;
+    courseRequested?: boolean;
+    level?: string;
+    birthday?: string;
+    isMember?: boolean;
+}
+
+export interface TripPricePreviewResult {
+    prices: number[];
+    total: number;
 }
 
 @Injectable()
 export abstract class TripRegistrationFormServiceInterface {
     public abstract sendFormToSheetsIo(rows: SheetDbRow[]): void;
-    public abstract sendConfirmationMail(mailData: FormToMailInformation<TripRegisterFormValue>): void;
     // Parallel, capacity-aware write into sck-api's trip_registrations (see
     // the plan) - does NOT replace sendFormToSheetsIo, which keeps running
     // unconditionally as before. turnstileToken is only verified here (the
@@ -64,4 +87,11 @@ export abstract class TripRegistrationFormServiceInterface {
     // Public Turnstile site key (environment.turnstileSiteKey) - not a secret, only the
     // sck-api-side secret key needs protecting (see turnstile-middleware.ts).
     public abstract getTurnstileSiteKey(): string;
+    // Live per-participant + total price, computed server-side (see
+    // trip-pricing-service.ts) - replaces the form's former client-side
+    // duplication of the pricing logic (see the plan).
+    public abstract getTripPricePreview(
+        tileId: string,
+        participants: TripPricePreviewParticipant[],
+    ): Observable<TripPricePreviewResult>;
 }

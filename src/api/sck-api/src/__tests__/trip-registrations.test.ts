@@ -9,6 +9,26 @@ import { db } from '../db/connection.js';
 // this line runs, so the route (and therefore the middleware) is imported
 // dynamically instead, same pattern as the other route test files.
 process.env.TURNSTILE_SECRET_KEY = 'test-secret';
+// sendMail() only calls out to nodemailer when SMTP_SERVER is set (see
+// mailer.ts's dev-log fallback branch) - set it before the route (which
+// transitively imports mailer.ts) is loaded, so the mocked transporter below
+// is actually exercised instead of the console.log dev branch.
+process.env.SMTP_SERVER = 'smtp.test.local';
+const mockedSendMail = jest.fn();
+const mockedCreateTransport = jest.fn();
+jest.unstable_mockModule('nodemailer', () => ({
+  default: { createTransport: mockedCreateTransport },
+}));
+
+// This file's public-route coverage (registration + price-preview, several
+// requests per `it`) comfortably exceeds publicWriteLimiter's production
+// 20-requests/15min cap from the same test IP - the limiter's own behavior
+// has dedicated coverage in rate-limit.test.ts, so it's a no-op here.
+jest.unstable_mockModule('../middleware/rate-limit', () => ({
+  publicWriteLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
+  publicReadLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
+}));
+
 const { default: tripRegistrationsRoutes } = await import('../routes/trip-registrations-route.js');
 
 const app = express();
@@ -32,6 +52,8 @@ beforeEach(() => {
   mockFetch.mockReset().mockResolvedValue({
     json: () => Promise.resolve({ success: true }),
   });
+  mockedSendMail.mockClear().mockResolvedValue({ messageId: 'test-message-id' });
+  mockedCreateTransport.mockReset().mockReturnValue({ sendMail: mockedSendMail });
 });
 
 const hashToken = (token: string): string => createHash('sha256').update(token).digest('hex');
@@ -114,6 +136,9 @@ describe('Trip Registrations Routes', () => {
       .send(validRegistration);
     expect(createRes.status).toBe(201);
     expect(createRes.body.isMember).toBe(false);
+    // New status-tracking fields default to false on create.
+    expect(createRes.body.transferredToExternalList).toBe(false);
+    expect(createRes.body.confirmationMailSent).toBe(false);
     const id = createRes.body.id as string;
 
     const listRes = await request(app)
@@ -126,9 +151,13 @@ describe('Trip Registrations Routes', () => {
     const updateRes = await request(app)
       .put(`/api/registrations/${id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...validRegistration, status: 'waitlist' });
+      .send({ ...validRegistration, status: 'waitlist', transferredToExternalList: true, confirmationMailSent: true });
     expect(updateRes.status).toBe(200);
     expect(updateRes.body.status).toBe('waitlist');
+    // transferredToExternalList IS settable via PUT (admin accounting field)...
+    expect(updateRes.body.transferredToExternalList).toBe(true);
+    // ...but confirmationMailSent is silently ignored - server-only field.
+    expect(updateRes.body.confirmationMailSent).toBe(false);
 
     const deleteRes = await request(app).delete(`/api/registrations/${id}`).set('Authorization', `Bearer ${token}`);
     expect(deleteRes.status).toBe(204);
@@ -180,6 +209,8 @@ describe('Trip Registrations Routes', () => {
 
       expect(res.status).toBe(201);
       expect(res.body).toEqual({ status: 'confirmed' });
+      // registrationIds is service-internal only, never leaked to the public response.
+      expect(res.body.registrationIds).toBeUndefined();
 
       const list = await request(app)
         .get(`/api/tiles/${tileId}/registrations`)
@@ -187,6 +218,50 @@ describe('Trip Registrations Routes', () => {
       expect(list.body).toHaveLength(1);
       expect(list.body[0].source).toBe('sheet-import');
       expect(list.body[0].ageCategory).toBe('adult');
+      expect(list.body[0].transferredToExternalList).toBe(false);
+    });
+
+    it('verschickt genau eine Bestätigungsmail pro Gruppen-Submit (nicht pro Teilnehmer)', async () => {
+      const tileId = createTile(10);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Kontakt', lastName: 'Person', email: 'kontakt@test.com', birthday: '1990-01-01' },
+            { firstName: 'Zweite', lastName: 'Person', birthday: '1992-01-01' },
+            { firstName: 'Dritte', lastName: 'Person', birthday: '2018-01-01' },
+          ],
+        });
+
+      expect(res.status).toBe(201);
+      expect(mockedSendMail).toHaveBeenCalledTimes(1);
+      const sentMail = mockedSendMail.mock.calls[0][0] as any;
+      expect(sentMail.to).toBe('kontakt@test.com');
+      // Global BCC fallback (no NotificationBccSetting configured in this test).
+      expect(sentMail.bcc).toContain('registration@skiclub-kapfenburg.de');
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body).toHaveLength(3);
+      expect(list.body.every((r: any) => r.confirmationMailSent === true)).toBe(true);
+    });
+
+    it('bleibt trotz fehlgeschlagenem Mailversand gespeichert (Best-Effort, kein Rollback, kein 500)', async () => {
+      mockedSendMail.mockRejectedValue(new Error('SMTP down'));
+
+      const tileId = createTile(10);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Max', lastName: 'Mustermann', email: 'max@test.com' }] });
+
+      expect(res.status).toBe(201);
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body).toHaveLength(1);
+      expect(list.body[0].confirmationMailSent).toBe(false);
     });
 
     it('leitet die Alterskategorie korrekt aus dem Geburtsdatum ab', async () => {
@@ -375,6 +450,25 @@ describe('Trip Registrations Routes', () => {
       expect(byName('AgeSeven').ageCategory).toBe('youthUntil16');
       expect(byName('AgeSixteen').ageCategory).toBe('youthUntil16');
       expect(byName('AgeSeventeen').ageCategory).toBe('adult');
+    });
+  });
+
+  describe('POST /api/tiles/:tileId/trip-price-preview', () => {
+    it('ist öffentlich und liefert Preis pro Teilnehmer + Summe', async () => {
+      const tileId = createTile();
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/trip-price-preview`)
+        .send({ participants: [{ birthday: '1990-01-01', isMember: false }] });
+
+      expect(res.status).toBe(200);
+      expect(res.body.prices).toHaveLength(1);
+      expect(typeof res.body.total).toBe('number');
+    });
+
+    it('lehnt eine leere Teilnehmerliste mit 400 ab', async () => {
+      const tileId = createTile();
+      const res = await request(app).post(`/api/tiles/${tileId}/trip-price-preview`).send({ participants: [] });
+      expect(res.status).toBe(400);
     });
   });
 });

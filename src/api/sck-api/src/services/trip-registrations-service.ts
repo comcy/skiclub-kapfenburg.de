@@ -7,7 +7,7 @@ import { db } from '../db/connection.js';
 import {
   AgeCategory,
   PublicParticipantInput,
-  PublicRegistrationResult,
+  PublicRegistrationCreateResult,
   RegistrationStatus,
   TripRegistration,
   TripRegistrationCreationParams,
@@ -30,6 +30,12 @@ interface TripRegistrationRow {
   source: string;
   notes: string | null;
   order_index: number;
+  transferred_to_external_list: number;
+  confirmation_mail_sent: number;
+  bus_only: number;
+  snowshoes: number;
+  course_requested: number;
+  level: string | null;
 }
 
 const SELECT_WITH_BOARDING_NAME = `
@@ -54,6 +60,12 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   source: row.source as TripRegistration['source'],
   notes: row.notes ?? undefined,
   orderIndex: row.order_index,
+  transferredToExternalList: row.transferred_to_external_list === 1,
+  confirmationMailSent: row.confirmation_mail_sent === 1,
+  busOnly: row.bus_only === 1,
+  snowshoes: row.snowshoes === 1,
+  courseRequested: row.course_requested === 1,
+  level: row.level ?? undefined,
 });
 
 export const listRegistrationsForTile = (tileId: string): TripRegistration[] => {
@@ -84,8 +96,10 @@ export const createRegistration = (tileId: string, params: TripRegistrationCreat
   db.prepare(
     `INSERT INTO trip_registrations (
       id, tile_id, first_name, last_name, email, phone, member_id, boarding_id,
-      age_category, is_member, status, source, notes, order_index
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      age_category, is_member, status, source, notes, order_index,
+      transferred_to_external_list, confirmation_mail_sent, bus_only, snowshoes,
+      course_requested, level
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -101,6 +115,14 @@ export const createRegistration = (tileId: string, params: TripRegistrationCreat
     params.source,
     params.notes ?? null,
     params.orderIndex ?? 0,
+    params.transferredToExternalList ? 1 : 0,
+    // confirmation_mail_sent starts false always - only markConfirmationMailSent
+    // flips it, after a successful send (see the controller).
+    0,
+    params.busOnly ? 1 : 0,
+    params.snowshoes ? 1 : 0,
+    params.courseRequested ? 1 : 0,
+    params.level ?? null,
   );
 
   return getRegistration(id) as TripRegistration;
@@ -117,6 +139,7 @@ export const updateRegistration = (
       `UPDATE trip_registrations SET
         first_name = ?, last_name = ?, email = ?, phone = ?, member_id = ?, boarding_id = ?,
         age_category = ?, is_member = ?, status = ?, source = ?, notes = ?, order_index = ?,
+        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?,
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
@@ -133,11 +156,27 @@ export const updateRegistration = (
       params.source,
       params.notes ?? null,
       params.orderIndex ?? 0,
+      params.transferredToExternalList ? 1 : 0,
+      params.busOnly ? 1 : 0,
+      params.snowshoes ? 1 : 0,
+      params.courseRequested ? 1 : 0,
+      params.level ?? null,
       id,
     );
 
   if (result.changes === 0) return undefined;
   return getRegistration(id);
+};
+
+// Nur nach erfolgreichem sendMail() aufgerufen (siehe Controller) - kein
+// Weg für den Client, dieses Flag selbst zu setzen (siehe
+// TripRegistrationCreationParams' Ausschluss und updateRegistration oben).
+// Batch-Variante, weil eine ganze Gruppen-Anmeldung (mehrere Teilnehmer) über
+// eine einzige Mail bestätigt wird - siehe createPublicRegistrations.
+export const markConfirmationMailSent = (ids: string[]): void => {
+  if (ids.length === 0) return;
+  const placeholders = ids.map(() => '?').join(', ');
+  db.prepare(`UPDATE trip_registrations SET confirmation_mail_sent = 1 WHERE id IN (${placeholders})`).run(...ids);
 };
 
 export const deleteRegistration = (id: string): boolean => {
@@ -148,7 +187,7 @@ export const deleteRegistration = (id: string): boolean => {
 // Same age brackets as the public site's client-side price calculation
 // (data/mail-templates/trip-confirmation-mail.function.ts calculateParticipantPrice)
 // - duplicated rather than imported, sck-api never depends on the web workspace.
-const calculateAge = (birthday: string, refDate: Date = new Date()): number => {
+export const calculateAge = (birthday: string, refDate: Date = new Date()): number => {
   const dob = new Date(birthday);
   if (isNaN(dob.getTime())) return NaN;
   let age = refDate.getFullYear() - dob.getFullYear();
@@ -159,7 +198,9 @@ const calculateAge = (birthday: string, refDate: Date = new Date()): number => {
   return age;
 };
 
-const resolveAgeCategory = (birthday: string | undefined): AgeCategory => {
+// Exported for reuse by trip-pricing-service.ts, rather than a third
+// duplicate of the same age-bracket logic (see the plan).
+export const resolveAgeCategory = (birthday: string | undefined): AgeCategory => {
   if (!birthday) return 'adult';
   const age = calculateAge(birthday);
   if (isNaN(age) || age < 0) return 'adult';
@@ -186,7 +227,7 @@ const resolveBoardingId = (boardingName: string | undefined): string | undefined
 export const createPublicRegistrations = (
   tileId: string,
   participants: PublicParticipantInput[],
-): PublicRegistrationResult => {
+): PublicRegistrationCreateResult => {
   const tileRow = db.prepare('SELECT capacity FROM tiles WHERE id = ?').get(tileId) as
     | { capacity: number | null }
     | undefined;
@@ -213,7 +254,7 @@ export const createPublicRegistrations = (
     waitlistCount = participants.length;
   }
 
-  participants.forEach((participant, index) => {
+  const registrationIds = participants.map((participant, index) =>
     createRegistration(tileId, {
       firstName: participant.firstName,
       lastName: participant.lastName,
@@ -224,8 +265,13 @@ export const createPublicRegistrations = (
       status,
       source: 'sheet-import',
       orderIndex: index,
-    });
-  });
+      transferredToExternalList: false,
+      busOnly: participant.busOnly ?? false,
+      snowshoes: participant.snowshoes ?? false,
+      courseRequested: participant.courseRequested ?? false,
+      level: participant.level,
+    }).id,
+  );
 
-  return { status, waitlistPosition, waitlistCount };
+  return { status, waitlistPosition, waitlistCount, registrationIds };
 };

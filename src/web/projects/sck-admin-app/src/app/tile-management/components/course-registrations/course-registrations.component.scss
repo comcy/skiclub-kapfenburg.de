@@ -156,6 +156,16 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
+// Admin-Buchhaltung ("Extern erfasst"), togglebar per Klick - im Unterschied
+// zum reinen Anzeige-Badge (z.B. "Bezahlt", "Bestätigungsmail").
+.badge-toggle-clickable {
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 .actions-cell {
     white-space: nowrap;
 }

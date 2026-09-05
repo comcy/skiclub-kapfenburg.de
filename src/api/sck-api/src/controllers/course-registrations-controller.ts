@@ -8,6 +8,12 @@ import * as registrationsService from '../services/course-registrations-service.
 import { PublicCourseRegistrationInput } from '../services/course-registrations-service.js';
 import { TileStatus } from '../domain/tile.js';
 import { getTile } from '../services/tiles-service.js';
+import { sendMail } from '../services/mailer.js';
+import {
+  getCourseConfirmationMailBcc,
+  getCourseConfirmationMailSubject,
+  getCourseConfirmationMailText,
+} from '../services/course-registration-mail-service.js';
 
 const isValidRegistrationParams = (body: CourseRegistrationCreationParams): boolean =>
   !!body.firstName?.trim() && !!body.lastName?.trim();
@@ -43,7 +49,11 @@ export const createCourseRegistration: RequestHandler = (req, res) => {
   }
 };
 
-export const createPublicCourseRegistration: RequestHandler = (req, res) => {
+// Bestätigungsmail wird server-seitig verschickt (verlässlicher als der
+// frühere client-seitige Parallel-Request, siehe die Plan-Begründung) -
+// Speichern zuerst, Mailversand danach best-effort, analog zu
+// membership-controller.ts's createMembershipRegistration.
+export const createPublicCourseRegistration: RequestHandler = async (req, res) => {
   try {
     const tileId = String(req.params.tileId);
     const tile = getTile(tileId);
@@ -61,7 +71,22 @@ export const createPublicCourseRegistration: RequestHandler = (req, res) => {
       return;
     }
 
-    res.status(201).json(registrationsService.createPublicRegistration(tileId, req.body));
+    const registration = registrationsService.createPublicRegistration(tileId, req.body);
+
+    try {
+      await sendMail(
+        registration.email ?? '',
+        getCourseConfirmationMailSubject(registration),
+        getCourseConfirmationMailText(registration),
+        getCourseConfirmationMailBcc(),
+      );
+      registrationsService.markConfirmationMailSent(registration.id);
+      registration.confirmationMailSent = true;
+    } catch (mailError) {
+      console.error('Fehler beim Versand der Kurs-Bestätigungsmail:', mailError);
+    }
+
+    res.status(201).json(registration);
   } catch (error: any) {
     console.error('Fehler beim Speichern der öffentlichen Kurs-Anmeldung:', error);
     res.status(500).json({ error: 'Fehler beim Speichern der Anmeldung.' });

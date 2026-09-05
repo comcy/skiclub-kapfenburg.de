@@ -16,7 +16,7 @@ import {
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,11 +32,11 @@ import {
     formatDateByLocale,
     formatDateTime,
     GERMAN_DATE_FORMATS,
+    GermanDateAdapter,
 } from 'projects/shared-lib/src/lib/date-time';
-import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
 import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, Subject, takeUntil } from 'rxjs';
 import { TripParticipant } from '../../domain/models';
 import { Trip } from '../../domain/models/trip-base';
 import { TripConfig } from '../../domain/models/trip-config';
@@ -44,9 +44,9 @@ import { TripPricingDialogComponent } from '../trip-pricing-dialog/trip-pricing-
 import {
     PublicRegistrationParticipantInput,
     SheetDbRow,
-    TripRegisterFormValue,
+    TripPricePreviewParticipant,
+    TripPricePreviewResult,
     TripRegistrationFormServiceInterface,
-    WaitlistInfo,
 } from './trips-registration-form.interfaces';
 
 interface CourseOption {
@@ -79,7 +79,7 @@ interface CourseOption {
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     providers: [
-        provideNativeDateAdapter(),
+        { provide: DateAdapter, useClass: GermanDateAdapter },
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
         { provide: MAT_DATE_FORMATS, useValue: GERMAN_DATE_FORMATS },
     ],
@@ -104,6 +104,10 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     public tripConfig: TripConfig | undefined;
     public availableLevelOptions: CourseOption[] = [];
+    // Zeros until the first debounced /trip-price-preview response arrives
+    // (see refreshPricePreview) - the template reads from this instead of
+    // computing locally.
+    public pricePreview: TripPricePreviewResult = { prices: [], total: 0 };
 
     private formBuilder = inject(FormBuilder);
     private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
@@ -150,6 +154,14 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 this.enableFormFields();
             }
         });
+
+        // Debounced separately from the subscription above - form fields
+        // (esp. birthday/checkboxes) change frequently while a participant
+        // is being filled in, and each change would otherwise fire its own
+        // request to the price-preview endpoint.
+        this.tripRegisterForm.valueChanges
+            .pipe(debounceTime(300), takeUntil(this.toDestroy$))
+            .subscribe(() => this.refreshPricePreview());
     }
 
     ngOnDestroy() {
@@ -300,82 +312,41 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         return '';
     }
 
+    // Both read from the latest /trip-price-preview response (see
+    // refreshPricePreview) instead of computing locally - the pricing logic
+    // now lives exactly once, server-side (see the plan).
     public getParticipantPrice(index: number): number {
-        const selectedTrip = this.tripRegisterForm.get('trip')?.value as Trip;
-        const pricing = selectedTrip?.tripConfig?.pricing;
-        if (!pricing) return 0;
-
-        const participantGroup = this.participants().at(index);
-        if (!participantGroup) return 0;
-
-        const participant = participantGroup.getRawValue();
-        const isMember = participant.isMember;
-
-        let totalPrice = 0;
-
-        // 1. Bus + Lift or Bus Only
-        if (participant.busOnly) {
-            if (pricing.busOnly) {
-                totalPrice += isMember ? pricing.busOnly.member : pricing.busOnly.nonMember;
-            }
-        } else if (pricing.busLift && participant.birthday) {
-            // Reference date from trip year
-            let refDate = new Date();
-            if (selectedTrip.date) {
-                const yearMatch = selectedTrip.date.match(/\d{4}/);
-                if (yearMatch) {
-                    refDate = new Date(parseInt(yearMatch[0]), 5, 1); // June 1st of trip year
-                }
-            }
-
-            const age = calculateAge(participant.birthday, refDate);
-            if (isNaN(age) || age < 0) return 0;
-
-            let ageGroup: 'adult' | 'youthUntil16' | 'childUntil6' = 'adult';
-            if (age <= 6) ageGroup = 'childUntil6';
-            else if (age <= 16) ageGroup = 'youthUntil16';
-
-            const groupPricing = pricing.busLift[ageGroup];
-            if (groupPricing) {
-                totalPrice += isMember ? groupPricing.member : groupPricing.nonMember;
-            } else {
-                // Fallback to adult if specific group is missing
-                totalPrice += isMember ? pricing.busLift.adult.member : pricing.busLift.adult.nonMember;
-            }
-        } else {
-            // No base price can be determined yet
-            return 0;
-        }
-
-        // 2. Addons: Snowshoes
-        if (participant.snowshoes && pricing.addons?.snowshoes) {
-            totalPrice += isMember ? pricing.addons.snowshoes.member : pricing.addons.snowshoes.nonMember;
-        }
-
-        // 3. Addons: Course / Technik
-        if (participant.courseRequested && pricing.addons && participant.level) {
-            const level = participant.level;
-            let addonPricing = null;
-
-            if (level === 'Anfängerkurs') addonPricing = pricing.addons.courseBeginner;
-            else if (level === 'Fortgeschrittenenkurs') addonPricing = pricing.addons.courseAdvanced;
-            else if (level === 'Techniktraining (1/2 Tag)') addonPricing = pricing.addons.technikHalf;
-            else if (level === 'Techniktraining (ganzer Tag)') addonPricing = pricing.addons.technikFull;
-
-            if (addonPricing) {
-                totalPrice += isMember ? addonPricing.member : addonPricing.nonMember;
-            }
-        }
-
-        return totalPrice;
+        return this.pricePreview.prices[index] ?? 0;
     }
 
     public getTotalPrice(): number {
-        let total = 0;
-        for (let i = 0; i < this.participants().length; i++) {
-            total += this.getParticipantPrice(i);
+        return this.pricePreview.total;
+    }
+
+    private refreshPricePreview(): void {
+        const selectedTrip = this.tripRegisterForm.get('trip')?.value as Trip;
+        const tileId = selectedTrip?.id;
+        if (!tileId || this.participants().length === 0) {
+            this.pricePreview = { prices: [], total: 0 };
+            return;
         }
-        return total;
+
+        const participants: TripPricePreviewParticipant[] = this.participants().controls.map((group) => {
+            const value = group.getRawValue();
+            return {
+                busOnly: value.busOnly,
+                snowshoes: value.snowshoes,
+                courseRequested: value.courseRequested,
+                level: value.level || undefined,
+                birthday: value.birthday,
+                isMember: value.isMember,
+            };
+        });
+
+        this.tripRegistrationFormService.getTripPricePreview(tileId, participants).subscribe({
+            next: (result) => (this.pricePreview = result),
+            error: (error) => console.error('Fehler bei der Preisvorschau:', error),
+        });
     }
 
     public getParticipantOptionsSummary(index: number): string[] {
@@ -478,10 +449,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         this.handleSheetRegistration(rows);
 
         // Parallel, capacity-aware write into sck-api - only possible for
-        // API-backed trips (static fallback trips have no id). Never blocks
-        // the confirmation mail: a missing id or a failed request just means
-        // the mail goes out without waitlist info, same as before this
-        // feature existed.
+        // API-backed trips (static fallback trips have no id). The
+        // confirmation mail (incl. price table) is now sent server-side as
+        // part of this same request (see the plan) - a missing id or a
+        // failed request here just means no sck-api registration/mail at
+        // all, same "Sheets-only" fallback as before this feature existed.
         const tileId: string | undefined = rawValue.trip?.id;
         if (tileId) {
             const publicParticipants: PublicRegistrationParticipantInput[] = rawValue.participants.map(
@@ -492,36 +464,22 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                     phone: participant.phone || contactPerson.phone,
                     birthday: participant.birthday,
                     boarding: participant.boarding,
+                    busOnly: participant.busOnly,
+                    snowshoes: participant.snowshoes,
+                    courseRequested: participant.courseRequested,
+                    level: participant.level,
                 }),
             );
 
             this.tripRegistrationFormService
                 .submitPublicRegistration(tileId, publicParticipants, this.turnstileToken as string)
                 .subscribe({
-                    next: (waitlistInfo) => this.sendConfirmationMail(rawValue, contactPerson, waitlistInfo),
-                    error: (error) => {
-                        console.error('Kapazitätsprüfung fehlgeschlagen:', error);
-                        this.sendConfirmationMail(rawValue, contactPerson, undefined);
-                    },
+                    error: (error) => console.error('Kapazitätsprüfung fehlgeschlagen:', error),
                 });
-        } else {
-            this.sendConfirmationMail(rawValue, contactPerson, undefined);
         }
 
         this.submitForm.emit(true);
         this.isSending = false;
-    }
-
-    private sendConfirmationMail(
-        rawValue: TripRegisterFormValue,
-        contactPerson: TripParticipant,
-        waitlistInfo: WaitlistInfo | undefined,
-    ): void {
-        const mailToFormData: FormToMailInformation<TripRegisterFormValue> = {
-            receiver: contactPerson.email,
-            formValues: { ...rawValue, waitlistInfo },
-        };
-        this.tripRegistrationFormService.sendConfirmationMail(mailToFormData);
     }
 
     private handleSheetRegistration(rows: SheetDbRow[]): void {

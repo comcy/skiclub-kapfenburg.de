@@ -72,5 +72,24 @@
             <mat-label>Notizen</mat-label>
             <textarea matInput rows="3" [(ngModel)]="registration.notes"></textarea>
         </mat-form-field>
+
+        <div class="participant-options-hint">
+            Bus only: {{ registration.busOnly ? 'ja' : 'nein' }} · Schneeschuhe:
+            {{ registration.snowshoes ? 'ja' : 'nein' }} · Kurs:
+            {{ registration.courseRequested ? registration.level || 'ja' : '–' }}
+        </div>
+
+        <mat-checkbox [(ngModel)]="registration.transferredToExternalList" class="checkbox-row">
+            Extern erfasst
+        </mat-checkbox>
+
+        <div class="confirmation-mail-status">
+            Bestätigungsmail:
+            @if (registration.confirmationMailSent) {
+                <span class="badge-member"><mat-icon>check</mat-icon> Gesendet</span>
+            } @else {
+                <span class="badge-nonmember">Ausstehend</span>
+            }
+        </div>
     </div>
 }

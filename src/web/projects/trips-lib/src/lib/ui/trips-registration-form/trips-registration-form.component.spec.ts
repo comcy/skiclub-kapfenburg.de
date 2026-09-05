@@ -49,9 +49,10 @@ describe('TripsRegistrationFormComponent', () => {
     beforeEach(async () => {
         serviceSpy = jasmine.createSpyObj<TripRegistrationFormServiceInterface>(
             'TripRegistrationFormServiceInterface',
-            ['sendFormToSheetsIo', 'sendConfirmationMail', 'submitPublicRegistration', 'getTurnstileSiteKey'],
+            ['sendFormToSheetsIo', 'submitPublicRegistration', 'getTurnstileSiteKey', 'getTripPricePreview'],
         );
         serviceSpy.submitPublicRegistration.and.returnValue(of({ status: 'confirmed' } as WaitlistInfo));
+        serviceSpy.getTripPricePreview.and.returnValue(of({ prices: [], total: 0 }));
 
         await TestBed.configureTestingModule({
             imports: [TripsRegistrationFormComponent],
@@ -64,19 +65,16 @@ describe('TripsRegistrationFormComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    describe('submit() - Kapazitäts-Warnung + Warteliste (Runde 3)', () => {
+    describe('submit() - sck-api registration (mail is now sent server-side, see the plan)', () => {
         it('does not call submitPublicRegistration when the trip has no id (static fallback trip)', () => {
             createComponent(TRIP_WITHOUT_ID);
 
             component.submit();
 
             expect(serviceSpy.submitPublicRegistration).not.toHaveBeenCalled();
-            expect(serviceSpy.sendConfirmationMail).toHaveBeenCalledTimes(1);
-            const mailData = serviceSpy.sendConfirmationMail.calls.mostRecent().args[0];
-            expect(mailData.formValues.waitlistInfo).toBeUndefined();
         });
 
-        it('calls submitPublicRegistration with the tile id and forwards its result as waitlistInfo', () => {
+        it('calls submitPublicRegistration with the tile id and the participant option fields', () => {
             const waitlistInfo: WaitlistInfo = { status: 'waitlist', waitlistPosition: 2, waitlistCount: 1 };
             serviceSpy.submitPublicRegistration.and.returnValue(of(waitlistInfo));
             createComponent(TRIP_WITH_ID);
@@ -85,32 +83,32 @@ describe('TripsRegistrationFormComponent', () => {
 
             expect(serviceSpy.submitPublicRegistration).toHaveBeenCalledWith(
                 'tile-1',
-                jasmine.arrayContaining([jasmine.objectContaining({ firstName: 'Max' })]),
+                jasmine.arrayContaining([
+                    jasmine.objectContaining({
+                        firstName: 'Max',
+                        busOnly: false,
+                        snowshoes: false,
+                        courseRequested: false,
+                    }),
+                ]),
                 'test-turnstile-token',
             );
-            const mailData = serviceSpy.sendConfirmationMail.calls.mostRecent().args[0];
-            expect(mailData.formValues.waitlistInfo).toEqual(waitlistInfo);
         });
 
-        it('still sends the confirmation mail (without waitlistInfo) when the capacity check fails - fail-open', () => {
+        it('does not throw when the capacity check fails - fail-open', () => {
             serviceSpy.submitPublicRegistration.and.returnValue(throwError(() => new Error('network error')));
             createComponent(TRIP_WITH_ID);
 
-            component.submit();
-
-            expect(serviceSpy.sendConfirmationMail).toHaveBeenCalledTimes(1);
-            const mailData = serviceSpy.sendConfirmationMail.calls.mostRecent().args[0];
-            expect(mailData.formValues.waitlistInfo).toBeUndefined();
+            expect(() => component.submit()).not.toThrow();
         });
 
-        it('never calls submitPublicRegistration or sendConfirmationMail when the form is invalid', () => {
+        it('never calls submitPublicRegistration when the form is invalid', () => {
             createComponent(TRIP_WITH_ID);
             component.participants().at(0).patchValue({ firstName: '' });
 
             component.submit();
 
             expect(serviceSpy.submitPublicRegistration).not.toHaveBeenCalled();
-            expect(serviceSpy.sendConfirmationMail).not.toHaveBeenCalled();
         });
 
         it('always forwards the registration to the Google Sheet regardless of tile id', () => {

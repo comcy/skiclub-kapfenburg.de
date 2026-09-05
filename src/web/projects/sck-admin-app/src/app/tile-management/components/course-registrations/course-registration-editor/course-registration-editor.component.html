@@ -69,6 +69,18 @@
         </div>
 
         <mat-checkbox [(ngModel)]="registration.paid" class="checkbox-row">Bezahlt</mat-checkbox>
+        <mat-checkbox [(ngModel)]="registration.transferredToExternalList" class="checkbox-row">
+            Extern erfasst
+        </mat-checkbox>
+
+        <div class="confirmation-mail-status">
+            Bestätigungsmail:
+            @if (registration.confirmationMailSent) {
+                <span class="badge-member"><mat-icon>check</mat-icon> Gesendet</span>
+            } @else {
+                <span class="badge-nonmember">Ausstehend</span>
+            }
+        </div>
 
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Notizen</mat-label>

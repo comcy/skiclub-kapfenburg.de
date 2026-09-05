@@ -32,14 +32,16 @@ export const defaultSender = (): string => SENDER_MAIL;
 // Convenience wrapper around createMailTransporter() for simple to/subject/html
 // sends (e.g. the admin-app's magic-link mail) - logs instead of failing when
 // SMTP isn't configured (local dev), same as the confirmation mails already
-// tolerate missing config elsewhere in this service.
-export const sendMail = async (to: string, subject: string, html: string): Promise<void> => {
+// tolerate missing config elsewhere in this service. bcc is optional (used by
+// the course/trip confirmation mails' global NotificationBccSetting fallback,
+// see *-registration-mail-service.ts) - most callers don't need it.
+export const sendMail = async (to: string, subject: string, html: string, bcc?: string): Promise<void> => {
   if (!SMTP_SERVER) {
     const links = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
     const linksBlock = links.length ? `\n🔗 ${links.join('\n🔗 ')}` : '';
-    console.log(`[dev] Mail an ${to} (${subject}):${linksBlock}\n${html}`);
+    console.log(`[dev] Mail an ${to}${bcc ? ` (BCC: ${bcc})` : ''} (${subject}):${linksBlock}\n${html}`);
     return;
   }
 
-  await createMailTransporter().sendMail({ from: defaultSender(), to, subject, html });
+  await createMailTransporter().sendMail({ from: defaultSender(), to, bcc, subject, html });
 };

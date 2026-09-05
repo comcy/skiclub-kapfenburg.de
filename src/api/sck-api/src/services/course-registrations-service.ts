@@ -31,6 +31,8 @@ interface CourseRegistrationRow {
   order_index: number;
   entered_by: string | null;
   paid: number;
+  transferred_to_external_list: number;
+  confirmation_mail_sent: number;
 }
 
 const rowToRegistration = (row: CourseRegistrationRow): CourseRegistration => ({
@@ -52,6 +54,8 @@ const rowToRegistration = (row: CourseRegistrationRow): CourseRegistration => ({
   orderIndex: row.order_index,
   enteredBy: row.entered_by ?? undefined,
   paid: row.paid === 1,
+  transferredToExternalList: row.transferred_to_external_list === 1,
+  confirmationMailSent: row.confirmation_mail_sent === 1,
 });
 
 export const listRegistrationsForTile = (tileId: string): CourseRegistration[] => {
@@ -87,8 +91,8 @@ export const createRegistration = (
     `INSERT INTO course_registrations (
       id, tile_id, first_name, last_name, email, phone, member_id, birthday,
       sport_type, level, group_id, is_member, status, source, notes, order_index,
-      entered_by, paid
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      entered_by, paid, transferred_to_external_list, confirmation_mail_sent
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -108,6 +112,10 @@ export const createRegistration = (
     params.orderIndex ?? 0,
     enteredBy ?? null,
     params.paid ? 1 : 0,
+    params.transferredToExternalList ? 1 : 0,
+    // confirmation_mail_sent starts false always - only markConfirmationMailSent
+    // flips it, after a successful send (see the controller).
+    0,
   );
 
   return getRegistration(id) as CourseRegistration;
@@ -127,7 +135,8 @@ export const updateRegistration = (
       `UPDATE course_registrations SET
         first_name = ?, last_name = ?, email = ?, phone = ?, member_id = ?, birthday = ?,
         sport_type = ?, level = ?, group_id = ?, is_member = ?, status = ?, source = ?,
-        notes = ?, order_index = ?, paid = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+        notes = ?, order_index = ?, paid = ?, transferred_to_external_list = ?,
+        updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
     .run(
@@ -146,11 +155,19 @@ export const updateRegistration = (
       params.notes ?? null,
       params.orderIndex ?? 0,
       params.paid ? 1 : 0,
+      params.transferredToExternalList ? 1 : 0,
       id,
     );
 
   if (result.changes === 0) return undefined;
   return getRegistration(id);
+};
+
+// Nur nach erfolgreichem sendMail() aufgerufen (siehe Controller) - kein
+// Weg für den Client, dieses Flag selbst zu setzen (siehe
+// CourseRegistrationCreationParams' Ausschluss und updateRegistration oben).
+export const markConfirmationMailSent = (id: string): void => {
+  db.prepare('UPDATE course_registrations SET confirmation_mail_sent = 1 WHERE id = ?').run(id);
 };
 
 export const deleteRegistration = (id: string): boolean => {
@@ -186,6 +203,7 @@ export const createPublicRegistration = (tileId: string, params: PublicCourseReg
     notes: params.notes,
     orderIndex: 0,
     paid: false,
+    transferredToExternalList: false,
   });
 
 interface CourseGroupRow {
