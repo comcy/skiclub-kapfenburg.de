@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable, map } from 'rxjs';
 import { Boarding } from '../../../../boardings-management/domain/boarding';
 import { BoardingsDataService } from '../../../../boardings-management/services/boardings-data.service';
@@ -29,6 +30,7 @@ import { TilesDataService } from '../../../services/tiles-data.service';
         MatButtonModule,
         MatIconModule,
         MatCheckboxModule,
+        MatTooltipModule,
     ],
     templateUrl: './registration-editor.component.html',
     styleUrls: ['./registration-editor.component.scss'],
@@ -67,8 +69,12 @@ export class RegistrationEditorComponent {
             lastName: this.registration.lastName,
             email: this.registration.email || undefined,
             phone: this.registration.phone || undefined,
+            birthday: this.registration.birthday || undefined,
             boardingId: this.registration.boardingId || undefined,
             ageCategory: this.registration.ageCategory,
+            // Only trusted by the API on an update (PUT), never on create -
+            // see TripRegistrationCreationParams' own comment.
+            isMember: this.registration.isMember,
             status: this.registration.status,
             source: this.registration.source,
             notes: this.registration.notes || undefined,

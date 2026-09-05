@@ -53,6 +53,11 @@ export interface PublicRegistrationParticipantInput {
     snowshoes?: boolean;
     courseRequested?: boolean;
     level?: string;
+    // What the participant checked on the form's own member checkbox (used
+    // client-side for the live price preview) - now also sent along so the
+    // admin list can flag a mismatch against the real, email-verified
+    // isMember (see sck-api's selfReportedIsMember).
+    isMember?: boolean;
 }
 
 // One participant's price-relevant choices, sent to the live price preview

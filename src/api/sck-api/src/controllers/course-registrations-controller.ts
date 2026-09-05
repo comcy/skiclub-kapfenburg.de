@@ -74,14 +74,16 @@ export const createPublicCourseRegistration: RequestHandler = async (req, res) =
     const registration = registrationsService.createPublicRegistration(tileId, req.body);
 
     try {
-      await sendMail(
+      const sent = await sendMail(
         registration.email ?? '',
         getCourseConfirmationMailSubject(registration),
         getCourseConfirmationMailText(registration),
         getCourseConfirmationMailBcc(),
       );
-      registrationsService.markConfirmationMailSent(registration.id);
-      registration.confirmationMailSent = true;
+      if (sent) {
+        registrationsService.markConfirmationMailSent(registration.id);
+        registration.confirmationMailSent = true;
+      }
     } catch (mailError) {
       console.error('Fehler beim Versand der Kurs-Bestätigungsmail:', mailError);
     }

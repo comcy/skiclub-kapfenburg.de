@@ -478,6 +478,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                     snowshoes: participant.snowshoes,
                     courseRequested: participant.courseRequested,
                     level: participant.level,
+                    isMember: participant.isMember,
                 }),
             );
 

@@ -507,3 +507,19 @@ if (!tripRegistrationColumns.some((c) => c.name === 'course_requested')) {
 if (!tripRegistrationColumns.some((c) => c.name === 'level')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN level TEXT;');
 }
+// entered_by: same as course_registrations above, just added later here.
+// birthday: the registrant's own raw input - only age_category was kept
+// before, which is enough for pricing but not for the admin list showing
+// an actual age. self_reported_is_member: what the participant checked on
+// the public form, kept separate from is_member (always re-derived from
+// email, see resolveMember) so admins can spot someone who claimed member
+// pricing without actually matching a member record.
+if (!tripRegistrationColumns.some((c) => c.name === 'entered_by')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN entered_by TEXT;');
+}
+if (!tripRegistrationColumns.some((c) => c.name === 'birthday')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN birthday TEXT;');
+}
+if (!tripRegistrationColumns.some((c) => c.name === 'self_reported_is_member')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN self_reported_is_member INTEGER NOT NULL DEFAULT 0;');
+}

@@ -14,6 +14,7 @@ const makeRegistration = (overrides: Partial<TripRegistration> = {}): TripRegist
     lastName: 'Mustermann',
     ageCategory: 'adult',
     isMember: false,
+    selfReportedIsMember: false,
     status: 'confirmed',
     source: 'manual',
     orderIndex: 0,

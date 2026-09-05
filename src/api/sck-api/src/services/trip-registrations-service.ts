@@ -21,15 +21,18 @@ interface TripRegistrationRow {
   last_name: string;
   email: string | null;
   phone: string | null;
+  birthday: string | null;
   member_id: string | null;
   boarding_id: string | null;
   boarding_name: string | null;
   age_category: string;
   is_member: number;
+  self_reported_is_member: number;
   status: string;
   source: string;
   notes: string | null;
   order_index: number;
+  entered_by: string | null;
   transferred_to_external_list: number;
   confirmation_mail_sent: number;
   bus_only: number;
@@ -51,15 +54,18 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   lastName: row.last_name,
   email: row.email ?? undefined,
   phone: row.phone ?? undefined,
+  birthday: row.birthday ?? undefined,
   memberId: row.member_id ?? undefined,
   boardingId: row.boarding_id ?? undefined,
   boardingName: row.boarding_name ?? undefined,
   ageCategory: row.age_category as TripRegistration['ageCategory'],
   isMember: row.is_member === 1,
+  selfReportedIsMember: row.self_reported_is_member === 1,
   status: row.status as TripRegistration['status'],
   source: row.source as TripRegistration['source'],
   notes: row.notes ?? undefined,
   orderIndex: row.order_index,
+  enteredBy: row.entered_by ?? undefined,
   transferredToExternalList: row.transferred_to_external_list === 1,
   confirmationMailSent: row.confirmation_mail_sent === 1,
   busOnly: row.bus_only === 1,
@@ -89,17 +95,24 @@ const resolveMember = (email: string | undefined): { id: string | null; isMember
   return { id: member?.id ?? null, isMember: member ? 1 : 0 };
 };
 
-export const createRegistration = (tileId: string, params: TripRegistrationCreationParams): TripRegistration => {
+export const createRegistration = (
+  tileId: string,
+  params: TripRegistrationCreationParams,
+  enteredBy?: string,
+): TripRegistration => {
   const id = randomUUID();
+  // Always freshly derived on create, ignoring whatever params.isMember may
+  // hold (a public submission never sets it at all; an admin-typed one gets
+  // a sensible auto-resolved default) - see TripRegistrationCreationParams.
   const { id: memberId, isMember } = resolveMember(params.email);
 
   db.prepare(
     `INSERT INTO trip_registrations (
-      id, tile_id, first_name, last_name, email, phone, member_id, boarding_id,
-      age_category, is_member, status, source, notes, order_index,
-      transferred_to_external_list, confirmation_mail_sent, bus_only, snowshoes,
+      id, tile_id, first_name, last_name, email, phone, birthday, member_id, boarding_id,
+      age_category, is_member, self_reported_is_member, status, source, notes, order_index,
+      entered_by, transferred_to_external_list, confirmation_mail_sent, bus_only, snowshoes,
       course_requested, level
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -107,14 +120,17 @@ export const createRegistration = (tileId: string, params: TripRegistrationCreat
     params.lastName,
     params.email ?? null,
     params.phone ?? null,
+    params.birthday ?? null,
     memberId,
     params.boardingId ?? null,
     params.ageCategory,
     isMember,
+    params.selfReportedIsMember ? 1 : 0,
     params.status,
     params.source,
     params.notes ?? null,
     params.orderIndex ?? 0,
+    enteredBy ?? null,
     params.transferredToExternalList ? 1 : 0,
     // confirmation_mail_sent starts false always - only markConfirmationMailSent
     // flips it, after a successful send (see the controller).
@@ -128,16 +144,25 @@ export const createRegistration = (tileId: string, params: TripRegistrationCreat
   return getRegistration(id) as TripRegistration;
 };
 
+// self_reported_is_member and entered_by are deliberately absent from this
+// UPDATE - both are a one-time record of the original submission/who
+// created the row, never overwritten afterwards (same reasoning as
+// course-registrations-service.ts's entered_by exclusion). is_member,
+// unlike on createRegistration, is trusted from params as-is here - the
+// admin editor's own way to correct a case the automatic email match got
+// wrong (see registration-editor.component.ts). member_id still re-derives
+// from the (possibly just-corrected) email, since that's a plain factual
+// lookup an admin has no reason to override by hand.
 export const updateRegistration = (
   id: string,
   params: TripRegistrationCreationParams,
 ): TripRegistration | undefined => {
-  const { id: memberId, isMember } = resolveMember(params.email);
+  const { id: memberId } = resolveMember(params.email);
 
   const result = db
     .prepare(
       `UPDATE trip_registrations SET
-        first_name = ?, last_name = ?, email = ?, phone = ?, member_id = ?, boarding_id = ?,
+        first_name = ?, last_name = ?, email = ?, phone = ?, birthday = ?, member_id = ?, boarding_id = ?,
         age_category = ?, is_member = ?, status = ?, source = ?, notes = ?, order_index = ?,
         transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?,
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
@@ -148,10 +173,11 @@ export const updateRegistration = (
       params.lastName,
       params.email ?? null,
       params.phone ?? null,
+      params.birthday ?? null,
       memberId,
       params.boardingId ?? null,
       params.ageCategory,
-      isMember,
+      params.isMember ? 1 : 0,
       params.status,
       params.source,
       params.notes ?? null,
@@ -260,6 +286,7 @@ export const createPublicRegistrations = (
       lastName: participant.lastName,
       email: participant.email,
       phone: participant.phone,
+      birthday: participant.birthday,
       boardingId: resolveBoardingId(participant.boarding),
       ageCategory: resolveAgeCategory(participant.birthday),
       status,
@@ -270,6 +297,8 @@ export const createPublicRegistrations = (
       snowshoes: participant.snowshoes ?? false,
       courseRequested: participant.courseRequested ?? false,
       level: participant.level,
+      isMember: false,
+      selfReportedIsMember: participant.isMember ?? false,
     }).id,
   );
 

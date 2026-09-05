@@ -17,15 +17,26 @@ export interface TripRegistration {
   lastName: string;
   email?: string;
   phone?: string;
+  birthday?: string;
   memberId?: string;
   boardingId?: string;
   boardingName?: string;
   ageCategory: AgeCategory;
   isMember: boolean;
+  // What the participant themselves checked on the public form - kept
+  // separate from isMember (server-verified via email, see resolveMember)
+  // so admins can spot a mismatch (claimed member pricing but isMember is
+  // false) and follow up, rather than silently trusting either signal.
+  selfReportedIsMember: boolean;
   status: RegistrationStatus;
   source: RegistrationSource;
   notes?: string;
   orderIndex: number;
+  // Admin email who created the row - set once server-side from the
+  // authenticated session (see the controller), never client-supplied.
+  // undefined for public self-registrations (no admin author) - same
+  // pattern as course-registration.ts.
+  enteredBy?: string;
   // Admin-Buchhaltung, wie course-registration.ts's 'paid' - über den
   // Editor/das PUT setzbar.
   transferredToExternalList: boolean;
@@ -43,13 +54,19 @@ export interface TripRegistration {
   level?: string;
 }
 
-// memberId and isMember are recomputed server-side from email on every
-// write (see trip-registrations-service.ts) - never accepted from the client.
-// confirmationMailSent is likewise always server-derived (see the
-// controller's post-creation sendMail flow).
+// memberId is always recomputed server-side from email (see
+// trip-registrations-service.ts) - never accepted from the client.
+// confirmationMailSent/enteredBy are likewise always server-derived (see
+// the controller's post-creation sendMail flow / createRegistration's
+// separate enteredBy parameter). isMember stays part of this type (unlike
+// the fields above) but is handled asymmetrically: createRegistration
+// always ignores it and derives it fresh from email (a safe default for a
+// brand-new row, public or admin-typed), while updateRegistration trusts
+// it as-is - the admin editor's own way to correct a case the automatic
+// email match got wrong (see registration-editor.component.ts).
 export type TripRegistrationCreationParams = Omit<
   TripRegistration,
-  'id' | 'tileId' | 'memberId' | 'isMember' | 'boardingName' | 'confirmationMailSent'
+  'id' | 'tileId' | 'memberId' | 'boardingName' | 'confirmationMailSent' | 'enteredBy'
 >;
 
 // One participant as submitted by the PUBLIC registration form (see
@@ -70,6 +87,11 @@ export interface PublicParticipantInput {
   snowshoes?: boolean;
   courseRequested?: boolean;
   level?: string;
+  // What the participant checked on the public form's own (client-side-only,
+  // for the live price preview) member checkbox - stored as-is into
+  // selfReportedIsMember, never used to derive the real isMember (that stays
+  // email-matched, see resolveMember).
+  isMember?: boolean;
 }
 
 export interface PublicRegistrationResult {

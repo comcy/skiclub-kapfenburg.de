@@ -1,9 +1,15 @@
 @if (registration) {
     <div class="editor-form">
-        @if (registration.id && registration.isMember) {
+        @if (registration.id && registration.memberId) {
             <div class="member-hint">
                 <mat-icon>check_circle</mat-icon>
-                Als Mitglied erkannt
+                Als Mitglied verifiziert (E-Mail-Abgleich mit der Mitgliederliste)
+            </div>
+        } @else if (registration.id && registration.selfReportedIsMember) {
+            <div class="member-hint member-hint-warn">
+                <mat-icon>help_outline</mat-icon>
+                Hat im Formular "Mitglied" angegeben, konnte aber nicht per E-Mail zugeordnet werden - nachfragen oder
+                unten manuell setzen.
             </div>
         }
 
@@ -23,10 +29,16 @@
             <input matInput type="email" [(ngModel)]="registration.email" />
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Telefon</mat-label>
-            <input matInput [(ngModel)]="registration.phone" />
-        </mat-form-field>
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Telefon</mat-label>
+                <input matInput [(ngModel)]="registration.phone" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Geburtsdatum</mat-label>
+                <input matInput type="date" [(ngModel)]="registration.birthday" />
+            </mat-form-field>
+        </div>
 
         <div class="field-row">
             <mat-form-field appearance="outline">
@@ -47,6 +59,15 @@
                 </mat-select>
             </mat-form-field>
         </div>
+
+        <mat-checkbox [(ngModel)]="registration.isMember" class="checkbox-row">
+            Mitglied
+            @if (registration.memberId) {
+                <mat-icon class="verified-icon" matTooltip="Per E-Mail mit der Mitgliederliste abgeglichen"
+                    >verified</mat-icon
+                >
+            }
+        </mat-checkbox>
 
         <div class="field-row">
             <mat-form-field appearance="outline">

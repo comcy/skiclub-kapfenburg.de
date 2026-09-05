@@ -14,7 +14,7 @@ import {
 } from '../../domain/trip-registration';
 import { Tile } from '../../domain/tile';
 import { TileStatus } from '../../domain/tile-enums';
-import { TilesDataService } from '../../services/tiles-data.service';
+import { TilesDataService, TripPricePreviewParticipant } from '../../services/tiles-data.service';
 import { RegistrationEditDialogComponent } from './registration-edit-dialog/registration-edit-dialog.component';
 
 interface RegistrationGroup {
@@ -42,6 +42,10 @@ export class TripRegistrationsComponent implements OnInit {
     public registrations: TripRegistration[] = [];
     public tileId!: string;
     public readonly tileStatusEnum = TileStatus;
+    // Keyed by registration id - populated by refresh() via a single batched
+    // /trip-price-preview call (see TilesDataService), reusing sck-api's own
+    // pricing calc instead of a fourth copy of it here.
+    public pricesByRegistrationId = new Map<string, number>();
 
     public readonly ageCategoryLabels: Record<RegistrationAgeCategory, string> = {
         adult: 'Erwachsen',
@@ -64,8 +68,47 @@ export class TripRegistrationsComponent implements OnInit {
     refresh(): void {
         this.dataService.getRegistrations(this.tileId).subscribe((registrations) => {
             this.registrations = registrations;
+            this.refreshPrices(registrations);
             this.cdr.markForCheck();
         });
+    }
+
+    private refreshPrices(registrations: TripRegistration[]): void {
+        if (!registrations.length) {
+            this.pricesByRegistrationId = new Map();
+            return;
+        }
+        const participants: TripPricePreviewParticipant[] = registrations.map((r) => ({
+            birthday: r.birthday,
+            // The final, effective member status (possibly admin-corrected,
+            // see registration-editor.component.ts) - what would actually be
+            // charged, not necessarily what the participant self-reported.
+            isMember: r.isMember,
+            busOnly: r.busOnly,
+            snowshoes: r.snowshoes,
+            courseRequested: r.courseRequested,
+            level: r.level,
+        }));
+        this.dataService.getTripPricePreview(this.tileId, participants).subscribe((result) => {
+            this.pricesByRegistrationId = new Map(registrations.map((r, i) => [r.id, result.prices[i]]));
+            this.cdr.markForCheck();
+        });
+    }
+
+    // Birthday is a plain ISO date (see registration-editor.component.ts) -
+    // simple enough to inline rather than pull in a date-time util just for
+    // this one admin table.
+    public exactAge(birthday: string | undefined): number | undefined {
+        if (!birthday) return undefined;
+        const dob = new Date(birthday);
+        if (isNaN(dob.getTime())) return undefined;
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const hadBirthdayThisYear =
+            today.getMonth() > dob.getMonth() ||
+            (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+        if (!hadBirthdayThisYear) age -= 1;
+        return age;
     }
 
     get confirmedCount(): number {
@@ -120,6 +163,7 @@ export class TripRegistrationsComponent implements OnInit {
             lastName: '',
             ageCategory: 'adult',
             isMember: false,
+            selfReportedIsMember: false,
             status: 'confirmed',
             source: 'manual',
             orderIndex: 0,
@@ -151,8 +195,10 @@ export class TripRegistrationsComponent implements OnInit {
             lastName: registration.lastName,
             email: registration.email || undefined,
             phone: registration.phone || undefined,
+            birthday: registration.birthday || undefined,
             boardingId: registration.boardingId || undefined,
             ageCategory: registration.ageCategory,
+            isMember: registration.isMember,
             status: registration.status,
             source: registration.source,
             notes: registration.notes || undefined,
@@ -174,7 +220,7 @@ export class TripRegistrationsComponent implements OnInit {
         const row = [
             registration.firstName,
             registration.lastName,
-            this.ageCategoryLabels[registration.ageCategory],
+            this.exactAge(registration.birthday) ?? this.ageCategoryLabels[registration.ageCategory],
             registration.isMember ? 'Mitglied' : 'kein Mitglied',
             registration.boardingName || '',
             registration.email || '',
@@ -182,6 +228,7 @@ export class TripRegistrationsComponent implements OnInit {
             registration.busOnly ? 'ja' : 'nein',
             registration.snowshoes ? 'ja' : 'nein',
             registration.courseRequested ? registration.level || 'ja' : 'nein',
+            this.pricesByRegistrationId.get(registration.id) ?? '',
             registration.status,
             registration.notes || '',
         ].join('\t');

@@ -200,6 +200,41 @@ describe('Trip Registrations Routes', () => {
     expect(createRes.body.boardingName).toBe('Hauptbahnhof');
   });
 
+  it('setzt enteredBy beim manuellen Anlegen auf den authentifizierten Admin, nie über PUT änderbar', async () => {
+    const tileId = createTile();
+    const token = createAuthedUser(['tiles:write']);
+
+    const createRes = await request(app)
+      .post(`/api/tiles/${tileId}/registrations`)
+      .set('Authorization', `Bearer ${token}`)
+      .send(validRegistration);
+    const enteredBy = createRes.body.enteredBy as string;
+    expect(enteredBy).toMatch(/@test\.com$/);
+
+    const updateRes = await request(app)
+      .put(`/api/registrations/${createRes.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validRegistration, enteredBy: 'someone-else@test.com' });
+    expect(updateRes.body.enteredBy).toBe(enteredBy);
+  });
+
+  it('lässt isMember über PUT admin-seitig korrigieren, ohne dass ein erneutes E-Mail-Matching es überschreibt', async () => {
+    const tileId = createTile();
+    const token = createAuthedUser(['tiles:write']);
+
+    const createRes = await request(app)
+      .post(`/api/tiles/${tileId}/registrations`)
+      .set('Authorization', `Bearer ${token}`)
+      .send(validRegistration);
+    expect(createRes.body.isMember).toBe(false);
+
+    const updateRes = await request(app)
+      .put(`/api/registrations/${createRes.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validRegistration, isMember: true });
+    expect(updateRes.body.isMember).toBe(true);
+  });
+
   describe('POST /api/tiles/:tileId/registrations/public', () => {
     it('ist öffentlich (keine Anmeldung nötig) und bestätigt, solange Kapazität frei ist', async () => {
       const tileId = createTile(2);
@@ -282,6 +317,24 @@ describe('Trip Registrations Routes', () => {
       expect(byName('Klein').ageCategory).toBe('childUntil6');
       expect(byName('Jugendlich').ageCategory).toBe('youthUntil16');
       expect(byName('Erwachsen').ageCategory).toBe('adult');
+    });
+
+    it('speichert Geburtsdatum + selbst angegebenen Mitgliedsstatus, verifiziert isMember aber unabhängig per E-Mail', async () => {
+      const tileId = createTile(10);
+      const token = createAuthedUser(['tiles:write']);
+      // No matching row in `members` - claims member pricing without being one.
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Max', lastName: 'Mustermann', birthday: '1990-05-01', isMember: true, email: 'max@test.com' },
+          ],
+        });
+
+      const list = await request(app).get(`/api/tiles/${tileId}/registrations`).set('Authorization', `Bearer ${token}`);
+      expect(list.body[0].birthday).toBe('1990-05-01');
+      expect(list.body[0].selfReportedIsMember).toBe(true);
+      expect(list.body[0].isMember).toBe(false);
     });
 
     it('setzt weitere Anmeldungen auf die Warteliste, sobald die Kapazität erreicht ist, mit korrekter Position', async () => {

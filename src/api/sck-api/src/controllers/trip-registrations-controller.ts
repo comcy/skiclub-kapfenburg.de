@@ -45,7 +45,7 @@ export const createTripRegistration: RequestHandler = (req, res) => {
       res.status(400).json({ error: 'Vor- und Nachname sind erforderlich.' });
       return;
     }
-    res.status(201).json(registrationsService.createRegistration(String(req.params.tileId), body));
+    res.status(201).json(registrationsService.createRegistration(String(req.params.tileId), body, req.user?.email));
   } catch (error: any) {
     console.error('Fehler beim Erstellen der Anmeldung:', error);
     res.status(500).json({ error: 'Fehler beim Erstellen der Anmeldung.' });
@@ -94,13 +94,13 @@ export const createPublicTripRegistrations: RequestHandler = async (req, res) =>
 
     if (contactPerson) {
       try {
-        await sendMail(
+        const sent = await sendMail(
           contactPerson.email ?? '',
           getTripConfirmationMailSubject(contactPerson.firstName, publicResult.status),
           getTripConfirmationMailText(tile, contactPerson, createdRegistrations, publicResult),
           getTripConfirmationMailBcc(),
         );
-        registrationsService.markConfirmationMailSent(registrationIds);
+        if (sent) registrationsService.markConfirmationMailSent(registrationIds);
       } catch (mailError) {
         console.error('Fehler beim Versand der Ausfahrten-Bestätigungsmail:', mailError);
       }

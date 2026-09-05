@@ -90,6 +90,7 @@ describe('TripsRegistrationFormComponent', () => {
                         busOnly: false,
                         snowshoes: false,
                         courseRequested: false,
+                        isMember: false,
                     }),
                 ]),
                 'test-turnstile-token',

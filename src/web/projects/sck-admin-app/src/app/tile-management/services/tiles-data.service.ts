@@ -8,6 +8,23 @@ import { Tile, TileCreationParams } from '../domain/tile';
 import { TripRegistration, TripRegistrationCreationParams } from '../domain/trip-registration';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../domain/course-registration';
 
+// Mirrors sck-api's PricePreviewParticipant / trip-price-preview response
+// (see trip-registrations-controller.ts) - not tile-specific data, just the
+// participant fields the global pricing config needs.
+export interface TripPricePreviewParticipant {
+    birthday?: string;
+    isMember?: boolean;
+    busOnly?: boolean;
+    snowshoes?: boolean;
+    courseRequested?: boolean;
+    level?: string;
+}
+
+export interface TripPricePreviewResult {
+    prices: number[];
+    total: number;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -91,6 +108,18 @@ export class TilesDataService {
 
     deleteRegistration(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/registrations/${id}`);
+    }
+
+    // Reuses sck-api's own pricing calc (see trip-pricing-service.ts) instead
+    // of a fourth copy of that logic in the admin app - one call for the
+    // whole registrations list, prices come back in the same order.
+    getTripPricePreview(
+        tileId: string,
+        participants: TripPricePreviewParticipant[],
+    ): Observable<TripPricePreviewResult> {
+        return this.http.post<TripPricePreviewResult>(`${this.apiUrl}/${this.endpoint}/${tileId}/trip-price-preview`, {
+            participants,
+        });
     }
 
     getCourseRegistrations(tileId: string): Observable<CourseRegistration[]> {

@@ -71,8 +71,13 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Alterskategorie</th>
-                    <th class="no-print">Mitglied</th>
+                    <th>Alter</th>
+                    <th>Telefon</th>
+                    <th>Zustieg</th>
+                    <th>Mitglied</th>
+                    <th>Schneeschuhe</th>
+                    <th>Skipass</th>
+                    <th>Preis</th>
                     <th>Status</th>
                     <th class="no-print">Extern erfasst</th>
                     <th class="no-print">Bestätigungsmail</th>
@@ -82,17 +87,38 @@
             <tbody>
                 @for (group of groups; track group.boardingName) {
                     <tr>
-                        <td colspan="7" class="group-heading">{{ group.boardingName }}</td>
+                        <td colspan="12" class="group-heading">{{ group.boardingName }}</td>
                     </tr>
                     @for (registration of group.registrations; track registration.id) {
                         <tr class="row">
                             <td>{{ registration.firstName }} {{ registration.lastName }}</td>
-                            <td>{{ ageCategoryLabels[registration.ageCategory] }}</td>
-                            <td class="no-print">
-                                @if (registration.isMember) {
-                                    <span class="badge-member"><mat-icon>check</mat-icon> Mitglied</span>
+                            <td>
+                                {{ exactAge(registration.birthday) ?? ageCategoryLabels[registration.ageCategory] }}
+                            </td>
+                            <td>{{ registration.phone || '–' }}</td>
+                            <td>{{ registration.boardingName || '–' }}</td>
+                            <td>
+                                @if (registration.memberId) {
+                                    <span class="badge-member" matTooltip="Per E-Mail verifiziert"
+                                        ><mat-icon>verified</mat-icon> Mitglied</span
+                                    >
+                                } @else if (registration.isMember) {
+                                    <span class="badge-member">Mitglied</span>
+                                } @else if (registration.selfReportedIsMember) {
+                                    <span
+                                        class="badge-warn"
+                                        matTooltip="Hat im Formular 'Mitglied' angegeben, ist aber nicht als Mitglied verifiziert"
+                                        ><mat-icon>help_outline</mat-icon> Nicht verifiziert</span
+                                    >
                                 } @else {
                                     <span class="badge-nonmember">kein Mitglied</span>
+                                }
+                            </td>
+                            <td>{{ registration.snowshoes ? 'ja' : '–' }}</td>
+                            <td>{{ registration.busOnly ? '–' : 'ja' }}</td>
+                            <td>
+                                @if (pricesByRegistrationId.has(registration.id)) {
+                                    {{ pricesByRegistrationId.get(registration.id) }}&nbsp;€
                                 }
                             </td>
                             <td>
@@ -152,7 +178,7 @@
                 }
                 @if (!groups.length) {
                     <tr>
-                        <td colspan="7" class="empty">Noch keine Anmeldungen.</td>
+                        <td colspan="12" class="empty">Noch keine Anmeldungen.</td>
                     </tr>
                 }
             </tbody>
