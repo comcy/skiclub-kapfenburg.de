@@ -5,6 +5,11 @@ import express from 'express';
 process.env.SEPA_ENCRYPTION_KEY = '0'.repeat(64);
 // requireTurnstile fails open unless this is set (see turnstile-middleware.ts).
 process.env.TURNSTILE_SECRET_KEY = 'test-secret';
+// sendMail() only calls out to nodemailer when SMTP_SERVER is set (see
+// mailer.ts's dev-log fallback branch) - set it before the route (which
+// transitively imports mailer.ts) is loaded, so the mocked transporter below
+// is actually exercised instead of the console.log dev branch.
+process.env.SMTP_SERVER = 'smtp.test.local';
 
 const mockedSaveData = jest.fn();
 const mockedSaveSepaData = jest.fn();
