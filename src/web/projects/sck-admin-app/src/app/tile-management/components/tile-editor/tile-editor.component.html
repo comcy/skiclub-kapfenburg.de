@@ -125,6 +125,19 @@
                     <mat-checkbox [(ngModel)]="tile.visible">Visible</mat-checkbox>
 
                     @if (tile.tripConfig) {
+                        <div class="form-grid two-columns">
+                            <app-editable-text
+                                label="Ziel"
+                                [value]="tile.destination ?? ''"
+                                (valueChange)="tile.destination = $event"
+                            ></app-editable-text>
+                            <app-editable-text
+                                label="Ort"
+                                [value]="tile.location ?? ''"
+                                (valueChange)="tile.location = $event"
+                            ></app-editable-text>
+                        </div>
+
                         <mat-checkbox [(ngModel)]="tile.tripConfig.hasCourseOption">
                             Ausfahrt mit Kursmöglichkeit
                         </mat-checkbox>

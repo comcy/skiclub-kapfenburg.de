@@ -117,6 +117,9 @@ $color-on-accent: #6b4d00;
         margin-bottom: 0;
     }
 
+    // Always a fixed light tint, regardless of page theme - its own heading
+    // stays on the hardcoded dark colors (see below) rather than the
+    // theme-following tokens the plain (non-highlighted) section uses.
     &.highlighted {
         background: #f3effa;
         border-radius: 24px;
@@ -124,6 +127,16 @@ $color-on-accent: #6b4d00;
 
         @media (max-width: 600px) {
             padding: 32px 20px;
+        }
+
+        .section-heading {
+            h2 {
+                color: $color-primary-dark;
+            }
+
+            p {
+                color: rgba(0, 0, 0, 0.6);
+            }
         }
     }
 }
@@ -139,12 +152,12 @@ $color-on-accent: #6b4d00;
     h2 {
         font-size: 28px;
         font-weight: 700;
-        color: $color-primary-dark;
+        color: var(--mat-sys-primary);
         margin: 0;
     }
 
     p {
-        color: rgba(0, 0, 0, 0.6);
+        color: var(--mat-sys-on-surface-variant);
         margin: 6px 0 0 0;
     }
 }
@@ -154,11 +167,11 @@ $color-on-accent: #6b4d00;
     align-items: center;
     gap: 6px;
     font-weight: 700;
-    color: $color-primary;
+    color: var(--mat-sys-primary);
     white-space: nowrap;
 
     &:hover {
-        color: $color-primary-dark;
+        opacity: 0.8;
     }
 
     mat-icon {

@@ -11,10 +11,26 @@ import {
 import { SkiCoursePricing } from 'projects/courses-lib/src/lib/domain/models/ski-course-pricing';
 import { Observable, catchError, map, of, shareReplay } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { formatGermanDate, resolveMediaUrl } from './normalize-admin-tile-fields';
 
 interface ApiTilesResponse {
     items: ApiCourseTile[];
     total: number;
+}
+
+// Both fields come straight from the admin's generic tile editor (raw ISO
+// date, /media/-relative image path) - normalized here, once, so every
+// consumer (mergeCourseTile, courses.component.ts, gym-lib's course-detail)
+// can keep just interpolating apiTile.image/date directly.
+function normalizeApiCourseTile(tile: ApiCourseTile): ApiCourseTile {
+    return {
+        ...tile,
+        image: resolveMediaUrl(tile.image),
+        date: formatGermanDate(tile.date),
+        course: tile.course
+            ? { ...tile.course, date: tile.course.date ? formatGermanDate(tile.course.date) : tile.course.date }
+            : tile.course,
+    };
 }
 
 const EMPTY_SKI_COURSE_PRICING: SkiCoursePricing = {
@@ -36,7 +52,7 @@ export class CourseTilesApiService implements CourseTilesApiServiceInterface {
     private readonly courseTiles$: Observable<ApiCourseTile[]> = this.http
         .get<ApiTilesResponse>(`${environment.sckApiUrl}/tiles`, { params: { type: 'course', limit: '1000' } })
         .pipe(
-            map((response) => response.items),
+            map((response) => response.items.map(normalizeApiCourseTile)),
             catchError(() => of([])),
             shareReplay({ bufferSize: 1, refCount: false }),
         );

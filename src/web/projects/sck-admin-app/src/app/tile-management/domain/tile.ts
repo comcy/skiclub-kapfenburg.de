@@ -41,6 +41,12 @@ export interface Tile {
     // in sck-api's domain/tile.ts) — typed here now that the editor actually
     // reads/writes into it, previously round-tripped completely blind.
     tripConfig?: TripConfig;
+    // Public-facing "Ausfahrt" fields (see trips-lib's EventTile) - shown on
+    // the trip list/detail/carousel (e.g. "Allgäu (je nach Schneelage)"),
+    // never had an editor field of their own before, so an admin-created
+    // trip tile always rendered without them.
+    destination?: string;
+    location?: string;
     // Kurse section (see fixedType in tile-list/tile-editor) — BCC config,
     // shared by ski-level and Pilates course tiles.
     courseConfig?: CourseConfig;

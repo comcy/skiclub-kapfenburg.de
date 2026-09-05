@@ -21,13 +21,13 @@ $color-primary-dark: #512da8;
     }
 
     h2 {
-        color: $color-primary-dark;
+        color: var(--mat-sys-primary);
         margin: 0 0 16px 0;
     }
 }
 
 a {
-    color: $color-primary;
+    color: var(--mat-sys-primary);
 }
 
 // PRICE TABLE
@@ -39,6 +39,9 @@ a {
     background: #f3effa;
     border-radius: 8px;
     overflow: hidden;
+    // Always a fixed light background regardless of page theme - force dark
+    // text so cells don't inherit the page's (theme-following) text color.
+    color: rgba(0, 0, 0, 0.87);
 
     th,
     td {
@@ -70,7 +73,7 @@ a {
 
 .intro {
     max-width: 720px;
-    color: rgba(0, 0, 0, 0.7);
+    color: var(--mat-sys-on-surface-variant);
     line-height: 1.6;
 }
 
@@ -123,14 +126,14 @@ a {
 
 .reassurance {
     max-width: 720px;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--mat-sys-on-surface-variant);
     font-style: italic;
     line-height: 1.6;
 }
 
 .auskunft {
     max-width: 720px;
-    color: rgba(0, 0, 0, 0.75);
+    color: var(--mat-sys-on-surface-variant);
     line-height: 1.6;
     margin-top: 12px;
 }
@@ -139,6 +142,9 @@ a {
     margin-top: 16px;
     border-left: 4px solid #ffd740;
     background: #fff8e1;
+    // Always a fixed light background regardless of page theme, see
+    // .price-table-compact above.
+    color: rgba(0, 0, 0, 0.87);
     padding: 12px 16px;
     border-radius: 4px;
     max-width: 720px;

@@ -18,6 +18,7 @@ import { TripPricing } from 'projects/trips-lib/src/lib/domain/models/trip-prici
 import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 import { Observable, catchError, combineLatest, map, of, shareReplay } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { formatGermanDate, resolveMediaUrl } from './normalize-admin-tile-fields';
 
 // Wire shape of one item in GET {sckApiUrl}/tiles?type=event - mirrors the
 // admin app's editable EventTile fields (sck-admin-app/tile-management).
@@ -77,9 +78,9 @@ function mapApiTileToEventTile(api: ApiEventTile, globalPricing: TripPricing): E
         order: api.order,
         type: TileType.Event,
         title: api.title,
-        date: api.date,
+        date: formatGermanDate(api.date),
         subTitle: api.subTitle,
-        image: api.image,
+        image: resolveMediaUrl(api.image),
         imageDescription: api.imageDescription,
         description: api.description,
         details: api.details ?? '',

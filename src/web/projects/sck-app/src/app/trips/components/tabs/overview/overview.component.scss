@@ -22,7 +22,7 @@ $color-warn: #f44336;
 
 .intro {
     max-width: 640px;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--mat-sys-on-surface-variant);
     line-height: 1.6;
     margin: 0 0 32px 0;
 }
@@ -56,7 +56,7 @@ $color-warn: #f44336;
 
 .no-results {
     grid-column: 1 / -1;
-    color: rgba(0, 0, 0, 0.5);
+    color: var(--mat-sys-on-surface-variant);
     text-align: center;
     padding: 48px 0;
 }
@@ -197,7 +197,7 @@ $color-warn: #f44336;
 
 .section-title {
     margin: 48px 0 20px 0;
-    color: $color-primary-dark;
+    color: var(--mat-sys-primary);
     font-size: 20px;
 }
 
