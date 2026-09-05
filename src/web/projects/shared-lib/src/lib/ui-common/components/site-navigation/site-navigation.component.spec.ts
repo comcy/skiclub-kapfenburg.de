@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { provideRouter } from '@angular/router';
 
 import { SiteNavigationComponent } from './site-navigation.component';
 
@@ -18,18 +19,21 @@ describe('SiteNavigationComponent', () => {
     let fixture: ComponentFixture<SiteNavigationComponent>;
 
     beforeEach(waitForAsync(() => {
+        // Injects Router/ActivatedRoute - provideRouter([]) satisfies both
+        // without needing real routes for this smoke test.
         TestBed.configureTestingModule({
-    imports: [
-        NoopAnimationsModule,
-        LayoutModule,
-        MatButtonModule,
-        MatIconModule,
-        MatListModule,
-        MatSidenavModule,
-        MatToolbarModule,
-        SiteNavigationComponent,
-    ],
-}).compileComponents();
+            imports: [
+                NoopAnimationsModule,
+                LayoutModule,
+                MatButtonModule,
+                MatIconModule,
+                MatListModule,
+                MatSidenavModule,
+                MatToolbarModule,
+                SiteNavigationComponent,
+            ],
+            providers: [provideRouter([])],
+        }).compileComponents();
     }));
 
     beforeEach(() => {

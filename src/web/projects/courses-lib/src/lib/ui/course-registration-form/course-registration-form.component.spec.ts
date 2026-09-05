@@ -3,16 +3,26 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
 import { CourseRegistrationFormComponent } from './course-registration-form.component';
+import { CourseRegistrationFormServiceInterface } from './course-registration-form.interfaces';
 
 describe('CourseRegistrationFormComponent', () => {
     let component: CourseRegistrationFormComponent;
     let fixture: ComponentFixture<CourseRegistrationFormComponent>;
 
     beforeEach(async () => {
+        const mockService = jasmine.createSpyObj<CourseRegistrationFormServiceInterface>(
+            'CourseRegistrationFormServiceInterface',
+            ['sendFormToSheetsIo', 'submitPublicRegistration', 'getTurnstileSiteKey'],
+        );
+        mockService.submitPublicRegistration.and.returnValue(of(undefined));
+        mockService.getTurnstileSiteKey.and.returnValue('test-site-key');
+
         await TestBed.configureTestingModule({
             imports: [CourseRegistrationFormComponent],
+            providers: [{ provide: CourseRegistrationFormServiceInterface, useValue: mockService }],
         }).compileComponents();
     });
 
