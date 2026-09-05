@@ -1,6 +1,63 @@
-// @import "~@angular/material/prebuilt-themes/indigo-pink.css"; // light
-// @import "~@angular/material/prebuilt-themes/purple-green.css"; // dark
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css'; // light
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Two switchable colors (Blau default, Grün optional - see #181), each with
+// a light/dark pair - same runtime mechanism as sck-admin-app's styles.scss
+// (a class on document.body toggled by ThemeService), but built from
+// Angular Material's own named M3 system palettes (mat.$blue-palette/
+// $green-palette) instead of admin's hand-pasted token maps from
+// themes.angular-material.dev - fewer moving parts, same practical result.
+html {
+    color-scheme: light;
+    @include mat.all-component-themes(
+        mat.define-theme(
+            (
+                color: (
+                    theme-type: light,
+                    primary: mat.$blue-palette,
+                ),
+            )
+        )
+    );
+}
+.dark-theme {
+    color-scheme: dark;
+    @include mat.all-component-themes(
+        mat.define-theme(
+            (
+                color: (
+                    theme-type: dark,
+                    primary: mat.$blue-palette,
+                ),
+            )
+        )
+    );
+}
+.theme-gruen {
+    @include mat.all-component-themes(
+        mat.define-theme(
+            (
+                color: (
+                    theme-type: light,
+                    primary: mat.$green-palette,
+                ),
+            )
+        )
+    );
+}
+.dark-theme.theme-gruen {
+    @include mat.all-component-themes(
+        mat.define-theme(
+            (
+                color: (
+                    theme-type: dark,
+                    primary: mat.$green-palette,
+                ),
+            )
+        )
+    );
+}
 
 html,
 body {
@@ -9,6 +66,8 @@ body {
 body {
     margin: 0;
     font-family: Roboto, 'Helvetica Neue', sans-serif;
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
 }
 
 // Snackbar overwrite

@@ -37,6 +37,7 @@ import { InstagramIconComponent } from 'projects/shared-lib/src/lib/ui-common/co
 import { SiteFooterComponent } from 'projects/shared-lib/src/lib/ui-common/components/site-footer/site-footer.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ThemeSwitcherComponent } from './theme/theme-switcher/theme-switcher.component';
 import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
 import { courseTilesApiServiceProvider } from './services/business/course-tiles-api.service';
 import { gymCoursesRegisterFormServiceProvider } from './services/business/gym-courses-registration-form.service';
@@ -81,6 +82,7 @@ import { tripTilesApiServiceProvider } from './services/business/trip-tiles-api.
         InstagramButtonComponent,
         InstagramIconComponent,
         SckLogoIconComponent,
+        ThemeSwitcherComponent,
     ],
     providers: [
         tripRegistrationServiceProvider,

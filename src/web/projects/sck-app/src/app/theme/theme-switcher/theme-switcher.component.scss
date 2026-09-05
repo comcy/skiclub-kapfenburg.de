@@ -1,0 +1,17 @@
+// Admin puts this inline in its own root <mat-toolbar> - sck-app's header
+// is the shared site-navigation component (no slot for extra actions, and
+// it's shared with sck-admin-app so not worth changing just for this).
+// Floating bottom-right instead: stays out of the way of the toolbar/burger
+// menu on both desktop and mobile without any breakpoint-specific handling.
+:host {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 1000;
+    display: flex;
+    gap: 4px;
+    background: var(--mat-sys-surface-container-high);
+    border-radius: 28px;
+    padding: 2px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
