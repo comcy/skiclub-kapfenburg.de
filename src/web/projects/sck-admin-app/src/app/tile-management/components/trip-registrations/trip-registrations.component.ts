@@ -3,6 +3,8 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import {
@@ -23,7 +25,7 @@ interface RegistrationGroup {
 @Component({
     selector: 'app-trip-registrations',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule],
+    imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
     templateUrl: './trip-registrations.component.html',
     styleUrls: ['./trip-registrations.component.scss'],
 })
@@ -33,6 +35,7 @@ export class TripRegistrationsComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly dialog = inject(MatDialog);
+    private readonly snackBar = inject(MatSnackBar);
     public readonly auth = inject(AuthService);
 
     public tile: Tile | null = null;
@@ -162,6 +165,30 @@ export class TripRegistrationsComponent implements OnInit {
         };
 
         this.dataService.updateRegistration(registration.id, params).subscribe(() => this.refresh());
+    }
+
+    // Tab-separated so it pastes as a ready-made row into Google Sheets
+    // (see GitHub #185) - includes the contact/option fields the table
+    // itself doesn't show a column for, since the point is a complete row.
+    onCopyRow(registration: TripRegistration): void {
+        const row = [
+            registration.firstName,
+            registration.lastName,
+            this.ageCategoryLabels[registration.ageCategory],
+            registration.isMember ? 'Mitglied' : 'kein Mitglied',
+            registration.boardingName || '',
+            registration.email || '',
+            registration.phone || '',
+            registration.busOnly ? 'ja' : 'nein',
+            registration.snowshoes ? 'ja' : 'nein',
+            registration.courseRequested ? registration.level || 'ja' : 'nein',
+            registration.status,
+            registration.notes || '',
+        ].join('\t');
+
+        navigator.clipboard.writeText(row).then(() => {
+            this.snackBar.open('Anmeldung in Zwischenablage kopiert', 'OK', { duration: 3000 });
+        });
     }
 
     private openEditor(registration: TripRegistration): void {

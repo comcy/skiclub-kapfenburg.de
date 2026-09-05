@@ -96,6 +96,9 @@
                         </td>
                         <td>{{ registration.notes || '–' }}</td>
                         <td class="no-print actions-cell">
+                            <button mat-icon-button (click)="onCopyRow(registration)" matTooltip="Als Zeile kopieren">
+                                <mat-icon>content_copy</mat-icon>
+                            </button>
                             @if (auth.hasPermission('tiles:write')) {
                                 <button mat-icon-button (click)="onEdit(registration)">
                                     <mat-icon>edit</mat-icon>

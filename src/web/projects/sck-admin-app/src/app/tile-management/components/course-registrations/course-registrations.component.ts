@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { calculateAge } from 'projects/shared-lib/src/lib/date-time';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -16,7 +18,7 @@ import { CourseRegistrationEditorComponent } from './course-registration-editor/
 @Component({
     selector: 'app-course-registrations',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, CourseRegistrationEditorComponent],
+    imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, CourseRegistrationEditorComponent],
     templateUrl: './course-registrations.component.html',
     styleUrls: ['./course-registrations.component.scss'],
 })
@@ -25,6 +27,7 @@ export class CourseRegistrationsComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly snackBar = inject(MatSnackBar);
     public readonly auth = inject(AuthService);
 
     public tile: Tile | null = null;
@@ -117,6 +120,30 @@ export class CourseRegistrationsComponent implements OnInit {
         };
 
         this.dataService.updateCourseRegistration(registration.id, params).subscribe(() => this.refresh());
+    }
+
+    // Tab-separated so it pastes as a ready-made row into Google Sheets
+    // (see GitHub #185) - column order matches the visible table plus the
+    // contact fields Mike's external list actually needs but the table
+    // doesn't show a dedicated column for (name/vorname are already split).
+    onCopyRow(registration: CourseRegistration): void {
+        const row = [
+            registration.lastName,
+            registration.firstName,
+            registration.birthday || '',
+            registration.email || '',
+            registration.phone || '',
+            registration.isMember ? 'Mitglied' : 'kein Mitglied',
+            registration.sportType || '',
+            registration.level || '',
+            this.price(registration) ?? '',
+            registration.paid ? 'bezahlt' : 'offen',
+            registration.notes || '',
+        ].join('\t');
+
+        navigator.clipboard.writeText(row).then(() => {
+            this.snackBar.open('Anmeldung in Zwischenablage kopiert', 'OK', { duration: 3000 });
+        });
     }
 
     onDelete(registration: CourseRegistration): void {
