@@ -23,6 +23,11 @@ mat-toolbar.mat-primary {
     top: 0;
     z-index: 1000;
     min-height: 64px; // avoid resizeof the navigationbar on mobile devices
+    // M3's mat-toolbar[color] no longer fills the container the way M2 did -
+    // set it explicitly so the toolbar actually shows the active theme's
+    // primary color (blue/green, see styles.scss) instead of a neutral surface.
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
 }
 
 .small-spacer {
@@ -65,9 +70,32 @@ mat-toolbar.mat-primary {
     color: rgb(255, 253, 108);
 }
 
+.sidenav-actions {
+    padding: 8px 16px;
+    display: flex;
+    justify-content: center;
+}
+
 .navitems-container {
     display: flex;
     flex-flow: row;
     gap: 4px;
     padding: 0 16 0 16;
+
+    // M3's mat-button/mat-flat-button default their label/container color to
+    // the theme's primary - invisible on a toolbar that's ALSO primary-colored
+    // (see mat-toolbar.mat-primary above). Plain items inherit the toolbar's
+    // on-primary text color; only explicitly-declared items (NavigationItem.color)
+    // or the current route get an inverted (on-primary bg / primary text) pill,
+    // which stays legible against either theme color (see styles.scss).
+    a {
+        color: var(--mat-sys-on-primary);
+    }
+
+    .nav-item-active,
+    .nav-item-declared {
+        background: var(--mat-sys-on-primary);
+        color: var(--mat-sys-primary);
+        border-radius: 999px;
+    }
 }

@@ -8,55 +8,60 @@
 // Angular Material's own named M3 system palettes (mat.$blue-palette/
 // $green-palette) instead of admin's hand-pasted token maps from
 // themes.angular-material.dev - fewer moving parts, same practical result.
+// mat.all-component-themes() alone only emits per-component (--mdc-*) tokens,
+// not the app-usable --mat-sys-* system tokens (site-navigation/footer's
+// topbar color, comcy-copyright's on-primary text) - those need the separate
+// mat.system-level-colors() mixin, see node_modules/@angular/material/_index.scss.
+$blue-light: mat.define-theme(
+    (
+        color: (
+            theme-type: light,
+            primary: mat.$blue-palette,
+        ),
+    )
+);
+$blue-dark: mat.define-theme(
+    (
+        color: (
+            theme-type: dark,
+            primary: mat.$blue-palette,
+        ),
+    )
+);
+$green-light: mat.define-theme(
+    (
+        color: (
+            theme-type: light,
+            primary: mat.$green-palette,
+        ),
+    )
+);
+$green-dark: mat.define-theme(
+    (
+        color: (
+            theme-type: dark,
+            primary: mat.$green-palette,
+        ),
+    )
+);
+
 html {
     color-scheme: light;
-    @include mat.all-component-themes(
-        mat.define-theme(
-            (
-                color: (
-                    theme-type: light,
-                    primary: mat.$blue-palette,
-                ),
-            )
-        )
-    );
+    @include mat.all-component-themes($blue-light);
+    @include mat.system-level-colors($blue-light);
 }
 .dark-theme {
     color-scheme: dark;
-    @include mat.all-component-themes(
-        mat.define-theme(
-            (
-                color: (
-                    theme-type: dark,
-                    primary: mat.$blue-palette,
-                ),
-            )
-        )
-    );
+    @include mat.all-component-themes($blue-dark);
+    @include mat.system-level-colors($blue-dark);
 }
 .theme-gruen {
-    @include mat.all-component-themes(
-        mat.define-theme(
-            (
-                color: (
-                    theme-type: light,
-                    primary: mat.$green-palette,
-                ),
-            )
-        )
-    );
+    @include mat.all-component-themes($green-light);
+    @include mat.system-level-colors($green-light);
 }
 .dark-theme.theme-gruen {
-    @include mat.all-component-themes(
-        mat.define-theme(
-            (
-                color: (
-                    theme-type: dark,
-                    primary: mat.$green-palette,
-                ),
-            )
-        )
-    );
+    @include mat.all-component-themes($green-dark);
+    @include mat.system-level-colors($green-dark);
 }
 
 html,

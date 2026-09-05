@@ -20,9 +20,14 @@
 }
 
 .copyright {
+    // Footer's mat-toolbar is a light surface (not primary-filled, see
+    // site-footer.component.scss), unlike the topbar - was hardcoded yellow,
+    // unreadable there. Theme's own tokens instead: muted on-surface-variant
+    // for the build tag, primary (the same blue/green used everywhere else) for
+    // the link, both readable against the light footer and correct in dark mode.
     shared-lib-comcy-copyright {
-        --copyright-container-text-color: yellow;
-        --copyright-container-link-color: yellow;
+        --copyright-container-text-color: var(--mat-sys-on-surface-variant);
+        --copyright-container-link-color: var(--mat-sys-primary);
     }
 }
 

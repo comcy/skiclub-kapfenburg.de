@@ -1,8 +1,9 @@
 <div id="navigation">
-    <shared-lib-site-navigation [logo]="logoPath" [title]="title" [navItems]="navItems"></shared-lib-site-navigation>
+    <shared-lib-site-navigation [logo]="logoPath" [title]="title" [navItems]="navItems">
+        <app-theme-switcher actions></app-theme-switcher>
+        <app-theme-switcher mobile-actions></app-theme-switcher>
+    </shared-lib-site-navigation>
 </div>
-
-<app-theme-switcher></app-theme-switcher>
 
 <div class="content">
     <router-outlet></router-outlet>

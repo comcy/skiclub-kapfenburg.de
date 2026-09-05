@@ -388,6 +388,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         return {
             id: course.id,
             kind: 'course',
+            image: course.image,
+            imageAlt: course.imageDescription,
             badge: course.title.includes('Donnerstag') ? 'Donnerstags' : 'Mittwochs',
             badgeWarn: false,
             eyebrow: course.subTitle,

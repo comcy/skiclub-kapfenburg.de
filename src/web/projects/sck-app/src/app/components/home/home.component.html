@@ -143,11 +143,14 @@
                     <div class="carousel-track" [style.transform]="'translateX(-' + carouselIndex * 100 + '%)'">
                         @for (slide of carouselSlides; track slide.id) {
                             <article class="tile-card carousel-slide clickable" (click)="slide.onClick()">
-                                <div class="tile-card-image" [class.course-placeholder]="slide.kind === 'course'">
-                                    @if (slide.kind === 'course') {
-                                        <mat-icon class="course-icon">self_improvement</mat-icon>
-                                    } @else {
+                                <div
+                                    class="tile-card-image"
+                                    [class.course-placeholder]="slide.kind === 'course' && !slide.image"
+                                >
+                                    @if (slide.image) {
                                         <img [src]="slide.image" [alt]="slide.imageAlt" />
+                                    } @else {
+                                        <mat-icon class="course-icon">self_improvement</mat-icon>
                                     }
                                     <span class="badge" [class.badge-warn]="slide.badgeWarn">{{ slide.badge }}</span>
                                 </div>
