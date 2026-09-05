@@ -42,10 +42,16 @@ export interface PublicCourseRegistrationInput {
 
 @Injectable()
 export abstract class CourseRegistrationFormServiceInterface {
-    public abstract sendFormToSheetsIo(formData: FormData): void;
+    // silent=true suppresses the built-in confirmation snackbar - used
+    // whenever presetTileId is set, since submitPublicRegistration below is
+    // then the real, reliable record and drives the user-facing message
+    // instead (a failed Sheets mirror write must never look like a failed
+    // registration). No presetTileId (no admin course tiles exist at all,
+    // see #183) has no such fallback, so it keeps relying on this call's own
+    // snackbar, same as before #182.
+    public abstract sendFormToSheetsIo(formData: FormData, silent?: boolean): void;
     // Parallel, non-blocking write into sck-api's course_registrations (see
-    // the plan) - does NOT replace sendFormToSheetsIo, which keeps running
-    // unconditionally. Only called when a tileId could be resolved (see
+    // the plan). Only called when a tileId could be resolved (see
     // CourseRegistrationFormComponent's presetTileId).
     public abstract submitPublicRegistration(
         tileId: string,

@@ -22,6 +22,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { getCourseConfirmationSuccessMessage } from 'projects/data/mail-templates';
 import {
     calculateAge,
     GERMAN_DATE_FORMATS,
@@ -63,6 +65,8 @@ import { CourseRegistrationFormServiceInterface } from './course-registration-fo
 export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     private formBuilder = inject(FormBuilder);
     private courseRegistrationFormService = inject(CourseRegistrationFormServiceInterface);
+    private snackBar = inject(MatSnackBar);
+    private snackAction = 'Ok';
     breakpointObserver = inject(BreakpointObserverService);
 
     public turnstileSiteKey = this.courseRegistrationFormService.getTurnstileSiteKey();
@@ -168,7 +172,15 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
 
             if (formData) {
                 this.submitForm.emit(true);
-                this.courseRegistrationFormService.sendFormToSheetsIo(formData);
+                // presetTileId means a real admin-managed course tile - that
+                // registration is the reliable record (server-side
+                // confirmation mail, see the plan) and must drive the
+                // user-facing message; Sheets stays silent so its own
+                // outcome can never look like a failed registration when the
+                // real one actually succeeded. No presetTileId only happens
+                // when no admin course tiles exist at all (see #183), where
+                // Sheets is still the only record.
+                this.courseRegistrationFormService.sendFormToSheetsIo(formData, !!this.presetTileId);
 
                 if (this.presetTileId) {
                     this.courseRegistrationFormService
@@ -193,7 +205,14 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
                             this.turnstileToken as string,
                         )
                         .subscribe({
-                            error: (error) => console.error('Fehler beim Speichern der Kurs-Anmeldung:', error),
+                            next: () => this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction),
+                            error: (error) => {
+                                console.error('Fehler beim Speichern der Kurs-Anmeldung:', error);
+                                this.snackBar.open(
+                                    'Anmeldung fehlgeschlagen - bitte versuche es erneut oder kontaktiere uns per Mail.',
+                                    this.snackAction,
+                                );
+                            },
                         });
                 }
             } else {

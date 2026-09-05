@@ -11,6 +11,7 @@ import { TripRegistrationFormServiceInterface, WaitlistInfo } from './trips-regi
 
 const TRIP_WITH_ID: Trip = {
     id: 'tile-1',
+    confirmedRegistrationsCount: 0,
     destination: 'Alps',
     date: '1.1.2026',
     availableBoardings: ['Kapfenburg (7:00 Uhr)'],

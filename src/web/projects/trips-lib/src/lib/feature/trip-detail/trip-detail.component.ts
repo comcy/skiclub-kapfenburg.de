@@ -61,6 +61,7 @@ export class TripDetailComponent implements OnInit, OnDestroy {
                     this.registrationData = [
                         {
                             id: this.tile.id,
+                            confirmedRegistrationsCount: this.tile.confirmedRegistrationsCount,
                             destination: this.tile.destination || this.tile.title,
                             date: this.tile.date,
                             availableBoardings: this.tile.boardings ?? [],

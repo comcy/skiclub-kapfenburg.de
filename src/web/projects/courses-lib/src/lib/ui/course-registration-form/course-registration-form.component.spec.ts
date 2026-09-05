@@ -11,9 +11,10 @@ import { CourseRegistrationFormServiceInterface } from './course-registration-fo
 describe('CourseRegistrationFormComponent', () => {
     let component: CourseRegistrationFormComponent;
     let fixture: ComponentFixture<CourseRegistrationFormComponent>;
+    let mockService: jasmine.SpyObj<CourseRegistrationFormServiceInterface>;
 
     beforeEach(async () => {
-        const mockService = jasmine.createSpyObj<CourseRegistrationFormServiceInterface>(
+        mockService = jasmine.createSpyObj<CourseRegistrationFormServiceInterface>(
             'CourseRegistrationFormServiceInterface',
             ['sendFormToSheetsIo', 'submitPublicRegistration', 'getTurnstileSiteKey'],
         );
@@ -57,5 +58,41 @@ describe('CourseRegistrationFormComponent', () => {
     it('returns 0 when pricing or required fields are missing', () => {
         component.skiCoursePricing = null;
         expect(component.getPrice()).toBe(0);
+    });
+
+    describe('submit() - sck-api registration is the reliable record', () => {
+        const patchValidForm = () => {
+            component.courseRegisterForm.patchValue({
+                sportType: 'Ski Alpin',
+                firstName: 'Max',
+                lastName: 'Mustermann',
+                email: 'max@example.com',
+                phone: '0123456',
+                birthday: new Date('2000-01-01'),
+                level: 'A1 – Anfänger Basis',
+            });
+        };
+
+        it('does not call submitPublicRegistration when no admin tile matched (no presetTileId)', () => {
+            patchValidForm();
+            component.submit();
+
+            expect(mockService.submitPublicRegistration).not.toHaveBeenCalled();
+            expect(mockService.sendFormToSheetsIo).toHaveBeenCalledWith(jasmine.any(FormData), false);
+        });
+
+        it('calls submitPublicRegistration and sends Sheets silently when a presetTileId exists', () => {
+            component.presetTileId = 'tile-1';
+            component.turnstileToken = 'test-turnstile-token';
+            patchValidForm();
+            component.submit();
+
+            expect(mockService.submitPublicRegistration).toHaveBeenCalledWith(
+                'tile-1',
+                jasmine.objectContaining({ firstName: 'Max', lastName: 'Mustermann' }),
+                'test-turnstile-token',
+            );
+            expect(mockService.sendFormToSheetsIo).toHaveBeenCalledWith(jasmine.any(FormData), true);
+        });
     });
 });

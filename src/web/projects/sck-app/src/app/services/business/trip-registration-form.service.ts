@@ -28,15 +28,15 @@ export class TripRegistrationFormService implements TripRegistrationFormServiceI
      *
      * @param tripRegisterForm
      */
-    public sendFormToSheetsIo(rows: SheetDbRow[]): void {
+    public sendFormToSheetsIo(rows: SheetDbRow[], silent = false): void {
         this.http.post(`${environment.tripSheetUrl}`, { data: rows }).subscribe({
             next: (response) => {
                 console.log('SheetDB response:', response);
-                this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
+                if (!silent) this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
                 console.error('SheetDB error:', error);
-                this.snackBar.open('Fehler beim Speichern der Anmeldung', this.snackAction);
+                if (!silent) this.snackBar.open('Fehler beim Speichern der Anmeldung', this.snackAction);
             },
         });
     }

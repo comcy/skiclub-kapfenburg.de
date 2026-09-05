@@ -47,6 +47,8 @@ export class TripsRegisterDialogComponent implements OnInit {
             const eventTile = tile as EventTile;
             this.tripDetails = [
                 {
+                    id: eventTile.id,
+                    confirmedRegistrationsCount: eventTile.confirmedRegistrationsCount,
                     destination: eventTile.title,
                     date: eventTile.date,
                     availableBoardings: eventTile.boardings ?? [],

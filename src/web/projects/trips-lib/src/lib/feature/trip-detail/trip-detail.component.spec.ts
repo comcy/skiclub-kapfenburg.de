@@ -79,6 +79,7 @@ describe('TripDetailComponent', () => {
         expect(component.registrationData).toEqual([
             {
                 id: TEST_TILE.id,
+                confirmedRegistrationsCount: TEST_TILE.confirmedRegistrationsCount,
                 destination: TEST_TILE.title,
                 date: TEST_TILE.date,
                 availableBoardings: TEST_TILE.boardings ?? [],

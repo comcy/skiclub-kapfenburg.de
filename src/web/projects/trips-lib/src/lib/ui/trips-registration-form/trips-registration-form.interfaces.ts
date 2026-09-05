@@ -74,11 +74,18 @@ export interface TripPricePreviewResult {
 
 @Injectable()
 export abstract class TripRegistrationFormServiceInterface {
-    public abstract sendFormToSheetsIo(rows: SheetDbRow[]): void;
+    // silent=true suppresses the built-in confirmation/error snackbar - used
+    // for API-backed trips, where submitPublicRegistration below is the real,
+    // reliable record and drives the user-facing message instead (a failed
+    // Sheets mirror write must never look like a failed registration to the
+    // user). Static-only trips (no sck-api id) have no such fallback, so
+    // they keep relying on this call's own snackbar, same as before #182.
+    public abstract sendFormToSheetsIo(rows: SheetDbRow[], silent?: boolean): void;
     // Parallel, capacity-aware write into sck-api's trip_registrations (see
-    // the plan) - does NOT replace sendFormToSheetsIo, which keeps running
-    // unconditionally as before. turnstileToken is only verified here (the
-    // Sheets webhook is external, not ours to protect server-side).
+    // the plan) - only called for API-backed trips (see
+    // TripsRegistrationFormComponent.submit()'s isApiBackedTrip check).
+    // turnstileToken is only verified here (the Sheets webhook is external,
+    // not ours to protect server-side).
     public abstract submitPublicRegistration(
         tileId: string,
         participants: PublicRegistrationParticipantInput[],

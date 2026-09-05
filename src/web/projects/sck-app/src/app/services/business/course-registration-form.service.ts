@@ -33,11 +33,11 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
      * It is used to transmit the form data to any desired endpoint.
      * @param courseRegisterForm
      */
-    sendFormToSheetsIo(formData: FormData): void {
+    sendFormToSheetsIo(formData: FormData, silent = false): void {
         this.http.post(`${environment.courseSheetUrl}`, formData).subscribe({
             next: (response) => {
                 console.log(response);
-                this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
+                if (!silent) this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
                 console.log(error);

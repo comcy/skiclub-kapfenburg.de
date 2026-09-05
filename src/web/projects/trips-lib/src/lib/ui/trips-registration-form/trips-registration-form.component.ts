@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import {
@@ -34,6 +35,7 @@ import {
     GERMAN_DATE_FORMATS,
     GermanDateAdapter,
 } from 'projects/shared-lib/src/lib/date-time';
+import { getTripConfirmationSuccessMessage } from 'projects/data/mail-templates';
 import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { BehaviorSubject, debounceTime, Subject, takeUntil } from 'rxjs';
@@ -90,6 +92,8 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
     public breakpointObserver = inject(BreakpointObserverService);
+    private snackBar = inject(MatSnackBar);
+    private snackAction = 'Ok';
     public isSending = false;
     public tripView!: string;
     public boardingList$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -446,16 +450,22 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             };
         });
 
-        this.handleSheetRegistration(rows);
-
-        // Parallel, capacity-aware write into sck-api - only possible for
-        // API-backed trips (static fallback trips have no id). The
-        // confirmation mail (incl. price table) is now sent server-side as
-        // part of this same request (see the plan) - a missing id or a
-        // failed request here just means no sck-api registration/mail at
-        // all, same "Sheets-only" fallback as before this feature existed.
+        // Only a real sck-api tile can take the capacity-aware registration
+        // below (static trips' id would just 404 there) - see
+        // confirmedRegistrationsCount's own doc comment. For those, that
+        // call is the real, reliable record (server-side confirmation mail
+        // included, see the plan) and must drive the user-facing message;
+        // the Sheets mirror below stays silent so its own outcome - broken
+        // here today by a misconfigured TRIP_SHEET_URL - can never look like
+        // a failed registration when the real one actually succeeded.
+        // Static trips have no sck-api counterpart at all, so they keep
+        // relying on Sheets' own message, exactly as before #182.
         const tileId: string | undefined = rawValue.trip?.id;
-        if (tileId) {
+        const isApiBackedTrip = rawValue.trip?.confirmedRegistrationsCount !== undefined;
+
+        this.handleSheetRegistration(rows, isApiBackedTrip);
+
+        if (isApiBackedTrip && tileId) {
             const publicParticipants: PublicRegistrationParticipantInput[] = rawValue.participants.map(
                 (participant: TripParticipant) => ({
                     firstName: participant.firstName,
@@ -474,7 +484,14 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             this.tripRegistrationFormService
                 .submitPublicRegistration(tileId, publicParticipants, this.turnstileToken as string)
                 .subscribe({
-                    error: (error) => console.error('Kapazitätsprüfung fehlgeschlagen:', error),
+                    next: () => this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction),
+                    error: (error) => {
+                        console.error('Anmeldung fehlgeschlagen:', error);
+                        this.snackBar.open(
+                            'Anmeldung fehlgeschlagen - bitte versuche es erneut oder kontaktiere uns per Mail.',
+                            this.snackAction,
+                        );
+                    },
                 });
         }
 
@@ -482,7 +499,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         this.isSending = false;
     }
 
-    private handleSheetRegistration(rows: SheetDbRow[]): void {
-        this.tripRegistrationFormService.sendFormToSheetsIo(rows);
+    private handleSheetRegistration(rows: SheetDbRow[], silent = false): void {
+        this.tripRegistrationFormService.sendFormToSheetsIo(rows, silent);
     }
 }
