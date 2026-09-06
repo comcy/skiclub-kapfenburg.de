@@ -4,8 +4,23 @@ import { expect, test } from '@playwright/test';
 // shared dev database - only the automatic, capacity-derived "Warteliste"
 // badge (Runde 2 of the Kapazitäts-Warnung + Warteliste feature) is under
 // test here, not backend behavior (that's covered by sck-api's own tests).
+//
+// home/trip-detail/overview also fire several *other* real requests on load
+// (notification-bcc, mail-templates, trip-pricing, ski-course-pricing) that
+// this file didn't used to mock - harmless (all have safe catchError
+// fallbacks) as long as sck-api.5i1f4ng.de answers quickly, but a slow/
+// unreachable remote host (e.g. from a CI runner's network) stalls page
+// load long enough to blow these tests' tight assertion timeouts. Mocked
+// here too so this suite never depends on that host being reachable at all.
 const FULL_TRIP_ID = 'e2e-full-trip';
 const OPEN_TRIP_ID = 'e2e-open-trip';
+
+test.beforeEach(async ({ page }) => {
+    await page.route('**/settings/notification-bcc', (route) => route.fulfill({ json: { customBccList: [] } }));
+    await page.route('**/settings/mail-templates', (route) => route.fulfill({ json: {} }));
+    await page.route('**/settings/trip-pricing', (route) => route.fulfill({ json: {} }));
+    await page.route('**/settings/ski-course-pricing', (route) => route.fulfill({ json: {} }));
+});
 
 const makeTile = (overrides: Record<string, unknown>) => ({
     id: overrides.id,
