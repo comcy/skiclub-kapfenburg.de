@@ -13,6 +13,13 @@ test.describe('Sektionen mit Tabs leiten auf ihren Standard-Tab um', () => {
 
 test.describe('Kurse und Gymnastik sind einzelne Seiten ohne Tabs', () => {
     test('Kurse: /courses zeigt Könnerstufen-Kacheln', async ({ page }) => {
+        // The static A1-F2 fallback only renders when no admin-managed ski
+        // course tiles exist (see courses.component.ts, #183) - mocked
+        // empty here so this test doesn't depend on the real shared
+        // backend's current admin data (which may well have real course
+        // tiles by now, entirely correctly, and shouldn't make this test
+        // flip to failing).
+        await page.route('**/tiles**', (route) => route.fulfill({ json: { items: [], total: 0 } }));
         await page.goto('/courses');
         await expect(page.getByText('A1 – Anfänger Basis')).toBeVisible();
         await expect(page.getByRole('tab')).toHaveCount(0);
