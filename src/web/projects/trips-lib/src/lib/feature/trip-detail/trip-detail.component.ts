@@ -94,12 +94,9 @@ export class TripDetailComponent implements OnInit, OnDestroy {
     private buildDescription(tile: EventTile): string {
         let content = tile.description || '';
 
-        // 1. Destination / Location
+        // 1. Destination
         if (tile.destination) {
             content += `\n\n**Ziel:** ${tile.destination}\n`;
-        }
-        if (tile.location) {
-            content += `\n\n**Ort:** ${tile.location}\n`;
         }
 
         // 2. Boarding List (Abfahrtszeiten)

@@ -65,7 +65,6 @@ export interface EventTile extends BaseTile {
     type: TileType.Event;
     tripConfig: TripConfig;
     destination?: string;
-    location?: string;
     additionalInformation?: string;
     // Only populated for API-backed tiles (see TripTilesApiService) - static
     // TRIP_DATA fallback tiles leave these undefined, so the derived

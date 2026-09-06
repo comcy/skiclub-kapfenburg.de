@@ -97,7 +97,6 @@ function mapApiTileToEventTile(api: ApiEventTile, globalPricing: TripPricing): E
             pricing: resolveTripPricing(globalPricing, api.tripConfig?.hasCourseOption),
         },
         destination: api.destination,
-        location: api.location,
         additionalInformation: api.additionalInformation,
         capacity: api.capacity,
         confirmedRegistrationsCount: api.confirmedRegistrationsCount,

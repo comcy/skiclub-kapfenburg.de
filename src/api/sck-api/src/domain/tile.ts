@@ -68,7 +68,7 @@ export interface Tile {
   // sck-api never reads inside these, only round-trips them, and a second
   // hand-kept copy of those shapes is exactly the drift this exists to avoid.
   details?: string;
-  location?: string;
+  location?: string; // still used by InfoTile/CourseTile, not EventTile
   timeData?: string[];
   destination?: string;
   additionalInformation?: string;
