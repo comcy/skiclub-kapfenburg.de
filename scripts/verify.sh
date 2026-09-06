@@ -36,9 +36,14 @@ run() {
 
 run pnpm install --frozen-lockfile
 
-run pnpm "${PNPM_FILTER[@]}" -r run build
-run pnpm "${PNPM_FILTER[@]}" -r run lint
-run pnpm "${PNPM_FILTER[@]}" -r run test
+# --workspace-concurrency=1: without it, pnpm runs web/sck-api/e2e's test
+# scripts in parallel - each spins up its own dev server + headless
+# Chrome/Chromium, which is fine on a real dev machine but starves e2e's
+# timing-sensitive assertions of CPU on a small/shared CI runner (that's
+# exactly what surfaced this - see the commit this comment was added in).
+run pnpm "${PNPM_FILTER[@]}" -r --workspace-concurrency=1 run build
+run pnpm "${PNPM_FILTER[@]}" -r --workspace-concurrency=1 run lint
+run pnpm "${PNPM_FILTER[@]}" -r --workspace-concurrency=1 run test
 
 # sck-admin-app has its own build/lint/test scripts (build:admin etc.)
 # rather than being folded into web's plain build/lint/test - that script
