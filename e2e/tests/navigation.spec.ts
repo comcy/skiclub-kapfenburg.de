@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 test.describe('Hauptnavigation', () => {
     test('Startseite lädt mit Titel und Navigationsleiste', async ({ page }) => {

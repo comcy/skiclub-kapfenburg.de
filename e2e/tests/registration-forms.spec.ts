@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 test.describe('Anmeldeformulare verhindern leere Übermittlung', () => {
     const registrationPages = ['/trips/registration'];

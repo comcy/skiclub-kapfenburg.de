@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 test.describe('Sektionen mit Tabs leiten auf ihren Standard-Tab um', () => {
     const cases: Array<{ from: string; to: string }> = [{ from: '/trips', to: '/trips/overview' }];
