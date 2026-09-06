@@ -44,9 +44,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # # QA
-      # - name: Run linting and tests
-      #   run: pnpm --filter web run test
+      # QA - CHROME_BIN: ubuntu-latest ships Chrome at this path, karma
+      # doesn't auto-detect it without the env var set (see scripts/verify.sh
+      # for the same auto-detection, used by the release-branch pipeline).
+      - name: Run linting and tests
+        run: pnpm --filter web run test
+        env:
+          CHROME_BIN: /usr/bin/google-chrome-stable
 
       # BUILD
       - name: Build project

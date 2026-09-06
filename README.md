@@ -1,6 +1,7 @@
 # Skiclub Kapfenburg e.V.
 
 [![SCK-WEB Workflow](https://github.com/comcy/skiclub-kapfenburg.de/actions/workflows/sck-web-app-build-deploy.yml/badge.svg)](https://github.com/comcy/skiclub-kapfenburg.de/actions/workflows/sck-web-app-build-deploy.yml)
+[![Test-System Deploy](https://github.com/comcy/skiclub-kapfenburg.de/actions/workflows/test-deploy.yml/badge.svg)](https://github.com/comcy/skiclub-kapfenburg.de/actions/workflows/test-deploy.yml)
 
 This project represents the web page of "Skiclub Kapfenburg e.V." a society to promote and support winter sports. It's residence is in the south of Germany, Baden-Württemberg within small district called "Ostalb". 
 
@@ -27,7 +28,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Testing
 
-`bash scripts/verify.sh` is the one entrypoint that runs build + lint + tests for every package (add `--filter web` or `--filter sck-api` to scope it to one) — the same thing CI runs, so it's the fastest way to know if a change is green before pushing.
+`bash scripts/verify.sh` is the one entrypoint that runs build + lint + tests for every package (add `--filter web` or `--filter sck-api` to scope it to one) — the same thing CI runs, so it's the fastest way to know if a change is green before pushing. See [`infrastructure/CI_CD.md`](infrastructure/CI_CD.md) for which workflow runs what and when (a push to `release/**` runs this exact script in CI before it's allowed to deploy).
 
 ### Unit tests
 

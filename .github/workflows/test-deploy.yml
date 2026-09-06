@@ -5,10 +5,17 @@ name: Test-System Deploy
 # app while away from home) - pick the branch/tag to deploy from the Actions
 # tab, defaulting to master.
 #
-# Runs directly on the sck-test LXC via a self-hosted runner (label
-# "sck-test") instead of SSHing in from a GitHub-hosted runner - the LXC has
-# no open inbound port and no public DNS, so the runner connects outbound to
-# GitHub instead. See infrastructure/TEST_DEPLOYMENT.md.
+# The `test` job runs scripts/verify.sh (build+lint+test for every workspace
+# package, incl. the e2e suite) on a GitHub-hosted runner - `deploy` only
+# runs if it passes (`needs: test`), so a broken build/test never reaches
+# the test system. Deliberately a GitHub-hosted runner, not the self-hosted
+# sck-test one: that LXC has 2GB RAM and is already tight running the three
+# sequential Docker builds below, see the comment further down.
+#
+# `deploy` itself runs directly on the sck-test LXC via a self-hosted runner
+# (label "sck-test") instead of SSHing in from a GitHub-hosted runner - the
+# LXC has no open inbound port and no public DNS, so the runner connects
+# outbound to GitHub instead. See infrastructure/TEST_DEPLOYMENT.md.
 on:
   push:
     branches:
@@ -24,7 +31,39 @@ env:
   APP_DIR: "/opt/sck-test"
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref_name }}
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - name: Set up Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # verify.sh's own `-r run test` reaches the e2e package too - its
+      # browsers aren't part of `pnpm install` and need a separate fetch.
+      - name: Install Playwright browsers
+        run: pnpm --filter e2e exec playwright install --with-deps chromium
+
+      - name: Run full verification (build + lint + test, every package)
+        run: bash scripts/verify.sh
+
   deploy:
+    needs: test
     runs-on: [self-hosted, sck-test]
     steps:
       - name: Determine ref to deploy

@@ -193,7 +193,11 @@ immer `build` davor.
 
 **Automatisch:** Jeder Push auf einen `release/**`-Branch deployt
 automatisch auf die Test-LXC — kein manueller Trigger nötig, sobald
-der Self-hosted Runner eingerichtet ist (Schritt 3 oben).
+der Self-hosted Runner eingerichtet ist (Schritt 3 oben). Seit
+2026-09-06 läuft davor immer erst `scripts/verify.sh` (Build/Lint/Test
+für den gesamten Workspace) auf einem GitHub-gehosteten Runner — nur
+bei Erfolg deployt die LXC überhaupt (siehe
+[CI_CD.md](./CI_CD.md) für alle Workflows im Überblick).
 
 **Neu deployen, für jeden anderen Branch on-demand** (nachdem der
 Self-hosted Runner eingerichtet ist — Schritt 3 oben): GitHub →
