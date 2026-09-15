@@ -7,18 +7,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { TileCardComponent } from '@shared/ui-common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Tile, TileCreationParams } from '../../domain/tile';
 import { Image } from '../../domain/image';
 import { TileActions, TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
+import { toSharedTile } from '../../domain/to-shared-tile';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { EditableDateComponent } from '../editable-date/editable-date.component';
 import { EditableImageComponent } from '../editable-image/editable-image.component';
 import { EditableLinkComponent } from '../editable-link/editable-link.component';
 import { EditableTextareaComponent } from '../editable-textarea/editable-textarea.component';
 import { EditableTextComponent } from '../editable-text/editable-text.component';
-import { TilePreviewComponent } from '../tile-preview/tile-preview.component';
 import { BoardingsDataService } from '../../../boardings-management/services/boardings-data.service';
 import { Boarding } from '../../../boardings-management/domain/boarding';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -42,7 +43,7 @@ import { UserDirectoryEntry } from '../../../user-management/domain/user-directo
         MatInputModule,
         MatCheckboxModule,
         MatIconModule,
-        TilePreviewComponent,
+        TileCardComponent,
     ],
     templateUrl: './tile-editor.component.html',
     styleUrls: ['./tile-editor.component.scss'],
@@ -162,6 +163,18 @@ export class TileEditorComponent implements OnInit, OnChanges {
     togglePreview(): void {
         this.isShowingPreview = !this.isShowingPreview;
     }
+
+    public readonly toSharedTile = toSharedTile;
+
+    public getImageUrl = (imagePath: string | undefined): string => {
+        if (!imagePath) return '';
+        if (imagePath.startsWith('http')) return imagePath;
+
+        // Construct absolute URL from relative API path
+        // Remove /api from apiUrl if imagePath already starts with /api
+        const baseUrl = this.dataService.apiUrl.replace(/\/api$/, '');
+        return `${baseUrl}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+    };
 
     onImageSelected(file: File): void {
         if (this.tile) {

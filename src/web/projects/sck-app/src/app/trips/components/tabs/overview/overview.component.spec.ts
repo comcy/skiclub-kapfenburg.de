@@ -44,32 +44,11 @@ describe('OverviewComponent', () => {
         fixture.detectChanges();
     };
 
-    describe('isTripFull / resolveStatusLabel (Kapazitäts-Warnung + Warteliste)', () => {
-        it('shows "Plätze frei" when open and below capacity', () => {
-            setup([makeTrip({ capacity: 10, confirmedRegistrationsCount: 5 })]);
-            expect(component.isTripFull(component.allTrips[0])).toBeFalse();
-            expect(component.resolveStatusLabel(component.allTrips[0])).toBe('Plätze frei');
-        });
-
-        it('shows "Warteliste" once confirmed registrations reach capacity, even though status is still Open', () => {
-            setup([makeTrip({ status: TileStatus.Open, capacity: 10, confirmedRegistrationsCount: 10 })]);
-            expect(component.isTripFull(component.allTrips[0])).toBeTrue();
-            expect(component.resolveStatusLabel(component.allTrips[0])).toBe('Warteliste');
-        });
-
-        it('shows "Warteliste" for the manual BookedUp status regardless of capacity', () => {
-            setup([makeTrip({ status: TileStatus.BookedUp, capacity: undefined })]);
-            expect(component.resolveStatusLabel(component.allTrips[0])).toBe('Warteliste');
-        });
-
-        it('shows "Abgesagt" for a canceled trip even when full', () => {
-            setup([makeTrip({ status: TileStatus.Canceled, capacity: 1, confirmedRegistrationsCount: 5 })]);
-            expect(component.resolveStatusLabel(component.allTrips[0])).toBe('Abgesagt');
-        });
-
-        it('never treats a trip without a capacity as full', () => {
-            setup([makeTrip({ capacity: undefined, confirmedRegistrationsCount: 999 })]);
-            expect(component.isTripFull(component.allTrips[0])).toBeFalse();
-        });
+    // isTripFull/resolveStatusLabel moved into shared-lib-tile-card (isEventFull/badgeLabel) -
+    // see tile-card.component.spec.ts for the capacity/status coverage that used to live here.
+    it('should create and load trips', () => {
+        setup([makeTrip()]);
+        expect(component).toBeTruthy();
+        expect(component.allTrips.length).toBe(1);
     });
 });

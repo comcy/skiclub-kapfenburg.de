@@ -13,8 +13,14 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MaterialColor, SiteHeaderComponent, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
-import { MarkdownRenderService } from '@shared/util-markdown';
+import {
+    MaterialColor,
+    SiteHeaderComponent,
+    TileBehavior,
+    TileCardComponent,
+    TileStatus,
+    TileType,
+} from '@shared/ui-common';
 import { COURSE_AT_HOME_PRICE_DATA } from '@data';
 import { CoursesUiModule } from '@courses-lib';
 import { COURSE_LEVEL_TILES } from 'projects/data/static';
@@ -41,7 +47,7 @@ const STATIC_LEVEL_BY_TITLE_CODE = new Map(COURSE_LEVEL_TILES.map((level) => [le
     templateUrl: './courses.component.html',
     styleUrls: ['./courses.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatButtonModule, MatIconModule, CoursesUiModule, SiteHeaderComponent],
+    imports: [MatButtonModule, MatIconModule, CoursesUiModule, SiteHeaderComponent, TileCardComponent],
 })
 export class CoursesComponent implements OnInit {
     public title = 'Ski- und Snowboardschule';
@@ -56,7 +62,6 @@ export class CoursesComponent implements OnInit {
     public selectedTileId: string | undefined;
     public skiCoursePricing: SkiCoursePricing | null = null;
 
-    public markdown = inject(MarkdownRenderService);
     private readonly courseTilesApi = inject(CourseTilesApiServiceInterface);
     private readonly cdr = inject(ChangeDetectorRef);
 

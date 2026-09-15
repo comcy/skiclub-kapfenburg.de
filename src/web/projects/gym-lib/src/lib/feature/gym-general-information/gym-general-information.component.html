@@ -18,16 +18,12 @@
 
     <div class="gym-tiles-grid">
         @for (tile of pilatesTiles; track tile.id) {
-            <article class="gym-tile-card gym-tile-clickable" [routerLink]="['/gymnastik', tile.id]">
-                <div class="gym-tile-image">
-                    <img [src]="tile.image" [alt]="tile.imageDescription" />
-                </div>
-                <div class="gym-tile-content">
-                    <div class="gym-tile-eyebrow">{{ tile.subTitle }}</div>
-                    <h3>{{ tile.title }}</h3>
-                    <p [innerHTML]="markdown.render(tile.description)"></p>
-                </div>
-            </article>
+            <shared-lib-tile-card
+                [tile]="tile"
+                [clickable]="true"
+                (cardClick)="openPilates(tile)"
+                (register)="openPilates(tile)"
+            ></shared-lib-tile-card>
         }
     </div>
 
@@ -50,25 +46,7 @@
     <h1>Weitere Angebote</h1>
     <div class="gym-tiles-grid">
         @for (tile of offerTiles; track tile.id) {
-            <article class="gym-tile-card">
-                @if (tile.image) {
-                    <div class="gym-tile-image">
-                        <img [src]="tile.image" [alt]="tile.imageDescription" />
-                    </div>
-                } @else {
-                    <div class="gym-tile-image gym-tile-placeholder">
-                        <mat-icon>fitness_center</mat-icon>
-                    </div>
-                }
-                <div class="gym-tile-content">
-                    <div class="gym-tile-eyebrow">{{ tile.subTitle }}</div>
-                    <h3>{{ tile.title }}</h3>
-                    <p [innerHTML]="markdown.render(tile.description)"></p>
-                    @if (tile.location) {
-                        <p class="gym-tile-location">{{ tile.location }}</p>
-                    }
-                </div>
-            </article>
+            <shared-lib-tile-card [tile]="tile"></shared-lib-tile-card>
         }
     </div>
 </div>

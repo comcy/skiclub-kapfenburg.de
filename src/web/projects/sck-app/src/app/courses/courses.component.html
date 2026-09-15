@@ -37,14 +37,11 @@
 
         <div class="level-grid">
             @for (level of levelTiles; track level.id) {
-                <article class="level-card">
-                    <h3>{{ level.title }}</h3>
-                    <div [innerHTML]="markdown.render(level.description)"></div>
-                    <button mat-fab extended color="primary" (click)="openRegistrationFor(level)">
-                        <mat-icon>event_note</mat-icon>
-                        Jetzt anmelden
-                    </button>
-                </article>
+                <shared-lib-tile-card
+                    [tile]="level"
+                    [ctaOverride]="{ label: 'Jetzt anmelden', icon: 'event_note', color: 'primary' }"
+                    (register)="openRegistrationFor(level)"
+                ></shared-lib-tile-card>
             } @empty {
                 <p>Aktuell sind keine Skikurse ausgeschrieben - schau bald wieder vorbei.</p>
             }

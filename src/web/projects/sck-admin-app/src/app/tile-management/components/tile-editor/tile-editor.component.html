@@ -262,7 +262,13 @@
                 </div>
                 <div class="scrollable-content preview-content">
                     <div class="preview-header">Live Preview</div>
-                    <app-tile-preview [tile]="tile"></app-tile-preview>
+                    @if (tile) {
+                        <shared-lib-tile-card
+                            class="preview-card"
+                            [tile]="toSharedTile(tile)"
+                            [resolveImageUrl]="getImageUrl"
+                        ></shared-lib-tile-card>
+                    }
                 </div>
             </div>
         }

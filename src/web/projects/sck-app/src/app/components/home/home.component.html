@@ -32,41 +32,13 @@
             </div>
             <div class="tiles-grid">
                 @for (trip of upcomingTrips; track trip.id) {
-                    <article class="tile-card clickable" (click)="openTripDetail(trip)">
-                        <div class="tile-card-image">
-                            <img [src]="trip.image" [alt]="trip.imageDescription" />
-                            <span
-                                class="badge"
-                                [class.badge-warn]="trip.status === tileStatusEnum.BookedUp || isTripFull(trip)"
-                            >
-                                {{
-                                    trip.status === tileStatusEnum.BookedUp || isTripFull(trip)
-                                        ? 'Warteliste'
-                                        : 'Plätze frei'
-                                }}
-                            </span>
-                        </div>
-                        <div class="tile-card-content">
-                            <div class="eyebrow">{{ trip.date }}</div>
-                            <h3>{{ trip.title }}</h3>
-                            <p class="description">{{ trip.destination }}</p>
-                            <div class="card-actions">
-                                @if (resolvePrice(trip); as price) {
-                                    <span class="price-label"
-                                        >ab <b>{{ price }}&nbsp;€</b></span
-                                    >
-                                }
-                                <button
-                                    mat-fab
-                                    extended
-                                    color="primary"
-                                    (click)="$event.stopPropagation(); openTripDetail(trip)"
-                                >
-                                    Anmelden
-                                </button>
-                            </div>
-                        </div>
-                    </article>
+                    <shared-lib-tile-card
+                        [tile]="trip"
+                        [clickable]="true"
+                        (cardClick)="openTripDetail(trip)"
+                        (register)="openTripDetail(trip)"
+                    >
+                    </shared-lib-tile-card>
                 }
             </div>
         </section>
@@ -142,39 +114,16 @@
                 <div class="carousel-viewport">
                     <div class="carousel-track" [style.transform]="'translateX(-' + carouselIndex * 100 + '%)'">
                         @for (slide of carouselSlides; track slide.id) {
-                            <article class="tile-card carousel-slide clickable" (click)="slide.onClick()">
-                                <div
-                                    class="tile-card-image"
-                                    [class.course-placeholder]="slide.kind === 'course' && !slide.image"
-                                >
-                                    @if (slide.image) {
-                                        <img [src]="slide.image" [alt]="slide.imageAlt" />
-                                    } @else {
-                                        <mat-icon class="course-icon">self_improvement</mat-icon>
-                                    }
-                                    <span class="badge" [class.badge-warn]="slide.badgeWarn">{{ slide.badge }}</span>
-                                </div>
-                                <div class="tile-card-content">
-                                    <div class="eyebrow">{{ slide.eyebrow }}</div>
-                                    <h3>{{ slide.title }}</h3>
-                                    <p class="description" [innerHTML]="slide.descriptionHtml"></p>
-                                    <div class="card-actions">
-                                        @if (slide.priceLabelHtml) {
-                                            <span class="price-label" [innerHTML]="slide.priceLabelHtml"></span>
-                                        } @else {
-                                            <span></span>
-                                        }
-                                        <button
-                                            mat-fab
-                                            extended
-                                            [color]="slide.ctaColor"
-                                            (click)="$event.stopPropagation(); slide.onClick()"
-                                        >
-                                            {{ slide.ctaLabel }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </article>
+                            <div class="carousel-slide">
+                                <shared-lib-tile-card
+                                    [tile]="slide.tile"
+                                    [ctaOverride]="slide.ctaOverride"
+                                    [metaLabelOverride]="slide.metaLabelOverride"
+                                    [clickable]="true"
+                                    (cardClick)="slide.onClick()"
+                                    (register)="slide.onClick()"
+                                ></shared-lib-tile-card>
+                            </div>
                         }
                     </div>
                 </div>
@@ -220,82 +169,11 @@
             <div class="tiles-grid">
                 @for (info of infoTiles; track info.id) {
                     @if (info.visible) {
-                        <article class="tile-card" [class.expired]="info.expired" [class.image-only]="info.imageOnly">
-                            <div class="tile-card-image">
-                                <img [src]="info.image" [alt]="info.imageDescription" />
-                                @if (info.status === tileStatusEnum.Canceled) {
-                                    <span class="badge badge-off">Abgesagt</span>
-                                }
-                            </div>
-                            @if (info.imageOnly && info.actions && info.actions.length > 0) {
-                                <div class="image-only-actions">
-                                    @for (action of info.actions; track action) {
-                                        @switch (action) {
-                                            @case (tileActionsEnum.Download) {
-                                                <button
-                                                    mat-fab
-                                                    extended
-                                                    color="primary"
-                                                    (click)="openLink(info.downloadActionLink)"
-                                                >
-                                                    <mat-icon>download</mat-icon>
-                                                    Öffnen
-                                                </button>
-                                            }
-                                            @case (tileActionsEnum.Register) {
-                                                <button
-                                                    mat-fab
-                                                    extended
-                                                    color="accent"
-                                                    (click)="openRegisterDialog(info)"
-                                                >
-                                                    <mat-icon>event_note</mat-icon>
-                                                    Anmelden
-                                                </button>
-                                            }
-                                        }
-                                    }
-                                </div>
-                            }
-                            @if (!info.imageOnly) {
-                                <div class="tile-card-content">
-                                    <div class="eyebrow">{{ info.date }}</div>
-                                    <h3>{{ info.title }}</h3>
-                                    <p class="description" [innerHTML]="markdown.render(getTileDescription(info))"></p>
-                                    @if (info.actions && info.actions.length > 0) {
-                                        <div class="card-actions">
-                                            <span></span>
-                                            @for (action of info.actions; track action) {
-                                                @switch (action) {
-                                                    @case (tileActionsEnum.Download) {
-                                                        <button
-                                                            mat-fab
-                                                            extended
-                                                            color="primary"
-                                                            (click)="openLink(info.downloadActionLink)"
-                                                        >
-                                                            <mat-icon>download</mat-icon>
-                                                            Öffnen
-                                                        </button>
-                                                    }
-                                                    @case (tileActionsEnum.Register) {
-                                                        <button
-                                                            mat-fab
-                                                            extended
-                                                            color="accent"
-                                                            (click)="openRegisterDialog(info)"
-                                                        >
-                                                            <mat-icon>event_note</mat-icon>
-                                                            Anmelden
-                                                        </button>
-                                                    }
-                                                }
-                                            }
-                                        </div>
-                                    }
-                                </div>
-                            }
-                        </article>
+                        <shared-lib-tile-card
+                            [tile]="info"
+                            (download)="openLink(info.downloadActionLink)"
+                            (register)="openRegisterDialog(info)"
+                        ></shared-lib-tile-card>
                     }
                 }
             </div>

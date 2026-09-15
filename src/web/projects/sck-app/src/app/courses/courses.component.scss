@@ -89,41 +89,6 @@ a {
     }
 }
 
-.level-card {
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-
-    h3 {
-        margin: 0 0 12px 0;
-        color: $color-primary-dark;
-    }
-
-    ::ng-deep p {
-        margin: 0 0 10px 0;
-        font-size: 14px;
-        line-height: 1.55;
-        color: rgba(0, 0, 0, 0.75);
-
-        &:last-of-type {
-            margin-bottom: 16px;
-        }
-
-        strong {
-            color: $color-primary;
-        }
-    }
-
-    button {
-        margin-top: auto;
-        align-self: flex-start;
-    }
-}
-
 .reassurance {
     max-width: 720px;
     color: var(--mat-sys-on-surface-variant);

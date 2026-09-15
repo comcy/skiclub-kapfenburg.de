@@ -30,13 +30,13 @@ describe('GymGeneralInformationComponent', () => {
     it('should display the two Pilates course tiles', () => {
         expect(component.pilatesTiles.length).toBe(2);
         const compiled = fixture.nativeElement as HTMLElement;
-        expect(compiled.querySelectorAll('.gym-tile-clickable').length).toBe(2);
+        expect(compiled.querySelectorAll('.tile-card.clickable').length).toBe(2);
     });
 
     it('should display the public offer tiles (no registration)', () => {
         expect(component.offerTiles.length).toBe(3);
         const compiled = fixture.nativeElement as HTMLElement;
-        const allTileCards = compiled.querySelectorAll('.gym-tile-card').length;
+        const allTileCards = compiled.querySelectorAll('.tile-card').length;
         expect(allTileCards).toBe(component.pilatesTiles.length + component.offerTiles.length);
     });
 });

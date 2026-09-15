@@ -8,9 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TRIP_DATA } from '@data';
-import { EventTile, InfoTile, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { EventTile, InfoTile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { TileCardComponent } from '@shared/ui-common';
 import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 
 const ALL = 'Alle';
@@ -21,10 +22,17 @@ const ALL = 'Alle';
     styleUrls: ['./overview.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: true,
-    imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatSelectModule],
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        TileCardComponent,
+    ],
 })
 export class OverviewComponent implements OnInit {
-    public tileStatusEnum = TileStatus;
     public allTrips: EventTile[] = [];
     public filteredTrips: EventTile[] = [];
     /** Standing offers alongside the trips (e.g. Skibörse, Schneeschuhverleih) - not date-bound events. */
@@ -41,6 +49,7 @@ export class OverviewComponent implements OnInit {
     private readonly monthFormatter = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' });
     private tripsApi = inject(TripTilesApiServiceInterface);
     private cdr = inject(ChangeDetectorRef);
+    private router = inject(Router);
 
     ngOnInit(): void {
         this.otherOffers = TRIP_DATA.filter((t): t is InfoTile => t.type === TileType.Info);
@@ -72,23 +81,8 @@ export class OverviewComponent implements OnInit {
         return ALL;
     }
 
-    public resolvePrice(trip: EventTile): number | undefined {
-        return trip.tripConfig?.pricing?.busLift?.adult?.member;
-    }
-
-    public isTripFull(trip: EventTile): boolean {
-        return !!trip.capacity && (trip.confirmedRegistrationsCount ?? 0) >= trip.capacity;
-    }
-
-    public resolveStatusLabel(trip: EventTile): string {
-        switch (trip.status) {
-            case TileStatus.Canceled:
-                return 'Abgesagt';
-            case TileStatus.BookedUp:
-                return 'Warteliste';
-            default:
-                return this.isTripFull(trip) ? 'Warteliste' : 'Plätze frei';
-        }
+    public openTrip(trip: EventTile): void {
+        this.router.navigate(['/trips', trip.id]);
     }
 
     public applyFilters(): void {

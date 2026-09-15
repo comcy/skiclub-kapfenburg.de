@@ -96,8 +96,8 @@ test.describe('Automatisches Warteliste-Badge (Kapazitäts-Warnung + Warteliste,
 
         await page.goto('/trips/overview');
 
-        const card = page.locator('.trip-card', { hasText: 'E2E Ausgebuchte Ausfahrt' });
+        const card = page.locator('.tile-card', { hasText: 'E2E Ausgebuchte Ausfahrt' });
         await expect(card.locator('.badge')).toHaveText('Warteliste');
-        await expect(card.locator('a', { hasText: 'Warteliste' })).toBeVisible();
+        await expect(card.locator('button', { hasText: 'Warteliste' })).toBeVisible();
     });
 });

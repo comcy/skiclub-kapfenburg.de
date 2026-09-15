@@ -46,12 +46,12 @@ import {
     EventTile,
     InfoTile,
     Tile,
-    TileActions,
     TileBehavior,
     TileStatus,
     TileType,
 } from 'projects/shared-lib/src/lib/ui-common/models';
 import { ComponentsModule } from 'projects/shared-lib/src/public-api';
+import { TileCardComponent, TileCardCtaOverride } from '@shared/ui-common';
 import { combineLatest } from 'rxjs';
 import { GYM_ROUTE, TRIPS_ROUTE } from '../../route-segments';
 
@@ -64,18 +64,11 @@ interface CalendarDayEvent {
 
 interface CarouselSlide {
     id: string;
-    kind: 'static' | 'trip' | 'course';
-    image?: string;
-    imageAlt?: string;
-    badge: string;
-    badgeWarn: boolean;
-    eyebrow: string;
-    title: string;
-    descriptionHtml: string;
-    priceLabelHtml?: string;
-    ctaLabel: string;
-    ctaColor: 'primary' | 'accent';
+    tile: Tile;
     onClick: () => void;
+    /** Only the synthetic "Ski- & Snowboardschule" slide isn't a real bookable tile - it needs its own CTA/meta text instead of the tile-type defaults. */
+    ctaOverride?: TileCardCtaOverride;
+    metaLabelOverride?: string;
 }
 
 @Component({
@@ -105,12 +98,11 @@ interface CarouselSlide {
         CoursesFeatureModule,
         GymFeatureModule,
         TripsFeatureModule,
+        TileCardComponent,
     ],
 })
 export class HomeComponent implements OnInit, OnDestroy {
     public title = 'Aktuelles';
-    public tileStatusEnum = TileStatus;
-    public tileActionsEnum = TileActions;
     public tileBehaviorEnum = TileBehavior;
     public tileTypeEnum = TileType;
     public registerLabel = 'Anmelden';
@@ -200,17 +192,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.pauseCarousel();
-    }
-
-    public resolvePrice(trip: EventTile): number | undefined {
-        return trip.tripConfig?.pricing?.busLift?.adult?.member;
-    }
-
-    // Only ever true for API-backed tiles (capacity/confirmedRegistrationsCount
-    // are undefined on the static TRIP_DATA fallback) - an independent,
-    // automatic signal alongside the admin's manual BookedUp status.
-    public isTripFull(trip: EventTile): boolean {
-        return !!trip.capacity && (trip.confirmedRegistrationsCount ?? 0) >= trip.capacity;
     }
 
     // CALENDAR
@@ -347,59 +328,36 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     private buildStaticSlide(): CarouselSlide {
-        return {
+        const tile: InfoTile = {
             id: 'ski-snowboard-school',
-            kind: 'static',
-            image: 'assets/img/cards/boy.jpg',
-            imageAlt: 'Ski- und Snowboardschule am Skilift Kapfenburg',
-            badge: 'Alle Level',
-            badgeWarn: false,
-            eyebrow: 'Nach Schneelage',
+            order: 0,
+            type: TileType.Info,
             title: 'Ski- & Snowboardschule',
-            descriptionHtml: 'Für Kinder und Erwachsene, alle Könnerstufen, direkt am Skilift Kapfenburg.',
-            priceLabelHtml: 'Kontakt &amp; Termine',
-            ctaLabel: 'Mehr erfahren',
-            ctaColor: 'accent',
+            date: 'Nach Schneelage',
+            subTitle: '',
+            image: 'assets/img/cards/boy.jpg',
+            imageDescription: 'Ski- und Snowboardschule am Skilift Kapfenburg',
+            description: 'Für Kinder und Erwachsene, alle Könnerstufen, direkt am Skilift Kapfenburg.',
+            details: '',
+            status: TileStatus.Open,
+            expiration: new Date('2099-12-31'),
+            behavior: TileBehavior.View,
+        };
+        return {
+            id: tile.id,
+            tile,
             onClick: () => this.router.navigate(['/courses']),
+            ctaOverride: { label: 'Mehr erfahren', color: 'accent' },
+            metaLabelOverride: 'Kontakt & Termine',
         };
     }
 
     private buildTripSlide(trip: EventTile): CarouselSlide {
-        const price = this.resolvePrice(trip);
-        const isWaitlisted = trip.status === TileStatus.BookedUp || this.isTripFull(trip);
-        return {
-            id: trip.id,
-            kind: 'trip',
-            image: trip.image,
-            imageAlt: trip.imageDescription,
-            badge: isWaitlisted ? 'Warteliste' : 'Plätze frei',
-            badgeWarn: isWaitlisted,
-            eyebrow: trip.date,
-            title: trip.title,
-            descriptionHtml: trip.destination ?? '',
-            priceLabelHtml: price ? `ab <b>${price}&nbsp;€</b>` : undefined,
-            ctaLabel: 'Anmelden',
-            ctaColor: 'primary',
-            onClick: () => this.openTripDetail(trip),
-        };
+        return { id: trip.id, tile: trip, onClick: () => this.openTripDetail(trip) };
     }
 
     private buildCourseSlide(course: CourseTile): CarouselSlide {
-        return {
-            id: course.id,
-            kind: 'course',
-            image: course.image,
-            imageAlt: course.imageDescription,
-            badge: course.title.includes('Donnerstag') ? 'Donnerstags' : 'Mittwochs',
-            badgeWarn: false,
-            eyebrow: course.subTitle,
-            title: course.title,
-            descriptionHtml: this.markdown.render(this.getTileDescription(course)),
-            priceLabelHtml: course.course?.prices?.member ? `ab <b>${course.course.prices.member}</b>` : undefined,
-            ctaLabel: 'Anmelden',
-            ctaColor: 'accent',
-            onClick: () => this.openCourseDetail(course),
-        };
+        return { id: course.id, tile: course, onClick: () => this.openCourseDetail(course) };
     }
 
     public openRegisterDialog(tile: Tile) {
@@ -418,31 +376,5 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (link) {
             window.open(link, '_blank');
         }
-    }
-
-    /**
-     * Builds the description markdown for non-trip tiles (info tiles get
-     * their location/timeData appended). Trip (Event) tiles no longer render
-     * inline on the home tile - their full description now lives on the
-     * trip detail page (TripDetailComponent in trips-lib), which builds its
-     * own event-specific markdown (destination, boardings, pricing table).
-     */
-    public getTileDescription(tile: Tile): string {
-        if (tile.type === TileType.Info) {
-            const infoTile = tile as InfoTile;
-            let content = tile.description || '';
-            if (infoTile.location) {
-                content += `\n\n**Ort:** ${infoTile.location}\n`;
-            }
-            if (infoTile.timeData && infoTile.timeData.length > 0) {
-                content += '\n\n**Zeiten**\n\n';
-                infoTile.timeData.forEach((time) => {
-                    content += `- ${time}\n`;
-                });
-            }
-            return content;
-        }
-
-        return tile.description;
     }
 }
