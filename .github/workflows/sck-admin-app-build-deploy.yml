@@ -1,0 +1,102 @@
+name: SCK-ADMIN Workflow
+
+# Produktiv-Deploy für sck-admin-app, analog zu sck-web-app-build-deploy.yml
+# (gleicher Server, gleicher SCP-Mechanismus, kein Docker) - siehe
+# infrastructure/ADMIN_PROD_DEPLOY.md für die einmaligen manuellen Schritte
+# (DNS, Apache-Vhost, GitHub-Secrets), die vor dem ersten erfolgreichen Lauf
+# nötig sind. Bis dahin schlägt der Guard-Schritt unten kontrolliert fehl,
+# statt z.B. bei leerem Zielpfad-Secret versehentlich ins Home-Verzeichnis
+# des SSH-Users zu kopieren.
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/web/projects/sck-admin-app/**"
+      - "src/web/projects/shared-lib/**"
+      - "src/web/projects/gym-lib/**"
+      - "src/web/projects/courses-lib/**"
+      - "src/web/projects/trips-lib/**"
+      - "src/web/projects/data/**"
+      - ".github/workflows/sck-admin-app-build-deploy.yml"
+
+env:
+  PROJECT_PATH: "src/web/"
+  APACHE_HTACCESS_SCK_ADMIN: "src/web/projects/sck-admin-app/src/.htaccess"
+  # Angulars neuer Application Builder verschachtelt den Output unter
+  # browser/ - anders als sck-apps flaches dist/sck-app/.
+  PROJECT_DIST_PATH: "src/web/dist/sck-admin-app/browser/"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - name: Set up Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      # Fail fast statt eines Deploys ins Leere/Falsche, solange die
+      # Checkliste (infrastructure/ADMIN_PROD_DEPLOY.md) noch nicht
+      # abgearbeitet ist - ein leeres SERVER_DIST_PATH_ADMIN würde scp sonst
+      # ins Home-Verzeichnis des SSH-Users kopieren lassen.
+      - name: Guard - require production secrets
+        run: |
+          if [ -z "${{ secrets.SERVER_DIST_PATH_ADMIN }}" ] || [ -z "${{ secrets.ADMIN_APP_URL }}" ]; then
+            echo "::error::SERVER_DIST_PATH_ADMIN und/oder ADMIN_APP_URL sind noch nicht als Secrets gesetzt - siehe infrastructure/ADMIN_PROD_DEPLOY.md."
+            exit 1
+          fi
+
+      # ENV SUBSTITUTION - nur 2 Felder, kein envsubst.sh-Template nötig
+      # (das ist sck-apps 8-Felder-Mechanismus), gleiches sed-Muster wie im
+      # bestehenden admin-Dockerfile für den Test-Deploy.
+      - name: Environment substitution
+        run: |
+          sed -i "s|sckApiUrl: ''|sckApiUrl: '${{ secrets.SCK_API_URL }}'|" \
+            src/web/projects/sck-admin-app/src/environments/environment.prod.ts
+          sed -i "s|turnstileSiteKey: ''|turnstileSiteKey: '${{ secrets.TURNSTILE_SITE_KEY }}'|" \
+            src/web/projects/sck-admin-app/src/environments/environment.prod.ts
+
+      # PREPARE
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # QA
+      - name: Run linting and tests
+        run: |
+          pnpm --filter web run lint:admin
+          pnpm --filter web run test:admin
+        env:
+          CHROME_BIN: /usr/bin/google-chrome-stable
+
+      # BUILD
+      - name: Build project
+        run: pnpm --filter web run build:admin
+
+      # Copy .htaccess for Apache WebServer
+      - name: Copy .htaccess file
+        run: |
+          cp ${{ env.APACHE_HTACCESS_SCK_ADMIN }} ${{ env.PROJECT_DIST_PATH }}
+
+      # Install sshpass
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      # Secure copy files to remote server
+      - name: SCP files to server
+        run: |
+          cd "${{ env.PROJECT_DIST_PATH }}"
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" \
+            scp -v -o "StrictHostKeyChecking=no" -r . \
+            "${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ secrets.SERVER_DIST_PATH_ADMIN }}"

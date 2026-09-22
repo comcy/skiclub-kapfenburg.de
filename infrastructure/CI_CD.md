@@ -9,6 +9,7 @@ was sie ausführen und wohin sie deployen. Stand: 2026-09-06.
 |---|---|---|---|
 | `test-deploy.yml` | Push auf `release/**`, manuell | ✅ `scripts/verify.sh` (gesamtes Workspace) – **gate** für den Deploy | Test-LXC (Docker) |
 | `sck-web-app-build-deploy.yml` | Push auf `master` (nur `src/web/**`) | ✅ `pnpm --filter web run test` (nur sck-app) | Produktiv-Server (SCP) |
+| `sck-admin-app-build-deploy.yml` | Push auf `master` (admin + geteilte Libraries) | ✅ `lint:admin` + `test:admin` | Produktiv-Server (SCP) — siehe [ADMIN_PROD_DEPLOY.md](./ADMIN_PROD_DEPLOY.md) |
 | `sck-api-build.yml` | Push/PR auf `master` (nur `src/api/sck-api/**`) | ✅ `pnpm --filter sck-api test` | – (nur Build-Artefakt) |
 | `sck-api-deploy.yml` | `sck-api-build.yml` erfolgreich auf `master` | ❌ (verlässt sich auf den Build-Workflow) | Produktiv-Server (SSH/systemd) |
 | `e2e-tests.yml` | PR gegen `master` (nur `src/web/**`, `e2e/**`) | ✅ Playwright-E2E-Suite | – (reiner Check) |
@@ -51,11 +52,25 @@ das lediglich TypeScript-Kompilierfehler abfängt, keine Logikfehler.
   anderen Workspace-Pakete; war bis 2026-09-06 auskommentiert, siehe
   „Bekannte Lücken" unten), dann Build, dann `scp` des `dist/`-Ordners
   direkt auf den Produktiv-Server.
-- **Deployt nur `sck-app`** — `sck-admin-app` hat keinen eigenen
-  Produktiv-Deploy-Workflow (siehe „Bekannte Lücken").
 - Älterer Deploy-Mechanismus als `test-deploy.yml` (direktes SCP statt
   Docker) — beide bewusst getrennt, siehe `TEST_DEPLOYMENT.md`s
   einleitender Kommentar.
+
+### `sck-admin-app-build-deploy.yml` — Produktiv-Deploy, sck-admin-app
+
+- **Trigger:** Push auf `master`, bei Änderungen unter
+  `src/web/projects/sck-admin-app/**` oder den geteilten Angular-
+  Libraries (shared-lib, gym-lib, courses-lib, trips-lib, data).
+- Gleicher Mechanismus wie `sck-web-app-build-deploy.yml` (SCP auf
+  denselben Apache-Server), aber `sed`-basierte Env-Injection statt
+  `envsubst.sh` (admin hat nur 2 Felder: `sckApiUrl`, `turnstileSiteKey` —
+  gleiches Muster wie im bestehenden Test-Docker-Image).
+- Ein Guard-Schritt bricht kontrolliert ab, solange
+  `SERVER_DIST_PATH_ADMIN`/`ADMIN_APP_URL` noch nicht als Secrets gesetzt
+  sind — verhindert ein Deploy ins Leere (leeres Ziel-Secret würde `scp`
+  sonst ins Home-Verzeichnis des SSH-Users kopieren lassen). Einmalige
+  manuelle Schritte (DNS, Apache-Vhost, Secrets) siehe
+  [ADMIN_PROD_DEPLOY.md](./ADMIN_PROD_DEPLOY.md).
 
 ### `sck-api-build.yml` + `sck-api-deploy.yml` — Produktiv-Deploy, sck-api
 
@@ -99,9 +114,17 @@ angefasst — hier nur dokumentiert)
   vollständigerer Produktiv-Gate (analog zu `test-deploy.yml`) wäre
   möglich, aber ein separater, bewusster Schritt (höhere Tragweite,
   echter Produktiv-Server statt Test-LXC).
-- **`sck-admin-app` hat keinen eigenen Produktiv-Deploy-Workflow** —
-  nur der Test-System-Weg über `test-deploy.yml`/Docker existiert
-  aktuell dafür.
+- **`sck-api-deploy.yml` ist seit mindestens Herbst 2025 nicht mehr
+  erfolgreich gelaufen** (`gh run list --workflow="SCK-API Deploy"`:
+  letzte 4 Läufe alle `failure`, jeweils ~15s Laufzeit — zu kurz, um bis
+  zum eigentlichen Server-Setup zu kommen, spricht für ein
+  SSH-Verbindungs-/Auth-Problem). Logs über die GitHub-API nicht mehr
+  abrufbar (>90 Tage). Nicht Teil dieser Änderung behoben (siehe
+  [ADMIN_PROD_DEPLOY.md](./ADMIN_PROD_DEPLOY.md) Schritt 5) — verdient
+  einen eigenen, bewussten Blick, bevor darauf verlassen wird. Separat
+  dabei gefunden und behoben: eine falsche relative Pfadangabe für das
+  systemd-Template (`systemd/sck-api.service.template` statt
+  `src/api/sck-api/systemd/sck-api.service.template`).
 - **`sck-api-build.yml`s Test-Schritt-Kommentar ist ungenau**
   ("Run linting and tests" führt nur `jest`, kein `tsc --noEmit`
   gesondert aus — `pnpm --filter sck-api test`s package.json-Skript

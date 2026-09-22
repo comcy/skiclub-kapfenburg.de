@@ -16,6 +16,7 @@ Environment=SENDER_MAIL=${SENDER_MAIL}
 Environment=SENDER_PW=${SENDER_PW}
 Environment=SEPA_ENCRYPTION_KEY=${SEPA_ENCRYPTION_KEY}
 Environment=TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY}
+Environment=ADMIN_APP_URL=${ADMIN_APP_URL}
 StandardOutput=journal
 StandardError=journal
 Restart=always
