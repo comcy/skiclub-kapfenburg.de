@@ -8,6 +8,12 @@ import * as sepaExportService from '../services/sepa-export-service.js';
 
 const isSequenceType = (value: unknown): value is SepaSequenceType => value === 'FRST' || value === 'RCUR';
 
+// Local calendar day, as YYYY-MM-DD - lexicographic compare works on ISO dates.
+const todayIso = (): string => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
 export const listSepaExportCandidates: RequestHandler = (_req, res) => {
   try {
     res.status(200).json(sepaExportService.listExportCandidates());
@@ -44,6 +50,10 @@ export const generateSepaExport: RequestHandler = (req, res) => {
     }
     if (!isSequenceType(sequenceType)) {
       res.status(400).json({ error: 'sequenceType muss FRST oder RCUR sein.' });
+      return;
+    }
+    if (executionDate.slice(0, 10) < todayIso()) {
+      res.status(400).json({ error: 'Das Fälligkeitsdatum darf nicht in der Vergangenheit liegen.' });
       return;
     }
 

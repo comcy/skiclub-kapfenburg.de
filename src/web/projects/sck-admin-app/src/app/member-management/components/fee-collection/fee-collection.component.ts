@@ -71,6 +71,13 @@ export class FeeCollectionComponent implements OnInit {
     public readonly candidateColumns = ['select', 'name', 'familyGroup', 'iban'];
 
     public executionDate: Date | null = null;
+    // Start of today - the API rejects past execution dates, so the picker
+    // blocks them up front and typed ones disable the download.
+    public readonly minDate = new Date(new Date().setHours(0, 0, 0, 0));
+
+    get isExecutionDatePast(): boolean {
+        return !!this.executionDate && this.executionDate < this.minDate;
+    }
     public sequenceType: SepaSequenceType = 'FRST';
 
     public preview: SepaExportPreview | null = null;
@@ -149,8 +156,8 @@ export class FeeCollectionComponent implements OnInit {
     }
 
     onDownload(): void {
-        if (!this.executionDate) {
-            this.errorMessage = 'Bitte ein Fälligkeitsdatum wählen.';
+        if (!this.executionDate || this.isExecutionDatePast) {
+            this.errorMessage = 'Bitte ein Fälligkeitsdatum wählen (nicht in der Vergangenheit).';
             return;
         }
         this.errorMessage = '';

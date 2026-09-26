@@ -98,7 +98,7 @@
             <div>
                 <mat-form-field appearance="outline">
                     <mat-label>Fälligkeitsdatum</mat-label>
-                    <input matInput [matDatepicker]="executionDatePicker" [(ngModel)]="executionDate" />
+                    <input matInput [matDatepicker]="executionDatePicker" [min]="minDate" [(ngModel)]="executionDate" />
                     <mat-datepicker-toggle matIconSuffix [for]="executionDatePicker"></mat-datepicker-toggle>
                     <mat-datepicker #executionDatePicker></mat-datepicker>
                 </mat-form-field>
@@ -108,6 +108,9 @@
                     <p class="hint-text date-confirm">
                         Gewähltes Datum: <strong>{{ executionDate | date: 'dd.MM.yyyy' }}</strong>
                     </p>
+                    @if (isExecutionDatePast) {
+                        <p class="error-hint">Das Fälligkeitsdatum liegt in der Vergangenheit.</p>
+                    }
                 }
             </div>
 
@@ -126,7 +129,7 @@
             <button
                 mat-raised-button
                 color="primary"
-                [disabled]="!selectedIds.size || !executionDate || isGenerating"
+                [disabled]="!selectedIds.size || !executionDate || isExecutionDatePast || isGenerating"
                 (click)="onDownload()"
             >
                 <mat-icon>download</mat-icon>

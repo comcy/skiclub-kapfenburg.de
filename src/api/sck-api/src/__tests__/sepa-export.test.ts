@@ -36,6 +36,9 @@ beforeEach(() => {
   db.exec('DELETE FROM settings; DELETE FROM permissions; DELETE FROM sessions; DELETE FROM users; DELETE FROM members;');
 });
 
+// Always in the future - the API rejects past execution dates.
+const FUTURE_DATE = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
+
 const setupCreditorAndFees = async (token: string) => {
   await request(app)
     .put('/api/settings/sepa-creditor')
@@ -149,6 +152,20 @@ describe('SEPA-Export Routes', () => {
     ]);
   });
 
+  it('lehnt ein Fälligkeitsdatum in der Vergangenheit ab', async () => {
+    const token = createAuthedUser(['members:manage', 'sepa:export']);
+    await setupCreditorAndFees(token);
+    const single = await createMember(token);
+
+    const res = await request(app)
+      .post('/api/sepa-export/generate')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ memberIds: [single.body.id], executionDate: '2020-01-01', sequenceType: 'FRST' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain('Vergangenheit');
+  });
+
   it('lehnt die XML-Generierung ohne Gläubiger-ID ab', async () => {
     const token = createAuthedUser(['members:manage', 'sepa:export']);
     const single = await createMember(token);
@@ -156,7 +173,7 @@ describe('SEPA-Export Routes', () => {
     const res = await request(app)
       .post('/api/sepa-export/generate')
       .set('Authorization', `Bearer ${token}`)
-      .send({ memberIds: [single.body.id], executionDate: '2026-10-01', sequenceType: 'FRST' });
+      .send({ memberIds: [single.body.id], executionDate: FUTURE_DATE, sequenceType: 'FRST' });
 
     expect(res.status).toBe(400);
     expect(res.body.error).toContain('Gläubiger-ID');
@@ -170,11 +187,11 @@ describe('SEPA-Export Routes', () => {
     const res = await request(app)
       .post('/api/sepa-export/generate')
       .set('Authorization', `Bearer ${token}`)
-      .send({ memberIds: [single.body.id], executionDate: '2026-10-01', sequenceType: 'FRST' });
+      .send({ memberIds: [single.body.id], executionDate: FUTURE_DATE, sequenceType: 'FRST' });
 
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toContain('application/xml');
-    expect(res.headers['content-disposition']).toContain('sepa-lastschrift-2026-10-01.xml');
+    expect(res.headers['content-disposition']).toContain(`sepa-lastschrift-${FUTURE_DATE}.xml`);
 
     const xml = res.text;
     expect(xml).toContain('<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.008.001.02"');
@@ -184,7 +201,7 @@ describe('SEPA-Export Routes', () => {
     expect(xml).toContain('<IBAN>DE02120300000000202051</IBAN>');
     expect(xml).toContain('<InstdAmt Ccy="EUR">40.00</InstdAmt>');
     expect(xml).toContain('<SeqTp>FRST</SeqTp>');
-    expect(xml).toContain('<ReqdColltnDt>2026-10-01</ReqdColltnDt>');
+    expect(xml).toContain(`<ReqdColltnDt>${FUTURE_DATE}</ReqdColltnDt>`);
     expect(xml).toContain(`<MndtId>${single.body.id}</MndtId>`);
     expect(xml).toContain('Erika Musterfrau');
 
