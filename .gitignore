@@ -74,3 +74,11 @@ src/api/sck-api/data/*.ndjson
 src/sck-api/data/*.ndjson
 src/sck-api/data/*.json
 src/sck-api/data/media/
+
+# sck-api Laufzeitdaten (SQLite + Uploads)
+src/api/sck-api/src/data/media/
+src/api/sck-api/src/data/*.sqlite3*
+
+# lokale LaTeX-Artefakte
+src/documents/*.aux
+src/documents/*.log
