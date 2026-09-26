@@ -23,6 +23,11 @@
     &.two-columns {
         grid-template-columns: 1fr 1fr;
         max-width: 700px;
+
+        // Radio labels ("Erstlastschrift (FRST)") got clipped side by side.
+        @media (max-width: 600px) {
+            grid-template-columns: 1fr;
+        }
     }
 }
 

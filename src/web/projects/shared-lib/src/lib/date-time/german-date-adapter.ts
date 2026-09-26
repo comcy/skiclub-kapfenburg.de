@@ -46,4 +46,15 @@ export class GermanDateAdapter extends NativeDateAdapter {
 
         return isRealCalendarDate ? date : new Date(NaN);
     }
+
+    // NativeDateAdapter's Intl-based format() yields "1.11.2026" for de-DE;
+    // the parse contract above and GERMAN_DATE_FORMATS say DD.MM.YYYY.
+    public override format(date: Date, displayFormat: object): string {
+        if (!this.isValid(date)) {
+            return super.format(date, displayFormat);
+        }
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        return `${dd}.${mm}.${date.getFullYear()}`;
+    }
 }

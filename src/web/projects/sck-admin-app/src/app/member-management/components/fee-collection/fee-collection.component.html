@@ -164,7 +164,7 @@
                             <td>{{ t.ibanMasked }}</td>
                             <td>{{ t.amount | currency: 'EUR' }}</td>
                             <td>{{ t.mandateReference }}</td>
-                            <td>{{ t.mandateSignatureDate | date: 'shortDate' }}</td>
+                            <td>{{ t.mandateSignatureDate | date: 'dd.MM.yyyy' }}</td>
                         </tr>
                     }
                 </tbody>

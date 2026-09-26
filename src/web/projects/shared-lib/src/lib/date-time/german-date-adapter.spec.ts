@@ -55,4 +55,8 @@ describe('GermanDateAdapter', () => {
     it('returns null for empty input', () => {
         expect(adapter.parse('')).toBeNull();
     });
+
+    it('formats zero-padded DD.MM.YYYY', () => {
+        expect(adapter.format(new Date(2026, 10, 1), {})).toBe('01.11.2026');
+    });
 });

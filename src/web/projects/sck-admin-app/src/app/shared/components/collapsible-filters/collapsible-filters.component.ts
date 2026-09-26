@@ -6,7 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 // unchanged inside - on a phone-width screen several filter fields side by
 // side can eat most of the visible list area, so every list gets the
 // ability to hide them rather than each one growing its own boolean/toggle
-// button. Defaults open so desktop behavior doesn't change.
+// button. Defaults open on desktop, collapsed on phone width (an open
+// filter stack left ~1 list row visible at 390px).
 @Component({
     selector: 'app-collapsible-filters',
     standalone: true,
@@ -29,5 +30,5 @@ import { MatIconModule } from '@angular/material/icon';
     ],
 })
 export class CollapsibleFiltersComponent {
-    expanded = true;
+    expanded = !globalThis.matchMedia?.('(max-width: 600px)').matches;
 }
