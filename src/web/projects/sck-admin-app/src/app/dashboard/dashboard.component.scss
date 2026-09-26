@@ -133,7 +133,8 @@ section + section {
 .activity-item {
     display: flex;
     align-items: center;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 8px 16px;
     padding: 16px 20px;
 
     & + & {
@@ -154,6 +155,8 @@ section + section {
 }
 
 .activity-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-size: 14px;
     color: $ink;
 
