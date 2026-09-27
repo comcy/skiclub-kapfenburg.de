@@ -59,19 +59,18 @@ fiel auf `http://localhost:4200` zurück — unschädlich, da es bisher keine
 echte Admin-Instanz gab, die diese Links nutzt). Sobald das Secret gesetzt
 ist, greift es beim nächsten erfolgreichen `SCK-API Deploy`-Lauf.
 
-**Bekannter offener Punkt:** Die letzten 4 `SCK-API Deploy`-Läufe (zuletzt
-Herbst 2025) sind alle fehlgeschlagen, jeweils nach nur ~15s — zu schnell,
-um überhaupt bis zum Server-Setup zu kommen, spricht eher für ein
-SSH-Verbindungs-/Auth-Problem (abgelaufenes `SSH_PASSWORD`? geänderte
-`SERVER_ADDRESS`?) als für einen Code-Fehler. Die genauen Logs sind über
-die GitHub-API nicht mehr abrufbar (>90 Tage alt). Vor Schritt 5 lohnt sich
-ein manueller Blick: `gh run list --workflow="SCK-API Deploy"` und im
-Zweifel ein Testlauf, bevor ihr euch auf den automatischen Deploy von
+**Bekannter offener Punkt:** `SCK-API Deploy` ist noch nie erfolgreich
+gelaufen (alle 4 Läufe seit Juni 2025 `failure`, jeweils ~15–25s — zu
+schnell für das Server-Setup-Skript). `sck-web-app-build-deploy.yml`
+deployt mit denselben SSH-Secrets auf denselben Server aber zuverlässig,
+was ein abgelaufenes `SSH_PASSWORD` unwahrscheinlich macht — Verdacht liegt
+eher bei `appleboy/ssh-action` (Go-SSH-Client, anders als das
+`sshpass`+`scp` der funktionierenden Workflows). Volle Analyse:
+[`README.md`](./README.md) Abschnitt "Bekanntes Problem". Vor Schritt 5
+lohnt sich ein Testlauf, bevor ihr euch auf den automatischen Deploy von
 `ADMIN_APP_URL` verlasst. Separat davon behoben: eine falsche relative
 Pfadangabe im systemd-Template-Schritt (`systemd/sck-api.service.template`
-statt `src/api/sck-api/systemd/sck-api.service.template`) — könnte zur
-Erklärung beitragen, ist aber angesichts der sehr kurzen Laufzeit der
-fehlgeschlagenen Runs nicht sicher die alleinige Ursache.
+statt `src/api/sck-api/systemd/sck-api.service.template`).
 
 ## 6. Einmal testen
 

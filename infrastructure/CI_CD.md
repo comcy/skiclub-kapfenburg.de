@@ -114,16 +114,24 @@ angefasst — hier nur dokumentiert)
   vollständigerer Produktiv-Gate (analog zu `test-deploy.yml`) wäre
   möglich, aber ein separater, bewusster Schritt (höhere Tragweite,
   echter Produktiv-Server statt Test-LXC).
-- **`sck-api-deploy.yml` ist seit mindestens Herbst 2025 nicht mehr
-  erfolgreich gelaufen** (`gh run list --workflow="SCK-API Deploy"`:
-  letzte 4 Läufe alle `failure`, jeweils ~15s Laufzeit — zu kurz, um bis
-  zum eigentlichen Server-Setup zu kommen, spricht für ein
-  SSH-Verbindungs-/Auth-Problem). Logs über die GitHub-API nicht mehr
-  abrufbar (>90 Tage). Nicht Teil dieser Änderung behoben (siehe
-  [ADMIN_PROD_DEPLOY.md](./ADMIN_PROD_DEPLOY.md) Schritt 5) — verdient
-  einen eigenen, bewussten Blick, bevor darauf verlassen wird. Separat
-  dabei gefunden und behoben: eine falsche relative Pfadangabe für das
-  systemd-Template (`systemd/sck-api.service.template` statt
+- **`sck-api-deploy.yml` ist noch nie erfolgreich gelaufen** — nicht nur
+  "seit einer Weile kaputt": `gh run list --workflow="SCK-API Deploy"`
+  zeigt seit Erstellung des Workflows (Juni 2025) insgesamt vier Läufe,
+  alle `failure`, jeweils ~15–25s Laufzeit (zu kurz für das eigentliche
+  Server-Setup-Skript). Logs über die GitHub-API nicht mehr abrufbar
+  (Retention abgelaufen, auch beim jüngsten Lauf von Oktober 2025). Neuer
+  Anhaltspunkt gegenüber der ursprünglichen "SSH_PASSWORD abgelaufen"-
+  Vermutung: `sck-web-app-build-deploy.yml` deployt mit denselben
+  `SERVER_ADDRESS`/`SSH_USER`/`SSH_PASSWORD`-Secrets auf denselben Server
+  zuverlässig (zuletzt erfolgreich 2026-08-22) — die Zugangsdaten sind
+  also gültig. Unterschied: dieser Workflow verbindet sich per
+  `appleboy/ssh-action` (eigener Go-SSH-Client) statt per System-SSH
+  (`sshpass`+`scp`) wie die funktionierenden Workflows — mögliche
+  Algorithmus-Inkompatibilität mit dem Server-`sshd`, nicht bestätigt.
+  Volle Analyse und die vollständige Secrets-Tabelle:
+  [`README.md`](./README.md). Separat dabei gefunden und behoben: eine
+  falsche relative Pfadangabe für das systemd-Template
+  (`systemd/sck-api.service.template` statt
   `src/api/sck-api/systemd/sck-api.service.template`).
 - **`sck-api-build.yml`s Test-Schritt-Kommentar ist ungenau**
   ("Run linting and tests" führt nur `jest`, kein `tsc --noEmit`

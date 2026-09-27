@@ -51,6 +51,10 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/comcy/skiclub-kapfenburg
 
 See [`infrastructure/TEST_DEPLOYMENT.md`](infrastructure/TEST_DEPLOYMENT.md) for the complete walkthrough, including where SMTP/sheet-URL/API-URL/admin-app configuration lives and how to change it after deploying.
 
+## Deployment
+
+What needs to be configured (GitHub Secrets, server prerequisites) before a production deploy of sck-app, sck-admin-app or sck-api actually works, plus known gaps: [`infrastructure/README.md`](infrastructure/README.md).
+
 ## LICENSE
 
 MIT License
