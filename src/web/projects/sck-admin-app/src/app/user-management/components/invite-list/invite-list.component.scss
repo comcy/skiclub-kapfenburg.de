@@ -1,0 +1,40 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // See member-list.component.scss's identical rule - title + actions
+    // don't fit on one row on a phone-width screen.
+    flex-wrap: wrap;
+    row-gap: 8px;
+    margin-bottom: 8px;
+}
+
+table {
+    width: 100%;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chip-pending {
+    background: light-dark(#fff3cd, #4a3c0a);
+    color: light-dark(#8a6a00, #e6c15a);
+}
+
+.chip-accepted {
+    background: light-dark(#dcf3e0, #1b3a20);
+    color: light-dark(#1e7d32, #8ee6a0);
+}
+
+.chip-expired {
+    background: var(--mat-sys-surface-container);
+    color: var(--mat-sys-on-surface-variant);
+}

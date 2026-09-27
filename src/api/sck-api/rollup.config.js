@@ -25,6 +25,10 @@ export default {
     'express',
     'nodemailer',
     'cors',
-    'dotenv'
+    'dotenv',
+    'multer',
+    'google-auth-library',
+    'node:sqlite',
+    'node:crypto',
   ],
 };

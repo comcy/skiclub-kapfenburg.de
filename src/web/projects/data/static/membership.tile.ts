@@ -5,7 +5,7 @@
 import { Tile, TileActions, TileBehavior, TileStatus, TileType } from '@shared/ui-common';
 
 export const MEMBERSHIP_TILE: Tile = {
-    id: 'memebership',
+    id: 'membership',
     order: 5,
     type: TileType.Info,
     behavior: TileBehavior.Click,
@@ -16,8 +16,7 @@ export const MEMBERSHIP_TILE: Tile = {
     imageDescription: 'Mitgliedsantrag',
     description: '<h3>JAHRESBEITRÄGE</h3> \n\r - Kinder: 5€ \n\r - Erwachsene: 25€ \n\r - Familien: 40€',
     details: '',
-    actions: [TileActions.Download],
-    downloadActionLink: 'https://1drv.ms/b/s!AlpybhuWN2nhge8cEZzZ36UQ89Ixaw?e=XsGgvZ',
+    actions: [TileActions.Register],
     avatar: 'https://avatars.githubusercontent.com/u/3502336?v=4',
     expiration: new Date('2028-12-31'),
     status: TileStatus.Open,

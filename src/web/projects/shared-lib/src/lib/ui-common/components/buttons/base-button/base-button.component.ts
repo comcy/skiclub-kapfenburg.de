@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '..';
+import { SHARED_LIB_BUTTONS_NG_MAT_MODULES } from '../buttons-material-modules';
 import { MATERIAL_COLOR, MaterialColor } from '../../../enums';
 
 @Component({

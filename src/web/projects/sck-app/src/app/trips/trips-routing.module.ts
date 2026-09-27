@@ -13,8 +13,13 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'registration',
+                redirectTo: 'overview',
                 pathMatch: 'full',
+            },
+            {
+                path: 'overview',
+                loadComponent: () =>
+                    import('./components/tabs/overview/overview.component').then((mod) => mod.OverviewComponent),
             },
             {
                 path: 'registration',
@@ -41,6 +46,13 @@ const routes: Routes = [
                     import('./components/tabs/downloads/downloads.component').then((mod) => mod.DownloadsComponent),
             },
         ],
+    },
+    // Standalone trip detail page (/trips/:id) - not part of the tabbed
+    // shell above, only tried once none of its fixed child paths match.
+    {
+        path: ':id',
+        loadComponent: () =>
+            import('./components/trip-detail/trip-detail.component').then((mod) => mod.TripDetailComponent),
     },
 ];
 

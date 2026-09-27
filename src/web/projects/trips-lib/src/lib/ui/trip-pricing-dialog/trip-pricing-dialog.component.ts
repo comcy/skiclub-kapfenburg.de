@@ -33,7 +33,7 @@ export class TripPricingDialogComponent {
     public displayedColumns: string[] = ['category', 'member', 'nonMember'];
 
     constructor() {
-        const pricing = this.data.tripConfig.pricing;
+        const pricing = this.data.tripConfig.pricing ?? {};
 
         // 1. Transport & Equipment
         const transportRows: PriceRow[] = [];

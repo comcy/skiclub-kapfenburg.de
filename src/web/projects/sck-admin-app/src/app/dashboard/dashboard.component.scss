@@ -1,0 +1,178 @@
+// Theme-reactive (see theme/theme.service.ts) - real CSS custom properties,
+// not Sass variables, so they follow whichever palette is active.
+$color-primary: var(--mat-sys-primary);
+$color-on-primary: var(--mat-sys-on-primary);
+$color-primary-container: var(--mat-sys-primary-container);
+$color-on-primary-container: var(--mat-sys-on-primary-container);
+$divider: var(--mat-sys-outline-variant);
+$ink: var(--mat-sys-on-surface);
+$ink-secondary: var(--mat-sys-on-surface-variant);
+$ink-hint: var(--mat-sys-on-surface-variant);
+$surface: var(--mat-sys-surface);
+
+.content-area {
+    padding: 32px;
+}
+
+section + section {
+    margin-top: 40px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 16px;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+
+    @media (max-width: 900px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.stat-card {
+    background: $color-primary-container;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: $surface;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-on-primary-container;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    color: $color-on-primary-container;
+}
+
+.stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: $ink;
+    // A single long compound word (e.g. "Fahrgemeinschaften") has no space
+    // to wrap at, so on a narrow card it otherwise overflows the card
+    // instead of wrapping - break mid-word as a last resort.
+    overflow-wrap: break-word;
+}
+
+.stat-sub {
+    font-size: 12px;
+    color: $ink-secondary;
+}
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.quick-card {
+    border: 1px solid $divider;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    background: $surface;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        border-color: $color-primary;
+        background: $color-primary-container;
+    }
+}
+
+.quick-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: $color-primary;
+    color: $color-on-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.quick-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: $ink;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $divider;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding: 16px 20px;
+
+    & + & {
+        border-top: 1px solid $divider;
+    }
+}
+
+.activity-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: $color-primary-container;
+    color: $color-on-primary-container;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.activity-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+    color: $ink;
+
+    strong {
+        font-weight: 500;
+    }
+}
+
+.activity-time {
+    margin-left: auto;
+    font-size: 12px;
+    color: $ink-hint;
+    white-space: nowrap;
+}
+
+.no-activity {
+    color: $ink-secondary;
+    font-size: 14px;
+}

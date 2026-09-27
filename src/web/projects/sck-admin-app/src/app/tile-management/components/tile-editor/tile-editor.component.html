@@ -1,0 +1,276 @@
+@if (tile) {
+    <div class="editor-container">
+        <!-- Form View -->
+        @if (!isShowingPreview) {
+            <div class="view-container">
+                <div class="scrollable-content form-content">
+                    <app-editable-image
+                        [(value)]="tile.image"
+                        [loading]="isUploadingImage"
+                        (imageSelected)="onImageSelected($event)"
+                        (imageRemoved)="onImageRemoved()"
+                    >
+                    </app-editable-image>
+
+                    <app-editable-text label="Title" [(value)]="tile.title"></app-editable-text>
+                    <app-editable-text label="Subtitle" [(value)]="tile.subTitle"></app-editable-text>
+                    <app-editable-textarea label="Description" [(value)]="tile.description"></app-editable-textarea>
+                    <app-editable-text
+                        label="Image Description (Alt-Text)"
+                        [(value)]="tile.imageDescription"
+                    ></app-editable-text>
+
+                    <div class="form-row">
+                        <app-editable-date
+                            class="half-width"
+                            label="Event Date"
+                            [value]="tile.date"
+                            (valueChange)="tile.date = $event"
+                        ></app-editable-date>
+                        <app-editable-date
+                            class="half-width"
+                            label="Expiration Date"
+                            [value]="tile.expiration"
+                            (valueChange)="tile.expiration = $event"
+                        ></app-editable-date>
+                    </div>
+
+                    <app-editable-link label="Download Link" [(link)]="tile.downloadActionLink"></app-editable-link>
+
+                    <div class="form-grid">
+                        <mat-form-field>
+                            <mat-label>Order</mat-label>
+                            <input matInput type="number" [(ngModel)]="tile.order" />
+                        </mat-form-field>
+
+                        @if (!fixedType) {
+                            <mat-form-field>
+                                <mat-label>Type</mat-label>
+                                <mat-select [(ngModel)]="tile.type">
+                                    @for (type of tileTypes; track type) {
+                                        <mat-option [value]="type">
+                                            {{ type }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        }
+
+                        <mat-form-field>
+                            <mat-label>Status</mat-label>
+                            <mat-select [(ngModel)]="tile.status">
+                                @for (status of tileStatus; track status) {
+                                    <mat-option [value]="status">
+                                        {{ status }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Behavior</mat-label>
+                            <mat-select [(ngModel)]="tile.behavior">
+                                @for (behavior of tileBehaviors; track behavior) {
+                                    <mat-option [value]="behavior">
+                                        {{ behavior }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-grid two-columns">
+                        <mat-form-field>
+                            <mat-label>Actions</mat-label>
+                            <mat-select [(ngModel)]="tile.actions" multiple>
+                                @for (action of tileActions; track action) {
+                                    <mat-option [value]="action">
+                                        {{ action }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Boardings</mat-label>
+                            <mat-select [(ngModel)]="tile.boardings" multiple>
+                                @for (boarding of availableBoardings$ | async; track boarding.id) {
+                                    <mat-option [value]="boarding.name">
+                                        {{ boarding.name }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-grid two-columns">
+                        <mat-form-field>
+                            <mat-label>Capacity (seats)</mat-label>
+                            <input matInput type="number" min="0" [(ngModel)]="tile.capacity" placeholder="Unlimited" />
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Organizer</mat-label>
+                            <mat-select [(ngModel)]="tile.organizerUserId">
+                                <mat-option [value]="undefined">–</mat-option>
+                                @for (user of availableUsers$ | async; track user.id) {
+                                    <mat-option [value]="user.id">
+                                        {{ user.email }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-checkbox [(ngModel)]="tile.visible">Visible</mat-checkbox>
+
+                    @if (tile.tripConfig) {
+                        <app-editable-text
+                            label="Ziel"
+                            [value]="tile.destination ?? ''"
+                            (valueChange)="tile.destination = $event"
+                        ></app-editable-text>
+
+                        <mat-checkbox [(ngModel)]="tile.tripConfig.hasCourseOption">
+                            Ausfahrt mit Kursmöglichkeit
+                        </mat-checkbox>
+                        <p class="hint-text">
+                            Preise werden nicht hier eingetragen, sondern einmal pro Saison zentral unter Einstellungen
+                            → Preismanagement gepflegt und automatisch ergänzt.
+                        </p>
+
+                        <h4 class="section-title">Notifications</h4>
+                        <mat-form-field>
+                            <mat-label>Benachrichtigungs-E-Mails (BCC)</mat-label>
+                            <input
+                                matInput
+                                [(ngModel)]="customBccListText"
+                                placeholder="a@example.com, b@example.com"
+                            />
+                            <mat-hint>Kommagetrennt. Leer = Standard-Verteiler wird verwendet.</mat-hint>
+                        </mat-form-field>
+                    }
+
+                    @if (tile.courseConfig) {
+                        <h4 class="section-title">Notifications</h4>
+                        <mat-form-field>
+                            <mat-label>Benachrichtigungs-E-Mails (BCC)</mat-label>
+                            <input
+                                matInput
+                                [(ngModel)]="courseCustomBccListText"
+                                placeholder="a@example.com, b@example.com"
+                            />
+                            <mat-hint>Kommagetrennt. Leer = Standard-Verteiler wird verwendet.</mat-hint>
+                        </mat-form-field>
+
+                        @if (tile.course) {
+                            <h4 class="section-title">Pilates- / Gymnastik-Kurs</h4>
+                            <mat-form-field>
+                                <mat-label>Termine / Details (Markdown, z. B. "**Termine**\n- ...")</mat-label>
+                                <textarea matInput rows="6" [(ngModel)]="tile.details"></textarea>
+                            </mat-form-field>
+
+                            <div class="form-grid two-columns">
+                                <mat-form-field>
+                                    <mat-label>Zeit (z. B. "Donnerstags, 18:00 - 19:00 Uhr")</mat-label>
+                                    <input matInput [(ngModel)]="tile.course.time" />
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Ort</mat-label>
+                                    <input matInput [(ngModel)]="tile.course.location" />
+                                </mat-form-field>
+                            </div>
+
+                            <mat-form-field>
+                                <mat-label>Kontakt</mat-label>
+                                <input matInput [(ngModel)]="tile.course.contact" />
+                            </mat-form-field>
+
+                            <div class="form-grid two-columns">
+                                <mat-form-field>
+                                    <mat-label>Preis Mitglied</mat-label>
+                                    <input matInput [(ngModel)]="tile.course.prices!.member" placeholder="48 EUR" />
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Preis Nicht-Mitglied</mat-label>
+                                    <input matInput [(ngModel)]="tile.course.prices!.nonMember" placeholder="72 EUR" />
+                                </mat-form-field>
+                            </div>
+
+                            <mat-checkbox
+                                [ngModel]="!!tile.course.schedule"
+                                (ngModelChange)="onScheduleEnabledChange($event)"
+                            >
+                                Wiederkehrende Terminserie
+                            </mat-checkbox>
+
+                            @if (tile.course.schedule) {
+                                <div class="form-grid two-columns">
+                                    <mat-form-field>
+                                        <mat-label>Wochentag</mat-label>
+                                        <mat-select [(ngModel)]="tile.course.schedule.weekday">
+                                            @for (day of weekdays; track day) {
+                                                <mat-option [value]="day">{{ weekdayLabels[day] }}</mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="form-grid two-columns">
+                                    <app-editable-date
+                                        label="Start"
+                                        [value]="tile.course.schedule.startDate"
+                                        (valueChange)="tile.course.schedule!.startDate = $event"
+                                    ></app-editable-date>
+                                    <app-editable-date
+                                        label="Ende"
+                                        [value]="tile.course.schedule.endDate"
+                                        (valueChange)="tile.course.schedule!.endDate = $event"
+                                    ></app-editable-date>
+                                </div>
+
+                                <mat-form-field>
+                                    <mat-label>Ausgenommene Termine (Feiertage etc.)</mat-label>
+                                    <input
+                                        matInput
+                                        [(ngModel)]="excludedDatesText"
+                                        placeholder="2026-10-29, 2026-12-24"
+                                    />
+                                    <mat-hint>Kommagetrennt, Format JJJJ-MM-TT.</mat-hint>
+                                </mat-form-field>
+                            }
+                        }
+                    }
+                </div>
+
+                <div class="footer-actions">
+                    <button mat-button (click)="togglePreview()">Preview</button>
+                    @if (auth.hasPermission('tiles:write')) {
+                        <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!tile">
+                            Save Changes
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Preview View -->
+        @if (isShowingPreview) {
+            <div class="view-container preview-container">
+                <div class="preview-toolbar">
+                    <button mat-button (click)="togglePreview()"><mat-icon>arrow_back</mat-icon> Back to Editor</button>
+                </div>
+                <div class="scrollable-content preview-content">
+                    <div class="preview-header">Live Preview</div>
+                    @if (tile) {
+                        <shared-lib-tile-card
+                            class="preview-card"
+                            [tile]="toSharedTile(tile)"
+                            [resolveImageUrl]="getImageUrl"
+                        ></shared-lib-tile-card>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}

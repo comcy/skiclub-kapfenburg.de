@@ -1,0 +1,11 @@
+@if (auth.hasPermission('members:manage')) {
+    @if (importOpen) {
+        <app-member-import (imported)="importOpen = false" (cancelled)="importOpen = false"></app-member-import>
+    } @else {
+        <div class="content-area">
+            <app-member-list (importRequested)="importOpen = true"></app-member-list>
+        </div>
+    }
+} @else {
+    <div class="no-access">Keine Berechtigung, Mitglieder zu verwalten.</div>
+}

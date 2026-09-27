@@ -1,0 +1,143 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { Image } from '../domain/image';
+import { PaginatedResponse } from '../domain/paginated-response';
+import { Tile, TileCreationParams } from '../domain/tile';
+import { TripRegistration, TripRegistrationCreationParams } from '../domain/trip-registration';
+import { CourseRegistration, CourseRegistrationCreationParams } from '../domain/course-registration';
+
+// Mirrors sck-api's PricePreviewParticipant / trip-price-preview response
+// (see trip-registrations-controller.ts) - not tile-specific data, just the
+// participant fields the global pricing config needs.
+export interface TripPricePreviewParticipant {
+    birthday?: string;
+    isMember?: boolean;
+    busOnly?: boolean;
+    snowshoes?: boolean;
+    courseRequested?: boolean;
+    level?: string;
+}
+
+export interface TripPricePreviewResult {
+    prices: number[];
+    total: number;
+}
+
+@Injectable({
+    providedIn: 'root',
+})
+export class TilesDataService {
+    private readonly http = inject(HttpClient);
+    public readonly apiUrl = environment.sckApiUrl;
+    private readonly endpoint = 'tiles';
+
+    getAbsoluteUrl(path: string | undefined): string {
+        if (!path) return '';
+        if (path.startsWith('http') || path.startsWith('data:')) return path;
+        const baseUrl = this.apiUrl.replace(/\/api$/, '');
+        return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
+    }
+    getTiles(
+        page: number = 1,
+        limit: number = 100,
+        sort?: string,
+        direction?: 'asc' | 'desc',
+        search?: string,
+        type?: string,
+        status?: string,
+    ): Observable<PaginatedResponse<Tile>> {
+        const params: Record<string, string> = {
+            page: page.toString(),
+            limit: limit.toString(),
+        };
+
+        if (sort) params['sort'] = sort;
+        if (direction) params['direction'] = direction;
+        if (search) params['search'] = search;
+        if (type) params['type'] = type;
+        if (status) params['status'] = status;
+
+        return this.http.get<PaginatedResponse<Tile>>(`${this.apiUrl}/${this.endpoint}`, {
+            params,
+        });
+    }
+
+    getTile(id: string): Observable<Tile> {
+        return this.http.get<Tile>(`${this.apiUrl}/${this.endpoint}/${id}`);
+    }
+
+    createTile(tile: TileCreationParams): Observable<Tile> {
+        return this.http.post<Tile>(`${this.apiUrl}/${this.endpoint}`, tile);
+    }
+
+    updateTile(id: string, tile: Tile): Observable<Tile> {
+        return this.http.put<Tile>(`${this.apiUrl}/${this.endpoint}/${id}`, tile);
+    }
+
+    deleteTile(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${this.endpoint}/${id}`);
+    }
+
+    uploadImage(file: File): Observable<Image> {
+        const formData = new FormData();
+        formData.append('image', file);
+        return this.http.post<Image>(`${this.apiUrl}/images/upload`, formData);
+    }
+
+    listImages(): Observable<Image[]> {
+        return this.http.get<Image[]>(`${this.apiUrl}/images`);
+    }
+
+    deleteImage(filename: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/images/${filename}`);
+    }
+
+    getRegistrations(tileId: string): Observable<TripRegistration[]> {
+        return this.http.get<TripRegistration[]>(`${this.apiUrl}/${this.endpoint}/${tileId}/registrations`);
+    }
+
+    createRegistration(tileId: string, params: TripRegistrationCreationParams): Observable<TripRegistration> {
+        return this.http.post<TripRegistration>(`${this.apiUrl}/${this.endpoint}/${tileId}/registrations`, params);
+    }
+
+    updateRegistration(id: string, params: TripRegistrationCreationParams): Observable<TripRegistration> {
+        return this.http.put<TripRegistration>(`${this.apiUrl}/registrations/${id}`, params);
+    }
+
+    deleteRegistration(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/registrations/${id}`);
+    }
+
+    // Reuses sck-api's own pricing calc (see trip-pricing-service.ts) instead
+    // of a fourth copy of that logic in the admin app - one call for the
+    // whole registrations list, prices come back in the same order.
+    getTripPricePreview(
+        tileId: string,
+        participants: TripPricePreviewParticipant[],
+    ): Observable<TripPricePreviewResult> {
+        return this.http.post<TripPricePreviewResult>(`${this.apiUrl}/${this.endpoint}/${tileId}/trip-price-preview`, {
+            participants,
+        });
+    }
+
+    getCourseRegistrations(tileId: string): Observable<CourseRegistration[]> {
+        return this.http.get<CourseRegistration[]>(`${this.apiUrl}/${this.endpoint}/${tileId}/course-registrations`);
+    }
+
+    createCourseRegistration(tileId: string, params: CourseRegistrationCreationParams): Observable<CourseRegistration> {
+        return this.http.post<CourseRegistration>(
+            `${this.apiUrl}/${this.endpoint}/${tileId}/course-registrations`,
+            params,
+        );
+    }
+
+    updateCourseRegistration(id: string, params: CourseRegistrationCreationParams): Observable<CourseRegistration> {
+        return this.http.put<CourseRegistration>(`${this.apiUrl}/course-registrations/${id}`, params);
+    }
+
+    deleteCourseRegistration(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/course-registrations/${id}`);
+    }
+}

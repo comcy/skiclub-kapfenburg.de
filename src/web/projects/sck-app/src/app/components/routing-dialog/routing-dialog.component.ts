@@ -6,12 +6,19 @@ import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@
 import { MatDialog } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
 import { ActivatedRoute, Router } from '@angular/router';
-import { COURSE_DATA, STATIC_DATA, TRIP_DATA } from '@data';
+import { COURSE_DATA, STATIC_DATA } from '@data';
 import { TripsRegisterDialogComponent } from '@trips-lib';
+import { CourseTilesApiServiceInterface } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
+import { mergeCourseTile } from 'projects/courses-lib/src/lib/domain/merge-course-tile';
 import { GymCoursesRegisterDialogComponent } from 'projects/gym-lib/src/lib/feature/gym-courses-register-dialog/gym-courses-register-dialog.component';
-import { Tile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { MembershipRegisterDialogComponent } from 'projects/membership-lib/src/lib/feature/membership-register-dialog/membership-register-dialog.component';
+import { MembershipDeclarationDialogComponent } from 'projects/membership-lib/src/lib/ui/membership-declaration-dialog/membership-declaration-dialog.component';
+import { CourseTile, Tile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 import { AgbDialogComponent } from 'projects/trips-lib/src/lib/ui/agb-dialog/agb-dialog.component';
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
+
+const MEMBERSHIP_TILE_ID = 'membership';
 
 @Component({
     selector: 'app-routing-dialog',
@@ -23,6 +30,8 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
     private route = inject(ActivatedRoute);
     private router = inject(Router);
     private dialog = inject(MatDialog);
+    private tripsApi = inject(TripTilesApiServiceInterface);
+    private courseTilesApi = inject(CourseTilesApiServiceInterface);
     private destroy$ = new Subject<void>();
 
     ngOnInit(): void {
@@ -32,6 +41,8 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
 
             if (type === 'agb') {
                 this.openAgbDialog();
+            } else if (type === 'satzung') {
+                this.openDeclarationDialog();
             } else if (id) {
                 this.openRegisterDialog(id);
             }
@@ -44,28 +55,51 @@ export class RoutingDialogComponent implements OnInit, OnDestroy {
     }
 
     private openRegisterDialog(id: string): void {
-        const allTiles: Tile[] = [...COURSE_DATA, ...STATIC_DATA, ...TRIP_DATA];
-        const tile = allTiles.find((t) => t.id === id);
+        combineLatest([this.tripsApi.getAllTrips(), this.courseTilesApi.getAllCourseTiles()])
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(([trips, apiCourseTiles]) => {
+                const allTiles: Tile[] = [...COURSE_DATA, ...STATIC_DATA, ...trips];
+                let tile = allTiles.find((t) => t.id === id);
 
-        if (!tile) {
-            this.close();
-            return;
+                if (!tile) {
+                    this.close();
+                    return;
+                }
+
+                if (tile.type === TileType.Course) {
+                    const courseTile = tile as CourseTile;
+                    const match = apiCourseTiles.find((t) => t.title === courseTile.course.name);
+                    tile = mergeCourseTile(courseTile, match);
+                }
+
+                const dialogRef = this.dialog.open(this.resolveRegisterDialogComponent(tile), {
+                    data: { tile },
+                    width: '90vw',
+                    maxWidth: '600px',
+                });
+
+                dialogRef.afterClosed().subscribe(() => this.close());
+            });
+    }
+
+    private resolveRegisterDialogComponent(tile: Tile): ComponentType<unknown> {
+        if (tile.id === MEMBERSHIP_TILE_ID) {
+            return MembershipRegisterDialogComponent;
         }
+        return tile.type === TileType.Course ? GymCoursesRegisterDialogComponent : TripsRegisterDialogComponent;
+    }
 
-        const component: ComponentType<unknown> =
-            tile.type === TileType.Course ? GymCoursesRegisterDialogComponent : TripsRegisterDialogComponent;
-
-        const dialogRef = this.dialog.open(component, {
-            data: { tile },
+    private openAgbDialog(): void {
+        const dialogRef = this.dialog.open(AgbDialogComponent, {
             width: '90vw',
-            maxWidth: '600px',
+            maxWidth: '800px',
         });
 
         dialogRef.afterClosed().subscribe(() => this.close());
     }
 
-    private openAgbDialog(): void {
-        const dialogRef = this.dialog.open(AgbDialogComponent, {
+    private openDeclarationDialog(): void {
+        const dialogRef = this.dialog.open(MembershipDeclarationDialogComponent, {
             width: '90vw',
             maxWidth: '800px',
         });

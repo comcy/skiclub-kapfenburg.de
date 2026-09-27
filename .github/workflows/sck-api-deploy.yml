@@ -73,10 +73,10 @@ jobs:
             sudo corepack enable
             sudo corepack prepare pnpm@11.22.0 --activate
 
-            # Dependencies installieren und builden (nur sck-api, nicht den ganzen Workspace)
+            # Dependencies installieren und builden (nur sck-api, nicht den ganzen Workspace; inkl. devDeps, rollup baut hier)
             echo "📦 Installing dependencies..."
             cd ${{ env.APP_DIR }}
-            sudo -u ${{ env.APP_USER }} pnpm install --frozen-lockfile --filter sck-api --prod
+            sudo -u ${{ env.APP_USER }} pnpm install --frozen-lockfile --filter sck-api
 
             echo "🔨 Building application..."
             sudo -u ${{ env.APP_USER }} pnpm --filter sck-api run build
@@ -94,10 +94,15 @@ jobs:
             export SMTP_PORT="${{ secrets.SMTP_PORT }}"
             export SENDER_MAIL="${{ secrets.SENDER_MAIL }}"
             export SENDER_PW="${{ secrets.SENDER_PW }}"
-            
+            export SEPA_ENCRYPTION_KEY="${{ secrets.SEPA_ENCRYPTION_KEY }}"
+            export TURNSTILE_SECRET_KEY="${{ secrets.TURNSTILE_SECRET_KEY }}"
+            export ADMIN_APP_URL="${{ secrets.ADMIN_APP_URL }}"
+            export SCK_APP_URL="${{ secrets.SCK_APP_URL }}"
+            export SUPER_ADMIN_EMAIL="${{ secrets.SUPER_ADMIN_EMAIL }}"
+
             # Template mit envsubst verarbeiten
-            envsubst '$APP_USER,$WORKING_DIRECTORY,$NODE_PATH,$NODE_ENV,$SMTP_SERVER,$SMTP_PORT,$SENDER_MAIL,$SENDER_PW' \
-              < systemd/sck-api.service.template | sudo tee /etc/systemd/system/${{ env.APP_NAME }}.service > /dev/null
+            envsubst '$APP_USER,$WORKING_DIRECTORY,$NODE_PATH,$NODE_ENV,$SMTP_SERVER,$SMTP_PORT,$SENDER_MAIL,$SENDER_PW,$SEPA_ENCRYPTION_KEY,$TURNSTILE_SECRET_KEY,$ADMIN_APP_URL,$SCK_APP_URL,$SUPER_ADMIN_EMAIL' \
+              < ${{ env.PROJECT_PATH }}systemd/sck-api.service.template | sudo tee /etc/systemd/system/${{ env.APP_NAME }}.service > /dev/null
             
             # Service aktivieren und starten
             echo "🚀 Starting service..."

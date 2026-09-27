@@ -1,0 +1,12 @@
+<app-dialog-shell [title]="title">
+    <app-boarding-editor #editor [boarding]="data.boarding" (saved)="onSaved()"></app-boarding-editor>
+
+    <ng-container dialogActions>
+        @if (editor.auth.hasPermission('boardings:write')) {
+            <button mat-raised-button color="primary" (click)="editor.onSave()" [disabled]="!editor.canSave">
+                Speichern
+            </button>
+        }
+        <button mat-button (click)="dialogRef.close(false)">Abbrechen</button>
+    </ng-container>
+</app-dialog-shell>

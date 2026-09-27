@@ -1,0 +1,99 @@
+/**
+ * @copyright Copyright (c) 2026 Christian Silfang
+ */
+
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { Router, RouterModule } from '@angular/router';
+import { TRIP_DATA } from '@data';
+import { EventTile, InfoTile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { TileCardComponent } from '@shared/ui-common';
+import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
+
+const ALL = 'Alle';
+
+@Component({
+    selector: 'app-trips-overview',
+    templateUrl: './overview.component.html',
+    styleUrls: ['./overview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: true,
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        TileCardComponent,
+    ],
+})
+export class OverviewComponent implements OnInit {
+    public allTrips: EventTile[] = [];
+    public filteredTrips: EventTile[] = [];
+    /** Standing offers alongside the trips (e.g. Skibörse, Schneeschuhverleih) - not date-bound events. */
+    public otherOffers: InfoTile[] = [];
+
+    public audiences: string[] = [ALL];
+    public destinations: string[] = [ALL];
+    public periods: string[] = [ALL];
+
+    public selectedAudience = ALL;
+    public selectedDestination = ALL;
+    public selectedPeriod = ALL;
+
+    private readonly monthFormatter = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' });
+    private tripsApi = inject(TripTilesApiServiceInterface);
+    private cdr = inject(ChangeDetectorRef);
+    private router = inject(Router);
+
+    ngOnInit(): void {
+        this.otherOffers = TRIP_DATA.filter((t): t is InfoTile => t.type === TileType.Info);
+
+        this.tripsApi.getAllTrips().subscribe((tiles) => {
+            this.allTrips = tiles
+                .filter((t): t is EventTile => t.type === TileType.Event)
+                .sort((a, b) => a.expiration.getTime() - b.expiration.getTime());
+
+            this.audiences = [
+                ALL,
+                ...new Set(this.allTrips.map((t) => this.resolveAudience(t)).filter((a) => a !== ALL)),
+            ];
+            this.destinations = [
+                ALL,
+                ...new Set(this.allTrips.map((t) => t.destination).filter((d): d is string => !!d)),
+            ];
+            this.periods = [ALL, ...new Set(this.allTrips.map((t) => this.monthFormatter.format(t.expiration)))];
+
+            this.applyFilters();
+            this.cdr.markForCheck();
+        });
+    }
+
+    public resolveAudience(trip: EventTile): string {
+        const subTitle = trip.subTitle.toLowerCase();
+        if (subTitle.includes('familie')) return 'Familienfreundlich';
+        if (subTitle.includes('18')) return 'Ab 18 Jahren';
+        return ALL;
+    }
+
+    public openTrip(trip: EventTile): void {
+        this.router.navigate(['/trips', trip.id]);
+    }
+
+    public applyFilters(): void {
+        this.filteredTrips = this.allTrips.filter((trip) => {
+            const matchesAudience =
+                this.selectedAudience === ALL || this.resolveAudience(trip) === this.selectedAudience;
+            const matchesDestination =
+                this.selectedDestination === ALL || trip.destination === this.selectedDestination;
+            const matchesPeriod =
+                this.selectedPeriod === ALL || this.monthFormatter.format(trip.expiration) === this.selectedPeriod;
+            return matchesAudience && matchesDestination && matchesPeriod;
+        });
+    }
+}

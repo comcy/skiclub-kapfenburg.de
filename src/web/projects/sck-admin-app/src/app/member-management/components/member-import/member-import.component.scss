@@ -1,0 +1,155 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.page-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.back-button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+
+    ::ng-deep .mat-mdc-button-touch-target {
+        width: 32px;
+        height: 32px;
+    }
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.page-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.page-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 24px 32px;
+}
+
+.error-banner {
+    background: light-dark(#fdecea, #4a1512);
+    color: light-dark(#c62828, #ffb4a8);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.upload-step {
+    max-width: 560px;
+
+    p {
+        color: var(--mat-sys-on-surface-variant);
+        margin-bottom: 16px;
+    }
+}
+
+.summary-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-item {
+    background: var(--mat-sys-surface-container);
+    color: var(--mat-sys-on-surface);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+h3 {
+    margin: 24px 0 8px;
+}
+
+.hint {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.simple-table,
+.diff-table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th {
+        text-align: left;
+        font-weight: 500;
+        font-size: 12px;
+        color: var(--mat-sys-on-surface-variant);
+        padding: 0 12px;
+        height: 36px;
+        border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+
+    td {
+        font-size: 14px;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+}
+
+.collision-card {
+    background: var(--mat-sys-surface-container-low);
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+
+    h4 {
+        margin: 0 0 8px;
+    }
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.done-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 48px 0;
+
+    p {
+        font-size: 16px;
+    }
+}
+
+.done-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: light-dark(#1e7d32, #8ee6a0);
+}

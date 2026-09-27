@@ -24,7 +24,12 @@
     @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
         <div class="navitems-container">
             @for (n of navItems; track n) {
-                <a mat-flat-button [color]="resolveColor(n)()" (click)="routeTo(n.route)">
+                <a
+                    mat-button
+                    [routerLink]="[n.route]"
+                    routerLinkActive="nav-item-active"
+                    [class.nav-item-declared]="!!n.color"
+                >
                     @if (logo) {
                         <mat-icon>{{ n.icon }}</mat-icon>
                     }
@@ -32,6 +37,12 @@
                 </a>
             }
         </div>
+    }
+
+    <!-- Desktop view: only room for this inline next to the burger on handset,
+    see [mobile-actions] in the sidenav below for that case. -->
+    @if ((breakpointObserver.handsetBreakpoint$ | async) === false) {
+        <ng-content select="[actions]"></ng-content>
     }
 
     <!-- Mobile View -->
@@ -59,5 +70,8 @@
                 </a>
             </mat-nav-list>
         }
+        <div class="sidenav-actions">
+            <ng-content select="[mobile-actions]"></ng-content>
+        </div>
     </mat-sidenav>
 </mat-sidenav-container>

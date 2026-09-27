@@ -65,4 +65,16 @@ describe('TripRegistrationFormService', () => {
         req.error(new ErrorEvent('network-error'));
         expect(snackBarSpy.open).toHaveBeenCalledWith('Fehler beim Speichern der Anmeldung', 'Ok');
     });
+
+    it('should include the turnstileToken when submitting a public registration', () => {
+        service.submitPublicRegistration('tile-1', [], 'test-turnstile-token').subscribe();
+
+        const req = httpMock.expectOne(`${environment.sckApiUrl}/tiles/tile-1/registrations/public`);
+        expect(req.request.body).toEqual({ participants: [], turnstileToken: 'test-turnstile-token' });
+        req.flush({ status: 'confirmed' });
+    });
+
+    it('should return the configured Turnstile site key', () => {
+        expect(service.getTurnstileSiteKey()).toBe(environment.turnstileSiteKey);
+    });
 });

@@ -1,0 +1,52 @@
+<mat-toolbar class="top-bar">
+    <img src="assets/logos/ski-logo.svg" alt="SCK" class="logo" />
+    <span class="title">{{ title }}</span>
+    <span class="spacer"></span>
+    <app-theme-switcher></app-theme-switcher>
+    @if (auth.session(); as session) {
+        <button mat-button class="user-email" disableRipple [matTooltip]="session.email" matTooltipPosition="below">
+            <mat-icon>person</mat-icon>
+            <span class="email-text">{{ session.email }}</span>
+        </button>
+        <button mat-flat-button class="logout-button" (click)="logout()" matTooltip="Logout" matTooltipPosition="below">
+            <mat-icon>logout</mat-icon>
+            <span class="logout-text">Logout</span>
+        </button>
+    }
+</mat-toolbar>
+
+<div class="body">
+    @if (auth.session()) {
+        <nav class="side-nav" [class.collapsed]="!navExpanded">
+            <div class="nav-items">
+                @for (item of navItems; track item.route) {
+                    <a
+                        class="nav-item"
+                        [routerLink]="item.route"
+                        routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [matTooltip]="navExpanded ? '' : item.name"
+                        matTooltipPosition="right"
+                    >
+                        <mat-icon>{{ item.icon }}</mat-icon>
+                        <span class="nav-label">{{ item.name }}</span>
+                    </a>
+                }
+            </div>
+            <button
+                mat-icon-button
+                class="collapse-toggle"
+                (click)="toggleNav()"
+                [attr.aria-label]="navExpanded ? 'Navigation einklappen' : 'Navigation ausklappen'"
+            >
+                <mat-icon>{{ navExpanded ? 'chevron_left' : 'chevron_right' }}</mat-icon>
+            </button>
+        </nav>
+    }
+
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<router-outlet name="modal"></router-outlet>

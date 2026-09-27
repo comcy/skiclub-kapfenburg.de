@@ -1,0 +1,38 @@
+<mat-toolbar>Mitgliedsantrag bestätigen</mat-toolbar>
+
+<div class="confirm-container">
+    <mat-card class="confirm-card">
+        @switch (state) {
+            @case ('loading') {
+                <mat-card-content class="centered">
+                    <mat-spinner diameter="40"></mat-spinner>
+                </mat-card-content>
+            }
+            @case ('success') {
+                <mat-card-header>
+                    <mat-card-title>Vielen Dank!</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        <mat-icon color="primary">check_circle</mat-icon>
+                        Dein Mitgliedsantrag ist bestätigt und wurde an unseren Vorstand weitergeleitet. Die Bearbeitung
+                        erfolgt anschließend durch unseren Kassenwart.
+                    </p>
+                    <a mat-raised-button color="primary" routerLink="/">Zur Startseite</a>
+                </mat-card-content>
+            }
+            @case ('error') {
+                <mat-card-header>
+                    <mat-card-title>Bestätigung fehlgeschlagen</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        Dieser Bestätigungslink ist ungültig oder abgelaufen. Falls du deinen Mitgliedsantrag erneut
+                        stellen möchtest, kontaktiere uns bitte über registration&#64;skiclub-kapfenburg.de.
+                    </p>
+                    <a mat-stroked-button routerLink="/">Zur Startseite</a>
+                </mat-card-content>
+            }
+        }
+    </mat-card>
+</div>

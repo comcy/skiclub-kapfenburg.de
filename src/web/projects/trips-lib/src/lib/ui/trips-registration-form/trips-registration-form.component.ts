@@ -16,7 +16,7 @@ import {
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import {
@@ -32,17 +33,21 @@ import {
     formatDateByLocale,
     formatDateTime,
     GERMAN_DATE_FORMATS,
+    GermanDateAdapter,
 } from 'projects/shared-lib/src/lib/date-time';
-import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail';
+import { getTripConfirmationSuccessMessage } from 'projects/data/mail-templates';
+import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, Subject, takeUntil } from 'rxjs';
 import { TripParticipant } from '../../domain/models';
 import { Trip } from '../../domain/models/trip-base';
 import { TripConfig } from '../../domain/models/trip-config';
 import { TripPricingDialogComponent } from '../trip-pricing-dialog/trip-pricing-dialog.component';
 import {
+    PublicRegistrationParticipantInput,
     SheetDbRow,
-    TripRegisterFormValue,
+    TripPricePreviewParticipant,
+    TripPricePreviewResult,
     TripRegistrationFormServiceInterface,
 } from './trips-registration-form.interfaces';
 
@@ -72,10 +77,11 @@ interface CourseOption {
         MatTooltipModule,
         MatSlideToggleModule,
         MatDialogModule,
+        TurnstileWidgetComponent,
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     providers: [
-        provideNativeDateAdapter(),
+        { provide: DateAdapter, useClass: GermanDateAdapter },
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
         { provide: MAT_DATE_FORMATS, useValue: GERMAN_DATE_FORMATS },
     ],
@@ -86,6 +92,8 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
 
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
     public breakpointObserver = inject(BreakpointObserverService);
+    private snackBar = inject(MatSnackBar);
+    private snackAction = 'Ok';
     public isSending = false;
     public tripView!: string;
     public boardingList$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -94,16 +102,23 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     public firstPartSelected = false;
     public tripRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
+    public turnstileToken: string | null = null;
 
     public sportTypeList = ['Ski Alpin', 'Snowboard'];
 
     public tripConfig: TripConfig | undefined;
     public availableLevelOptions: CourseOption[] = [];
+    // Zeros until the first debounced /trip-price-preview response arrives
+    // (see refreshPricePreview) - the template reads from this instead of
+    // computing locally.
+    public pricePreview: TripPricePreviewResult = { prices: [], total: 0 };
 
     private formBuilder = inject(FormBuilder);
     private tripRegistrationFormService = inject(TripRegistrationFormServiceInterface);
     private dialog = inject(MatDialog);
     private router = inject(Router);
+
+    public turnstileSiteKey = this.tripRegistrationFormService.getTurnstileSiteKey();
 
     ngOnInit(): void {
         this.tripRegisterForm = this.formBuilder.group({
@@ -143,6 +158,14 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 this.enableFormFields();
             }
         });
+
+        // Debounced separately from the subscription above - form fields
+        // (esp. birthday/checkboxes) change frequently while a participant
+        // is being filled in, and each change would otherwise fire its own
+        // request to the price-preview endpoint.
+        this.tripRegisterForm.valueChanges
+            .pipe(debounceTime(300), takeUntil(this.toDestroy$))
+            .subscribe(() => this.refreshPricePreview());
     }
 
     ngOnDestroy() {
@@ -293,82 +316,41 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         return '';
     }
 
+    // Both read from the latest /trip-price-preview response (see
+    // refreshPricePreview) instead of computing locally - the pricing logic
+    // now lives exactly once, server-side (see the plan).
     public getParticipantPrice(index: number): number {
-        const selectedTrip = this.tripRegisterForm.get('trip')?.value as Trip;
-        const pricing = selectedTrip?.tripConfig?.pricing;
-        if (!pricing) return 0;
-
-        const participantGroup = this.participants().at(index);
-        if (!participantGroup) return 0;
-
-        const participant = participantGroup.getRawValue();
-        const isMember = participant.isMember;
-
-        let totalPrice = 0;
-
-        // 1. Bus + Lift or Bus Only
-        if (participant.busOnly) {
-            if (pricing.busOnly) {
-                totalPrice += isMember ? pricing.busOnly.member : pricing.busOnly.nonMember;
-            }
-        } else if (pricing.busLift && participant.birthday) {
-            // Reference date from trip year
-            let refDate = new Date();
-            if (selectedTrip.date) {
-                const yearMatch = selectedTrip.date.match(/\d{4}/);
-                if (yearMatch) {
-                    refDate = new Date(parseInt(yearMatch[0]), 5, 1); // June 1st of trip year
-                }
-            }
-
-            const age = calculateAge(participant.birthday, refDate);
-            if (isNaN(age) || age < 0) return 0;
-
-            let ageGroup: 'adult' | 'youthUntil16' | 'childUntil6' = 'adult';
-            if (age <= 6) ageGroup = 'childUntil6';
-            else if (age <= 16) ageGroup = 'youthUntil16';
-
-            const groupPricing = pricing.busLift[ageGroup];
-            if (groupPricing) {
-                totalPrice += isMember ? groupPricing.member : groupPricing.nonMember;
-            } else {
-                // Fallback to adult if specific group is missing
-                totalPrice += isMember ? pricing.busLift.adult.member : pricing.busLift.adult.nonMember;
-            }
-        } else {
-            // No base price can be determined yet
-            return 0;
-        }
-
-        // 2. Addons: Snowshoes
-        if (participant.snowshoes && pricing.addons?.snowshoes) {
-            totalPrice += isMember ? pricing.addons.snowshoes.member : pricing.addons.snowshoes.nonMember;
-        }
-
-        // 3. Addons: Course / Technik
-        if (participant.courseRequested && pricing.addons && participant.level) {
-            const level = participant.level;
-            let addonPricing = null;
-
-            if (level === 'Anfängerkurs') addonPricing = pricing.addons.courseBeginner;
-            else if (level === 'Fortgeschrittenenkurs') addonPricing = pricing.addons.courseAdvanced;
-            else if (level === 'Techniktraining (1/2 Tag)') addonPricing = pricing.addons.technikHalf;
-            else if (level === 'Techniktraining (ganzer Tag)') addonPricing = pricing.addons.technikFull;
-
-            if (addonPricing) {
-                totalPrice += isMember ? addonPricing.member : addonPricing.nonMember;
-            }
-        }
-
-        return totalPrice;
+        return this.pricePreview.prices[index] ?? 0;
     }
 
     public getTotalPrice(): number {
-        let total = 0;
-        for (let i = 0; i < this.participants().length; i++) {
-            total += this.getParticipantPrice(i);
+        return this.pricePreview.total;
+    }
+
+    private refreshPricePreview(): void {
+        const selectedTrip = this.tripRegisterForm.get('trip')?.value as Trip;
+        const tileId = selectedTrip?.id;
+        if (!tileId || this.participants().length === 0) {
+            this.pricePreview = { prices: [], total: 0 };
+            return;
         }
-        return total;
+
+        const participants: TripPricePreviewParticipant[] = this.participants().controls.map((group) => {
+            const value = group.getRawValue();
+            return {
+                busOnly: value.busOnly,
+                snowshoes: value.snowshoes,
+                courseRequested: value.courseRequested,
+                level: value.level || undefined,
+                birthday: value.birthday,
+                isMember: value.isMember,
+            };
+        });
+
+        this.tripRegistrationFormService.getTripPricePreview(tileId, participants).subscribe({
+            next: (result) => (this.pricePreview = result),
+            error: (error) => console.error('Fehler bei der Preisvorschau:', error),
+        });
     }
 
     public getParticipantOptionsSummary(index: number): string[] {
@@ -408,10 +390,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public isSubmitDisabled(): boolean {
-        if (this.tripRegisterForm.valid) {
-            return false;
-        }
-        return true;
+        return !this.tripRegisterForm.valid || !this.turnstileToken;
+    }
+
+    public onTurnstileToken(token: string | null): void {
+        this.turnstileToken = token;
     }
 
     public openPricingDialog() {
@@ -467,20 +450,57 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             };
         });
 
-        this.handleSheetRegistration(rows);
+        // Only a real sck-api tile can take the capacity-aware registration
+        // below (static trips' id would just 404 there) - see
+        // confirmedRegistrationsCount's own doc comment. For those, that
+        // call is the real, reliable record (server-side confirmation mail
+        // included, see the plan) and must drive the user-facing message;
+        // the Sheets mirror below stays silent so its own outcome - broken
+        // here today by a misconfigured TRIP_SHEET_URL - can never look like
+        // a failed registration when the real one actually succeeded.
+        // Static trips have no sck-api counterpart at all, so they keep
+        // relying on Sheets' own message, exactly as before #182.
+        const tileId: string | undefined = rawValue.trip?.id;
+        const isApiBackedTrip = rawValue.trip?.confirmedRegistrationsCount !== undefined;
 
-        const mailToFormData: FormToMailInformation<TripRegisterFormValue> = {
-            receiver: contactPerson.email,
-            formValues: rawValue,
-        };
+        this.handleSheetRegistration(rows, isApiBackedTrip);
 
-        this.tripRegistrationFormService.sendConfirmationMail(mailToFormData);
+        if (isApiBackedTrip && tileId) {
+            const publicParticipants: PublicRegistrationParticipantInput[] = rawValue.participants.map(
+                (participant: TripParticipant) => ({
+                    firstName: participant.firstName,
+                    lastName: participant.lastName,
+                    email: participant.email || contactPerson.email,
+                    phone: participant.phone || contactPerson.phone,
+                    birthday: participant.birthday,
+                    boarding: participant.boarding,
+                    busOnly: participant.busOnly,
+                    snowshoes: participant.snowshoes,
+                    courseRequested: participant.courseRequested,
+                    level: participant.level,
+                    isMember: participant.isMember,
+                }),
+            );
+
+            this.tripRegistrationFormService
+                .submitPublicRegistration(tileId, publicParticipants, this.turnstileToken as string)
+                .subscribe({
+                    next: () => this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction),
+                    error: (error) => {
+                        console.error('Anmeldung fehlgeschlagen:', error);
+                        this.snackBar.open(
+                            'Anmeldung fehlgeschlagen - bitte versuche es erneut oder kontaktiere uns per Mail.',
+                            this.snackAction,
+                        );
+                    },
+                });
+        }
 
         this.submitForm.emit(true);
         this.isSending = false;
     }
 
-    private handleSheetRegistration(rows: SheetDbRow[]): void {
-        this.tripRegistrationFormService.sendFormToSheetsIo(rows);
+    private handleSheetRegistration(rows: SheetDbRow[], silent = false): void {
+        this.tripRegistrationFormService.sendFormToSheetsIo(rows, silent);
     }
 }

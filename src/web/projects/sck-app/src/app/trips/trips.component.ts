@@ -21,6 +21,10 @@ export class TripsComponent {
 
     public navLinks = [
         {
+            label: 'Übersicht',
+            link: './overview',
+        },
+        {
             label: 'Anmeldung',
             link: './registration',
         },
