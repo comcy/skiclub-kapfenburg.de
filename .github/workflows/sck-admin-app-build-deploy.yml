@@ -1,12 +1,20 @@
 name: SCK-ADMIN Workflow
 
-# Produktiv-Deploy für sck-admin-app, analog zu sck-web-app-build-deploy.yml
-# (gleicher Server, gleicher SCP-Mechanismus, kein Docker) - siehe
-# infrastructure/ADMIN_PROD_DEPLOY.md für die einmaligen manuellen Schritte
-# (DNS, Apache-Vhost, GitHub-Secrets), die vor dem ersten erfolgreichen Lauf
-# nötig sind. Bis dahin schlägt der Guard-Schritt unten kontrolliert fehl,
-# statt z.B. bei leerem Zielpfad-Secret versehentlich ins Home-Verzeichnis
-# des SSH-Users zu kopieren.
+# Produktiv-Deploy für sck-admin-app — eigenes LXC auf eigener Infra
+# (5i1f4ng.de), NICHT der Alfahosting-Server von skiclub-kapfenburg.de,
+# auf dem sck-app/sck-api laufen. Die Admin-App spricht trotzdem weiter
+# mit der echten Produktiv-sck-api (SCK_API_URL) — nur das Frontend zieht
+# um, kein zweites Backend. Siehe infrastructure/README.md "Warum ein
+# eigenes LXC" für den Hintergrund.
+#
+# Mechanismus wie test-deploy.yml, nicht wie sck-web-app-build-deploy.yml:
+# Docker + self-hosted Runner statt SCP, weil das LXC keinen offenen
+# eingehenden Port/öffentliche DNS für SSH hat - der Runner verbindet sich
+# stattdessen ausgehend zu GitHub. `test`-Job bleibt auf einem
+# GitHub-gehosteten Runner (lint:admin + test:admin), `deploy` läuft nur
+# bei Erfolg (`needs: test`) auf dem dedizierten Runner (Label
+# "sck-admin-prod", einmalig eingerichtet - siehe
+# infrastructure/proxmox/setup-admin-prod.sh).
 
 on:
   push:
@@ -20,16 +28,13 @@ on:
       - "src/web/projects/trips-lib/**"
       - "src/web/projects/data/**"
       - ".github/workflows/sck-admin-app-build-deploy.yml"
+      - "docker-compose.yml"
 
 env:
-  PROJECT_PATH: "src/web/"
-  APACHE_HTACCESS_SCK_ADMIN: "src/web/projects/sck-admin-app/src/.htaccess"
-  # Angulars neuer Application Builder verschachtelt den Output unter
-  # browser/ - anders als sck-apps flaches dist/sck-app/.
-  PROJECT_DIST_PATH: "src/web/dist/sck-admin-app/browser/"
+  APP_DIR: "/opt/sck-admin-prod"
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -47,32 +52,9 @@ jobs:
           node-version: "24.x"
           cache: "pnpm"
 
-      # Fail fast statt eines Deploys ins Leere/Falsche, solange die
-      # Checkliste (infrastructure/ADMIN_PROD_DEPLOY.md) noch nicht
-      # abgearbeitet ist - ein leeres SERVER_DIST_PATH_ADMIN würde scp sonst
-      # ins Home-Verzeichnis des SSH-Users kopieren lassen.
-      - name: Guard - require production secrets
-        run: |
-          if [ -z "${{ secrets.SERVER_DIST_PATH_ADMIN }}" ] || [ -z "${{ secrets.ADMIN_APP_URL }}" ]; then
-            echo "::error::SERVER_DIST_PATH_ADMIN und/oder ADMIN_APP_URL sind noch nicht als Secrets gesetzt - siehe infrastructure/ADMIN_PROD_DEPLOY.md."
-            exit 1
-          fi
-
-      # ENV SUBSTITUTION - nur 2 Felder, kein envsubst.sh-Template nötig
-      # (das ist sck-apps 8-Felder-Mechanismus), gleiches sed-Muster wie im
-      # bestehenden admin-Dockerfile für den Test-Deploy.
-      - name: Environment substitution
-        run: |
-          sed -i "s|sckApiUrl: ''|sckApiUrl: '${{ secrets.SCK_API_URL }}'|" \
-            src/web/projects/sck-admin-app/src/environments/environment.prod.ts
-          sed -i "s|turnstileSiteKey: ''|turnstileSiteKey: '${{ secrets.TURNSTILE_SITE_KEY }}'|" \
-            src/web/projects/sck-admin-app/src/environments/environment.prod.ts
-
-      # PREPARE
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # QA
       - name: Run linting and tests
         run: |
           pnpm --filter web run lint:admin
@@ -80,23 +62,39 @@ jobs:
         env:
           CHROME_BIN: /usr/bin/google-chrome-stable
 
-      # BUILD
-      - name: Build project
-        run: pnpm --filter web run build:admin
-
-      # Copy .htaccess for Apache WebServer
-      - name: Copy .htaccess file
+  deploy:
+    needs: test
+    runs-on: [self-hosted, sck-admin-prod]
+    steps:
+      - name: Deploy to sck-admin-prod LXC
         run: |
-          cp ${{ env.APACHE_HTACCESS_SCK_ADMIN }} ${{ env.PROJECT_DIST_PATH }}
+          set -e
 
-      # Install sshpass
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
+          # /opt/sck-admin-prod muss dem github-runner-User gehören
+          # (einmalig: chown -R github-runner:github-runner /opt/sck-admin-prod)
+          git config --global --add safe.directory "${{ env.APP_DIR }}"
 
-      # Secure copy files to remote server
-      - name: SCP files to server
-        run: |
-          cd "${{ env.PROJECT_DIST_PATH }}"
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" \
-            scp -v -o "StrictHostKeyChecking=no" -r . \
-            "${{ secrets.SSH_USER }}@${{ secrets.SERVER_ADDRESS }}:${{ secrets.SERVER_DIST_PATH_ADMIN }}"
+          if [ ! -d "${{ env.APP_DIR }}/.git" ]; then
+            echo "📥 Cloning repository..."
+            git clone ${{ github.server_url }}/${{ github.repository }}.git ${{ env.APP_DIR }}
+          fi
+
+          cd ${{ env.APP_DIR }}
+          echo "🔄 Checking out master..."
+          git fetch origin
+          git checkout master
+          git reset --hard origin/master
+
+          echo "🔨 Building admin image..."
+          docker compose build admin
+
+          echo "🚀 Restarting admin service..."
+          docker compose up -d admin
+
+          echo "🧹 Pruning old images/build cache..."
+          docker image prune -f
+          docker builder prune -f
+
+          sleep 3
+          echo "🩺 Health check (direkt auf dem LXC, am Reverse Proxy vorbei):"
+          echo "  admin / ........... $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/)"

@@ -1,88 +1,115 @@
 # sck-admin-app produktiv deployen: einmalige Checkliste
 
-`sck-admin-app` hat jetzt einen eigenen Produktiv-Deploy-Workflow
-(`.github/workflows/sck-admin-app-build-deploy.yml`), analog zu
-`sck-web-app-build-deploy.yml` — statisches Angular-Bundle per SCP auf
-denselben Apache-Server wie `sck-app`/`sck-api`, kein Docker. Er ist bereits
-push-getriggert (`push: branches: [master]`, wie sck-app), schlägt aber mit
-einer klaren Fehlermeldung fehl, solange die folgenden Schritte noch nicht
-erledigt sind — ein Push auf `master` vorher kann also nichts kaputt machen,
-er deployt nur noch nicht.
+`sck-admin-app` läuft produktiv **nicht** auf dem Alfahosting-Server von
+`skiclub-kapfenburg.de` (wo sck-app/sck-api liegen), sondern auf eigener
+Infrastruktur (5i1f4ng.de) als eigenes LXC — eine bewusste Entscheidung
+vom 2026-10-09, siehe [`README.md`](./README.md) Abschnitt "Warum ein
+eigenes LXC für die Admin-App". Mechanismus wie beim Test-System (Docker +
+self-hosted GitHub-Actions-Runner, siehe
+[`TEST_DEPLOYMENT.md`](./TEST_DEPLOYMENT.md)), nicht wie
+`sck-web-app-build-deploy.yml` (kein SCP, kein Apache für diese App).
 
-## 1. Subdomain wählen + DNS-Eintrag
+Die Admin-App spricht dabei weiterhin mit der **echten** Produktiv-sck-api
+(Alfahosting) — nur das Frontend zieht um, kein zweites Backend, keine
+zweite Datenbank.
 
-Empfehlung: `admin.skiclub-kapfenburg.de` (eigene Subdomain statt Unterpfad
-— sauberere Trennung für SPA-Routing/Cookies). A- oder CNAME-Eintrag bei
-eurem DNS-Provider auf dieselbe IP wie die bestehende Hauptdomain
-(`SERVER_ADDRESS`-Secret) anlegen.
+## 1. LXC einrichten
 
-## 2. Apache-Vhost + TLS auf dem Server
-
-Auf dem Produktivserver (gleicher Host wie sck-app/sck-api) einen neuen
-Vhost für die Subdomain anlegen, `DocumentRoot` zeigt auf ein neues
-Verzeichnis (z.B. `/var/www/html/sck-admin/`). TLS-Zertifikat ausstellen
-(z.B. `certbot --apache -d admin.skiclub-kapfenburg.de`, wie vermutlich
-schon für die Hauptdomain verwendet).
-
-## 3. Zielverzeichnis anlegen
+Auf dem Proxmox-Host (deinem 5i1f4ng.de-Server), ein Einzeiler, nichts
+vorher zu klonen/editieren:
 
 ```bash
-mkdir -p /var/www/html/sck-admin
-chown <gleicher-user-wie-sck-app-verzeichnis> /var/www/html/sck-admin
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/comcy/skiclub-kapfenburg.de/master/infrastructure/proxmox/setup-admin-prod.sh)"
 ```
 
-## 4. GitHub Secrets anlegen
+Fragt interaktiv VMID/Hostname/Ressourcen (Defaults: VMID 901, 1 vCPU,
+512 MB RAM, 4 GB Disk — ein einzelner statischer nginx-Container braucht
+wenig) sowie drei `.env`-Werte ab:
 
-Repo → Settings → Secrets and variables → Actions:
+- **`SCK_API_URL`** — die echte Produktiv-API-URL (dieselbe, die auch
+  `sck-app` benutzt), **nicht** die Test-API.
+- **`TURNSTILE_SITE_KEY`** — öffentlicher Cloudflare-Turnstile-Key (leer
+  lassen = Captcha-Widget bleibt inaktiv, siehe `README.md`).
+- **`ADMIN_APP_URL`** — wo die Admin-App am Ende erreichbar ist, z.B.
+  `https://admin.5i1f4ng.de` (oder vorerst `http://<LXC-IP>:8081`, bis
+  Schritt 2 steht — dann hier nachtragen und
+  `docker compose build admin && docker compose up -d admin` erneut
+  laufen lassen).
 
-- `SERVER_DIST_PATH_ADMIN` — der Pfad aus Schritt 3, z.B.
-  `/var/www/html/sck-admin`. **Hinweis:** es gibt bereits ein unbenutztes
-  Secret `SERVER_DIST_PATH_STAGE` — falls das genau für diesen Zweck
-  angelegt wurde, könnt ihr es stattdessen umbenennen/wiederverwenden statt
-  ein neues anzulegen (dann in `sck-admin-app-build-deploy.yml` den
-  Secret-Namen entsprechend anpassen).
-- `ADMIN_APP_URL` — die volle URL aus Schritt 1, z.B.
-  `https://admin.skiclub-kapfenburg.de` (ohne abschließenden Slash — wird
-  direkt vor Pfade wie `/auth/callback` gehängt, siehe
-  `auth-controller.ts`).
+Baut und startet danach **nur** den `admin`-Service aus dem bestehenden
+`docker-compose.yml` — bewusst kein lokales `api`/`web` auf diesem LXC
+(würde nur RAM verschwenden und eine zweite, unbenutzte "Produktiv"-API
+mit eigener leerer SQLite-DB danebenstellen, siehe Kommentar im Skript).
 
-Alle anderen benötigten Secrets (`SERVER_ADDRESS`, `SSH_USER`,
-`SSH_PASSWORD`, `SCK_API_URL`, `TURNSTILE_SITE_KEY`) existieren bereits und
-werden mit sck-app geteilt (dieselbe API-Instanz, derselbe öffentliche
-Turnstile-Key).
+## 2. Proxy Host + TLS in Nginx Proxy Manager
 
-## 5. sck-api neu deployen, damit ADMIN_APP_URL dort ankommt
+Wie beim Test-System (`TEST_DEPLOYMENT.md` Schritt 2), ein neuer Proxy
+Host:
+
+| Feld | Wert |
+|---|---|
+| Domain Names | `admin.5i1f4ng.de` (oder deine Wahl) |
+| Scheme | http |
+| Forward Hostname/IP | IP des `sck-admin-prod`-LXC |
+| Forward Port | `8081` |
+| SSL | Let's Encrypt, „Force SSL" |
+
+Falls `ADMIN_APP_URL` beim Skriptlauf noch nicht feststand: `.env` auf
+dem LXC nachtragen (siehe Schritt 1), dann `docker compose build admin &&
+docker compose up -d admin`.
+
+## 3. Self-hosted GitHub-Actions-Runner auf dem LXC
+
+Für automatische Redeploys bei Push auf `master`, statt das Setup-Skript
+jedes Mal erneut laufen zu lassen. Gleiches Muster wie beim Test-System
+(`TEST_DEPLOYMENT.md` Schritt 3), eigenes Label:
+
+Repo → Settings → Actions → Runners → „New self-hosted runner", Linux/x64,
+das angezeigte Download/Configure-Snippet auf dem LXC ausführen. Beim
+Konfigurieren als **Label `sck-admin-prod`** vergeben (exakt das erwartet
+`.github/workflows/sck-admin-app-build-deploy.yml`:
+`runs-on: [self-hosted, sck-admin-prod]`) — als systemd-Service unter
+einem eigenen, nicht-root `github-runner`-User installieren
+(`svc.sh install && svc.sh start`).
+
+Einmalig danach: `chown -R github-runner:github-runner /opt/sck-admin-prod`
+auf dem LXC, damit der Runner-User das Repo-Checkout selbst aktualisieren
+kann.
+
+## 4. GitHub Secrets prüfen
+
+Kein neues Secret für diesen Workflow selbst nötig (`SCK_API_URL`/
+`TURNSTILE_SITE_KEY`/`ADMIN_APP_URL` leben in der `.env` auf dem LXC, nicht
+in GitHub Secrets — anders als der alte SCP-Mechanismus). Trotzdem
+relevant für den Rest der Prod-Config (sck-api selbst liest
+`ADMIN_APP_URL` auch, für die Magic-Link-Mails — siehe
+[`README.md`](./README.md)):
+
+```bash
+gh secret set ADMIN_APP_URL --body "https://admin.5i1f4ng.de"
+```
+
+`SERVER_DIST_PATH_ADMIN` (altes SCP-Zielpfad-Secret) wird von keinem
+Workflow mehr referenziert — kann gelöscht werden, falls es schon
+angelegt war.
+
+## 5. sck-api neu deployen, damit `ADMIN_APP_URL` dort ankommt
 
 `ADMIN_APP_URL` wird auch von `sck-api` gelesen (Basis-URL für die
-Magic-Link-/Invite-Login-Mails, bisher nirgends in Produktion gesetzt,
-fiel auf `http://localhost:4200` zurück — unschädlich, da es bisher keine
-echte Admin-Instanz gab, die diese Links nutzt). Sobald das Secret gesetzt
-ist, greift es beim nächsten erfolgreichen `SCK-API Deploy`-Lauf.
-
-**Bekannter offener Punkt:** `SCK-API Deploy` ist noch nie erfolgreich
-gelaufen (alle 4 Läufe seit Juni 2025 `failure`, jeweils ~15–25s — zu
-schnell für das Server-Setup-Skript). `sck-web-app-build-deploy.yml`
-deployt mit denselben SSH-Secrets auf denselben Server aber zuverlässig,
-was ein abgelaufenes `SSH_PASSWORD` unwahrscheinlich macht — Verdacht liegt
-eher bei `appleboy/ssh-action` (Go-SSH-Client, anders als das
-`sshpass`+`scp` der funktionierenden Workflows). Volle Analyse:
-[`README.md`](./README.md) Abschnitt "Bekanntes Problem". Vor Schritt 5
-lohnt sich ein Testlauf, bevor ihr euch auf den automatischen Deploy von
-`ADMIN_APP_URL` verlasst. Separat davon behoben: eine falsche relative
-Pfadangabe im systemd-Template-Schritt (`systemd/sck-api.service.template`
-statt `src/api/sck-api/systemd/sck-api.service.template`).
+Magic-Link-/Invite-Login-Mails). Sobald das Secret in Schritt 4 gesetzt
+ist, greift es beim nächsten erfolgreichen `SCK-API Deploy`-Lauf — dessen
+eigener offener Punkt (noch nie erfolgreich gelaufen) steht in
+[`README.md`](./README.md) Abschnitt "Bekanntes Problem".
 
 ## 6. Einmal testen
 
-Nach einem Push auf `master`, der den neuen Workflow auslöst (oder direkt
-danach manuell über Actions → „SCK-ADMIN Workflow" → „Run workflow", falls
-ihr das vorher isoliert prüfen wollt): Subdomain im Browser öffnen, Login
-über `scripts/dev-login.sh`-Analogon (echter Magic-Link aus einer Mail)
-durchklicken, prüfen dass der Link in der Mail auf die echte Subdomain
-zeigt (nicht mehr `localhost:4200`).
+Nach einem Push auf `master`, der `SCK-ADMIN Workflow` auslöst (oder
+manuell über Actions → „SCK-ADMIN Workflow" → „Run workflow"): Subdomain
+im Browser öffnen, Login per echtem Magic-Link durchklicken, prüfen dass
+der Link in der Mail auf `admin.5i1f4ng.de` zeigt (nicht `localhost:4200`
+oder die alte Alfahosting-Vermutung).
 
 ## Danach
 
-Ab hier läuft es wie bei sck-app: jeder Push auf `master`, der
-`sck-admin-app`/die geteilten Angular-Libraries betrifft, deployed
-automatisch. Kein weiterer manueller Schritt nötig.
+Jeder Push auf `master`, der `sck-admin-app`/die geteilten Angular-
+Libraries betrifft, deployt automatisch auf das `sck-admin-prod`-LXC.

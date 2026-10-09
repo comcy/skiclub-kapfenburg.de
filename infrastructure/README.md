@@ -6,16 +6,37 @@ siehe [CI_CD.md](./CI_CD.md), für die einmaligen Schritte beim
 sck-admin-app-Produktiv-Deploy siehe [ADMIN_PROD_DEPLOY.md](./ADMIN_PROD_DEPLOY.md),
 für das Docker-Testsystem siehe [TEST_DEPLOYMENT.md](./TEST_DEPLOYMENT.md).
 
-Es gibt vier Deploy-Ziele, drei verschiedene Mechanismen:
+Es gibt vier Deploy-Ziele, drei verschiedene Mechanismen, **zwei
+verschiedene Server**:
 
-| Ziel | Mechanismus | Workflow |
-|---|---|---|
-| Test-System (Docker, eine LXC) | Docker Compose, self-hosted Runner | `test-deploy.yml` |
-| sck-app (Produktiv) | statisches Bundle per SCP auf Apache | `sck-web-app-build-deploy.yml` |
-| sck-admin-app (Produktiv) | statisches Bundle per SCP auf Apache | `sck-admin-app-build-deploy.yml` |
-| sck-api (Produktiv) | SSH + systemd-Service | `sck-api-build.yml` → `sck-api-deploy.yml` |
+| Ziel | Server | Mechanismus | Workflow |
+|---|---|---|---|
+| Test-System (Docker, eine LXC) | eigene Infra (5i1f4ng.de) | Docker Compose, self-hosted Runner | `test-deploy.yml` |
+| sck-app (Produktiv) | Alfahosting (skiclub-kapfenburg.de) | statisches Bundle per SCP auf Apache | `sck-web-app-build-deploy.yml` |
+| sck-admin-app (Produktiv) | eigene Infra (5i1f4ng.de), eigenes LXC | Docker Compose, self-hosted Runner | `sck-admin-app-build-deploy.yml` |
+| sck-api (Produktiv) | Alfahosting (skiclub-kapfenburg.de) | SSH + systemd-Service | `sck-api-build.yml` → `sck-api-deploy.yml` |
 
-## GitHub Secrets — Stand 2026-09-27
+## Warum ein eigenes LXC für die Admin-App (seit 2026-10-09)
+
+Bis 2026-10-09 war geplant, `sck-admin-app` wie `sck-app` per SCP auf den
+Alfahosting-Server zu deployen (eigene Subdomain, gleicher Apache). Das
+wurde verworfen: die Admin-App läuft stattdessen auf einem eigenen,
+dedizierten LXC auf eigener Infra (`5i1f4ng.de`), analog zum bereits
+bestehenden Test-System (Docker + self-hosted Runner statt SCP+Apache) —
+siehe [`ADMIN_PROD_DEPLOY.md`](./ADMIN_PROD_DEPLOY.md) für die komplette
+Einrichtung, [`infrastructure/proxmox/setup-admin-prod.sh`](./proxmox/setup-admin-prod.sh)
+fürs LXC-Setup.
+
+**Wichtig:** Das ist nur ein Umzug des **Frontends**. Die Admin-App spricht
+weiterhin mit der echten Produktiv-sck-api auf dem Alfahosting-Server
+(`SCK_API_URL` zeigt dorthin) — es gibt kein zweites Backend, keine zweite
+Datenbank. Bewusst auch **nicht** die bestehende `sck-test`-LXC
+mitbenutzt, obwohl die bereits einen `admin`-Container hat: die ist laut
+`TEST_DEPLOYMENT.md` explizit von der Produktivumgebung getrennt (eigene
+Testdaten, wird bei Redeploys zurückgesetzt) — ein Produktiv-Frontend an
+den Lebenszyklus des Testsystems zu koppeln wäre fragil.
+
+## GitHub Secrets — Stand 2026-10-09
 
 Repo → Settings → Secrets and variables → Actions. `gh secret list` zeigt
 nur Namen, keine Werte — ob ein Wert *sinnvoll* ist (nicht nur "irgendwas
@@ -25,12 +46,17 @@ gesetzt"), lässt sich von hier aus nicht prüfen.
 
 | Secret | Für | Workflow(s) |
 |---|---|---|
-| `SERVER_ADDRESS` | Zielserver für sck-app/sck-admin-app (SCP) und sck-api (SSH) | web, admin, api-deploy |
-| `SSH_USER` | SSH-User für alle drei | web, admin, api-deploy |
-| `SSH_PASSWORD` | SSH-Passwort für alle drei | web, admin, api-deploy |
+| `SERVER_ADDRESS` | Alfahosting-Zielserver für sck-app (SCP) und sck-api (SSH) | web, api-deploy |
+| `SSH_USER` | SSH-User für beide | web, api-deploy |
+| `SSH_PASSWORD` | SSH-Passwort für beide | web, api-deploy |
 | `SERVER_DIST_PATH_BASE` | Zielpfad für sck-app-Bundle | web |
-| `SCK_API_URL` | API-Basis-URL, ins Frontend-Bundle einkompiliert | web, admin |
+| `SCK_API_URL` | API-Basis-URL, ins sck-app-Bundle einkompiliert | web |
 | `COURSE_SHEET_URL` / `TRIP_SHEET_URL` | Google-Sheets-Links, ins sck-app-Bundle einkompiliert | web |
+
+sck-admin-app braucht **keine** dieser Secrets mehr — seit dem Umzug auf
+das eigene LXC (siehe oben) liegen `SCK_API_URL`/`TURNSTILE_SITE_KEY`/
+`ADMIN_APP_URL` in der `.env` direkt auf diesem LXC, nicht in GitHub
+Secrets (gleicher Mechanismus wie beim Test-System).
 
 ### Referenziert, aber **nicht gesetzt** (Stand 2026-09-27)
 
@@ -40,9 +66,8 @@ trotzdem eine kaputte Konfiguration ausliefern kann.
 
 | Secret | Für | Betrifft | Folge, wenn leer |
 |---|---|---|---|
-| `TURNSTILE_SITE_KEY` | Cloudflare-Turnstile-Widget im Frontend | web, admin | Captcha-Widget rendert mit leerem Site-Key — **das ist aktuell in Produktion der Fall**, sck-app deployt trotzdem erfolgreich |
-| `SERVER_DIST_PATH_ADMIN` | Zielpfad für sck-admin-app-Bundle | admin | Guard-Schritt bricht kontrolliert ab (siehe ADMIN_PROD_DEPLOY.md) — kein Deploy ins Leere, aber auch kein Deploy |
-| `ADMIN_APP_URL` | volle Admin-URL, u.a. Basis für Magic-Link-Mails | admin, api-deploy | sck-api fällt auf `http://localhost:4200` zurück — Login-Mails zeigen auf localhost |
+| `TURNSTILE_SITE_KEY` | Cloudflare-Turnstile-Widget im sck-app-Frontend | web | Captcha-Widget rendert mit leerem Site-Key — **das ist aktuell in Produktion der Fall**, sck-app deployt trotzdem erfolgreich. (Für die Admin-App separat in deren eigener `.env` auf dem LXC gesetzt, siehe oben.) |
+| `ADMIN_APP_URL` | volle Admin-URL, Basis für Magic-Link-Mails aus sck-api | api-deploy | sck-api fällt auf `http://localhost:4200` zurück — Login-Mails zeigen auf localhost |
 | `SCK_APP_URL` | öffentliche Website-URL, für Mail-Links aus sck-api | api-deploy | sck-api fällt auf `http://localhost:4200` zurück |
 | `SUPER_ADMIN_EMAIL` | erste Admin-Anmeldung (Bootstrap) in sck-api | api-deploy | niemand kann sich als Super-Admin einloggen |
 | `SMTP_SERVER` / `SMTP_PORT` / `SENDER_MAIL` / `SENDER_PW` | Mailversand aus sck-api (Bestätigungsmails, Magic-Links) | api-deploy | sck-api loggt Mails nur nach stdout statt sie zu versenden (dev-Fallback, siehe `mailer.ts`) |
@@ -57,15 +82,18 @@ Reste einer älteren Mail- bzw. Staging-Konfiguration. Vor dem Löschen kurz
 prüfen, ob sie irgendwo außerhalb dieses Repos noch gebraucht werden.
 
 - `CONFIRMATION_MAIL_SERVICE_MAIL` / `CONFIRMATION_MAIL_SERVICE_PASSWORD` / `CONFIRMATION_MAIL_SERVICE_SERVER`
-- `SERVER_DIST_PATH_STAGE` (ADMIN_PROD_DEPLOY.md schlägt vor, es für `SERVER_DIST_PATH_ADMIN` umzubenennen statt ein neues Secret anzulegen)
+- `SERVER_DIST_PATH_STAGE`
+- `SERVER_DIST_PATH_ADMIN` (Rest von der ursprünglich geplanten SCP-Variante der Admin-App — durch den Umzug aufs eigene LXC jetzt komplett unbenutzt)
 
 ## Server-seitige Voraussetzungen (einmalig, nicht durch CI geprüft)
 
 - **Node-Version für sck-api:** `node:sqlite` (siehe `src/api/sck-api/src/db/connection.ts`)
   braucht Node ≥ 22.5. `node -v` auf dem Produktivserver prüfen, bevor der
   erste sck-api-Deploy scharf geschaltet wird.
-- **Apache-Vhosts + TLS** für sck-app, sck-admin-app (eigene Subdomain,
-  siehe ADMIN_PROD_DEPLOY.md) — statische Bundles, kein Node dahinter.
+- **Apache-Vhost + TLS** für sck-app auf dem Alfahosting-Server — statisches
+  Bundle, kein Node dahinter.
+- **sck-admin-prod-LXC + Nginx-Proxy-Manager-Host** auf 5i1f4ng.de für die
+  Admin-App — siehe ADMIN_PROD_DEPLOY.md.
 - **systemd** für sck-api — der Deploy schreibt
   `/etc/systemd/system/sck-api.service` aus
   `src/api/sck-api/systemd/sck-api.service.template` neu.

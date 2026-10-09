@@ -9,7 +9,7 @@ was sie ausführen und wohin sie deployen. Stand: 2026-09-06.
 |---|---|---|---|
 | `test-deploy.yml` | Push auf `release/**`, manuell | ✅ `scripts/verify.sh` (gesamtes Workspace) – **gate** für den Deploy | Test-LXC (Docker) |
 | `sck-web-app-build-deploy.yml` | Push auf `master` (nur `src/web/**`) | ✅ `pnpm --filter web run test` (nur sck-app) | Produktiv-Server (SCP) |
-| `sck-admin-app-build-deploy.yml` | Push auf `master` (admin + geteilte Libraries) | ✅ `lint:admin` + `test:admin` | Produktiv-Server (SCP) — siehe [ADMIN_PROD_DEPLOY.md](./ADMIN_PROD_DEPLOY.md) |
+| `sck-admin-app-build-deploy.yml` | Push auf `master` (admin + geteilte Libraries) | ✅ `lint:admin` + `test:admin` | eigenes LXC (Docker, self-hosted Runner) — siehe [ADMIN_PROD_DEPLOY.md](./ADMIN_PROD_DEPLOY.md) |
 | `sck-api-build.yml` | Push/PR auf `master` (nur `src/api/sck-api/**`) | ✅ `pnpm --filter sck-api test` | – (nur Build-Artefakt) |
 | `sck-api-deploy.yml` | `sck-api-build.yml` erfolgreich auf `master` | ❌ (verlässt sich auf den Build-Workflow) | Produktiv-Server (SSH/systemd) |
 | `e2e-tests.yml` | PR gegen `master` (nur `src/web/**`, `e2e/**`) | ✅ Playwright-E2E-Suite | – (reiner Check) |
@@ -59,17 +59,21 @@ das lediglich TypeScript-Kompilierfehler abfängt, keine Logikfehler.
 ### `sck-admin-app-build-deploy.yml` — Produktiv-Deploy, sck-admin-app
 
 - **Trigger:** Push auf `master`, bei Änderungen unter
-  `src/web/projects/sck-admin-app/**` oder den geteilten Angular-
-  Libraries (shared-lib, gym-lib, courses-lib, trips-lib, data).
-- Gleicher Mechanismus wie `sck-web-app-build-deploy.yml` (SCP auf
-  denselben Apache-Server), aber `sed`-basierte Env-Injection statt
-  `envsubst.sh` (admin hat nur 2 Felder: `sckApiUrl`, `turnstileSiteKey` —
-  gleiches Muster wie im bestehenden Test-Docker-Image).
-- Ein Guard-Schritt bricht kontrolliert ab, solange
-  `SERVER_DIST_PATH_ADMIN`/`ADMIN_APP_URL` noch nicht als Secrets gesetzt
-  sind — verhindert ein Deploy ins Leere (leeres Ziel-Secret würde `scp`
-  sonst ins Home-Verzeichnis des SSH-Users kopieren lassen). Einmalige
-  manuelle Schritte (DNS, Apache-Vhost, Secrets) siehe
+  `src/web/projects/sck-admin-app/**`, den geteilten Angular-Libraries
+  (shared-lib, gym-lib, courses-lib, trips-lib, data) oder
+  `docker-compose.yml`.
+- **Seit 2026-10-09 eigene Infra, nicht mehr der Alfahosting-Server:**
+  `test`-Job (Lint/Test, GitHub-gehosteter Runner) → `deploy`-Job läuft
+  auf einem dedizierten self-hosted Runner (Label `sck-admin-prod`) auf
+  einem eigenen LXC (5i1f4ng.de), baut nur den `admin`-Service aus dem
+  Repo-`docker-compose.yml` und startet ihn neu — exakt das gleiche Muster
+  wie `test-deploy.yml`s `deploy`-Job, nur auf ein anderes LXC/Label und
+  nur einen von dessen drei Services beschränkt. Kein SCP/Apache/Secrets
+  mehr für diesen Workflow — `SCK_API_URL`/`TURNSTILE_SITE_KEY`/
+  `ADMIN_APP_URL` leben in der `.env` auf dem LXC selbst. Die Admin-App
+  spricht dabei weiterhin die echte Produktiv-sck-api auf dem
+  Alfahosting-Server an, kein eigenes Backend. Einmalige manuelle Schritte
+  (LXC, NPM-Proxy-Host, Runner) siehe
   [ADMIN_PROD_DEPLOY.md](./ADMIN_PROD_DEPLOY.md).
 
 ### `sck-api-build.yml` + `sck-api-deploy.yml` — Produktiv-Deploy, sck-api
