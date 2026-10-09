@@ -13,6 +13,11 @@ Die Admin-App spricht dabei weiterhin mit der **echten** Produktiv-sck-api
 (Alfahosting) — nur das Frontend zieht um, kein zweites Backend, keine
 zweite Datenbank.
 
+Doch lieber auf Alfahosting statt eigenem LXC? Aufwand ähnlich (andere
+Werkzeuge, nicht grundsätzlich schneller) — der komplette Weg inkl.
+fertigem Workflow liegt aufbewahrt in
+[`ADMIN_PROD_DEPLOY_ALFAHOSTING_ALTERNATIVE.md`](./ADMIN_PROD_DEPLOY_ALFAHOSTING_ALTERNATIVE.md).
+
 ## 1. LXC einrichten
 
 Auf dem Proxmox-Host (deinem 5i1f4ng.de-Server), ein Einzeiler, nichts

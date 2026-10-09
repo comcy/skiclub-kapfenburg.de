@@ -25,7 +25,9 @@ dedizierten LXC auf eigener Infra (`5i1f4ng.de`), analog zum bereits
 bestehenden Test-System (Docker + self-hosted Runner statt SCP+Apache) —
 siehe [`ADMIN_PROD_DEPLOY.md`](./ADMIN_PROD_DEPLOY.md) für die komplette
 Einrichtung, [`infrastructure/proxmox/setup-admin-prod.sh`](./proxmox/setup-admin-prod.sh)
-fürs LXC-Setup.
+fürs LXC-Setup. Die Alfahosting/SCP-Variante bleibt als fertig
+ausgearbeitete Alternative dokumentiert, falls ihr später zurückwechseln
+wollt: [`ADMIN_PROD_DEPLOY_ALFAHOSTING_ALTERNATIVE.md`](./ADMIN_PROD_DEPLOY_ALFAHOSTING_ALTERNATIVE.md).
 
 **Wichtig:** Das ist nur ein Umzug des **Frontends**. Die Admin-App spricht
 weiterhin mit der echten Produktiv-sck-api auf dem Alfahosting-Server
