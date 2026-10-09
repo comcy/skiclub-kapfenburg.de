@@ -24,6 +24,12 @@ speed-measure-plugin*.json
 src/web/.angular
 src/web/dist/
 
+# playwright
+e2e/test-results/
+e2e/playwright-report/
+e2e/blob-report/
+e2e/.cache/
+
 # nodejs
 # angular
 src/api/**/dist/
@@ -68,3 +74,11 @@ src/api/sck-api/data/*.ndjson
 src/sck-api/data/*.ndjson
 src/sck-api/data/*.json
 src/sck-api/data/media/
+
+# sck-api Laufzeitdaten (SQLite + Uploads)
+src/api/sck-api/src/data/media/
+src/api/sck-api/src/data/*.sqlite3*
+
+# lokale LaTeX-Artefakte
+src/documents/*.aux
+src/documents/*.log

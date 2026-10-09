@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 
 import { SnackbarComponent } from './snackbar.component';
 
@@ -7,8 +8,15 @@ describe('SnackbarComponent', () => {
     let fixture: ComponentFixture<SnackbarComponent>;
 
     beforeEach(async () => {
+        // Real usage always opens this via MatSnackBar.openFromComponent(),
+        // which provides both tokens - reproduce that here instead of the
+        // real snack bar service.
         await TestBed.configureTestingModule({
             imports: [SnackbarComponent],
+            providers: [
+                { provide: MAT_SNACK_BAR_DATA, useValue: 'Test message' },
+                { provide: MatSnackBarRef, useValue: { dismiss: () => undefined } },
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(SnackbarComponent);

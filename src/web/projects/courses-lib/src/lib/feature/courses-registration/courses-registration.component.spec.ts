@@ -3,7 +3,9 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
+import { CourseRegistrationFormServiceInterface } from '../../ui/course-registration-form/course-registration-form.interfaces';
 import { CoursesRegistrationComponent } from './courses-registration.component';
 
 describe('CoursesRegistrationComponent', () => {
@@ -11,9 +13,18 @@ describe('CoursesRegistrationComponent', () => {
     let fixture: ComponentFixture<CoursesRegistrationComponent>;
 
     beforeEach(async () => {
+        // Embeds lib-course-registration-form, which injects this token.
+        const mockService = jasmine.createSpyObj<CourseRegistrationFormServiceInterface>(
+            'CourseRegistrationFormServiceInterface',
+            ['sendFormToSheetsIo', 'submitPublicRegistration', 'getTurnstileSiteKey'],
+        );
+        mockService.submitPublicRegistration.and.returnValue(of(undefined));
+        mockService.getTurnstileSiteKey.and.returnValue('test-site-key');
+
         await TestBed.configureTestingModule({
-    imports: [CoursesRegistrationComponent],
-}).compileComponents();
+            imports: [CoursesRegistrationComponent],
+            providers: [{ provide: CourseRegistrationFormServiceInterface, useValue: mockService }],
+        }).compileComponents();
     });
 
     beforeEach(() => {

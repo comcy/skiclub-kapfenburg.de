@@ -36,8 +36,40 @@ run() {
 
 run pnpm install --frozen-lockfile
 
-run pnpm "${PNPM_FILTER[@]}" -r run build
-run pnpm "${PNPM_FILTER[@]}" -r run lint
-run pnpm "${PNPM_FILTER[@]}" -r run test
+# --workspace-concurrency=1: without it, pnpm runs web/sck-api/e2e's test
+# scripts in parallel - each spins up its own dev server + headless
+# Chrome/Chromium, which is fine on a real dev machine but starves e2e's
+# timing-sensitive assertions of CPU on a small/shared CI runner (that's
+# exactly what surfaced this - see the commit this comment was added in).
+run pnpm "${PNPM_FILTER[@]}" -r --workspace-concurrency=1 run build
+run pnpm "${PNPM_FILTER[@]}" -r --workspace-concurrency=1 run lint
+run pnpm "${PNPM_FILTER[@]}" -r --workspace-concurrency=1 run test
+
+# sck-admin-app has its own build/lint/test scripts (build:admin etc.)
+# rather than being folded into web's plain build/lint/test - that script
+# stays sck-app-only since it's also what the "web" Docker image build
+# calls, and that image has no business depending on sck-admin-app too.
+if [ -z "$FILTER" ] || [ "$FILTER" = "web" ]; then
+  run pnpm --filter web run build:admin
+  run pnpm --filter web run lint:admin
+  run pnpm --filter web run test:admin
+
+  # trips-lib specs (registration form, trip detail, etc.) are otherwise
+  # never run by anything: it's an Angular library, not its own pnpm
+  # package, so "pnpm -r run test" never reaches it, and it has no test
+  # target of its own here on purpose - it shares sck-app's Angular
+  # workspace but the CLI test builder is per-project.
+  run pnpm --filter web run test:trips-lib
+
+  # Same gap as trips-lib above, for every other Angular library in this
+  # workspace: each has real .spec.ts files but no test target of its own
+  # ever ran them (ng test --project X reports "0 of 0" success without
+  # this - see each library's test.ts for the require.context() explanation).
+  run pnpm --filter web run test:shared-lib
+  run pnpm --filter web run test:courses-lib
+  run pnpm --filter web run test:gym-lib
+  run pnpm --filter web run test:membership-lib
+  run pnpm --filter web run test:skilift-lib
+fi
 
 echo "✔ verify passed"

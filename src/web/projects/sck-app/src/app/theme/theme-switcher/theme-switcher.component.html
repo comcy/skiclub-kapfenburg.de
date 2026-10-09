@@ -1,0 +1,25 @@
+<button
+    mat-icon-button
+    (click)="themeService.setDarkMode(!themeService.isDark())"
+    [matTooltip]="themeService.isDark() ? 'Helles Design' : 'Dunkles Design'"
+    [attr.aria-label]="themeService.isDark() ? 'Helles Design' : 'Dunkles Design'"
+>
+    <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+</button>
+
+<button mat-icon-button [matMenuTriggerFor]="themeMenu" matTooltip="Farbschema wählen" aria-label="Farbschema wählen">
+    <mat-icon>palette</mat-icon>
+</button>
+
+<mat-menu #themeMenu="matMenu">
+    @for (theme of themeService.themes; track theme.id) {
+        <button mat-menu-item (click)="themeService.setTheme(theme.id)">
+            @if (themeService.current() === theme.id) {
+                <mat-icon>check</mat-icon>
+            } @else {
+                <mat-icon></mat-icon>
+            }
+            <span>{{ theme.name }}</span>
+        </button>
+    }
+</mat-menu>

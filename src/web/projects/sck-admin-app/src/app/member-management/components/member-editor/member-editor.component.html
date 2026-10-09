@@ -1,0 +1,121 @@
+@if (member) {
+    <div class="editor-form">
+        @if (isFromApplication) {
+            <div class="banner">Aus eingereichtem Antrag übernommen — bitte prüfen und speichern.</div>
+        }
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Vorname</mat-label>
+                <input matInput [(ngModel)]="member.firstName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Nachname</mat-label>
+                <input matInput [(ngModel)]="member.lastName" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>E-Mail</mat-label>
+            <input matInput type="email" [(ngModel)]="member.email" />
+        </mat-form-field>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Telefon</mat-label>
+                <input matInput [(ngModel)]="member.phone" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Mobil</mat-label>
+                <input matInput [(ngModel)]="member.mobile" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Geburtsdatum</mat-label>
+                <input matInput [matDatepicker]="birthdayPicker" [(ngModel)]="birthdayDate" name="birthday" />
+                <mat-datepicker-toggle matIconSuffix [for]="birthdayPicker"></mat-datepicker-toggle>
+                <mat-datepicker #birthdayPicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Adresse</mat-label>
+            <input matInput [(ngModel)]="member.address" />
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="member.isFamilyMembership" class="checkbox-row">Familienmitgliedschaft</mat-checkbox>
+
+        @if (member.isFamilyMembership) {
+            <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
+                <mat-label>Familiengruppe</mat-label>
+                <input matInput [(ngModel)]="member.familyGroupId" placeholder="z. B. Nachname + Adresse" />
+                <mat-hint
+                    >Bei allen Mitgliedern derselben Familie identisch eintragen — bestimmt die gemeinsame Abbuchung
+                    beim SEPA-Beitragseinzug.</mat-hint
+                >
+            </mat-form-field>
+        }
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Mitglied seit</mat-label>
+                <input matInput [matDatepicker]="memberSincePicker" [(ngModel)]="memberSinceDate" name="memberSince" />
+                <mat-datepicker-toggle matIconSuffix [for]="memberSincePicker"></mat-datepicker-toggle>
+                <mat-datepicker #memberSincePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Mitgliedsnummer</mat-label>
+                <input matInput [(ngModel)]="member.externalId" />
+            </mat-form-field>
+        </div>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="member.status">
+                    <mat-option value="active">Aktiv</mat-option>
+                    <mat-option value="inactive">Inaktiv</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Quelle</mat-label>
+                <mat-select [(ngModel)]="member.source">
+                    <mat-option value="online">Online</mat-option>
+                    <mat-option value="manual">Manuell</mat-option>
+                    <mat-option value="paper">Papierform</mat-option>
+                    <mat-option value="imported">Importiert</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <h4>Bankdaten</h4>
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Bank</mat-label>
+                <input matInput [(ngModel)]="member.bankName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>BIC</mat-label>
+                <input matInput [(ngModel)]="member.bic" />
+            </mat-form-field>
+        </div>
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>IBAN</mat-label>
+                <input matInput [(ngModel)]="member.iban" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Kontoinhaber</mat-label>
+                <input matInput [(ngModel)]="member.accountHolder" />
+            </mat-form-field>
+        </div>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Zahlungsbedingung</mat-label>
+            <input matInput [(ngModel)]="member.paymentMethod" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notizen</mat-label>
+            <textarea matInput rows="3" [(ngModel)]="member.notes"></textarea>
+        </mat-form-field>
+    </div>
+}

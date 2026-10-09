@@ -18,7 +18,6 @@ fromrule=afteraddress%  % Trennlinie unter dem Briefkopf
 \newcommand\rechtsform{Registergericht: ULM  123456-3}
 
 \setkomavar{fromname}{Christian Silfang} % Name
-\setkomavar{from}{Christian Silfang} % Name
 \setkomavar{fromaddress}{% % Adresse
   Falkenstraße 18\\
   73463 Westhausen%

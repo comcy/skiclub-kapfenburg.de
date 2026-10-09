@@ -37,9 +37,13 @@ import { InstagramIconComponent } from 'projects/shared-lib/src/lib/ui-common/co
 import { SiteFooterComponent } from 'projects/shared-lib/src/lib/ui-common/components/site-footer/site-footer.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ThemeSwitcherComponent } from './theme/theme-switcher/theme-switcher.component';
 import { courseRegistrationServiceProvider } from './services/business/course-registration-form.service';
+import { courseTilesApiServiceProvider } from './services/business/course-tiles-api.service';
 import { gymCoursesRegisterFormServiceProvider } from './services/business/gym-courses-registration-form.service';
+import { membershipRegistrationServiceProvider } from './services/business/membership-registration-form.service';
 import { tripRegistrationServiceProvider } from './services/business/trip-registration-form.service';
+import { tripTilesApiServiceProvider } from './services/business/trip-tiles-api.service';
 
 @NgModule({
     declarations: [AppComponent],
@@ -78,11 +82,15 @@ import { tripRegistrationServiceProvider } from './services/business/trip-regist
         InstagramButtonComponent,
         InstagramIconComponent,
         SckLogoIconComponent,
+        ThemeSwitcherComponent,
     ],
     providers: [
         tripRegistrationServiceProvider,
+        tripTilesApiServiceProvider,
+        courseTilesApiServiceProvider,
         courseRegistrationServiceProvider,
         gymCoursesRegisterFormServiceProvider,
+        membershipRegistrationServiceProvider,
         {
             provide: MAT_DIALOG_DEFAULT_OPTIONS,
             useValue: { maxWidth: '90vw', hasBackdrop: true },

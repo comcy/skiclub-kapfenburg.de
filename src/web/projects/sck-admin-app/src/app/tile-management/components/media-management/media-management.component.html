@@ -1,0 +1,39 @@
+<div class="header">
+    <h2>Medien</h2>
+    @if (auth.hasPermission('tiles:write')) {
+        <button mat-raised-button color="primary" (click)="onUploadClick()" [disabled]="isUploading">
+            @if (isUploading) {
+                <mat-spinner diameter="18"></mat-spinner>
+            } @else {
+                <mat-icon>upload</mat-icon>
+            }
+            Bild hochladen
+        </button>
+        <input #fileInput type="file" accept="image/*" style="display: none" (change)="onFileSelected($event)" />
+    }
+</div>
+
+@if (isLoading) {
+    <div class="state-message"><mat-spinner diameter="32"></mat-spinner></div>
+} @else if (!images.length) {
+    <p class="state-message">Noch keine Bilder hochgeladen.</p>
+} @else {
+    <div class="media-grid">
+        @for (image of images; track image.id) {
+            <div class="media-card">
+                <a [href]="resolvedUrl(image)" target="_blank" rel="noopener">
+                    <img [src]="resolvedUrl(image)" [alt]="image.filename" />
+                </a>
+                <div class="media-meta">
+                    <span class="media-filename" [title]="image.filename">{{ image.filename }}</span>
+                    <span class="media-size">{{ formatSize(image.size) }}</span>
+                </div>
+                @if (auth.hasPermission('tiles:write')) {
+                    <button mat-icon-button color="warn" class="media-delete" (click)="onDelete(image)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                }
+            </div>
+        }
+    </div>
+}

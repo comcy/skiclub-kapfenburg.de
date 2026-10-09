@@ -1,0 +1,12 @@
+// Projected into shared-lib-site-navigation's toolbar (see app.component.html's
+// [actions] slot) - same location as admin's inline toolbar actions, so it
+// inherits the toolbar's on-primary color like the rest of the toolbar content.
+:host {
+    display: flex;
+    gap: 4px;
+    color: inherit;
+
+    button {
+        color: inherit;
+    }
+}

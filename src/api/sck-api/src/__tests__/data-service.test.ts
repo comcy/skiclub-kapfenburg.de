@@ -15,7 +15,7 @@ jest.unstable_mockModule('fs', () => ({
 
 mockExistsSync.mockReturnValue(true);
 
-const { saveData } = await import('../services/data-service');
+const { saveData, saveSepaData } = await import('../services/data-service');
 
 describe('DataService', () => {
   beforeEach(() => {
@@ -65,5 +65,23 @@ describe('DataService', () => {
     await saveData(type, data);
 
     expect(mockAppendFile).toHaveBeenCalledTimes(1);
+  });
+
+  it('sollte SEPA-Daten in eine eigene, von saveData getrennte Datei schreiben', async () => {
+    mockExistsSync.mockReturnValue(true);
+    mockAppendFile.mockResolvedValue(undefined);
+
+    await saveSepaData({ registrationId: 'reg-1', ibanEncrypted: 'iv:tag:cipher' });
+
+    expect(mockAppendFile).toHaveBeenCalledTimes(1);
+    const [filePath, writtenData] = mockAppendFile.mock.calls[0] as [string, string];
+
+    expect(filePath).toContain('sepa-data.ndjson');
+    expect(filePath).not.toContain('registrations.ndjson');
+
+    const parsedData = JSON.parse(writtenData);
+    expect(parsedData.registrationId).toBe('reg-1');
+    expect(parsedData.ibanEncrypted).toBe('iv:tag:cipher');
+    expect(parsedData.timestamp).toBeDefined();
   });
 });

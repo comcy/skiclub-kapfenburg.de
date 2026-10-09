@@ -1,5 +1,121 @@
-.tab-content {
-  padding-left: 32px;
-  padding-right: 32px;
-  padding-top: 32px;
+$color-primary: #673ab7;
+$color-primary-dark: #512da8;
+
+.content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 32px 64px 32px;
+    font-size: 12pt;
+
+    @media (max-width: 600px) {
+        padding: 20px 16px 48px 16px;
+    }
+}
+
+.info-page {
+    margin-bottom: 32px;
+
+    h3 {
+        font-size: 16pt;
+        margin: 0 0 4px 0;
+    }
+
+    h2 {
+        color: var(--mat-sys-primary);
+        margin: 0 0 16px 0;
+    }
+}
+
+a {
+    color: var(--mat-sys-primary);
+}
+
+// PRICE TABLE
+
+.price-table-compact {
+    width: 100%;
+    max-width: 560px;
+    border-collapse: collapse;
+    background: #f3effa;
+    border-radius: 8px;
+    overflow: hidden;
+    // Always a fixed light background regardless of page theme - force dark
+    // text so cells don't inherit the page's (theme-following) text color.
+    color: rgba(0, 0, 0, 0.87);
+
+    th,
+    td {
+        padding: 8px 14px;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    th:not(:first-child),
+    td:not(:first-child) {
+        text-align: right;
+    }
+
+    th {
+        background: rgba(103, 58, 183, 0.12);
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: $color-primary-dark;
+    }
+
+    tr:not(:last-child) td {
+        border-bottom: 1px solid rgba(103, 58, 183, 0.1);
+    }
+}
+
+// LEVEL TILES
+
+.intro {
+    max-width: 720px;
+    color: var(--mat-sys-on-surface-variant);
+    line-height: 1.6;
+}
+
+// Always exactly 4 level tiles - 2x2 instead of an unbalanced 3+1 row.
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin: 24px 0;
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.reassurance {
+    max-width: 720px;
+    color: var(--mat-sys-on-surface-variant);
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.auskunft {
+    max-width: 720px;
+    color: var(--mat-sys-on-surface-variant);
+    line-height: 1.6;
+    margin-top: 12px;
+}
+
+.notice-box {
+    margin-top: 16px;
+    border-left: 4px solid #ffd740;
+    background: #fff8e1;
+    // Always a fixed light background regardless of page theme, see
+    // .price-table-compact above.
+    color: rgba(0, 0, 0, 0.87);
+    padding: 12px 16px;
+    border-radius: 4px;
+    max-width: 720px;
+}
+
+.registration-form-wrap {
+    margin-top: 32px;
+    scroll-margin-top: 24px;
 }

@@ -10,24 +10,16 @@
  * License: MIT
  */
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
-    CourseRegisterFormFields,
     CourseRegistrationFormServiceInterface,
+    PublicCourseRegistrationInput,
 } from 'projects/courses-lib/src/lib/ui/course-registration-form';
-import {
-    getCourseConfirmationMailBcc,
-    getCourseConfirmationMailSubject,
-    getCourseConfirmationMailText,
-    getCourseConfirmationSuccessMessage,
-} from 'projects/data/mail-templates';
+import { getCourseConfirmationSuccessMessage } from 'projects/data/mail-templates';
 import { environment } from 'projects/sck-app/src/environments/environment';
-import {
-    FormToMailInformation,
-    MailInformation,
-} from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class CourseRegistrationFormService implements CourseRegistrationFormServiceInterface {
@@ -41,11 +33,11 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
      * It is used to transmit the form data to any desired endpoint.
      * @param courseRegisterForm
      */
-    sendFormToSheetsIo(formData: FormData): void {
+    sendFormToSheetsIo(formData: FormData, silent = false): void {
         this.http.post(`${environment.courseSheetUrl}`, formData).subscribe({
             next: (response) => {
                 console.log(response);
-                this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
+                if (!silent) this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
             },
             error: (error) => {
                 console.log(error);
@@ -53,45 +45,19 @@ export class CourseRegistrationFormService implements CourseRegistrationFormServ
         });
     }
 
-    /**
-     * This method is the implementation of the corresponding abstract declaration
-     * of the service inteface which can be used to invoke a transmission of a confirmation mail.
-     *
-     * This method triggers the `sck-api` which will send a confirmation mail with all relevant form data.
-     * @param formData, the dataset of the course registration form.
-     */
-    sendConfirmationMail(formToMailData: FormToMailInformation<CourseRegisterFormFields>): void {
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
+    public getTurnstileSiteKey(): string {
+        return environment.turnstileSiteKey;
+    }
+
+    public submitPublicRegistration(
+        tileId: string,
+        input: PublicCourseRegistrationInput,
+        turnstileToken: string,
+    ): Observable<void> {
+        return this.http.post<void>(`${environment.sckApiUrl}/tiles/${tileId}/course-registrations/public`, {
+            ...input,
+            turnstileToken,
         });
-
-        const mailData: MailInformation = {
-            to: formToMailData.receiver,
-            subject: this.getSubjectText(formToMailData.formValues),
-            text: this.getMailText(formToMailData.formValues),
-            bcc: this.getBccReceivers(),
-        };
-
-        this.http.post(`${environment.sckApiUrl}/send_email`, mailData, { headers }).subscribe({
-            next: (response) => {
-                console.log(response);
-            },
-            error: (error) => {
-                console.log(error);
-            },
-        });
-    }
-
-    private getSubjectText(values: CourseRegisterFormFields): string {
-        return getCourseConfirmationMailSubject(values);
-    }
-
-    private getBccReceivers(): string {
-        return getCourseConfirmationMailBcc();
-    }
-
-    private getMailText(values: CourseRegisterFormFields): string {
-        return getCourseConfirmationMailText(values);
     }
 }
 

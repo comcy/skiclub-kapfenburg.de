@@ -1,0 +1,100 @@
+name: SCK-ADMIN Workflow
+
+# Produktiv-Deploy für sck-admin-app — eigenes LXC auf eigener Infra
+# (5i1f4ng.de), NICHT der Alfahosting-Server von skiclub-kapfenburg.de,
+# auf dem sck-app/sck-api laufen. Die Admin-App spricht trotzdem weiter
+# mit der echten Produktiv-sck-api (SCK_API_URL) — nur das Frontend zieht
+# um, kein zweites Backend. Siehe infrastructure/README.md "Warum ein
+# eigenes LXC" für den Hintergrund.
+#
+# Mechanismus wie test-deploy.yml, nicht wie sck-web-app-build-deploy.yml:
+# Docker + self-hosted Runner statt SCP, weil das LXC keinen offenen
+# eingehenden Port/öffentliche DNS für SSH hat - der Runner verbindet sich
+# stattdessen ausgehend zu GitHub. `test`-Job bleibt auf einem
+# GitHub-gehosteten Runner (lint:admin + test:admin), `deploy` läuft nur
+# bei Erfolg (`needs: test`) auf dem dedizierten Runner (Label
+# "sck-admin-prod", einmalig eingerichtet - siehe
+# infrastructure/proxmox/setup-admin-prod.sh).
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/web/projects/sck-admin-app/**"
+      - "src/web/projects/shared-lib/**"
+      - "src/web/projects/gym-lib/**"
+      - "src/web/projects/courses-lib/**"
+      - "src/web/projects/trips-lib/**"
+      - "src/web/projects/data/**"
+      - ".github/workflows/sck-admin-app-build-deploy.yml"
+      - "docker-compose.yml"
+
+env:
+  APP_DIR: "/opt/sck-admin-prod"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - name: Set up Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run linting and tests
+        run: |
+          pnpm --filter web run lint:admin
+          pnpm --filter web run test:admin
+        env:
+          CHROME_BIN: /usr/bin/google-chrome-stable
+
+  deploy:
+    needs: test
+    runs-on: [self-hosted, sck-admin-prod]
+    steps:
+      - name: Deploy to sck-admin-prod LXC
+        run: |
+          set -e
+
+          # /opt/sck-admin-prod muss dem github-runner-User gehören
+          # (einmalig: chown -R github-runner:github-runner /opt/sck-admin-prod)
+          git config --global --add safe.directory "${{ env.APP_DIR }}"
+
+          if [ ! -d "${{ env.APP_DIR }}/.git" ]; then
+            echo "📥 Cloning repository..."
+            git clone ${{ github.server_url }}/${{ github.repository }}.git ${{ env.APP_DIR }}
+          fi
+
+          cd ${{ env.APP_DIR }}
+          echo "🔄 Checking out master..."
+          git fetch origin
+          git checkout master
+          git reset --hard origin/master
+
+          echo "🔨 Building admin image..."
+          docker compose build admin
+
+          echo "🚀 Restarting admin service..."
+          docker compose up -d admin
+
+          echo "🧹 Pruning old images/build cache..."
+          docker image prune -f
+          docker builder prune -f
+
+          sleep 3
+          echo "🩺 Health check (direkt auf dem LXC, am Reverse Proxy vorbei):"
+          echo "  admin / ........... $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/)"

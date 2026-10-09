@@ -4,29 +4,54 @@ mat-toolbar.mat-primary {
     bottom: 0;
     width: 100%;
     z-index: 10;
-    height: 90px;
+    height: auto;
+    min-height: 90px;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    padding: 16px;
 
     @include mat.elevation(6);
 }
 
 .flex-container {
     display: flex;
-    flex-flow: row;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 0 16 0 16;
 }
 
 .spacer {
     flex: 1 1 auto;
 }
 
-ng-content {
+// [center] and [right] are the real projected wrapper elements (see app.component.html);
+// the `ng-content` tag itself never appears in the rendered DOM, so styling it here does nothing.
+[center],
+[right] {
     display: flex;
-    flex-flow: row;
-    gap: 64px;
-    padding: 0 16 0 16;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
 }
 
 .small-spacer {
     padding: 8pt;
+}
+
+@media (max-width: 720px) {
+    mat-toolbar.mat-primary {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .spacer {
+        display: none;
+    }
+
+    [right] {
+        width: 100%;
+        justify-content: center;
+    }
 }

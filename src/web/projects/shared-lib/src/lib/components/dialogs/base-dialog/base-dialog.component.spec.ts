@@ -3,17 +3,19 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { BaseDialogComponent } from './base-dialog.component';
 
-describe('RegisterDialogComponent', () => {
+describe('BaseDialogComponent', () => {
     let component: BaseDialogComponent;
     let fixture: ComponentFixture<BaseDialogComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [BaseDialogComponent],
-}).compileComponents();
+            imports: [BaseDialogComponent],
+            providers: [{ provide: MatDialogRef, useValue: { close: () => undefined } }],
+        }).compileComponents();
     });
 
     beforeEach(() => {

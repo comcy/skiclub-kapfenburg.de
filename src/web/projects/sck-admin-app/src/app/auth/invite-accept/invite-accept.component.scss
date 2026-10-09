@@ -1,0 +1,23 @@
+.invite-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 16px;
+}
+
+.invite-card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 8px;
+}

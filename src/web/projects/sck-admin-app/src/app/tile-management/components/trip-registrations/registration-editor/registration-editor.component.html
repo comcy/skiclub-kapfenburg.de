@@ -1,0 +1,116 @@
+@if (registration) {
+    <div class="editor-form">
+        @if (registration.id && registration.memberId) {
+            <div class="member-hint">
+                <mat-icon>check_circle</mat-icon>
+                Als Mitglied verifiziert (E-Mail-Abgleich mit der Mitgliederliste)
+            </div>
+        } @else if (registration.id && registration.selfReportedIsMember) {
+            <div class="member-hint member-hint-warn">
+                <mat-icon>help_outline</mat-icon>
+                Hat im Formular "Mitglied" angegeben, konnte aber nicht per E-Mail zugeordnet werden - nachfragen oder
+                unten manuell setzen.
+            </div>
+        }
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Vorname</mat-label>
+                <input matInput [(ngModel)]="registration.firstName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Nachname</mat-label>
+                <input matInput [(ngModel)]="registration.lastName" />
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>E-Mail</mat-label>
+            <input matInput type="email" [(ngModel)]="registration.email" />
+        </mat-form-field>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Telefon</mat-label>
+                <input matInput [(ngModel)]="registration.phone" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Geburtsdatum</mat-label>
+                <input matInput type="date" [(ngModel)]="registration.birthday" />
+            </mat-form-field>
+        </div>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Alterskategorie</mat-label>
+                <mat-select [(ngModel)]="registration.ageCategory">
+                    @for (category of ageCategories; track category) {
+                        <mat-option [value]="category">{{ ageCategoryLabels[category] }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Boarding-Ort</mat-label>
+                <mat-select [(ngModel)]="registration.boardingId">
+                    <mat-option [value]="undefined">–</mat-option>
+                    @for (boarding of availableBoardings$ | async; track boarding.id) {
+                        <mat-option [value]="boarding.id">{{ boarding.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <mat-checkbox [(ngModel)]="registration.isMember" class="checkbox-row">
+            Mitglied
+            @if (registration.memberId) {
+                <mat-icon class="verified-icon" matTooltip="Per E-Mail mit der Mitgliederliste abgeglichen"
+                    >verified</mat-icon
+                >
+            }
+        </mat-checkbox>
+
+        <div class="field-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="registration.status">
+                    <mat-option value="confirmed">Bestätigt</mat-option>
+                    <mat-option value="waitlist">Warteliste</mat-option>
+                    <mat-option value="cancelled">Storniert</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Quelle</mat-label>
+                <mat-select [(ngModel)]="registration.source">
+                    <mat-option value="manual">Manuell</mat-option>
+                    <mat-option value="phone">Telefon</mat-option>
+                    <mat-option value="paper">Papierform</mat-option>
+                    <mat-option value="sheet-import">Aus Anmeldeformular</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notizen</mat-label>
+            <textarea matInput rows="3" [(ngModel)]="registration.notes"></textarea>
+        </mat-form-field>
+
+        <div class="participant-options-hint">
+            Bus only: {{ registration.busOnly ? 'ja' : 'nein' }} · Schneeschuhe:
+            {{ registration.snowshoes ? 'ja' : 'nein' }} · Kurs:
+            {{ registration.courseRequested ? registration.level || 'ja' : '–' }}
+        </div>
+
+        <mat-checkbox [(ngModel)]="registration.transferredToExternalList" class="checkbox-row">
+            Extern erfasst
+        </mat-checkbox>
+
+        <div class="confirmation-mail-status">
+            Bestätigungsmail:
+            @if (registration.confirmationMailSent) {
+                <span class="badge-member"><mat-icon>check</mat-icon> Gesendet</span>
+            } @else {
+                <span class="badge-nonmember">Ausstehend</span>
+            }
+        </div>
+    </div>
+}

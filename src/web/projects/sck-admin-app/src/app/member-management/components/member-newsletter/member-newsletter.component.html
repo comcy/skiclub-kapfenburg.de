@@ -1,0 +1,35 @@
+<div class="header">
+    <h2>Newsletter-Anmeldungen</h2>
+    <button mat-stroked-button [disabled]="!signups.length" (click)="onExport()">
+        <mat-icon>download</mat-icon>
+        CSV exportieren
+    </button>
+</div>
+
+<table mat-table [dataSource]="signups" class="mat-elevation-z8">
+    <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>E-Mail</th>
+        <td mat-cell *matCellDef="let signup">{{ signup.email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>Angemeldet am</th>
+        <td mat-cell *matCellDef="let signup">{{ signup.createdAt | date: 'short' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let signup">
+            <button mat-icon-button (click)="onDelete(signup)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+@if (loaded && !signups.length) {
+    <p class="empty">Noch keine Newsletter-Anmeldungen.</p>
+}
