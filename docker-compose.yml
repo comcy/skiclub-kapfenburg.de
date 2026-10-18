@@ -33,7 +33,10 @@ services:
       dockerfile: src/api/sck-api/Dockerfile
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      # Host-Port überschreibbar via API_PORT in der .env -- auf CT109
+      # (sck-server) vorübergehend 3001, weil der alte manuelle Prozess noch
+      # auf 3000 läuft (Übergangsphase bis zum koordinierten Cutover).
+      - '${API_PORT:-3000}:3000'
     environment:
       SMTP_SERVER: ${SMTP_SERVER}
       SMTP_PORT: ${SMTP_PORT}
