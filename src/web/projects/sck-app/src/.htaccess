@@ -14,4 +14,17 @@ RewriteRule ^ - [L]
 # If the requested resource doesn't exist, use index.html
 RewriteRule ^ /index.html
 
-
+# Cache-Control: index.html nie cachen (SPA-Einstiegspunkt - muss nach
+# jedem Deploy sofort auf die neuen, content-gehashten Bundle-Dateien
+# zeigen, sonst sehen Nutzer trotz Deploy weiter die alte Seite, bis ihr
+# Cache abläuft oder sie hart neu laden). JS/CSS sind durch Angulars
+# Content-Hashing im Dateinamen (z.B. main.a1b2c3d4.js) sicher langfristig
+# cachebar - der Name ändert sich automatisch bei jeder Inhaltsänderung.
+<IfModule mod_headers.c>
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
