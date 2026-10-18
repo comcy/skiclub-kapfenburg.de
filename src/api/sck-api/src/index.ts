@@ -33,6 +33,18 @@ const SENDER_PW = process.env.SENDER_PW || '';
 const app = express();
 
 app.use(express.json());
+
+// Chrome/Chromium blockt Requests von einer "öffentlichen" Seite auf ein
+// Ziel, dessen DNS-Auflösung in den privaten Adressraum zeigt (Private
+// Network Access), sofern die Preflight-Antwort nicht explizit erlaubt --
+// das npm-Paket "cors" (2.x) unterstuetzt diesen Header nicht nativ, daher
+// hier von Hand ergaenzt, bevor cors() selbst die OPTIONS-Antwort sendet.
+app.use((req, res, next) => {
+  if (req.headers['access-control-request-private-network']) {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
+  next();
+});
 app.use(cors());
 app.use('/media', express.static(mediaDir));
 
