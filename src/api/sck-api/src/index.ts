@@ -32,6 +32,14 @@ const SENDER_PW = process.env.SENDER_PW || '';
 
 const app = express();
 
+// Server laeuft hinter genau einem Reverse-Proxy-Hop (Nginx Proxy Manager).
+// Ohne das wirft express-rate-limit (genutzt von publicWriteLimiter auf
+// Schreib-/Mail-Routen) einen ERR_ERL_UNEXPECTED_X_FORWARDED_FOR-Fehler,
+// sobald NPM den X-Forwarded-For-Header setzt - verhindert dadurch jeden
+// Request durch diese Routen (u.a. den Mailversand bei Anmeldungen).
+// "1" statt "true": vertraut genau einem Hop, nicht einer beliebigen Kette.
+app.set('trust proxy', 1);
+
 app.use(express.json());
 
 // Chrome/Chromium blockt Requests von einer "öffentlichen" Seite auf ein
