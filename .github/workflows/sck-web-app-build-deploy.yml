@@ -8,6 +8,7 @@ on:
       - "src/web/**/*"
       - "src/web/projects/**/*.ts"
       - ".github/workflows/*"
+  workflow_dispatch:
 
 env:
   PROJECT_PATH: "src/web/"
