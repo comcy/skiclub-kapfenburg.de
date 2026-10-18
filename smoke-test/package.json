@@ -1,0 +1,12 @@
+{
+    "name": "prod-smoke-test",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "test": "playwright test",
+        "report": "playwright show-report"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.55.0"
+    }
+}

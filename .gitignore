@@ -27,6 +27,8 @@ src/web/dist/
 # playwright
 e2e/test-results/
 e2e/playwright-report/
+smoke-test/test-results/
+smoke-test/playwright-report/
 e2e/blob-report/
 e2e/.cache/
 

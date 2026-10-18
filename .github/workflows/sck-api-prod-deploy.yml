@@ -96,3 +96,40 @@ jobs:
           set -a; source .env 2>/dev/null || true; set +a
           echo "🩺 Health check (direkt auf dem LXC, am Reverse Proxy vorbei, Port ${API_PORT:-3000}):"
           echo "  api / ........... $(curl -s -o /dev/null -w '%{http_code}' http://localhost:${API_PORT:-3000}/)"
+
+      - name: Install smoke-test dependencies
+        run: |
+          set -e
+          corepack enable
+          corepack prepare pnpm@11.22.0 --activate
+          cd ${{ env.APP_DIR }}
+          pnpm install --frozen-lockfile --filter prod-smoke-test
+
+      # Kein --with-deps: die OS-Pakete (libnss3 etc.) muessen einmalig als
+      # root installiert werden (sudo steht dem github-runner-User bewusst
+      # nicht zur Verfuegung) - siehe Setup-Referenz im privaten Vault.
+      # Dieser Schritt laedt nur noch das Browser-Binary selbst.
+      - name: Install Playwright browser (falls noch nicht vorhanden)
+        run: |
+          cd ${{ env.APP_DIR }}/smoke-test
+          pnpm exec playwright install chromium
+
+      # Prueft mit einem echten Browser, dass die oeffentliche Produktivseite
+      # tatsaechlich funktioniert - ein reiner curl-Health-Check (oben) kann
+      # Browser-spezifische Bloecke (CORS, Private Network Access) nicht
+      # erkennen, siehe #199/#200/#207 fuer den Vorfall, der diesen Schritt
+      # ausgeloest hat. Laeuft bewusst auf demselben self-hosted Runner wie
+      # der Deploy selbst, da der dieselbe lokale DNS-Aufloesung nutzt wie
+      # Clients im Homelab-LAN.
+      - name: Production smoke test (echter Browser gegen die Live-Seite)
+        run: |
+          cd ${{ env.APP_DIR }}/smoke-test
+          pnpm test
+
+      - name: Smoke-Test-Report hochladen (bei Fehlschlag)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-smoke-test-report
+          path: ${{ env.APP_DIR }}/smoke-test/playwright-report/
+          retention-days: 7
