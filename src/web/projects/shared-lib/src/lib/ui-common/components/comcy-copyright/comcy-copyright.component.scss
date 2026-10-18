@@ -7,7 +7,7 @@
 .copyright-container {
     p {
         display: flex;
-        flex: end;
+        flex-wrap: wrap;
         justify-content: flex-end;
         font-size: 12px;
         padding-top: 20px;
@@ -23,8 +23,19 @@
             }
         }
     }
+
+    @media (max-width: 720px) {
+        p {
+            justify-content: center;
+            padding-right: 0;
+        }
+    }
 }
 
 .copyright-container span:first-child {
     margin-right: 0.5em;
+
+    &[title] {
+        cursor: help;
+    }
 }

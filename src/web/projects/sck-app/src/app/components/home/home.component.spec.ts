@@ -4,6 +4,11 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
+import { TRIP_DATA } from '@data';
+import { CourseTilesApiServiceInterface } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
+import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
+import { of } from 'rxjs';
 import { HomeComponent } from './home.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -15,6 +20,9 @@ describe('HomeComponent', () => {
         await TestBed.configureTestingModule({
             imports: [HomeComponent, NoopAnimationsModule],
             providers: [
+                provideRouter([]),
+                { provide: TripTilesApiServiceInterface, useValue: { getAllTrips: () => of(TRIP_DATA) } },
+                { provide: CourseTilesApiServiceInterface, useValue: { getAllCourseTiles: () => of([]) } },
                 {
                     provide: MatDialog,
                     useFactory: () => {

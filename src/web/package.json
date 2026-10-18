@@ -3,15 +3,24 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve sck-app",
     "build": "ng build sck-app",
+    "build:admin": "ng build sck-admin-app",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --project sck-app --watch=false --browsers=ChromeHeadless",
+    "test:admin": "ng test --project sck-admin-app --watch=false --browsers=ChromeHeadless",
+    "test:trips-lib": "ng test --project trips-lib --watch=false --browsers=ChromeHeadless",
+    "test:shared-lib": "ng test --project shared-lib --watch=false --browsers=ChromeHeadless",
+    "test:courses-lib": "ng test --project courses-lib --watch=false --browsers=ChromeHeadless",
+    "test:gym-lib": "ng test --project gym-lib --watch=false --browsers=ChromeHeadless",
+    "test:membership-lib": "ng test --project membership-lib --watch=false --browsers=ChromeHeadless",
+    "test:skilift-lib": "ng test --project skilift-lib --watch=false --browsers=ChromeHeadless",
     "test:coverage": "ng test --project sck-app --watch=false --browsers=ChromeHeadless --code-coverage",
     "prettier:check": "prettier --config .prettierrc --check \"projects/**/*.{ts,css,html}\"",
     "prettier:fix": "prettier --config .prettierrc --write \"projects/**/*.{ts,css,html}\"",
     "prepare": "cd ../.. && husky install src/web/.husky",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "lint:admin": "ng lint sck-admin-app"
   },
   "husky": {
     "hooks": {

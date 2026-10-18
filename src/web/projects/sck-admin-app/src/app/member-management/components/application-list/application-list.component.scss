@@ -1,0 +1,48 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // See member-list.component.scss's identical rule - title + actions
+    // don't fit on one row on a phone-width screen.
+    flex-wrap: wrap;
+    row-gap: 8px;
+    margin-bottom: 8px;
+}
+
+table {
+    width: 100%;
+}
+
+.empty {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 14px;
+}
+
+.badge-member {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: light-dark(#1e7d32, #8ee6a0);
+    font-weight: 500;
+
+    mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.badge-nonmember {
+    font-size: 12px;
+    color: var(--mat-sys-on-surface-variant);
+}

@@ -23,6 +23,11 @@ mat-toolbar.mat-primary {
     top: 0;
     z-index: 1000;
     min-height: 64px; // avoid resizeof the navigationbar on mobile devices
+    // M3's mat-toolbar[color] no longer fills the container the way M2 did -
+    // set it explicitly so the toolbar actually shows the active theme's
+    // primary color (blue/green, see styles.scss) instead of a neutral surface.
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
 }
 
 .small-spacer {
@@ -65,9 +70,53 @@ mat-toolbar.mat-primary {
     color: rgb(255, 253, 108);
 }
 
+.sidenav-actions {
+    padding: 8px 16px;
+    display: flex;
+    justify-content: center;
+}
+
 .navitems-container {
     display: flex;
     flex-flow: row;
     gap: 4px;
     padding: 0 16 0 16;
+
+    // M3's mat-button/mat-flat-button default their label/container color to
+    // the theme's primary - invisible on a toolbar that's ALSO primary-colored
+    // (see mat-toolbar.mat-primary above). Plain items inherit the toolbar's
+    // on-primary text color; only explicitly-declared items (NavigationItem.color)
+    // or the current route get an inverted (on-primary bg / primary text) pill,
+    // which stays legible against either theme color (see styles.scss).
+    a {
+        color: var(--mat-sys-on-primary);
+    }
+
+    .nav-item-active {
+        background: var(--mat-sys-on-primary);
+        color: var(--mat-sys-primary);
+        border-radius: 999px;
+    }
+
+    // Fixed accent color, deliberately NOT theme-derived like .nav-item-active
+    // above, so an explicitly-declared item (Skilift) reads as its own
+    // distinct "always important" signal, not "you are here". Yellow is the
+    // same one sck-admin-app's logout button already uses (app.component.scss
+    // there); swapped for a pink/magenta in the green theme specifically -
+    // yellow-on-green tested fine too, but a true complementary color to
+    // green pops more (see :host-context(.theme-gruen) below).
+    .nav-item-declared {
+        background: #ffd740;
+        color: rgba(0, 0, 0, 0.87);
+        border-radius: 999px;
+    }
+}
+
+// :host-context, not a plain nested selector - .theme-gruen lives on
+// document.body (see ThemeService), an ancestor outside this component's
+// own template, which a plain descendant selector can't see through under
+// Angular's emulated view encapsulation.
+:host-context(.theme-gruen) .navitems-container .nav-item-declared {
+    background: #ff4081;
+    color: #fff;
 }

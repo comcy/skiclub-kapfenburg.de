@@ -1,0 +1,149 @@
+<div class="page">
+    <div class="page-header">
+        <button class="back-button" mat-icon-button (click)="cancelled.emit()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="page-title">Mitglieder importieren</span>
+    </div>
+
+    <div class="page-content">
+        @if (error) {
+            <div class="error-banner">{{ error }}</div>
+        }
+
+        @switch (step) {
+            @case ('upload') {
+                <div class="upload-step">
+                    <p>
+                        Eine JSON-Datei mit einer Liste von Mitgliedsdatensätzen hochladen. Vorhandene Mitglieder
+                        (abgeglichen über die Mitgliedsnummer, ersatzweise per E-Mail) werden nicht doppelt angelegt -
+                        bei Abweichungen kannst du im nächsten Schritt Feld für Feld entscheiden, was übernommen wird.
+                    </p>
+                    <input
+                        #fileInput
+                        type="file"
+                        accept=".json,application/json"
+                        hidden
+                        (change)="onFileSelected($event)"
+                    />
+                    <button mat-raised-button color="primary" [disabled]="isLoading" (click)="onUploadClick()">
+                        <mat-icon>upload_file</mat-icon>
+                        @if (isLoading) {
+                            Wird geladen …
+                        } @else {
+                            JSON-Datei auswählen
+                        }
+                    </button>
+                </div>
+            }
+
+            @case ('preview') {
+                @if (preview) {
+                    <div class="preview-step">
+                        <div class="summary-row">
+                            <span class="summary-item">{{ preview.neu.length }} neu</span>
+                            <span class="summary-item">{{ preview.identisch }} bereits vorhanden, unverändert</span>
+                            <span class="summary-item">{{ preview.kollisionen.length }} Kollisionen</span>
+                        </div>
+
+                        @if (preview.neu.length) {
+                            <h3>Neue Mitglieder ({{ preview.neu.length }})</h3>
+                            <table class="simple-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>E-Mail</th>
+                                        <th>Mitglied seit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (record of preview.neu; track record) {
+                                        <tr>
+                                            <td>{{ record.firstName }} {{ record.lastName }}</td>
+                                            <td>{{ formatValue(record.email) }}</td>
+                                            <td>{{ formatValue(record.memberSince) }}</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                        @if (preview.kollisionen.length) {
+                            <h3>Kollisionen ({{ preview.kollisionen.length }})</h3>
+                            <p class="hint">
+                                Für jedes abweichende Feld gilt standardmäßig "Bestehend behalten" - nur explizit auf
+                                "Neuen Wert übernehmen" umgeschaltete Felder werden beim Abschluss geändert.
+                            </p>
+                            @for (collision of preview.kollisionen; track collision.memberId) {
+                                <div class="collision-card">
+                                    <h4>{{ memberName(collision) }}</h4>
+                                    <table class="diff-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Feld</th>
+                                                <th>Bestehender Wert</th>
+                                                <th>Neuer Wert</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for (diff of collision.diffFields; track diff.field) {
+                                                <tr>
+                                                    <td>{{ diff.label }}</td>
+                                                    <td>{{ formatValue(diff.existing) }}</td>
+                                                    <td>{{ formatValue(diff.incoming) }}</td>
+                                                    <td>
+                                                        <mat-button-toggle-group
+                                                            [value]="
+                                                                isTakingIncoming(collision.memberId, diff.field)
+                                                                    ? 'incoming'
+                                                                    : 'existing'
+                                                            "
+                                                            (change)="
+                                                                $event.value === 'incoming'
+                                                                    ? chooseIncoming(collision.memberId, diff.field)
+                                                                    : chooseExisting(collision.memberId, diff.field)
+                                                            "
+                                                        >
+                                                            <mat-button-toggle value="existing"
+                                                                >Bestehend behalten</mat-button-toggle
+                                                            >
+                                                            <mat-button-toggle value="incoming"
+                                                                >Neuen Wert übernehmen</mat-button-toggle
+                                                            >
+                                                        </mat-button-toggle-group>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        }
+
+                        <div class="actions">
+                            <button mat-raised-button color="primary" [disabled]="isLoading" (click)="onApply()">
+                                @if (isLoading) {
+                                    Wird angewendet …
+                                } @else {
+                                    Import abschließen
+                                }
+                            </button>
+                            <button mat-button [disabled]="isLoading" (click)="cancelled.emit()">Abbrechen</button>
+                        </div>
+                    </div>
+                }
+            }
+
+            @case ('done') {
+                @if (applyResult) {
+                    <div class="done-step">
+                        <mat-icon class="done-icon">check_circle</mat-icon>
+                        <p>{{ applyResult.created }} neu angelegt, {{ applyResult.updated }} aktualisiert.</p>
+                        <button mat-raised-button color="primary" (click)="imported.emit()">Fertig</button>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>

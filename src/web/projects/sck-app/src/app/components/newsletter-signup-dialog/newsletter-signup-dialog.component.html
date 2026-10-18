@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Newsletter-Anmeldung</h2>
+
+<mat-dialog-content>
+    @if (done) {
+        <p>Danke für deine Anmeldung! Du erhältst ab sofort unseren Newsletter.</p>
+    } @else {
+        <p>Melde dich mit deiner E-Mail-Adresse für unseren Newsletter an.</p>
+
+        <form [formGroup]="form">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>E-Mail</mat-label>
+                <input matInput type="email" formControlName="email" />
+                @if (form.controls.email.hasError('email')) {
+                    <mat-error>Bitte eine gültige E-Mail-Adresse eingeben.</mat-error>
+                }
+            </mat-form-field>
+
+            <shared-lib-turnstile-widget [siteKey]="turnstileSiteKey" (tokenChange)="onTurnstileToken($event)">
+            </shared-lib-turnstile-widget>
+        </form>
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    @if (done) {
+        <button mat-button mat-dialog-close color="primary">Schließen</button>
+    } @else {
+        <button mat-button mat-dialog-close>Abbrechen</button>
+        <button mat-raised-button color="primary" [disabled]="isSubmitDisabled()" (click)="submit()">
+            @if (isSending) {
+                Wird gesendet …
+            } @else {
+                Anmelden
+            }
+        </button>
+    }
+</mat-dialog-actions>

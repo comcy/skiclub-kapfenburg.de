@@ -1,0 +1,74 @@
+@use '@angular/material' as mat;
+
+$color-primary: #673ab7;
+$color-primary-dark: #512da8;
+$color-accent: #ffd740;
+$color-on-accent: #6b4d00;
+$color-warn: #f44336;
+
+:host {
+    display: block;
+}
+
+.overview-container {
+    padding: 32px 32px 64px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+
+    @media (max-width: 600px) {
+        padding: 20px 16px 48px 16px;
+    }
+}
+
+.intro {
+    max-width: 640px;
+    color: var(--mat-sys-on-surface-variant);
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+}
+
+.filter-bar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    background: rgba(103, 58, 183, 0.05);
+    border: 1px solid rgba(103, 58, 183, 0.12);
+    border-radius: 12px;
+    padding: 20px 24px 0 24px;
+    margin-bottom: 40px;
+
+    mat-form-field {
+        width: 100%;
+    }
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+        padding: 16px 16px 0 16px;
+        gap: 8px;
+    }
+}
+
+.trips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+    gap: 32px;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    color: var(--mat-sys-on-surface-variant);
+    text-align: center;
+    padding: 48px 0;
+}
+
+.section-title {
+    margin: 48px 0 20px 0;
+    color: var(--mat-sys-primary);
+    font-size: 20px;
+}
+
+.offers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+    gap: 24px;
+}

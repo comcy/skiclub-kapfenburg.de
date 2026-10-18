@@ -3,17 +3,9 @@
  */
 
 import { RequestHandler } from "express";
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
 import { EmailRequestBody } from "../domain/email.js";
 import { saveData } from "../services/data-service.js";
-
-dotenv.config();
-
-const SMTP_SERVER = process.env.SMTP_SERVER || "";
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || "465", 10);
-const SENDER_MAIL = process.env.SENDER_MAIL || "";
-const SENDER_PW = process.env.SENDER_PW || "";
+import { createMailTransporter, defaultSender } from "../services/mailer.js";
 
 const parseEmailList = (value?: string): string[] => {
   if (!value) return [];
@@ -32,7 +24,7 @@ export const sendEmail: RequestHandler = async (req, res) => {
     // E-Mail-Daten speichern
     await saveData('email-contact', emailData);
 
-    const { to, subject, text, cc, bcc, from } = emailData;
+    const { to, subject, text, cc, bcc } = emailData;
 
     const toList = parseEmailList(to);
     const ccList = parseEmailList(cc);
@@ -53,21 +45,13 @@ export const sendEmail: RequestHandler = async (req, res) => {
       return;
     }
 
-    const transporter = nodemailer.createTransport({
-      host: SMTP_SERVER,
-      port: SMTP_PORT,
-      secure: true,
-      auth: {
-        user: SENDER_MAIL,
-        pass: SENDER_PW,
-      },
-      tls: { rejectUnauthorized: false },
-      socketTimeout: 10000,
-      connectionTimeout: 10000,
-    });
+    const transporter = createMailTransporter();
 
     const mailOptions = {
-      from: from || SENDER_MAIL,
+      // Never trust a client-supplied "from" - this endpoint is public and
+      // unauthenticated, a spoofable from would turn it into an open relay
+      // for phishing/spam under the club's domain.
+      from: defaultSender(),
       to: toList.join(","),
       cc: ccList.length ? ccList.join(",") : undefined,
       bcc: bccList.length ? bccList.join(",") : undefined,
@@ -88,9 +72,6 @@ export const sendEmail: RequestHandler = async (req, res) => {
     });
   } catch (error: any) {
     console.error("Fehler beim Senden der E-Mail:", error);
-    res.status(500).json({
-      error: "Fehler beim Senden der E-Mail",
-      details: error.message || error.toString(),
-    });
+    res.status(500).json({ error: "Fehler beim Senden der E-Mail" });
   }
 };

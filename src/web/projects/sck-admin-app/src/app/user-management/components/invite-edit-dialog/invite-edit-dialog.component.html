@@ -1,0 +1,10 @@
+<app-dialog-shell title="Neue Einladung">
+    <app-invite-editor #editor (saved)="onSaved()"></app-invite-editor>
+
+    <ng-container dialogActions>
+        <button mat-raised-button color="primary" (click)="editor.onSave()" [disabled]="!editor.canSave">
+            Einladen
+        </button>
+        <button mat-button (click)="dialogRef.close(false)">Abbrechen</button>
+    </ng-container>
+</app-dialog-shell>

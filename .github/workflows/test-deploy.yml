@@ -5,10 +5,17 @@ name: Test-System Deploy
 # app while away from home) - pick the branch/tag to deploy from the Actions
 # tab, defaulting to master.
 #
-# Runs directly on the sck-test LXC via a self-hosted runner (label
-# "sck-test") instead of SSHing in from a GitHub-hosted runner - the LXC has
-# no open inbound port and no public DNS, so the runner connects outbound to
-# GitHub instead. See infrastructure/TEST_DEPLOYMENT.md.
+# The `test` job runs scripts/verify.sh (build+lint+test for every workspace
+# package, incl. the e2e suite) on a GitHub-hosted runner - `deploy` only
+# runs if it passes (`needs: test`), so a broken build/test never reaches
+# the test system. Deliberately a GitHub-hosted runner, not the self-hosted
+# sck-test one: that LXC has 2GB RAM and is already tight running the three
+# sequential Docker builds below, see the comment further down.
+#
+# `deploy` itself runs directly on the sck-test LXC via a self-hosted runner
+# (label "sck-test") instead of SSHing in from a GitHub-hosted runner - the
+# LXC has no open inbound port and no public DNS, so the runner connects
+# outbound to GitHub instead. See infrastructure/TEST_DEPLOYMENT.md.
 on:
   push:
     branches:
@@ -24,7 +31,39 @@ env:
   APP_DIR: "/opt/sck-test"
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref_name }}
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - name: Set up Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # verify.sh's own `-r run test` reaches the e2e package too - its
+      # browsers aren't part of `pnpm install` and need a separate fetch.
+      - name: Install Playwright browsers
+        run: pnpm --filter e2e exec playwright install --with-deps chromium
+
+      - name: Run full verification (build + lint + test, every package)
+        run: bash scripts/verify.sh
+
   deploy:
+    needs: test
     runs-on: [self-hosted, sck-test]
     steps:
       - name: Determine ref to deploy
@@ -52,8 +91,19 @@ jobs:
           git checkout ${{ steps.ref.outputs.ref }}
           git reset --hard origin/${{ steps.ref.outputs.ref }}
 
+          # .git isn't in the Docker build context (.dockerignore), so the
+          # web image can't compute its own commit hash - pass it in from
+          # here, where the checkout above already put it within reach.
+          export GIT_COMMIT_HASH=$(git rev-parse --short HEAD)
+
+          # Sequential, not "docker compose build" (parallel by default with
+          # BuildKit) - the LXC has 2GB RAM by default, and building web's
+          # memory-hungry Angular bundle at the same time as api's build
+          # reliably OOM-kills one of them (SIGKILL mid ng-build).
           echo "🔨 Building images..."
-          docker compose build
+          docker compose build api
+          docker compose build web
+          docker compose build admin
 
           echo "🚀 Starting stack..."
           docker compose up -d
@@ -61,5 +111,17 @@ jobs:
           echo "🧹 Pruning old images..."
           docker image prune -f
 
+          # image prune only drops dangling images, not the BuildKit layer
+          # cache from "docker compose build" above - that cache grows on
+          # every deploy and, left unchecked, eventually fills the LXC's
+          # disk (see infrastructure/TEST_DEPLOYMENT.md's disk-space note).
+          echo "🧹 Pruning unused build cache..."
+          docker builder prune -f
+
           sleep 5
           docker compose ps
+
+          echo "🩺 Health check (direct on the LXC, bypassing any reverse proxy - 000 means unreachable):"
+          echo "  web   / ........... $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/)"
+          echo "  api   /api/tiles .. $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/tiles)"
+          echo "  admin / ........... $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/)"

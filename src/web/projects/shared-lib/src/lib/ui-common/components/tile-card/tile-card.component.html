@@ -1,0 +1,143 @@
+<article
+    class="tile-card"
+    [class.clickable]="clickable"
+    [class.expired]="tile.expired"
+    [class.image-only]="tile.imageOnly"
+    (click)="onCardClick()"
+>
+    @if (tile.image || badgeLabel) {
+        <div class="tile-card-image">
+            @if (tile.image) {
+                <img [src]="resolveImageUrl(tile.image)" [alt]="tile.imageDescription" />
+            }
+            @if (badgeLabel) {
+                <span
+                    class="badge"
+                    [class.badge-warn]="badgeVariant === 'warn'"
+                    [class.badge-off]="badgeVariant === 'off'"
+                >
+                    {{ badgeLabel }}
+                </span>
+            }
+
+            @if (tile.imageOnly && tile.actions && tile.actions.length > 0) {
+                <div class="image-only-actions">
+                    @for (action of tile.actions; track action) {
+                        @switch (action) {
+                            @case (tileActions.Download) {
+                                <button mat-fab extended color="primary" (click)="onActionClick($event, download)">
+                                    <mat-icon>download</mat-icon>
+                                    Öffnen
+                                </button>
+                            }
+                            @case (tileActions.Register) {
+                                <button mat-fab extended color="accent" (click)="onActionClick($event, register)">
+                                    <mat-icon>event_note</mat-icon>
+                                    Anmelden
+                                </button>
+                            }
+                        }
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    @if (!tile.imageOnly) {
+        <div class="tile-card-content">
+            @if (tile.type !== tileType.Event) {
+                <div class="eyebrow">{{ tile.type === tileType.Course ? tile.subTitle : tile.date }}</div>
+            }
+            <h3>{{ tile.title }}</h3>
+            <p class="description" [innerHTML]="description"></p>
+
+            @if (courseInfo; as course) {
+                <div class="course-info">
+                    @if (course.time) {
+                        <p><strong>Zeit:</strong> {{ course.time }}</p>
+                    }
+                    @if (course.location) {
+                        <p><strong>Ort:</strong> {{ course.location }}</p>
+                    }
+                    @if (course.contact) {
+                        <p><strong>Kontakt:</strong> {{ course.contact }}</p>
+                    }
+                    @if (course.prices) {
+                        <p>
+                            <strong>Preis:</strong>
+                            Mitglied {{ course.prices.member || '–' }} / Nicht-Mitglied
+                            {{ course.prices.nonMember || '–' }}
+                        </p>
+                    }
+                    @if (course.schedule; as schedule) {
+                        <p>
+                            <strong>Termin-Serie:</strong>
+                            {{ weekdayLabels[schedule.weekday] }}, {{ schedule.startDate | date: 'dd.MM.yyyy' }} –
+                            {{ schedule.endDate | date: 'dd.MM.yyyy' }}
+                            @if (schedule.excludedDates?.length) {
+                                (ohne: {{ formatExcludedDates(schedule.excludedDates) }})
+                            }
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (metaChips.length > 0) {
+                <div class="meta-row">
+                    @for (chip of metaChips; track chip.label) {
+                        <span class="meta-chip"
+                            ><mat-icon>{{ chip.icon }}</mat-icon
+                            >{{ chip.label }}</span
+                        >
+                    }
+                </div>
+            }
+
+            <div class="card-actions">
+                @if (tile.type === tileType.Info && !ctaOverride) {
+                    <span></span>
+                    @for (action of tile.actions ?? []; track action) {
+                        @switch (action) {
+                            @case (tileActions.Download) {
+                                <button mat-fab extended color="primary" (click)="onActionClick($event, download)">
+                                    <mat-icon>download</mat-icon>
+                                    Öffnen
+                                </button>
+                            }
+                            @case (tileActions.Register) {
+                                <button mat-fab extended color="accent" (click)="onActionClick($event, register)">
+                                    <mat-icon>event_note</mat-icon>
+                                    Anmelden
+                                </button>
+                            }
+                            @case (tileActions.Share) {
+                                <button
+                                    mat-mini-fab
+                                    matTooltip="Teilen"
+                                    class="share-button"
+                                    (click)="onActionClick($event, share)"
+                                >
+                                    <mat-icon>share</mat-icon>
+                                </button>
+                            }
+                        }
+                    }
+                } @else {
+                    <span class="price-label">
+                        @if (priceLabel) {
+                            {{ priceLabel }}
+                        } @else if (boardingsLabel) {
+                            {{ boardingsLabel }}
+                        }
+                    </span>
+                    <button mat-fab extended [color]="cta.color ?? 'primary'" (click)="onActionClick($event, register)">
+                        @if (cta.icon) {
+                            <mat-icon>{{ cta.icon }}</mat-icon>
+                        }
+                        {{ cta.label }}
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</article>

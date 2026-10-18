@@ -1,10 +1,18 @@
 # Test-System: Setup & Betrieb
 
-Containerisiertes Test-Deployment von `web` + `sck-api` auf einer eigenen
-Proxmox-LXC, getrennt von der bestehenden Produktivumgebung (die weiterhin
-unverändert über `sck-web-app-build-deploy.yml` / `sck-api-deploy.yml`
-läuft). Reverse Proxy + TLS übernimmt der bereits vorhandene Nginx Proxy
-Manager (NPM) auf seiner eigenen LXC.
+Containerisiertes Test-Deployment von `web` + `sck-api` + `admin`
+(Admin-App) auf einer eigenen Proxmox-LXC, getrennt von der bestehenden
+Produktivumgebung (die weiterhin unverändert über
+`sck-web-app-build-deploy.yml` / `sck-api-deploy.yml` läuft). Reverse
+Proxy + TLS übernimmt der bereits vorhandene Nginx Proxy Manager (NPM)
+auf seiner eigenen LXC.
+
+`sck-api` bedient hier zwei zunächst getrennte Zwecke: die bestehenden
+Anmeldeformulare (E-Mail/Registrierung/Mitgliedschaft, unverändert) und
+neu ein SQLite-Backend (Tiles/Boardings/Auth) für die Admin-App. Tiles,
+die dort angelegt werden, erscheinen **zusätzlich** neben den weiterhin
+bestehenden statischen Ausfahrten — kein Ersatz, siehe
+`FEATURE_BRIEF_TILE_IMAGE_UPLOAD.md` für den Hintergrund.
 
 ## Einmaliges Setup
 
@@ -43,12 +51,13 @@ Das Skript:
 3. fragt, welcher App-Branch deployt werden soll, und klont/aktualisiert
    ihn nach `/opt/sck-test` in der LXC,
 4. fragt interaktiv nach `.env`-Werten (SMTP, Sheet-URLs, API-URL,
-   SEPA-Schlüssel) — aber **nur nach denen, die dort noch nicht gesetzt
-   sind**. Bereits vorhandene Werte bleiben unangetastet, keine
-   Neueingabe nötig,
-5. baut beide Images und startet den Stack (`docker compose up -d`) —
-   **ohne** `down -v`, das `sck-api-data`-Volume mit euren Testdaten
-   bleibt also über jeden erneuten Lauf hinweg erhalten.
+   SEPA-Schlüssel, Admin-App-Zugang) — aber **nur nach denen, die dort
+   noch nicht gesetzt sind**. Bereits vorhandene Werte bleiben
+   unangetastet, keine Neueingabe nötig,
+5. baut alle drei Images (nacheinander, siehe RAM-Hinweis unten) und
+   startet den Stack (`docker compose up -d`) — **ohne** `down -v`, das
+   `sck-api-data`-Volume mit euren Testdaten bleibt also über jeden
+   erneuten Lauf hinweg erhalten.
 
 Das Skript ist damit **beliebig oft wiederholbar** — für einen neuen
 App-Branch zum Testen, ein Redeploy nach Codeänderungen oder um eine
@@ -63,23 +72,51 @@ Runner auf der LXC für spätere Redeploys per Workflow.
 **Zweites, unabhängiges Testsystem?** Beim Einzeiler-Lauf einfach eine
 andere VMID/Hostname angeben — siehe Kommentar am Kopf des Skripts.
 
-### 2. Zwei Proxy Hosts in Nginx Proxy Manager anlegen
+**RAM-Hinweis:** Der Default (`DEFAULT_MEMORY_MB=2048`, 2 GB) reicht
+knapp nicht für einen `ng build` des Web-Frontends — beobachtet als
+vom Linux-OOM-Killer abgeschossener Build (`SIGKILL` mitten in
+`ng build sck-app`, teils auch als "runner lost communication with
+the server", wenn die ganze LXC dabei kurzzeitig durchhängt). Sowohl
+der Self-hosted-Runner-Workflow als auch dieses Setup-Skript bauen
+`api`, `web` und `admin` deshalb nacheinander statt parallel (senkt
+den Spitzenverbrauch), aber dauerhaft sicherer ist mehr RAM — mit drei
+statt zwei Images empfohlen:
+```bash
+pct set <VMID> --memory 4096
+pct reboot <VMID>
+```
 
-Im NPM-Web-UI, „Proxy Hosts" → „Add Proxy Host", je einmal für Web und
-API:
+**Disk-Hinweis:** Der Default-Root-Disk (ca. 8G) reicht knapp nicht für
+drei Node/Angular-Images nacheinander plus Docker-Build-Cache — beobachtet
+als Deploy-Absturz mit `No space left on device`, teils schon beim
+Runner selbst statt erst beim Build (siehe „Speicherplatz voll" unten).
+Vergrößern auf dem Proxmox-Host, **relativ** zum aktuellen Stand
+(`pct resize` kennt kein absolutes Zielmaß), Filesystem wird bei LXCs
+automatisch mitvergrößert, kein Reboot nötig:
+```bash
+pct resize <VMID> rootfs +8G
+```
 
-| Feld | Web | API |
-|---|---|---|
-| Domain Names | `test.<eure-domain>` | `sck-api-test.<eure-domain>` |
-| Scheme | http | http |
-| Forward Hostname/IP | IP der `sck-test`-LXC | IP der `sck-test`-LXC |
-| Forward Port | `8080` | `3000` |
-| SSL | Let's Encrypt aktivieren, „Force SSL" | Let's Encrypt aktivieren, „Force SSL" |
+### 2. Proxy Hosts in Nginx Proxy Manager anlegen
+
+Im NPM-Web-UI, „Proxy Hosts" → „Add Proxy Host", für Web und API (Pflicht)
+sowie optional Admin (diese Runde bewusst noch ohne — siehe Kontext oben,
+Admin-App ist erreichbar aber noch nicht öffentlich verdrahtet):
+
+| Feld | Web | API | Admin (optional) |
+|---|---|---|---|
+| Domain Names | `test.<eure-domain>` | `sck-api-test.<eure-domain>` | `admin-test.<eure-domain>` |
+| Scheme | http | http | http |
+| Forward Hostname/IP | IP der `sck-test`-LXC | IP der `sck-test`-LXC | IP der `sck-test`-LXC |
+| Forward Port | `8080` | `3000` | `8081` |
+| SSL | Let's Encrypt aktivieren, „Force SSL" | Let's Encrypt aktivieren, „Force SSL" | Let's Encrypt aktivieren, „Force SSL" |
 
 Falls die API-Domain beim Skriptlauf noch nicht feststand: `.env` auf
 der LXC nachtragen, dann `docker compose build web && docker compose
 up -d web` — siehe „Konfiguration ändern" unten, warum das für `web`
-einen Rebuild statt nur einen Neustart braucht.
+einen Rebuild statt nur einen Neustart braucht. Legt ihr später einen
+Proxy Host für Admin an, `ADMIN_APP_URL` in `.env` auf die echte Domain
+ändern und `docker compose up -d api` (Laufzeit-Variable, kein Rebuild).
 
 ### 3. GitHub Actions Self-hosted Runner auf der LXC (optional)
 
@@ -120,8 +157,13 @@ gelesen wird:
 
 - **Laufzeit-Variablen** (`sck-api` liest sie beim Start des Prozesses):
   `SMTP_SERVER`, `SMTP_PORT`, `SENDER_MAIL`, `SENDER_PW`,
-  `SEPA_ENCRYPTION_KEY`. Ändern → `.env` bearbeiten, dann reicht ein
-  Neustart des `api`-Containers, **kein** Rebuild:
+  `SEPA_ENCRYPTION_KEY`, `SUPER_ADMIN_EMAIL`, `ADMIN_APP_URL`,
+  `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
+  (die drei Google-Werte sind optional — ohne sie funktioniert weiterhin
+  der Magic-Link-Login, nur der "Mit Google anmelden"-Button nicht).
+  Ändern →
+  `.env` bearbeiten, dann reicht ein Neustart des `api`-Containers,
+  **kein** Rebuild:
   ```bash
   docker compose up -d api
   ```
@@ -134,21 +176,28 @@ gelesen wird:
   Wert bei jedem weiteren Lauf unangetastet.
 - **Build-Zeit-Variablen** (werden beim `ng build` fest in die
   ausgelieferten JS-Dateien eingesetzt, siehe
-  `src/web/scripts/envsubst.sh`): `SCK_API_URL`, `COURSE_SHEET_URL`,
-  `TRIP_SHEET_URL`. Ändern → `.env` bearbeiten, dann **muss** `web` neu
-  gebaut werden:
+  `src/web/scripts/envsubst.sh` für `web` bzw. das simplere
+  `sed`-Substitut in `src/web/projects/sck-admin-app/Dockerfile` für
+  `admin`): `SCK_API_URL` (beide Images, dieselbe `sck-api`-Instanz),
+  `COURSE_SHEET_URL`, `TRIP_SHEET_URL`. Ändern → `.env` bearbeiten, dann
+  **muss** das jeweilige Image neu gebaut werden:
   ```bash
   docker compose build web && docker compose up -d web
+  docker compose build admin && docker compose up -d admin
   ```
 
-Faustregel: `api` ändert sich sofort mit `up -d`, `web` braucht immer
-`build` davor.
+Faustregel: `api` ändert sich sofort mit `up -d`, `web`/`admin` brauchen
+immer `build` davor.
 
 ## Alltag
 
 **Automatisch:** Jeder Push auf einen `release/**`-Branch deployt
 automatisch auf die Test-LXC — kein manueller Trigger nötig, sobald
-der Self-hosted Runner eingerichtet ist (Schritt 3 oben).
+der Self-hosted Runner eingerichtet ist (Schritt 3 oben). Seit
+2026-09-06 läuft davor immer erst `scripts/verify.sh` (Build/Lint/Test
+für den gesamten Workspace) auf einem GitHub-gehosteten Runner — nur
+bei Erfolg deployt die LXC überhaupt (siehe
+[CI_CD.md](./CI_CD.md) für alle Workflows im Überblick).
 
 **Neu deployen, für jeden anderen Branch on-demand** (nachdem der
 Self-hosted Runner eingerichtet ist — Schritt 3 oben): GitHub →
@@ -163,6 +212,7 @@ geändert habt.
 ```bash
 docker compose logs -f api
 docker compose logs -f web
+docker compose logs -f admin
 ```
 
 **Testdaten zurücksetzen** (löscht `registrations.ndjson` im
@@ -170,6 +220,41 @@ docker compose logs -f web
 ```bash
 docker compose down -v
 docker compose up -d
+```
+
+**Speicherplatz voll** (Deploy scheitert mit `No space left on device`,
+teils schon beim Runner selbst, bevor überhaupt gebaut wird): jeder
+Deploy baut drei Images neu, `docker image prune -f` im Workflow räumt
+danach nur ungetaggte Images weg, nicht den BuildKit-Cache — der wächst
+über viele Deploys hinweg unbemerkt, bis die LXC-Disk voll ist. Ab
+diesem Commit räumt der Workflow den Cache selbst auf
+(`docker builder prune -f` nach dem Image-Prune), das beugt einem
+erneuten Vollaufen vor — hilft aber nicht gegen eine **bereits volle**
+Disk, das einmalig manuell aufräumen:
+```bash
+df -h /                    # bestätigen, dass die Disk wirklich voll ist
+docker system df           # zeigt, wie viel davon Images/Build-Cache/Volumes sind
+docker builder prune -af   # kompletter Build-Cache, nicht nur ungenutzter
+docker image prune -af     # alle ungenutzten Images (nicht nur dangling)
+df -h /                    # zur Kontrolle
+```
+`docker system prune -af --volumes` wäre aggressiver, aber Vorsicht:
+`--volumes` würde auch das `sck-api-data`-Volume mit den Testdaten
+löschen — dafür lieber gezielt `docker builder prune`/`docker image
+prune` wie oben, Volumes nicht anfassen.
+
+Löst das Docker-Aufräumen allein nicht genug Platz (Docker selbst
+macht oft nur einen Bruchteil der belegten Disk aus - `du -xhd1 /
+| sort -rh` zeigt die tatsächlich großen Verzeichnisse), war bei uns
+am 2026-09-04 der eigentliche Übeltäter der **Self-Update-Cache des
+Runners** unter `_work/_update` (übrig gebliebenes, nie aufgeräumtes
+Runner-Package von einem durch die volle Disk abgebrochenen
+Selbstupdate - ~680M, reiner Update-Cache, nichts von Job-Daten):
+```bash
+cd /opt/github-runner
+sudo ./svc.sh stop
+rm -rf _work/_update
+sudo ./svc.sh start
 ```
 
 **Manuell neu bauen/starten** (ohne CI, z. B. um einen anderen Branch

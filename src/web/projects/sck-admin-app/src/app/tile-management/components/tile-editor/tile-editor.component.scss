@@ -1,0 +1,110 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.editor-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.view-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.preview-content {
+    align-items: center;
+    background-color: var(--mat-sys-surface-container);
+}
+
+.preview-toolbar {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    background-color: var(--mat-sys-surface);
+    flex-shrink: 0;
+}
+
+.footer-actions {
+    padding-right: 16px;
+    padding-left: 16px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    background-color: var(--mat-sys-surface);
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    // flex:1 with no basis and no wrap let two fields (e.g. Event Date +
+    // Expiration Date) fight over space neither could shrink below on a
+    // narrow dialog panel, overflowing past the edge instead of wrapping -
+    // a real flex-basis gives flex-wrap something to actually wrap at.
+    .half-width {
+        flex: 1 1 200px;
+    }
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    /* Compact columns */
+    gap: 16px;
+
+    &.two-columns {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+.section-title {
+    margin: 8px 0 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.hint-text {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 13px;
+    margin: -8px 0 0;
+}
+
+.preview-header {
+    margin-bottom: 24px;
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 500;
+    margin-top: 16px;
+}
+
+.preview-card {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+}
+
+mat-form-field {
+    width: 100%;
+}

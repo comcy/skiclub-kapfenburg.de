@@ -8,3 +8,5 @@ export * from './static-data';
 export * from './downloads';
 export * from './course-data';
 export * from './skilift-data';
+export * from './notification-settings-store';
+export * from './mail-template-settings-store';

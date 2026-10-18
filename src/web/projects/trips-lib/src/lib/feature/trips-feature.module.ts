@@ -11,19 +11,27 @@ import { TripsRegistrationComponent } from './trips-registration/trips-registrat
 import { TripsUiModule } from '../ui/trips-ui.module';
 import { ComponentsModule } from 'projects/shared-lib/src/lib/components';
 import { TripsRegisterDialogComponent } from './trips-register-dialog/trips-register-dialog.component';
+import { TripDetailComponent } from './trip-detail/trip-detail.component';
 
 @NgModule({
-    imports: [CommonModule, TripsUiModule, ComponentsModule, TripsDownloadsComponent,
+    imports: [
+        CommonModule,
+        TripsUiModule,
+        ComponentsModule,
+        TripsDownloadsComponent,
         TripsPricesComponent,
         TripsInformationComponent,
         TripsRegistrationComponent,
-        TripsRegisterDialogComponent],
+        TripsRegisterDialogComponent,
+        TripDetailComponent,
+    ],
     exports: [
         TripsDownloadsComponent,
         TripsInformationComponent,
         TripsPricesComponent,
         TripsRegistrationComponent,
         TripsRegisterDialogComponent,
+        TripDetailComponent,
     ],
 })
 export class TripsFeatureModule {}

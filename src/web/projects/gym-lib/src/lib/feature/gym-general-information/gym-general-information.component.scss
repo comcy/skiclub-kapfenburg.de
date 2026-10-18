@@ -19,3 +19,10 @@
 .asd {
     padding-bottom: 24px;
 }
+
+.gym-tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+    gap: 24px;
+    margin: 16px 0 24px 0;
+}

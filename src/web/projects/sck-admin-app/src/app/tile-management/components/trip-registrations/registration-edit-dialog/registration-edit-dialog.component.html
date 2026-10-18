@@ -1,0 +1,15 @@
+<app-dialog-shell [title]="title">
+    <app-registration-editor
+        #editor
+        [tileId]="data.tileId"
+        [registration]="data.registration"
+        (saved)="onSaved()"
+    ></app-registration-editor>
+
+    <ng-container dialogActions>
+        <button mat-raised-button color="primary" (click)="editor.onSave()" [disabled]="!editor.canSave">
+            Speichern
+        </button>
+        <button mat-button (click)="dialogRef.close(false)">Abbrechen</button>
+    </ng-container>
+</app-dialog-shell>

@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { GymInformationCoreService } from './gym-information-core.service';
 import { GymInformationProviderServiceInterface } from '../../api/provider-services/gym-provider-service.interface';
+import { GymCourseInformation } from '../models/gym-course-information';
 import { of } from 'rxjs';
 
 describe('GymInformationCoreService', () => {
-    const mockOffers = [
-        { title: 'A', appointment: 't1', description: 'd1', contact: 'c1' },
-        { title: 'B', appointment: 't2', description: 'd2', contact: 'c2' },
+    const mockOffers: GymCourseInformation[] = [
+        { name: 'A', description: 'd1', details: 'details1', time: 't1', location: 'l1', contact: 'c1' },
+        { name: 'B', description: 'd2', details: 'details2', time: 't2', location: 'l2', contact: 'c2' },
     ];
 
     const providerMock: GymInformationProviderServiceInterface = {
@@ -31,7 +32,7 @@ describe('GymInformationCoreService', () => {
 
     it('should replace initial offers with provider offers', (done) => {
         service.gymOffers$.subscribe((offers) => {
-            if (offers.length === mockOffers.length && offers[0].title === 'A') {
+            if (offers.length === mockOffers.length && offers[0].name === 'A') {
                 expect(offers).toEqual(mockOffers);
                 done();
             }

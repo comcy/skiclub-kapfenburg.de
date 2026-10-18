@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,7 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BreakpointObserverService } from '@shared/ui-common';
-import { GERMAN_DATE_FORMATS } from 'projects/shared-lib/src/lib/date-time';
+import { GERMAN_DATE_FORMATS, GermanDateAdapter } from 'projects/shared-lib/src/lib/date-time';
 import { FormToMailInformation } from 'projects/shared-lib/src/lib/features/mail/models/mail.interfaces';
 import { GymCourseInformation } from '../domain';
 import { GYM_COURSES_REGISTRATION_FORM_ELEMENTS } from './gym-courses-registration-form-fields';
@@ -48,7 +48,7 @@ import {
         MatDatepickerModule,
     ],
     providers: [
-        provideNativeDateAdapter(),
+        { provide: DateAdapter, useClass: GermanDateAdapter },
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
         { provide: MAT_DATE_FORMATS, useValue: GERMAN_DATE_FORMATS },
     ],

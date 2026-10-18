@@ -1,0 +1,203 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.page-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+// Smaller, more restrained than Material's default 40px icon-button touch
+// target - this is a "back" link, not a primary action, it shouldn't read
+// louder than the title next to it.
+.back-button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+
+    ::ng-deep .mat-mdc-button-touch-target {
+        width: 32px;
+        height: 32px;
+    }
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.page-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.page-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 24px 32px;
+}
+
+.print-title {
+    display: none;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.registrations-table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th {
+        text-align: left;
+        font-weight: 500;
+        font-size: 12px;
+        color: var(--mat-sys-on-surface-variant);
+        padding: 0 16px;
+        height: 40px;
+        border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+
+    td {
+        font-size: 14px;
+        padding: 0 16px;
+        height: 52px;
+        border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+
+    tr.row:hover td {
+        background: light-dark(rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.06));
+    }
+}
+
+.empty {
+    text-align: center;
+    color: var(--mat-sys-on-surface-variant);
+    padding: 32px 0;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chip-confirmed {
+    background: light-dark(#dcf3e0, #1b3a20);
+    color: light-dark(#1e7d32, #8ee6a0);
+}
+
+.chip-cancelled {
+    background: var(--mat-sys-surface-container);
+    color: var(--mat-sys-on-surface-variant);
+    text-decoration: line-through;
+}
+
+.tile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.meta-item strong {
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+}
+
+.badge-member {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: light-dark(#1e7d32, #8ee6a0);
+    font-weight: 500;
+
+    mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.badge-nonmember {
+    font-size: 12px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+// Admin-Buchhaltung ("Extern erfasst"), togglebar per Klick - im Unterschied
+// zum reinen Anzeige-Badge (z.B. "Bezahlt", "Bestätigungsmail").
+.badge-toggle-clickable {
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.actions-cell {
+    white-space: nowrap;
+}
+
+.editor-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.32);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.editor-panel {
+    width: 480px;
+    max-width: 100%;
+    background: var(--mat-sys-surface);
+    padding: 24px;
+    overflow-y: auto;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+@media print {
+    .page-content {
+        overflow: visible;
+        padding: 0;
+    }
+
+    .print-title {
+        display: block;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+}

@@ -1,0 +1,98 @@
+name: SCK-API Prod Deploy
+
+# Produktiv-Deploy für sck-api — eigene Infra (5i1f4ng.de), LXC "sck-server"
+# (CT 109), NICHT mehr der Alfahosting-Server von skiclub-kapfenburg.de (die
+# alte SSH+systemd-Pipeline sck-api-build.yml/sck-api-deploy.yml ist seit
+# Erstellung nie erfolgreich gelaufen, siehe infrastructure/README.md
+# "Bekanntes Problem" - Architekturentscheidung: Umzug statt Debugging).
+#
+# Mechanismus wie test-deploy.yml/sck-admin-app-build-deploy.yml: Docker +
+# self-hosted Runner statt SSH/SCP, weil das LXC keinen offenen eingehenden
+# Port/öffentliche DNS für SSH hat - der Runner verbindet sich stattdessen
+# ausgehend zu GitHub. `test`-Job bleibt auf einem GitHub-gehosteten Runner,
+# `deploy` läuft nur bei Erfolg (`needs: test`) auf dem dedizierten Runner
+# (Label "sck-server", einmalig eingerichtet, läuft als systemd-Service unter
+# dem github-runner-User).
+#
+# sck-app bleibt bewusst auf Alfahosting (sck-web-app-build-deploy.yml,
+# unverändert) - dieser Workflow deployt nur den api-Service aus
+# docker-compose.yml, kein web/admin auf diesem LXC.
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/api/sck-api/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "docker-compose.yml"
+      - ".github/workflows/sck-api-prod-deploy.yml"
+
+env:
+  APP_DIR: "/opt/sck-server"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - name: Set up Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run linting and tests
+        run: |
+          pnpm --filter sck-api run lint
+          pnpm --filter sck-api run test
+
+  deploy:
+    needs: test
+    runs-on: [self-hosted, sck-server]
+    steps:
+      - name: Deploy to sck-server LXC
+        run: |
+          set -e
+
+          # /opt/sck-server muss dem github-runner-User gehören
+          # (einmalig: chown -R github-runner:github-runner /opt/sck-server)
+          git config --global --add safe.directory "${{ env.APP_DIR }}"
+
+          if [ ! -d "${{ env.APP_DIR }}/.git" ]; then
+            echo "📥 Cloning repository..."
+            git clone ${{ github.server_url }}/${{ github.repository }}.git ${{ env.APP_DIR }}
+          fi
+
+          cd ${{ env.APP_DIR }}
+          echo "🔄 Checking out master..."
+          git fetch origin
+          git checkout master
+          git reset --hard origin/master
+
+          echo "🔨 Building api image..."
+          docker compose build api
+
+          echo "🚀 Restarting api service..."
+          docker compose up -d api
+
+          echo "🧹 Pruning old images/build cache..."
+          docker image prune -f
+          docker builder prune -f
+
+          sleep 3
+          set -a; source .env 2>/dev/null || true; set +a
+          echo "🩺 Health check (direkt auf dem LXC, am Reverse Proxy vorbei, Port ${API_PORT:-3000}):"
+          echo "  api / ........... $(curl -s -o /dev/null -w '%{http_code}' http://localhost:${API_PORT:-3000}/)"

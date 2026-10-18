@@ -47,6 +47,8 @@ export interface BaseTile {
     avatar?: string;
     visible?: boolean;
     expired?: boolean;
+    /** Show only the image and the action button, no title/description text (e.g. a poster/flyer download). */
+    imageOnly?: boolean;
 }
 export interface InfoTile extends BaseTile {
     type: TileType.Info;
@@ -63,8 +65,12 @@ export interface EventTile extends BaseTile {
     type: TileType.Event;
     tripConfig: TripConfig;
     destination?: string;
-    location?: string;
     additionalInformation?: string;
+    // Only populated for API-backed tiles (see TripTilesApiService) - static
+    // TRIP_DATA fallback tiles leave these undefined, so the derived
+    // "isFull" waitlist check simply never fires for them.
+    capacity?: number;
+    confirmedRegistrationsCount?: number;
 }
 
 export type Tile = InfoTile | CourseTile | EventTile;
