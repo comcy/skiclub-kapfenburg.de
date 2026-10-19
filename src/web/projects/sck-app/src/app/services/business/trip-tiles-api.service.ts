@@ -59,16 +59,23 @@ function toExpirationDate(value: string): Date {
     return isNaN(parsed.getTime()) ? new Date() : parsed;
 }
 
-// Bus+Lift and Bus-only apply to every trip; the course/technik/snowshoe
-// addons only get merged in when the admin marked the trip "Ausfahrt mit
-// Kursmöglichkeit" (tripConfig.hasCourseOption) - see Einstellungen →
-// Preismanagement, the single global source these prices now come from
-// (no more per-tile manual entry, see tile-editor.component.ts).
-function resolveTripPricing(globalPricing: TripPricing, hasCourseOption: boolean | undefined): TripPricing {
+// Seit Issue #217 wieder pro Ausfahrt im Tile-Editor gepflegt
+// (tile.tripConfig.pricing) - die globale Preismanagement-Einstellung
+// bleibt nur noch Fallback fuer Tiles, die selbst noch keine eigene
+// Preisangabe haben (z.B. frisch angelegt, Preise noch nicht eingetragen).
+// Bus+Lift/Nur-Busfahrt gelten immer; die Zuschlaege nur wenn der Admin
+// die Ausfahrt als "mit Kursmoeglichkeit" markiert hat.
+function resolveTripPricing(
+    ownPricing: TripPricing | undefined,
+    globalPricing: TripPricing,
+    hasCourseOption: boolean | undefined,
+): TripPricing {
+    const hasOwnPricing = !!(ownPricing && (ownPricing.busLift || ownPricing.busOnly || ownPricing.addons));
+    const base = hasOwnPricing ? ownPricing! : globalPricing;
     return {
-        busLift: globalPricing.busLift,
-        busOnly: globalPricing.busOnly,
-        addons: hasCourseOption ? globalPricing.addons : undefined,
+        busLift: base.busLift,
+        busOnly: base.busOnly,
+        addons: hasCourseOption ? base.addons : undefined,
     };
 }
 
@@ -94,7 +101,7 @@ function mapApiTileToEventTile(api: ApiEventTile, globalPricing: TripPricing): E
         visible: api.visible,
         tripConfig: {
             ...api.tripConfig,
-            pricing: resolveTripPricing(globalPricing, api.tripConfig?.hasCourseOption),
+            pricing: resolveTripPricing(api.tripConfig?.pricing, globalPricing, api.tripConfig?.hasCourseOption),
         },
         destination: api.destination,
         additionalInformation: api.additionalInformation,
