@@ -18,6 +18,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
@@ -46,6 +47,7 @@ import {
         MatToolbarModule,
         MatProgressSpinnerModule,
         MatDatepickerModule,
+        MatIconModule,
     ],
     providers: [
         { provide: DateAdapter, useClass: GermanDateAdapter },
@@ -64,6 +66,10 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
     public breakpointObserver = inject(BreakpointObserverService);
     public gymCoursesRegisterForm: FormGroup = new FormGroup({});
     public courseList: string[] = [];
+    public isSending = false;
+    // Bleibt nach erfolgreicher Anmeldung dauerhaft true - verhindert ein
+    // zweites Absenden, siehe Issue #204.
+    public isSubmitted = false;
 
     private formBuilder = inject(FormBuilder);
     private gymCoursesRegistrationFormService = inject(GymCoursesRegistrationFormServiceInterface);
@@ -110,6 +116,7 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
     }
 
     public isSubmitDisabled(): boolean {
+        if (this.isSending || this.isSubmitted) return true;
         if (this.gymCoursesRegisterForm.valid) {
             return false;
         }
@@ -117,7 +124,9 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
     }
 
     public submit(): void {
+        if (this.isSending || this.isSubmitted) return;
         if (this.gymCoursesRegisterForm.valid) {
+            this.isSending = true;
             const formData: FormData = new FormData();
 
             // Add form group data to form data
@@ -137,8 +146,13 @@ export class GymCoursesRegistrationFormComponent implements OnInit, OnChanges {
                 console.log('MAIL FORM DATA >>> ', mailToFormData);
 
                 this.gymCoursesRegistrationFormService.sendConfirmationMail(mailToFormData);
+                // sendConfirmationMail ist fire-and-forget (kein Observable)
+                // - bestmoeglich sofort als abgeschlossen markieren.
+                this.isSending = false;
+                this.isSubmitted = true;
             } else {
                 console.error('No data provided');
+                this.isSending = false;
             }
         }
     }

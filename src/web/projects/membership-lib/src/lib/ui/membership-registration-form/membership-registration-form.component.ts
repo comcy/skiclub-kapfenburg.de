@@ -59,6 +59,9 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
 
     public breakpointObserver = inject(BreakpointObserverService);
     public isSending = false;
+    // Bleibt nach erfolgreicher Anmeldung dauerhaft true - verhindert ein
+    // zweites Absenden, siehe Issue #204.
+    public isSubmitted = false;
     public membershipRegisterForm: FormGroup = new FormGroup({});
     public toDestroy$: Subject<void> = new Subject<void>();
     public turnstileToken: string | null = null;
@@ -128,7 +131,7 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public isSubmitDisabled(): boolean {
-        return !this.membershipRegisterForm.valid || !this.turnstileToken;
+        return !this.membershipRegisterForm.valid || !this.turnstileToken || this.isSending || this.isSubmitted;
     }
 
     public onTurnstileToken(token: string | null): void {
@@ -140,6 +143,7 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public submit(): void {
+        if (this.isSending || this.isSubmitted) return;
         this.isSending = true;
 
         if (!this.membershipRegisterForm.valid) {
@@ -153,8 +157,11 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
         } as MembershipRegisterFormValue;
 
         this.membershipRegistrationFormService.submitRegistration(formValues);
+        // submitRegistration ist fire-and-forget (kein Observable) -
+        // bestmoeglich sofort als abgeschlossen markieren.
+        this.isSending = false;
+        this.isSubmitted = true;
 
         this.submitForm.emit(true);
-        this.isSending = false;
     }
 }

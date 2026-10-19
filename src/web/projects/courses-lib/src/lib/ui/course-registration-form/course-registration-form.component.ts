@@ -20,6 +20,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -50,6 +51,7 @@ import { CourseRegistrationFormServiceInterface } from './course-registration-fo
         MatInput,
         MatError,
         MatButton,
+        MatIcon,
         MatCheckbox,
         MatDatepickerModule,
         AsyncPipe,
@@ -84,6 +86,11 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     // pattern as presetCustomBccList. Null while still loading/unavailable.
     @Input() skiCoursePricing: SkiCoursePricing | null = null;
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    public isSending = false;
+    // Bleibt nach erfolgreicher Anmeldung dauerhaft true - verhindert ein
+    // zweites Absenden, siehe Issue #204.
+    public isSubmitted = false;
 
     public courseRegisterForm: FormGroup = new FormGroup({});
     public sportTypeList = ['Ski Alpin', 'Snowboard'];
@@ -145,7 +152,7 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     }
 
     public isSubmitDisabled(): boolean {
-        return !this.courseRegisterForm.valid || !this.turnstileToken;
+        return !this.courseRegisterForm.valid || !this.turnstileToken || this.isSending || this.isSubmitted;
     }
 
     public onTurnstileToken(token: string | null): void {
@@ -153,7 +160,9 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     }
 
     public submit(): void {
+        if (this.isSending || this.isSubmitted) return;
         if (this.courseRegisterForm.valid) {
+            this.isSending = true;
             const rawValue = this.courseRegisterForm.getRawValue();
             const birthdayText = rawValue.birthday
                 ? `${formatDateByLocale(rawValue.birthday)} (${calculateAge(rawValue.birthday)})`
@@ -205,18 +214,29 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
                             this.turnstileToken as string,
                         )
                         .subscribe({
-                            next: () => this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction),
+                            next: () => {
+                                this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
+                                this.isSending = false;
+                                this.isSubmitted = true;
+                            },
                             error: (error) => {
                                 console.error('Fehler beim Speichern der Kurs-Anmeldung:', error);
                                 this.snackBar.open(
                                     'Anmeldung fehlgeschlagen - bitte versuche es erneut oder kontaktiere uns per Mail.',
                                     this.snackAction,
                                 );
+                                this.isSending = false;
                             },
                         });
+                } else {
+                    // Kein admin-verwaltetes Kurs-Tile (#183) - Sheets ist
+                    // fire-and-forget, kein Observable zum Abwarten.
+                    this.isSending = false;
+                    this.isSubmitted = true;
                 }
             } else {
                 console.error('No data provided');
+                this.isSending = false;
             }
         }
     }
