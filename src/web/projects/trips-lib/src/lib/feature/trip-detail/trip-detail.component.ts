@@ -118,31 +118,30 @@ export class TripDetailComponent implements OnInit, OnDestroy {
         const pricing = tile.tripConfig?.pricing;
         if (pricing) {
             content += '\n**Kosten**\n\n';
+            content += '| Bus + Liftkarte + Optionen | Mitglieder | Nicht-Mitglieder |\n';
+            content += '|:---|---:|---:|\n';
 
             // Bus + Lift - echte Einheitspreise (alle sichtbaren Altersgruppen
             // UND Mitglieds-/Nicht-Mitglieds-Status identisch, siehe #198)
-            // werden als einzelner Satz statt als Tabelle gezeigt.
-            let busLiftRows: { category: string; member: number; nonMember: number }[] = [];
+            // werden als eine einzelne Zeile statt als Altersgruppen-Zeilen
+            // gezeigt - bleibt bewusst in derselben Tabelle wie "Nur
+            // Busfahrt" (nicht als separater Text davor), sonst wirkt es wie
+            // fehlende Daten statt einer Zusammenfassung.
             if (pricing.busLift) {
                 const visibleCategories = getVisibleAgeCategories(tile.tripConfig);
-                busLiftRows = visibleCategories.map((category) => ({
+                const busLiftRows = visibleCategories.map((category) => ({
                     category: AGE_CATEGORY_LABEL[category],
                     ...pricing.busLift![category],
                 }));
                 const uniformPrice = getUniformPrice(busLiftRows);
                 if (uniformPrice !== undefined) {
-                    content += `Bus + Liftkarte: ${uniformPrice},00 € pro Person\n\n`;
-                    busLiftRows = [];
+                    content += `| Bus + Liftkarte (pro Person) | ${uniformPrice},00 € | ${uniformPrice},00 € |\n`;
+                } else {
+                    busLiftRows.forEach((row) => {
+                        content += `| ${row.category} | ${row.member},00 € | ${row.nonMember},00 € |\n`;
+                    });
                 }
             }
-
-            content += '| Bus + Liftkarte + Optionen | Mitglieder | Nicht-Mitglieder |\n';
-            content += '|:---|---:|---:|\n';
-
-            // Bus + Lift
-            busLiftRows.forEach((row) => {
-                content += `| ${row.category} | ${row.member},00 € | ${row.nonMember},00 € |\n`;
-            });
 
             // Bus Only
             if (pricing.busOnly) {

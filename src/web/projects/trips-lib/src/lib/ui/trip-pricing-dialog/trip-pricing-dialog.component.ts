@@ -36,7 +36,6 @@ export class TripPricingDialogComponent {
 
     public transportEquipmentDataSource: MatTableDataSource<PriceRow> | null = null;
     public busLiftDataSource: MatTableDataSource<PriceRow> | null = null;
-    public busLiftUniformPrice: number | undefined;
     public coursesDataSource: MatTableDataSource<PriceRow> | null = null;
 
     public displayedColumns: string[] = ['category', 'member', 'nonMember'];
@@ -64,17 +63,21 @@ export class TripPricingDialogComponent {
             this.transportEquipmentDataSource = new MatTableDataSource(transportRows);
         }
 
-        // 2. Bus + Lift (General Pricing by Age)
+        // 2. Bus + Lift (General Pricing by Age) - echte Einheitspreise
+        // (siehe #198) werden als eine einzelne Zeile statt als
+        // Altersgruppen-Zeilen gezeigt, bleiben aber in derselben Tabelle.
         if (pricing.busLift) {
             const visibleCategories = getVisibleAgeCategories(this.data.tripConfig);
             const busLiftRows: PriceRow[] = visibleCategories.map((category) => ({
                 category: AGE_CATEGORY_LABEL[category],
                 ...pricing.busLift![category],
             }));
-            this.busLiftUniformPrice = getUniformPrice(busLiftRows);
-            if (this.busLiftUniformPrice === undefined) {
-                this.busLiftDataSource = new MatTableDataSource(busLiftRows);
-            }
+            const uniformPrice = getUniformPrice(busLiftRows);
+            this.busLiftDataSource = new MatTableDataSource(
+                uniformPrice !== undefined
+                    ? [{ category: 'Bus + Liftkarte (pro Person)', member: uniformPrice, nonMember: uniformPrice }]
+                    : busLiftRows,
+            );
         }
 
         // 3. Courses & Training
