@@ -30,6 +30,11 @@ const FILENAME_MAP: Record<string, string> = {
   'huette.jpg': 'huette.jpg',
   'snowboarding.jpg': 'snowboarding.jpg',
   'lift.jpg': 'lift.jpg',
+  'skiboers.jpg': 'skiboers.jpg',
+  'sck-programm2627.png': 'sck-programm2627.png',
+  'schneeschuhe.png': 'schneeschuhe.png',
+  '2026_07-03_thursday.png': '2026_07-03_thursday.png',
+  '2026_07-03_wednesday.png': '2026_07-03_wednesday.png',
 };
 
 const { items } = listTiles({ page: 1, limit: 1000 });
