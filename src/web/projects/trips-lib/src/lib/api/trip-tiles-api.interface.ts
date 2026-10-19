@@ -13,8 +13,10 @@ import { Observable } from 'rxjs';
 // provider in app.module.ts.
 @Injectable()
 export abstract class TripTilesApiServiceInterface {
-    // Static Ausfahrten (TRIP_DATA) plus whatever's been added via the
-    // admin app's database - additive, never a replacement. Must resolve
-    // even if sck-api is unreachable (falls back to TRIP_DATA alone).
+    // Ausfahrten-Events kommen seit Issue #215 ausschliesslich aus der
+    // sck-api-DB, additiv gemergt mit den zwei statischen Info-Tiles
+    // (Skiboerse, Schneeschuhverleih), fuer die es noch keine API-Anbindung
+    // gibt. Muss auch bei nicht erreichbarem sck-api resolven (dann nur
+    // noch die zwei Info-Tiles, siehe trip-tiles-api.service.ts).
     public abstract getAllTrips(): Observable<Tile[]>;
 }

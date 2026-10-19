@@ -3,19 +3,7 @@
  */
 
 import { Tile } from 'projects/shared-lib/src/lib/ui-common/models';
-import {
-    FREIE_PISTENAUSFAHRT,
-    FREITAGSAUSFAHRT_EHRWALD,
-    LA_OELE_AUSFAHRT,
-    MONTAGSAUSFAHRT_FELLHORN,
-    PARTYAUSFAHRT_LERMOOS,
-    PARTY_BRENT_ALM_TILE,
-    TAGESAUSFAHRT_EHRWALD,
-    TAGESAUSFAHRT_MELLAU_DAMUELS,
-    TRAININGSTAG_ALLGAEU_TILE,
-    SKIBOERSE_TILE,
-    SCHNEESCHUHVERLEIH_TILE,
-} from './events';
+import { SKIBOERSE_TILE, SCHNEESCHUHVERLEIH_TILE } from './events';
 
 export const BOARDING_LIST = [
     'Westhausen Turnhalle (5:40 Uhr)',
@@ -26,16 +14,7 @@ export const BOARDING_LIST = [
 
 export const BOARDING_LIST_SHORT = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen Turnhalle (5:15 Uhr)'];
 
-export const TRIP_DATA: Tile[] = [
-    MONTAGSAUSFAHRT_FELLHORN,
-    FREIE_PISTENAUSFAHRT,
-    FREITAGSAUSFAHRT_EHRWALD,
-    TAGESAUSFAHRT_MELLAU_DAMUELS,
-    PARTYAUSFAHRT_LERMOOS,
-    TAGESAUSFAHRT_EHRWALD,
-    LA_OELE_AUSFAHRT,
-    TRAININGSTAG_ALLGAEU_TILE,
-    PARTY_BRENT_ALM_TILE,
-    SKIBOERSE_TILE,
-    SCHNEESCHUHVERLEIH_TILE,
-];
+// Die Ausfahrten-Events selbst kommen seit Issue #215 ausschliesslich aus
+// der sck-api-DB (siehe trip-tiles-api.service.ts) - hier bleiben nur noch
+// die zwei Info-Tiles, fuer die es noch keine API-Anbindung gibt.
+export const TRIP_DATA: Tile[] = [SKIBOERSE_TILE, SCHNEESCHUHVERLEIH_TILE];

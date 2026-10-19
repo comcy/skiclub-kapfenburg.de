@@ -104,10 +104,12 @@ function mapApiTileToEventTile(api: ApiEventTile, globalPricing: TripPricing): E
 }
 
 /**
- * Additive: static TRIP_DATA plus whatever Ausfahrten have been added
- * through the admin app's database - never a replacement for TRIP_DATA.
- * Falls back to TRIP_DATA alone if sck-api is unreachable, so a database
- * outage never takes the existing, working trip pages down with it.
+ * Ausfahrten-Events kommen seit Issue #215 ausschliesslich aus der
+ * sck-api-DB. TRIP_DATA enthaelt nur noch die zwei Info-Tiles (Skiboerse,
+ * Schneeschuhverleih), fuer die es noch keine API-Anbindung gibt - die
+ * bleiben additiv dazugemergt. Faellt sck-api aus, zeigt die Seite nur
+ * noch diese zwei Info-Tiles, keine Ausfahrten mehr (kein statischer
+ * Event-Fallback mehr vorhanden).
  */
 @Injectable()
 export class TripTilesApiService implements TripTilesApiServiceInterface {

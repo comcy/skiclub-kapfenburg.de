@@ -5,16 +5,18 @@
 import { TripConfig } from './trip-config';
 
 export interface Trip {
-    // Set by every call site regardless of origin - static TRIP_DATA tiles
-    // have their own hardcoded id too, so this alone does NOT mean "this is
-    // an sck-api tile" (see confirmedRegistrationsCount below for that).
+    // Set by every call site regardless of origin - the remaining static
+    // TRIP_DATA info-tiles (Skiboerse, Schneeschuhverleih) have their own
+    // hardcoded id too, so this alone does NOT mean "this is an sck-api
+    // event tile" (see confirmedRegistrationsCount below for that).
     id?: string;
     // Only ever set (even to 0) for a real sck-api tile - the backend always
-    // computes this for type='event', while the static TRIP_DATA fallback
-    // never sets it at all (see home.component.ts's isTripFull for the same
-    // discriminant used elsewhere). This is what
+    // computes this for type='event'. Ausfahrten-Events sind seit Issue
+    // #215 ausschliesslich API-Tiles, nur die zwei statischen Info-Tiles
+    // lassen das Feld weiterhin unset (siehe home.component.ts's isTripFull
+    // fuer denselben Discriminant). This is what
     // TripsRegistrationFormComponent.submit() actually gates the
-    // capacity-aware sck-api registration on - sending a static trip's id
+    // capacity-aware sck-api registration on - sending a static tile's id
     // there would just 404.
     confirmedRegistrationsCount?: number;
     destination: string;
