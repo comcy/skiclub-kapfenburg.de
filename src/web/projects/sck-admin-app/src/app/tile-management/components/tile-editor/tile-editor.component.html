@@ -184,25 +184,34 @@
                                 </div>
                             }
 
-                            <div class="form-grid three-columns">
-                                <span class="pricing-row-label">Nur Busfahrt</span>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.busOnly!.member"
-                                    />
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.busOnly!.nonMember"
-                                    />
-                                </mat-form-field>
-                            </div>
+                            <mat-checkbox
+                                [ngModel]="!!tile.tripConfig.pricing.busOnly"
+                                (ngModelChange)="onBusOnlyEnabledChange($event)"
+                            >
+                                Nur Busfahrt anbieten
+                            </mat-checkbox>
+
+                            @if (tile.tripConfig.pricing.busOnly) {
+                                <div class="form-grid three-columns">
+                                    <span class="pricing-row-label">Nur Busfahrt</span>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.busOnly.member"
+                                        />
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.busOnly.nonMember"
+                                        />
+                                    </mat-form-field>
+                                </div>
+                            }
 
                             @if (tile.tripConfig.hasCourseOption) {
                                 <div class="form-grid three-columns">
