@@ -13,7 +13,7 @@ import {
   getTripConfirmationMailSubject,
   getTripConfirmationMailText,
 } from '../services/trip-registration-mail-service.js';
-import { calculateParticipantPrice, getCurrentTripPricing } from '../services/trip-pricing-service.js';
+import { calculateParticipantPrice, getEffectiveTripPricing } from '../services/trip-pricing-service.js';
 
 const isValidParams = (body: TripRegistrationCreationParams): boolean =>
   !!body.firstName?.trim() && !!body.lastName?.trim();
@@ -174,7 +174,8 @@ export const getTripPricePreview: RequestHandler = (req, res) => {
       return;
     }
 
-    const pricing = getCurrentTripPricing();
+    const tile = getTile(String(req.params.tileId));
+    const pricing = getEffectiveTripPricing(tile ?? { tripConfig: undefined });
     const prices = (participants as PricePreviewParticipant[]).map((participant) =>
       calculateParticipantPrice(
         {
