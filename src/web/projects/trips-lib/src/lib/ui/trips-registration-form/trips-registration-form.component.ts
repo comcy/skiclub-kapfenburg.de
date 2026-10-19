@@ -95,6 +95,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     private snackBar = inject(MatSnackBar);
     private snackAction = 'Ok';
     public isSending = false;
+    // Bleibt nach einer erfolgreichen Anmeldung dauerhaft true (anders als
+    // isSending) - verhindert ein zweites Absenden per erneutem Klick/Enter,
+    // siehe Issue #204. Wird NICHT bei einem Fehler gesetzt, damit ein
+    // erneuter Versuch moeglich bleibt.
+    public isSubmitted = false;
     public tripView!: string;
     public boardingList$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     public isTripChanged = true;
@@ -390,7 +395,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public isSubmitDisabled(): boolean {
-        return !this.tripRegisterForm.valid || !this.turnstileToken;
+        return !this.tripRegisterForm.valid || !this.turnstileToken || this.isSending || this.isSubmitted;
     }
 
     public onTurnstileToken(token: string | null): void {
@@ -417,6 +422,10 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     }
 
     public submit(): void {
+        // Re-entrancy-Schutz zusaetzlich zu isSubmitDisabled() am Button -
+        // deckt z.B. ein (submit) via Enter waehrend ein Klick noch in der
+        // Verarbeitung ist ab, siehe Issue #204.
+        if (this.isSending || this.isSubmitted) return;
         this.isSending = true;
 
         if (!this.tripRegisterForm.valid) {
@@ -485,19 +494,30 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             this.tripRegistrationFormService
                 .submitPublicRegistration(tileId, publicParticipants, this.turnstileToken as string)
                 .subscribe({
-                    next: () => this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction),
+                    next: () => {
+                        this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
+                        this.isSending = false;
+                        this.isSubmitted = true;
+                    },
                     error: (error) => {
                         console.error('Anmeldung fehlgeschlagen:', error);
                         this.snackBar.open(
                             'Anmeldung fehlgeschlagen - bitte versuche es erneut oder kontaktiere uns per Mail.',
                             this.snackAction,
                         );
+                        this.isSending = false;
                     },
                 });
+        } else {
+            // Legacy-Pfad ohne sck-api-Gegenstueck (statische Trips, siehe
+            // #182) - kein Observable zum Abwarten vorhanden, Sheets-Aufruf
+            // ist fire-and-forget. Bestmoeglich trotzdem als abgeschlossen
+            // markieren, statt den Button offen zu lassen.
+            this.isSending = false;
+            this.isSubmitted = true;
         }
 
         this.submitForm.emit(true);
-        this.isSending = false;
     }
 
     private handleSheetRegistration(rows: SheetDbRow[], silent = false): void {

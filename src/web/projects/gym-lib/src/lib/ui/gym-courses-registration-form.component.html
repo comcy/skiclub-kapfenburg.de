@@ -98,6 +98,11 @@
             <mat-error> Bitte alle erfordelichen Felder (*) ausfüllen. </mat-error>
         }
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">Absenden</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitDisabled()">
+            @if (isSubmitted) {
+                <mat-icon>check</mat-icon>
+            }
+            Absenden
+        </button>
     </form>
 </div>
