@@ -14,7 +14,7 @@ import {
     TileType,
 } from 'projects/shared-lib/src/lib/ui-common/models';
 import { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-config';
-import { TripPricing } from 'projects/trips-lib/src/lib/domain/models/trip-pricing';
+import { TripAddons, TripPricing } from 'projects/trips-lib/src/lib/domain/models/trip-pricing';
 import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 import { Observable, catchError, combineLatest, map, of, shareReplay } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -72,10 +72,15 @@ function resolveTripPricing(
 ): TripPricing {
     const hasOwnPricing = !!(ownPricing && (ownPricing.busLift || ownPricing.busOnly || ownPricing.addons));
     const base = hasOwnPricing ? ownPricing! : globalPricing;
+    // Schneeschuhverleih ist unabhaengig von der Kursmoeglichkeit und nur
+    // pro Ausfahrt (eigene Preise) einschaltbar, nie aus dem globalen Fallback.
+    const snowshoes = hasOwnPricing ? ownPricing!.addons?.snowshoes : undefined;
+    const addons: TripAddons = { ...(hasCourseOption ? base.addons : {}), snowshoes };
+    if (!snowshoes) delete addons.snowshoes;
     return {
         busLift: base.busLift,
         busOnly: base.busOnly,
-        addons: hasCourseOption ? base.addons : undefined,
+        addons: Object.keys(addons).length ? addons : undefined,
     };
 }
 

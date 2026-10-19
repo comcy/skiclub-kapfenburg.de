@@ -173,7 +173,8 @@ export class TileEditorComponent implements OnInit, OnChanges {
             // Toggle.
             busOnly: pricing?.busOnly,
             addons: {
-                snowshoes: pricing?.addons?.snowshoes ?? zero(),
+                // Opt-in wie busOnly (eigene Checkbox, unabhaengig von hasCourseOption).
+                snowshoes: pricing?.addons?.snowshoes,
                 technikHalf: pricing?.addons?.technikHalf ?? zero(),
                 technikFull: pricing?.addons?.technikFull ?? zero(),
                 courseBeginner: pricing?.addons?.courseBeginner ?? zero(),
@@ -191,6 +192,14 @@ export class TileEditorComponent implements OnInit, OnChanges {
     onBusOnlyEnabledChange(enabled: boolean): void {
         if (!this.tile?.tripConfig?.pricing) return;
         this.tile.tripConfig.pricing.busOnly = enabled ? { member: 0, nonMember: 0 } : undefined;
+    }
+
+    // Schneeschuhverleih ist pro Ausfahrt ein-/ausschaltbar; addons.snowshoes
+    // selbst (Praesenz) steuert den Toggle im Anmeldeformular.
+    onSnowshoesEnabledChange(enabled: boolean): void {
+        const addons = this.tile?.tripConfig?.pricing?.addons;
+        if (!addons) return;
+        addons.snowshoes = enabled ? { member: 0, nonMember: 0 } : undefined;
     }
 
     // Eigene Preise sind ein bewusster Opt-in (Checkbox, siehe Template) statt

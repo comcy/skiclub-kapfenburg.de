@@ -158,7 +158,7 @@
                                 @if (participant.get('busOnly')?.value && tripConfig?.pricing?.addons?.snowshoes) {
                                     <div class="snowshoes-toggle">
                                         <mat-slide-toggle formControlName="snowshoes">
-                                            Schneeschuhe (für 5€ Leihgebühr)
+                                            Schneeschuhe (für {{ getSnowshoePrice(participant) }}€ Leihgebühr)
                                         </mat-slide-toggle>
                                     </div>
                                 }
