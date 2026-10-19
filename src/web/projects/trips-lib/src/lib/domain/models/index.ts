@@ -7,3 +7,4 @@ export * from './trip-base';
 export * from './trip-participant';
 export * from './trip-config';
 export * from './trip-pricing';
+export * from './trip-price-table';
