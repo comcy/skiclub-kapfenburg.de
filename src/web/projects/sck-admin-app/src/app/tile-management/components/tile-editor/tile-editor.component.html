@@ -135,6 +135,13 @@
                             Ausfahrt mit Kursmöglichkeit
                         </mat-checkbox>
 
+                        <mat-checkbox [(ngModel)]="tile.tripConfig.adultsOnly">
+                            Nur Erwachsene (ab 18 Jahre)
+                        </mat-checkbox>
+                        <p class="hint-text">
+                            Blendet Jugendliche-/Kinder-Zeilen in der Preistabelle aus (hier und auf der Live-Seite).
+                        </p>
+
                         <h4 class="section-title">Preise</h4>
                         <mat-checkbox
                             [ngModel]="!!tile.tripConfig.pricing"
@@ -153,7 +160,7 @@
                                 <span class="pricing-col-label">Nicht-Mitglied</span>
                             </div>
 
-                            @for (category of ageCategories; track category) {
+                            @for (category of visibleAgeCategories(tile.tripConfig); track category) {
                                 <div class="form-grid three-columns">
                                     <span class="pricing-row-label"
                                         >Bus + Liftkarte — {{ ageCategoryLabels[category] }}</span

@@ -24,6 +24,13 @@
         </table>
     }
 
+    @if (busLiftUniformPrice !== undefined) {
+        <div class="pricing-section">
+            <h3>Bus + Lift (Skipass)</h3>
+            <p>{{ busLiftUniformPrice | currency: 'EUR' }} pro Person</p>
+        </div>
+    }
+
     @if (busLiftDataSource) {
         <div class="pricing-section">
             <h3>Bus + Lift (Skipass)</h3>

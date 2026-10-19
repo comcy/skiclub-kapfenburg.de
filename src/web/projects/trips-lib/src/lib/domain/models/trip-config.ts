@@ -13,5 +13,10 @@ export interface TripConfig {
     // the course/technik/snowshoe addon rows get merged into `pricing` on
     // the public site.
     hasCourseOption?: boolean;
+    // Admin-set marker ("Nur Erwachsene", Issue #198/#224) - blendet die
+    // Jugendliche/Kinder-Zeilen in der Preistabelle aus (oeffentliche
+    // Anzeige UND Admin-Preisformular), unabhaengig davon ob fuer diese
+    // Kategorien zufaellig Preise hinterlegt sind.
+    adultsOnly?: boolean;
     customBccList?: string[];
 }

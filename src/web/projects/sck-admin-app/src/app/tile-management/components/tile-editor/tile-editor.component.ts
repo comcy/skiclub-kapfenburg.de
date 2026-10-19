@@ -11,6 +11,8 @@ import { TileCardComponent } from '@shared/ui-common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-base';
+import type { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-config';
+import { getVisibleAgeCategories } from 'projects/trips-lib/src/lib/domain/models/trip-price-table';
 import { Tile, TileCreationParams } from '../../domain/tile';
 import { Image } from '../../domain/image';
 import { TileActions, TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
@@ -76,6 +78,11 @@ export class TileEditorComponent implements OnInit, OnChanges {
         youthUntil16: 'Jugendliche (bis 16 J.)',
         childUntil6: 'Kinder (bis 6 J.)',
     };
+
+    // "Nur Erwachsene" (Issue #198/#224) blendet Jugendliche/Kinder-Zeilen
+    // im Preisformular aus, analog zur oeffentlichen Anzeige.
+    public readonly visibleAgeCategories = (tripConfig: TripConfig | undefined): AgeCategory[] =>
+        getVisibleAgeCategories(tripConfig);
 
     ngOnInit(): void {
         // Load all boardings/users for the dropdowns (up to 1000)

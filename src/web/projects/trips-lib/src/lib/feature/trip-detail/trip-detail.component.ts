@@ -12,8 +12,15 @@ import { MarkdownRenderService } from '@shared/util-markdown';
 import { EventTile, Tile, TileStatus, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 import { Subject, map, switchMap, takeUntil } from 'rxjs';
 import { TripTilesApiServiceInterface } from '../../api/trip-tiles-api.interface';
-import { Trip } from '../../domain/models/trip-base';
+import { AgeCategory, Trip } from '../../domain/models/trip-base';
+import { getUniformPrice, getVisibleAgeCategories } from '../../domain/models/trip-price-table';
 import { TripsRegistrationFormComponent } from '../../ui/trips-registration-form/trips-registration-form.component';
+
+const AGE_CATEGORY_LABEL: Record<AgeCategory, string> = {
+    adult: 'Erwachsene',
+    youthUntil16: 'Jugendliche (bis 16 J.)',
+    childUntil6: 'Kinder (bis 6 J.)',
+};
 
 @Component({
     selector: 'lib-trip-detail',
@@ -111,15 +118,31 @@ export class TripDetailComponent implements OnInit, OnDestroy {
         const pricing = tile.tripConfig?.pricing;
         if (pricing) {
             content += '\n**Kosten**\n\n';
+
+            // Bus + Lift - echte Einheitspreise (alle sichtbaren Altersgruppen
+            // UND Mitglieds-/Nicht-Mitglieds-Status identisch, siehe #198)
+            // werden als einzelner Satz statt als Tabelle gezeigt.
+            let busLiftRows: { category: string; member: number; nonMember: number }[] = [];
+            if (pricing.busLift) {
+                const visibleCategories = getVisibleAgeCategories(tile.tripConfig);
+                busLiftRows = visibleCategories.map((category) => ({
+                    category: AGE_CATEGORY_LABEL[category],
+                    ...pricing.busLift![category],
+                }));
+                const uniformPrice = getUniformPrice(busLiftRows);
+                if (uniformPrice !== undefined) {
+                    content += `Bus + Liftkarte: ${uniformPrice},00 € pro Person\n\n`;
+                    busLiftRows = [];
+                }
+            }
+
             content += '| Bus + Liftkarte + Optionen | Mitglieder | Nicht-Mitglieder |\n';
             content += '|:---|---:|---:|\n';
 
             // Bus + Lift
-            if (pricing.busLift) {
-                content += `| Erwachsene | ${pricing.busLift.adult.member},00 € | ${pricing.busLift.adult.nonMember},00 € |\n`;
-                content += `| Jugendliche (bis 16 J.) | ${pricing.busLift.youthUntil16.member},00 € | ${pricing.busLift.youthUntil16.nonMember},00 € |\n`;
-                content += `| Kinder (bis 6 J.) | ${pricing.busLift.childUntil6.member},00 € | ${pricing.busLift.childUntil6.nonMember},00 € |\n`;
-            }
+            busLiftRows.forEach((row) => {
+                content += `| ${row.category} | ${row.member},00 € | ${row.nonMember},00 € |\n`;
+            });
 
             // Bus Only
             if (pricing.busOnly) {

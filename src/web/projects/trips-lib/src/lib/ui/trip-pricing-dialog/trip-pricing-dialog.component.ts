@@ -7,13 +7,21 @@ import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { AgeCategory } from '../../domain/models/trip-base';
 import { TripConfig } from '../../domain/models/trip-config';
+import { getUniformPrice, getVisibleAgeCategories } from '../../domain/models/trip-price-table';
 
 interface PriceRow {
     category: string;
     member: number;
     nonMember: number;
 }
+
+const AGE_CATEGORY_LABEL: Record<AgeCategory, string> = {
+    adult: 'Erwachsene',
+    youthUntil16: 'Jugendliche (bis 16 J.)',
+    childUntil6: 'Kinder (bis 6 J.)',
+};
 
 @Component({
     selector: 'lib-trip-pricing-dialog',
@@ -28,6 +36,7 @@ export class TripPricingDialogComponent {
 
     public transportEquipmentDataSource: MatTableDataSource<PriceRow> | null = null;
     public busLiftDataSource: MatTableDataSource<PriceRow> | null = null;
+    public busLiftUniformPrice: number | undefined;
     public coursesDataSource: MatTableDataSource<PriceRow> | null = null;
 
     public displayedColumns: string[] = ['category', 'member', 'nonMember'];
@@ -57,12 +66,15 @@ export class TripPricingDialogComponent {
 
         // 2. Bus + Lift (General Pricing by Age)
         if (pricing.busLift) {
-            const busLiftRows: PriceRow[] = [
-                { category: 'Erwachsene', ...pricing.busLift.adult },
-                { category: 'Jugendliche (bis 16 J.)', ...pricing.busLift.youthUntil16 },
-                { category: 'Kinder (bis 6 J.)', ...pricing.busLift.childUntil6 },
-            ];
-            this.busLiftDataSource = new MatTableDataSource(busLiftRows);
+            const visibleCategories = getVisibleAgeCategories(this.data.tripConfig);
+            const busLiftRows: PriceRow[] = visibleCategories.map((category) => ({
+                category: AGE_CATEGORY_LABEL[category],
+                ...pricing.busLift![category],
+            }));
+            this.busLiftUniformPrice = getUniformPrice(busLiftRows);
+            if (this.busLiftUniformPrice === undefined) {
+                this.busLiftDataSource = new MatTableDataSource(busLiftRows);
+            }
         }
 
         // 3. Courses & Training
