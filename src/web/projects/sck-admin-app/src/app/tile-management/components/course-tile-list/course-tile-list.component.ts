@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
+import { SafeDatePipe } from '../../../shared/pipes/safe-date.pipe';
 import { Tile } from '../../domain/tile';
 import { TileStatus, TileType } from '../../domain/tile-enums';
 import { TileChangesService } from '../../services/tile-changes.service';
@@ -35,6 +36,7 @@ export type CourseKind = 'sport' | 'ski';
         MatPaginatorModule,
         MatTooltipModule,
         CollapsibleFiltersComponent,
+        SafeDatePipe,
     ],
     templateUrl: './course-tile-list.component.html',
     styleUrls: ['./course-tile-list.component.scss'],
