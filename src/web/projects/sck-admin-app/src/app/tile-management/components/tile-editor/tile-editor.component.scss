@@ -96,6 +96,16 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
+// Option + zugehoerige Preisfelder optisch zusammenhalten.
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 8px;
+}
+
 .pricing-row-label {
     font-size: 14px;
 }

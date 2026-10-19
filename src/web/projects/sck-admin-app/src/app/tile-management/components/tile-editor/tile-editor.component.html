@@ -131,92 +131,6 @@
                             (valueChange)="tile.destination = $event"
                         ></app-editable-text>
 
-                        <mat-checkbox [(ngModel)]="tile.tripConfig.hasCourseOption">
-                            Ausfahrt mit Kursmöglichkeit
-                        </mat-checkbox>
-
-                        @if (tile.tripConfig.hasCourseOption && tile.tripConfig.pricing) {
-                            <div class="form-grid three-columns">
-                                <span class="pricing-row-label">Anfängerkurs</span>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.addons!.courseBeginner!.member"
-                                    />
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.addons!.courseBeginner!.nonMember"
-                                    />
-                                </mat-form-field>
-                            </div>
-
-                            <div class="form-grid three-columns">
-                                <span class="pricing-row-label">Fortgeschrittenenkurs</span>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.addons!.courseAdvanced!.member"
-                                    />
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.addons!.courseAdvanced!.nonMember"
-                                    />
-                                </mat-form-field>
-                            </div>
-
-                            <div class="form-grid three-columns">
-                                <span class="pricing-row-label">Techniktraining (1/2 Tag)</span>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.addons!.technikHalf!.member"
-                                    />
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.addons!.technikHalf!.nonMember"
-                                    />
-                                </mat-form-field>
-                            </div>
-
-                            <div class="form-grid three-columns">
-                                <span class="pricing-row-label">Techniktraining (ganzer Tag)</span>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.addons!.technikFull!.member"
-                                    />
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <input
-                                        matInput
-                                        type="number"
-                                        min="0"
-                                        [(ngModel)]="tile.tripConfig.pricing.addons!.technikFull!.nonMember"
-                                    />
-                                </mat-form-field>
-                            </div>
-                        }
-
                         <mat-checkbox [(ngModel)]="tile.tripConfig.adultsOnly">
                             Nur Erwachsene (ab 18 Jahre)
                         </mat-checkbox>
@@ -266,64 +180,161 @@
                                 </div>
                             }
 
-                            <mat-checkbox
-                                [ngModel]="!!tile.tripConfig.pricing.busOnly"
-                                (ngModelChange)="onBusOnlyEnabledChange($event)"
-                            >
-                                Nur Busfahrt anbieten
-                            </mat-checkbox>
+                            <div class="option-group">
+                                <mat-checkbox
+                                    [ngModel]="!!tile.tripConfig.pricing.busOnly"
+                                    (ngModelChange)="onBusOnlyEnabledChange($event)"
+                                >
+                                    Nur Busfahrt anbieten
+                                </mat-checkbox>
 
-                            @if (tile.tripConfig.pricing.busOnly) {
-                                <div class="form-grid three-columns">
-                                    <span class="pricing-row-label">Nur Busfahrt</span>
-                                    <mat-form-field>
-                                        <input
-                                            matInput
-                                            type="number"
-                                            min="0"
-                                            [(ngModel)]="tile.tripConfig.pricing.busOnly.member"
-                                        />
-                                    </mat-form-field>
-                                    <mat-form-field>
-                                        <input
-                                            matInput
-                                            type="number"
-                                            min="0"
-                                            [(ngModel)]="tile.tripConfig.pricing.busOnly.nonMember"
-                                        />
-                                    </mat-form-field>
-                                </div>
-                            }
+                                @if (tile.tripConfig.pricing.busOnly) {
+                                    <div class="form-grid three-columns">
+                                        <span class="pricing-row-label">Nur Busfahrt</span>
+                                        <mat-form-field>
+                                            <input
+                                                matInput
+                                                type="number"
+                                                min="0"
+                                                [(ngModel)]="tile.tripConfig.pricing.busOnly.member"
+                                            />
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <input
+                                                matInput
+                                                type="number"
+                                                min="0"
+                                                [(ngModel)]="tile.tripConfig.pricing.busOnly.nonMember"
+                                            />
+                                        </mat-form-field>
+                                    </div>
+                                }
+                            </div>
 
-                            <mat-checkbox
-                                [ngModel]="!!tile.tripConfig.pricing.addons?.snowshoes"
-                                (ngModelChange)="onSnowshoesEnabledChange($event)"
-                            >
-                                Schneeschuhverleih anbieten
-                            </mat-checkbox>
+                            <div class="option-group">
+                                <mat-checkbox
+                                    [ngModel]="!!tile.tripConfig.pricing.addons?.snowshoes"
+                                    (ngModelChange)="onSnowshoesEnabledChange($event)"
+                                >
+                                    Schneeschuhverleih anbieten
+                                </mat-checkbox>
 
-                            @if (tile.tripConfig.pricing.addons?.snowshoes) {
-                                <div class="form-grid three-columns">
-                                    <span class="pricing-row-label">Schneeschuhverleih</span>
-                                    <mat-form-field>
-                                        <input
-                                            matInput
-                                            type="number"
-                                            min="0"
-                                            [(ngModel)]="tile.tripConfig.pricing.addons!.snowshoes!.member"
-                                        />
-                                    </mat-form-field>
-                                    <mat-form-field>
-                                        <input
-                                            matInput
-                                            type="number"
-                                            min="0"
-                                            [(ngModel)]="tile.tripConfig.pricing.addons!.snowshoes!.nonMember"
-                                        />
-                                    </mat-form-field>
-                                </div>
-                            }
+                                @if (tile.tripConfig.pricing.addons?.snowshoes) {
+                                    <div class="form-grid three-columns">
+                                        <span class="pricing-row-label">Schneeschuhverleih</span>
+                                        <mat-form-field>
+                                            <input
+                                                matInput
+                                                type="number"
+                                                min="0"
+                                                [(ngModel)]="tile.tripConfig.pricing.addons!.snowshoes!.member"
+                                            />
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <input
+                                                matInput
+                                                type="number"
+                                                min="0"
+                                                [(ngModel)]="tile.tripConfig.pricing.addons!.snowshoes!.nonMember"
+                                            />
+                                        </mat-form-field>
+                                    </div>
+                                }
+                            </div>
                         }
+
+                        <div class="option-group">
+                            <mat-checkbox [(ngModel)]="tile.tripConfig.hasCourseOption">
+                                Ausfahrt mit Kursmöglichkeit
+                            </mat-checkbox>
+
+                            @if (tile.tripConfig.hasCourseOption && tile.tripConfig.pricing) {
+                                <div class="form-grid three-columns">
+                                    <span class="pricing-row-label">Anfängerkurs</span>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.addons!.courseBeginner!.member"
+                                        />
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.addons!.courseBeginner!.nonMember"
+                                        />
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="form-grid three-columns">
+                                    <span class="pricing-row-label">Fortgeschrittenenkurs</span>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.addons!.courseAdvanced!.member"
+                                        />
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.addons!.courseAdvanced!.nonMember"
+                                        />
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="form-grid three-columns">
+                                    <span class="pricing-row-label">Techniktraining (1/2 Tag)</span>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.addons!.technikHalf!.member"
+                                        />
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.addons!.technikHalf!.nonMember"
+                                        />
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="form-grid three-columns">
+                                    <span class="pricing-row-label">Techniktraining (ganzer Tag)</span>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.addons!.technikFull!.member"
+                                        />
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input
+                                            matInput
+                                            type="number"
+                                            min="0"
+                                            [(ngModel)]="tile.tripConfig.pricing.addons!.technikFull!.nonMember"
+                                        />
+                                    </mat-form-field>
+                                </div>
+                            }
+                            @if (tile.tripConfig.hasCourseOption && !tile.tripConfig.pricing) {
+                                <p class="hint-text">
+                                    Kurspreise: oben „Eigene Preise“ aktivieren, sonst gilt die globale Einstellung.
+                                </p>
+                            }
+                        </div>
 
                         <h4 class="section-title">Notifications</h4>
                         <mat-form-field>
