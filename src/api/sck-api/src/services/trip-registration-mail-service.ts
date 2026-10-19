@@ -7,7 +7,8 @@ import { MAIL_TEMPLATE_SETTING_KEY, MailTemplateSettings, NOTIFICATION_BCC_SETTI
 import { PublicRegistrationResult, RegistrationStatus, TripRegistration } from '../domain/trip-registration.js';
 import { renderTemplate } from './mail-template-engine.js';
 import { getSetting } from './settings-service.js';
-import { calculateParticipantPrice, getCurrentTripPricing } from './trip-pricing-service.js';
+import { calculateParticipantPrice, getEffectiveTripPricing } from './trip-pricing-service.js';
+import { TripPricing } from '../domain/settings.js';
 
 // Same default recipients as the removed client-side default (see the
 // plan) - used only when the admin hasn't configured a global BCC list yet.
@@ -82,7 +83,7 @@ const AGE_CATEGORY_LABEL: Record<TripRegistration['ageCategory'], string> = {
   childUntil6: 'Kind',
 };
 
-const renderParticipant = (participant: TripRegistration, title?: string): string => {
+const renderParticipant = (participant: TripRegistration, pricing: TripPricing, title?: string): string => {
   const price = calculateParticipantPrice(
     {
       busOnly: participant.busOnly,
@@ -92,7 +93,7 @@ const renderParticipant = (participant: TripRegistration, title?: string): strin
       ageCategory: participant.ageCategory,
       isMember: participant.isMember,
     },
-    getCurrentTripPricing(),
+    pricing,
   );
 
   const options: string[] = [];
@@ -143,7 +144,7 @@ export const getTripConfirmationMailText = (
   waitlistInfo: PublicRegistrationResult,
 ): string => {
   const additionalParticipants = allParticipants.filter((p) => p.id !== contactPerson.id);
-  const pricing = getCurrentTripPricing();
+  const pricing = getEffectiveTripPricing(tile);
   const totalPrice = allParticipants.reduce(
     (sum, p) =>
       sum +
@@ -199,13 +200,13 @@ export const getTripConfirmationMailText = (
                 ${introOrWaitlistHtml}
 
                 <div style="margin-top: 20px;">
-                    ${renderParticipant(contactPerson, 'Ansprechpartner')}
+                    ${renderParticipant(contactPerson, pricing, 'Ansprechpartner')}
 
                     ${
                       additionalParticipants.length > 0
                         ? `
                                 <h3 style="margin: 24px 0 16px 0; color: #3f51b5;">Zusatzpersonen</h3>
-                                ${additionalParticipants.map((p) => renderParticipant(p)).join('')}
+                                ${additionalParticipants.map((p) => renderParticipant(p, pricing)).join('')}
                               `
                         : ''
                     }
