@@ -129,10 +129,42 @@ export class TileEditorComponent implements OnInit, OnChanges {
     }
 
     // tripConfig is opaque passthrough server-side (extra_json) and may be
-    // entirely absent on a brand-new event tile.
+    // entirely absent on a brand-new event tile. Pricing selbst wird separat
+    // behandelt (siehe normalizePricingShape) - nur wenn es bereits gesetzt
+    // ist, nie automatisch neu angelegt (siehe onOwnPricingEnabledChange).
     private ensureTripConfigShape(): void {
         if (!this.tile) return;
         this.tile.tripConfig = this.tile.tripConfig ?? {};
+        if (this.tile.tripConfig.pricing) {
+            // Migrierte/aeltere Tiles koennen eine unvollstaendige Pricing
+            // haben (z.B. kein busOnly, siehe Issue #210-Daten) - jedes
+            // Preisfeld im Template bindet non-null-assertiert direkt
+            // hinein, deshalb muss die Form schon beim Laden vollstaendig
+            // sein, nicht erst beim Checkbox-Toggle (sonst Crash beim
+            // Oeffnen eines Tiles mit Teil-Preisen, siehe #219).
+            this.tile.tripConfig.pricing = this.normalizePricingShape(this.tile.tripConfig.pricing);
+        }
+    }
+
+    private normalizePricingShape(
+        pricing: NonNullable<Tile['tripConfig']>['pricing'],
+    ): NonNullable<NonNullable<Tile['tripConfig']>['pricing']> {
+        const zero = () => ({ member: 0, nonMember: 0 });
+        return {
+            busLift: {
+                adult: pricing?.busLift?.adult ?? zero(),
+                youthUntil16: pricing?.busLift?.youthUntil16 ?? zero(),
+                childUntil6: pricing?.busLift?.childUntil6 ?? zero(),
+            },
+            busOnly: pricing?.busOnly ?? zero(),
+            addons: {
+                snowshoes: pricing?.addons?.snowshoes ?? zero(),
+                technikHalf: pricing?.addons?.technikHalf ?? zero(),
+                technikFull: pricing?.addons?.technikFull ?? zero(),
+                courseBeginner: pricing?.addons?.courseBeginner ?? zero(),
+                courseAdvanced: pricing?.addons?.courseAdvanced ?? zero(),
+            },
+        };
     }
 
     // Eigene Preise sind ein bewusster Opt-in (Checkbox, siehe Template) statt
@@ -144,27 +176,7 @@ export class TileEditorComponent implements OnInit, OnChanges {
     // nie wirklich Preise eingetragen hat).
     onOwnPricingEnabledChange(enabled: boolean): void {
         if (!this.tile?.tripConfig) return;
-        if (!enabled) {
-            this.tile.tripConfig.pricing = undefined;
-            return;
-        }
-        const zero = () => ({ member: 0, nonMember: 0 });
-        const pricing = this.tile.tripConfig.pricing ?? {};
-        this.tile.tripConfig.pricing = {
-            busLift: {
-                adult: pricing.busLift?.adult ?? zero(),
-                youthUntil16: pricing.busLift?.youthUntil16 ?? zero(),
-                childUntil6: pricing.busLift?.childUntil6 ?? zero(),
-            },
-            busOnly: pricing.busOnly ?? zero(),
-            addons: {
-                snowshoes: pricing.addons?.snowshoes ?? zero(),
-                technikHalf: pricing.addons?.technikHalf ?? zero(),
-                technikFull: pricing.addons?.technikFull ?? zero(),
-                courseBeginner: pricing.addons?.courseBeginner ?? zero(),
-                courseAdvanced: pricing.addons?.courseAdvanced ?? zero(),
-            },
-        };
+        this.tile.tripConfig.pricing = enabled ? this.normalizePricingShape(this.tile.tripConfig.pricing) : undefined;
     }
 
     // tile.tripConfig.customBccList is a string[] (see trip-config.ts) - the
