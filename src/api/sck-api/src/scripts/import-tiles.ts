@@ -20,6 +20,7 @@
 import { readFileSync } from 'node:fs';
 import { db } from '../db/connection.js';
 import { createTile } from '../services/tiles-service.js';
+import { createBoarding } from '../services/boardings-service.js';
 import { Tile, TileCreationParams } from '../domain/tile.js';
 
 const inputPath = process.argv[2];
@@ -29,6 +30,20 @@ if (!inputPath) {
 }
 
 const raw = JSON.parse(readFileSync(inputPath, 'utf-8')) as Record<string, unknown>[];
+
+// setTileBoardings() (von createTile() aufgerufen) ignoriert Namen, die nicht
+// im boardings-Katalog existieren (bewusst, siehe tiles-service.ts) - die
+// Legacy-Haltestellen aus den statischen Daten muessen deshalb hier vorab
+// angelegt werden, sonst gehen sie beim Import stillschweigend verloren.
+const ensureBoardingsExist = (names: string[]): void => {
+  for (const name of new Set(names.filter((n) => n && n.trim().length > 0))) {
+    const existing = db.prepare('SELECT id FROM boardings WHERE name = ?').get(name) as { id: string } | undefined;
+    if (!existing) {
+      createBoarding({ name });
+      console.log(`Boarding-Katalog ergaenzt: "${name}"`);
+    }
+  }
+};
 
 let created = 0;
 let skipped = 0;
@@ -48,6 +63,7 @@ for (const entry of raw) {
   }
 
   const params = entry as unknown as TileCreationParams;
+  ensureBoardingsExist(params.boardings ?? []);
   const tile: Tile = createTile(params);
   console.log(`Angelegt: "${tile.title}" (${tile.date}) -> id ${tile.id}`);
   created += 1;
