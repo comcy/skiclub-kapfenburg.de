@@ -163,7 +163,15 @@ export class TileEditorComponent implements OnInit, OnChanges {
                 youthUntil16: pricing?.busLift?.youthUntil16 ?? zero(),
                 childUntil6: pricing?.busLift?.childUntil6 ?? zero(),
             },
-            busOnly: pricing?.busOnly ?? zero(),
+            // Bewusst NICHT zero-gefuellt wie busLift - "Nur Busfahrt" ist
+            // eine echte Opt-in-Option pro Ausfahrt (Issue #227), ihre
+            // Praesenz selbst (nicht nur der Preis) steuert, ob die
+            // Checkbox im Anmeldeformular ueberhaupt erscheint. Ein
+            // bereits vorhandener Wert bleibt beim Laden unangetastet,
+            // ein fehlender bleibt fehlend statt automatisch angelegt zu
+            // werden - siehe onBusOnlyEnabledChange fuer den bewussten
+            // Toggle.
+            busOnly: pricing?.busOnly,
             addons: {
                 snowshoes: pricing?.addons?.snowshoes ?? zero(),
                 technikHalf: pricing?.addons?.technikHalf ?? zero(),
@@ -172,6 +180,17 @@ export class TileEditorComponent implements OnInit, OnChanges {
                 courseAdvanced: pricing?.addons?.courseAdvanced ?? zero(),
             },
         };
+    }
+
+    // "Nur Busfahrt anbieten" ist ein eigener Opt-in (Issue #227), getrennt
+    // vom generellen "Eigene Preise festlegen" - manche Ausfahrten sollen
+    // diese Option gar nicht anbieten (z.B. wenn eine reine Busfahrt ohne
+    // Skipass fachlich nicht sinnvoll ist). pricing.busOnly selbst (nicht
+    // nur ein Preis darin) steuert das in trips-registration-form.component
+    // und der Preistabelle.
+    onBusOnlyEnabledChange(enabled: boolean): void {
+        if (!this.tile?.tripConfig?.pricing) return;
+        this.tile.tripConfig.pricing.busOnly = enabled ? { member: 0, nonMember: 0 } : undefined;
     }
 
     // Eigene Preise sind ein bewusster Opt-in (Checkbox, siehe Template) statt
