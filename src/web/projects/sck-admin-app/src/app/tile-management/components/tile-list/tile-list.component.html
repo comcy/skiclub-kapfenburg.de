@@ -88,14 +88,14 @@
             <!-- Publication Date Column -->
             <ng-container matColumnDef="date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-hidden-mobile">Publication Date</th>
-                <td mat-cell *matCellDef="let tile" class="col-hidden-mobile">{{ tile.date | date: 'shortDate' }}</td>
+                <td mat-cell *matCellDef="let tile" class="col-hidden-mobile">{{ tile.date | safeDate }}</td>
             </ng-container>
 
             <!-- Expiration Date Column -->
             <ng-container matColumnDef="expiration">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-hidden-tablet">Expiration Date</th>
                 <td mat-cell *matCellDef="let tile" class="col-hidden-tablet">
-                    {{ tile.expiration | date: 'shortDate' }}
+                    {{ tile.expiration | safeDate }}
                 </td>
             </ng-container>
 
