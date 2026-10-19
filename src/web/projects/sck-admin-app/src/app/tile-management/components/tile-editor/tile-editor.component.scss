@@ -77,6 +77,27 @@
     &.two-columns {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
+
+    // Preis-Tabelle (Bus+Lift/Zuschläge) - Zeilenlabel + zwei Preisspalten,
+    // gleiche Struktur wie Einstellungen → Preismanagement.
+    &.three-columns {
+        grid-template-columns: 2fr 1fr 1fr;
+        align-items: center;
+        gap: 8px 16px;
+    }
+}
+
+.pricing-header {
+    margin-bottom: -8px;
+}
+
+.pricing-col-label {
+    font-size: 12px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.pricing-row-label {
+    font-size: 14px;
 }
 
 .section-title {

@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TileCardComponent } from '@shared/ui-common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-base';
 import { Tile, TileCreationParams } from '../../domain/tile';
 import { Image } from '../../domain/image';
 import { TileActions, TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
@@ -69,6 +70,13 @@ export class TileEditorComponent implements OnInit, OnChanges {
     public readonly tileBehaviors = Object.values(TileBehavior);
     public readonly tileActions = Object.values(TileActions);
 
+    public readonly ageCategories: AgeCategory[] = ['adult', 'youthUntil16', 'childUntil6'];
+    public readonly ageCategoryLabels: Record<AgeCategory, string> = {
+        adult: 'Erwachsene',
+        youthUntil16: 'Jugendliche (bis 16 J.)',
+        childUntil6: 'Kinder (bis 6 J.)',
+    };
+
     ngOnInit(): void {
         // Load all boardings/users for the dropdowns (up to 1000)
         this.availableBoardings$ = this.boardingsService.getBoardings(1, 1000).pipe(map((response) => response.items));
@@ -120,13 +128,43 @@ export class TileEditorComponent implements OnInit, OnChanges {
             : undefined;
     }
 
-    // The "Ausfahrt mit Kursmöglichkeit" checkbox binds into tripConfig -
-    // tripConfig is still opaque passthrough server-side (extra_json) and
-    // may be entirely absent on a brand-new event tile. Prices themselves
-    // are no longer edited per-tile, see Einstellungen → Preismanagement.
+    // tripConfig is opaque passthrough server-side (extra_json) and may be
+    // entirely absent on a brand-new event tile.
     private ensureTripConfigShape(): void {
         if (!this.tile) return;
         this.tile.tripConfig = this.tile.tripConfig ?? {};
+    }
+
+    // Eigene Preise sind ein bewusster Opt-in (Checkbox, siehe Template) statt
+    // automatisch bei jedem Oeffnen angelegt - sonst wuerde das blosse
+    // Speichern eines Tiles ohne Preis-Interaktion eine nullgefuellte
+    // tripConfig.pricing anlegen und damit den globalen Preismanagement-
+    // Fallback in trip-tiles-api.service.ts fuer dieses Tile dauerhaft
+    // ausser Kraft setzen (hasOwnPricing wird dann true, obwohl der Admin
+    // nie wirklich Preise eingetragen hat).
+    onOwnPricingEnabledChange(enabled: boolean): void {
+        if (!this.tile?.tripConfig) return;
+        if (!enabled) {
+            this.tile.tripConfig.pricing = undefined;
+            return;
+        }
+        const zero = () => ({ member: 0, nonMember: 0 });
+        const pricing = this.tile.tripConfig.pricing ?? {};
+        this.tile.tripConfig.pricing = {
+            busLift: {
+                adult: pricing.busLift?.adult ?? zero(),
+                youthUntil16: pricing.busLift?.youthUntil16 ?? zero(),
+                childUntil6: pricing.busLift?.childUntil6 ?? zero(),
+            },
+            busOnly: pricing.busOnly ?? zero(),
+            addons: {
+                snowshoes: pricing.addons?.snowshoes ?? zero(),
+                technikHalf: pricing.addons?.technikHalf ?? zero(),
+                technikFull: pricing.addons?.technikFull ?? zero(),
+                courseBeginner: pricing.addons?.courseBeginner ?? zero(),
+                courseAdvanced: pricing.addons?.courseAdvanced ?? zero(),
+            },
+        };
     }
 
     // tile.tripConfig.customBccList is a string[] (see trip-config.ts) - the
