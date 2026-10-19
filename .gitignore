@@ -77,3 +77,6 @@ src/api/sck-api/src/data/*.ndjson
 # lokale LaTeX-Artefakte
 src/documents/*.aux
 src/documents/*.log
+
+# Einmaliges Tile-Migrations-Artefakt (siehe scripts/export-tiles.ts), kein Quellcode
+src/web/tiles-export.json
