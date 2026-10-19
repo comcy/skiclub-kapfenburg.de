@@ -135,7 +135,7 @@
                             Ausfahrt mit Kursmöglichkeit
                         </mat-checkbox>
 
-                        @if (tile.tripConfig.hasCourseOption) {
+                        @if (tile.tripConfig.hasCourseOption && tile.tripConfig.pricing) {
                             <div class="form-grid three-columns">
                                 <span class="pricing-row-label">Anfängerkurs</span>
                                 <mat-form-field>
