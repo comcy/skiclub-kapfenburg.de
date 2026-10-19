@@ -13,7 +13,7 @@ import {
     Output,
     ChangeDetectionStrategy,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -302,6 +302,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         if (trip) {
             this.boardingList$.next(trip.availableBoardings);
         }
+    }
+
+    public getSnowshoePrice(participant: AbstractControl): number {
+        const price = this.tripConfig?.pricing?.addons?.snowshoes;
+        return (participant.get('isMember')?.value ? price?.member : price?.nonMember) ?? 0;
     }
 
     public getCourseCheckboxLabel(): string {
