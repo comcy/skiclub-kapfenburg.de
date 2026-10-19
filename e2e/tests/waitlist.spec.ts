@@ -45,7 +45,11 @@ test.describe('Automatisches Warteliste-Badge (Kapazitäts-Warnung + Warteliste,
 
         await page.goto('/home');
 
-        const badge = page.locator('.tile-card', { hasText: 'E2E Ausgebuchte Ausfahrt' }).locator('.badge');
+        // Die Ausfahrt landet jetzt sowohl im "Nächste Ausfahrten"-Teaser
+        // als auch im Karussell (beide zeigen alle offenen Ausfahrten, hier
+        // gibt's nur die eine gemockte) - .first() reicht, beide Karten
+        // zeigen denselben Badge-Zustand fuer dieselbe Tile-ID.
+        const badge = page.locator('.tile-card', { hasText: 'E2E Ausgebuchte Ausfahrt' }).locator('.badge').first();
         await expect(badge).toHaveText('Warteliste');
         await expect(badge).toHaveClass(/badge-warn/);
     });
@@ -62,7 +66,8 @@ test.describe('Automatisches Warteliste-Badge (Kapazitäts-Warnung + Warteliste,
 
         await page.goto('/home');
 
-        const badge = page.locator('.tile-card', { hasText: 'E2E Offene Ausfahrt' }).locator('.badge');
+        // Siehe Kommentar im Test oben - .first() aus demselben Grund.
+        const badge = page.locator('.tile-card', { hasText: 'E2E Offene Ausfahrt' }).locator('.badge').first();
         await expect(badge).toHaveText('Plätze frei');
         await expect(badge).not.toHaveClass(/badge-warn/);
     });
