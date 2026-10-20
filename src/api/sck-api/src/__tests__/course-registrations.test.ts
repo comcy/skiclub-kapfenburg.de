@@ -160,6 +160,32 @@ describe('Course Registrations Routes', () => {
     expect(createRes.body.memberId).toBe(memberId);
   });
 
+  it('Admin kann Mitglied im Editor setzen, wenn der E-Mail-Abgleich nichts findet (und wieder entfernen)', async () => {
+    const tileId = createTile();
+    const token = createAuthedUser(['tiles:write']);
+
+    const createRes = await request(app)
+      .post(`/api/tiles/${tileId}/course-registrations`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validRegistration, email: 'unbekannt@test.com', isMember: true });
+    // Beim Anlegen zaehlt nur der E-Mail-Abgleich, nicht der Wert aus dem Body.
+    expect(createRes.body.isMember).toBe(false);
+
+    const setRes = await request(app)
+      .put(`/api/course-registrations/${createRes.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...createRes.body, isMember: true });
+    expect(setRes.status).toBe(200);
+    expect(setRes.body.isMember).toBe(true);
+    expect(setRes.body.memberId).toBeUndefined();
+
+    const unsetRes = await request(app)
+      .put(`/api/course-registrations/${createRes.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...setRes.body, isMember: false });
+    expect(unsetRes.body.isMember).toBe(false);
+  });
+
   describe('POST /api/tiles/:tileId/course-registrations/public', () => {
     it('ist öffentlich (keine Anmeldung nötig) und bestätigt sofort', async () => {
       const tileId = createTile();
@@ -200,6 +226,16 @@ describe('Course Registrations Routes', () => {
         .get(`/api/tiles/${tileId}/course-registrations`)
         .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
       expect(list.body[0].confirmationMailSent).toBe(true);
+    });
+
+    it('speichert die Selbstauskunft Mitglied getrennt vom verifizierten Status', async () => {
+      const tileId = createTile();
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/course-registrations/public`)
+        .send({ firstName: 'Max', lastName: 'Mustermann', email: 'max@test.com', memberSelfReported: true });
+
+      expect(res.body.isMember).toBe(false);
+      expect(res.body.selfReportedIsMember).toBe(true);
     });
 
     it('Mail enthält den serverseitig berechneten Zahlbetrag (Alter + Mitglied-Selbstauskunft)', async () => {

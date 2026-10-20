@@ -20,6 +20,9 @@ export interface CourseRegistration {
   level?: string;
   groupId?: string;
   isMember: boolean;
+  // Was die Person im Formular angekreuzt hat - getrennt von isMember (per E-Mail
+  // verifiziert bzw. vom Admin gesetzt), damit Abweichungen auffallen.
+  selfReportedIsMember: boolean;
   status: CourseRegistrationStatus;
   source: CourseRegistrationSource;
   notes?: string;
@@ -37,15 +40,17 @@ export interface CourseRegistration {
   confirmationMailSent: boolean;
 }
 
-// memberId and isMember are recomputed server-side from email on every
-// write (see course-registrations-service.ts) - never accepted from the
-// client. enteredBy is likewise always server-derived, never trusted from
-// the client - see createRegistration's separate enteredBy parameter.
-// confirmationMailSent is likewise always server-derived (see the
-// controller's post-creation sendMail flow).
+// memberId is recomputed server-side from email on every write - never
+// accepted from the client. enteredBy is likewise always server-derived (see
+// createRegistration's separate enteredBy parameter). confirmationMailSent is
+// server-derived too (see the controller's post-creation sendMail flow).
+// isMember stays part of this type but is handled asymmetrically (wie bei
+// trip-registrations): createRegistration leitet es immer frisch aus der E-Mail
+// ab, updateRegistration uebernimmt den Wert - so kann der Admin im Editor
+// korrigieren, was der automatische E-Mail-Abgleich nicht erkennt.
 export type CourseRegistrationCreationParams = Omit<
   CourseRegistration,
-  'id' | 'tileId' | 'memberId' | 'isMember' | 'enteredBy' | 'confirmationMailSent'
+  'id' | 'tileId' | 'memberId' | 'enteredBy' | 'confirmationMailSent'
 >;
 
 export interface CourseGroup {

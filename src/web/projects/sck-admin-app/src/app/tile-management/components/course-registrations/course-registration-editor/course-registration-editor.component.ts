@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../../../domain/course-registration';
 import { TilesDataService } from '../../../services/tiles-data.service';
 
@@ -14,6 +15,7 @@ import { TilesDataService } from '../../../services/tiles-data.service';
     selector: 'app-course-registration-editor',
     standalone: true,
     imports: [
+        MatTooltipModule,
         CommonModule,
         FormsModule,
         MatFormFieldModule,
@@ -49,6 +51,8 @@ export class CourseRegistrationEditorComponent {
             sportType: this.registration.sportType || undefined,
             level: this.registration.level || undefined,
             groupId: this.registration.groupId || undefined,
+            isMember: this.registration.isMember,
+            selfReportedIsMember: this.registration.selfReportedIsMember,
             status: this.registration.status,
             source: this.registration.source,
             notes: this.registration.notes || undefined,

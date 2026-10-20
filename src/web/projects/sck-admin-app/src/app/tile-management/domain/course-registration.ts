@@ -14,6 +14,9 @@ export interface CourseRegistration {
     level?: string;
     groupId?: string;
     isMember: boolean;
+    // Was die Person im Formular angekreuzt hat - getrennt von isMember (per E-Mail
+    // verifiziert bzw. vom Admin gesetzt), damit Abweichungen auffallen.
+    selfReportedIsMember: boolean;
     status: CourseRegistrationStatus;
     source: CourseRegistrationSource;
     notes?: string;
@@ -29,12 +32,13 @@ export interface CourseRegistration {
     confirmationMailSent: boolean;
 }
 
-// memberId/isMember are always recomputed server-side from email - never
-// sent by the client, see course-registrations-service.ts on the API side.
-// enteredBy is likewise always server-derived from the session.
-// confirmationMailSent is likewise always server-derived - never sent by
-// the client (see the editor's onSave()).
+// memberId is always recomputed server-side from email - never sent by the
+// client. isMember IS sent (Admin-Editor): beim Anlegen leitet die API es aus
+// der E-Mail ab, beim Aendern uebernimmt sie den Wert - so korrigiert der Admin,
+// was der automatische Abgleich nicht erkennt. enteredBy is always
+// server-derived from the session, confirmationMailSent likewise (see the
+// editor's onSave()).
 export type CourseRegistrationCreationParams = Omit<
     CourseRegistration,
-    'id' | 'tileId' | 'memberId' | 'isMember' | 'enteredBy' | 'confirmationMailSent'
+    'id' | 'tileId' | 'memberId' | 'enteredBy' | 'confirmationMailSent'
 >;

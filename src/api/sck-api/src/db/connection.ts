@@ -479,6 +479,12 @@ if (!courseRegistrationColumns.some((c) => c.name === 'transferred_to_external_l
 if (!courseRegistrationColumns.some((c) => c.name === 'confirmation_mail_sent')) {
   db.exec('ALTER TABLE course_registrations ADD COLUMN confirmation_mail_sent INTEGER NOT NULL DEFAULT 0;');
 }
+// self_reported_is_member: was die Person im oeffentlichen Formular angekreuzt hat -
+// getrennt von is_member (per E-Mail verifiziert bzw. vom Admin gesetzt), analog
+// zu trip_registrations, damit der Admin Abweichungen sieht und korrigieren kann.
+if (!courseRegistrationColumns.some((c) => c.name === 'self_reported_is_member')) {
+  db.exec('ALTER TABLE course_registrations ADD COLUMN self_reported_is_member INTEGER NOT NULL DEFAULT 0;');
+}
 
 // trip_registrations' first guarded-migration block (no entered_by/paid
 // precedent here yet, unlike course_registrations above) - same
