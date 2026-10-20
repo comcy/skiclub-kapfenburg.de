@@ -35,7 +35,11 @@
                 <th mat-header-cell *matHeaderCellDef>IBAN</th>
                 <td mat-cell *matCellDef="let application">
                     @if (ibans[application.registrationId]; as iban) {
-                        <span class="iban">{{ formatIban(iban) }}</span>
+                        <div class="bank-data">
+                            <span class="iban">{{ formatIban(iban) }}</span>
+                            <small>Kontoinhaber: {{ application.firstName }} {{ application.lastName }}</small>
+                            <small>{{ sepaMandateText(application) }}</small>
+                        </div>
                         <button mat-icon-button matTooltip="Kopieren" (click)="onCopyIban(application)">
                             <mat-icon>content_copy</mat-icon>
                         </button>

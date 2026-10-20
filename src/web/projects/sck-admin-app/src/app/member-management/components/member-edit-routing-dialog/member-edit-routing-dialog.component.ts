@@ -72,6 +72,12 @@ export class MemberEditRoutingDialogComponent implements OnInit {
                                 birthday: application.birthday,
                                 address: application.address,
                                 iban,
+                                // Der Antrag erfasst nur die IBAN - Bank und BIC werden nicht abgefragt (fuer SEPA nicht noetig).
+                                // Kontoinhaber = Antragsteller, Mandat wie im Antrag erteilt.
+                                accountHolder: `${application.firstName} ${application.lastName}`.trim(),
+                                paymentMethod: application.sepaMandateAccepted
+                                    ? `SEPA-Lastschrift (Mandat online erteilt am ${new Date(application.timestamp).toLocaleDateString('de-DE')})`
+                                    : undefined,
                                 isFamilyMembership: !!application.isFamilyMembership,
                                 source: 'online',
                                 applicationRegistrationId: application.registrationId,

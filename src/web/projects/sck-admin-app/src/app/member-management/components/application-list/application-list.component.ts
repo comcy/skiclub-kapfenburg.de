@@ -81,6 +81,12 @@ export class ApplicationListComponent implements OnInit {
         navigator.clipboard.writeText(iban).then(() => this.snackBar.open('IBAN kopiert', 'OK', { duration: 2000 }));
     }
 
+    sepaMandateText(application: MembershipApplication): string {
+        return application.sepaMandateAccepted
+            ? `SEPA-Mandat erteilt am ${new Date(application.timestamp).toLocaleDateString('de-DE')}`
+            : 'Kein SEPA-Mandat';
+    }
+
     // "DE89 3704 0044 0532 0130 00" - in Vierergruppen besser lesbar und abtippbar.
     formatIban(iban: string): string {
         return iban
