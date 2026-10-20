@@ -125,6 +125,9 @@
                 <strong>Preis</strong>
                 <strong class="total-amount">{{ getPrice() | currency: 'EUR' }}</strong>
             </div>
+            <p class="price-note">
+                Kinderpreise gelten für Teilnehmende unter {{ skiCoursePricing.childUntilAge }} Jahren.
+            </p>
         }
 
         <shared-lib-turnstile-widget

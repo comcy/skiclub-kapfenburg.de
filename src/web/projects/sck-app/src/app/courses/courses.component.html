@@ -12,20 +12,36 @@
                 </tr>
             </thead>
             <tbody>
-                @for (p of courseAtHomePrice; track p) {
-                    @for (s of p.sportType; track s) {
-                        @for (g of s.ageGroup; track g) {
-                            <tr>
-                                <td>{{ s.type }} ({{ s.time }}) – {{ g.group }}</td>
-                                @for (m of g.clubMemberStatus; track m) {
-                                    <td>{{ m.value }}</td>
-                                }
-                            </tr>
+                @if (skiPriceRows.length) {
+                    @for (row of skiPriceRows; track row.label) {
+                        <tr>
+                            <td>{{ row.label }}</td>
+                            <td>{{ row.member }}</td>
+                            <td>{{ row.nonMember }}</td>
+                        </tr>
+                    }
+                } @else {
+                    @for (p of courseAtHomePrice; track p) {
+                        @for (s of p.sportType; track s) {
+                            @for (g of s.ageGroup; track g) {
+                                <tr>
+                                    <td>{{ s.type }} ({{ s.time }}) – {{ g.group }}</td>
+                                    @for (m of g.clubMemberStatus; track m) {
+                                        <td>{{ m.value }}</td>
+                                    }
+                                </tr>
+                            }
                         }
                     }
                 }
             </tbody>
         </table>
+        @if (skiPriceRows.length && skiCoursePricing) {
+            <p class="price-note">
+                Der Kinderpreis gilt für Teilnehmende unter {{ skiCoursePricing.childUntilAge }} Jahren. Ab
+                {{ skiCoursePricing.childUntilAge }} Jahren gilt der Erwachsenenpreis.
+            </p>
+        }
     </div>
 
     <div class="info-page">
