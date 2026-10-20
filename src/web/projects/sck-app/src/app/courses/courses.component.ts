@@ -135,6 +135,9 @@ export class CoursesComponent implements OnInit {
             // and sending a nonexistent tileId to the backend.
             return {
                 ...mergeCourseTile(staticFallback, apiTile),
+                // Der Admin-Titel ist hier nur das Kuerzel (A1, ...) - die Karte
+                // zeigt weiterhin den vollen Namen ("A1 – Anfänger Basis").
+                title: staticFallback.title,
                 id: apiTile.id,
                 order: apiTile.order,
                 date: apiTile.date,

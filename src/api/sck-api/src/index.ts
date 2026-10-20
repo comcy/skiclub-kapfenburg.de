@@ -20,6 +20,7 @@ import settingsRoutes from './routes/settings-route.js';
 import tilesRoutes from './routes/tiles-route.js';
 import tripRegistrationsRoutes from './routes/trip-registrations-route.js';
 import usersRoutes from './routes/users-route.js';
+import { seedSkiCourseTilesOnce } from './services/ski-course-tiles-seed.js';
 import { mediaDir } from './services/upload-service.js';
 import dotenv from 'dotenv';
 
@@ -71,6 +72,13 @@ app.use('/api', courseRegistrationsRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', newsletterRoutes);
 app.use('/api', sepaExportRoutes);
+
+try {
+  const seeded = seedSkiCourseTilesOnce();
+  if (seeded) console.log(`${seeded} Ski-Kurs-Tiles (A1-F2) angelegt.`);
+} catch (error) {
+  console.error('Seed der Ski-Kurs-Tiles fehlgeschlagen:', error);
+}
 
 const PORT = 3000;
 app.listen(PORT, () => {
