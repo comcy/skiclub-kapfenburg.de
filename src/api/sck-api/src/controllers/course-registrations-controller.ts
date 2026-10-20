@@ -78,12 +78,9 @@ export const createPublicCourseRegistration: RequestHandler = async (req, res) =
     const birthday = ISO_DATE.test(String(req.body.birthday ?? '')) ? String(req.body.birthday) : undefined;
     const registration = registrationsService.createPublicRegistration(tileId, { ...req.body, birthday });
     // Zahlbetrag wie im Formular angezeigt: verifizierte ODER selbst angegebene Mitgliedschaft.
+    const isMember = registration.isMember || req.body.memberSelfReported === true;
     const price = calculateCoursePrice(
-      {
-        sportType: registration.sportType,
-        birthday: registration.birthday,
-        isMember: registration.isMember || req.body.memberSelfReported === true,
-      },
+      { sportType: registration.sportType, birthday: registration.birthday, isMember },
       getCurrentSkiCoursePricing(),
     );
 
@@ -91,7 +88,7 @@ export const createPublicCourseRegistration: RequestHandler = async (req, res) =
       const sent = await sendMail(
         registration.email ?? '',
         getCourseConfirmationMailSubject(registration),
-        getCourseConfirmationMailText(registration, price),
+        getCourseConfirmationMailText(registration, { price, isMember }),
         getCourseConfirmationMailBcc(),
       );
       if (sent) {
