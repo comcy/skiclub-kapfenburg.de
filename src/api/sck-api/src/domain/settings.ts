@@ -57,6 +57,10 @@ export interface MailTemplateText {
 
 export interface TripMailTemplateText extends MailTemplateText {
   waitlistHtml: string;
+  // Info-Mail an weitere angemeldete Personen (Issue #234) - optional, solange das
+  // Mailtexte-Management dafuer noch keine Felder hat; leer = Standardtext im Code.
+  participantIntroHtml?: string;
+  participantHintHtml?: string;
 }
 
 export interface MailTemplateSettings {

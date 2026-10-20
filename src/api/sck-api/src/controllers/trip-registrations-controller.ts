@@ -9,6 +9,11 @@ import * as registrationsService from '../services/trip-registrations-service.js
 import { getTile } from '../services/tiles-service.js';
 import { sendMail } from '../services/mailer.js';
 import {
+  allowInfoMail,
+  getTripParticipantInfoMailSubject,
+  getTripParticipantInfoMailText,
+  groupExtraRecipients,
+  MAX_EXTRA_RECIPIENT_ADDRESSES,
   getTripConfirmationMailBcc,
   getTripConfirmationMailSubject,
   getTripConfirmationMailText,
@@ -85,6 +90,15 @@ export const createPublicTripRegistrations: RequestHandler = async (req, res) =>
       return;
     }
 
+    // Missbrauchsschutz (Issue #234): jede weitere Adresse loest eine Info-Mail an Dritte aus.
+    const extraAddresses = groupExtraRecipients(participants as PublicParticipantInput[], participants[0]?.email);
+    if (extraAddresses.size > MAX_EXTRA_RECIPIENT_ADDRESSES) {
+      res.status(400).json({
+        error: `Höchstens ${MAX_EXTRA_RECIPIENT_ADDRESSES} verschiedene weitere E-Mail-Adressen pro Anmeldung. Gib für Personen, die du anmeldest, deine eigene Adresse an, melde weitere Personen separat an oder wende dich an registration@skiclub-kapfenburg.de.`,
+      });
+      return;
+    }
+
     const { registrationIds, ...publicResult } = registrationsService.createPublicRegistrations(tileId, participants);
 
     const createdRegistrations = registrationIds
@@ -103,6 +117,24 @@ export const createPublicTripRegistrations: RequestHandler = async (req, res) =>
         if (sent) registrationsService.markConfirmationMailSent(registrationIds);
       } catch (mailError) {
         console.error('Fehler beim Versand der Ausfahrten-Bestätigungsmail:', mailError);
+      }
+
+      // Jede weitere Adresse bekommt eine Info-Mail mit den eigenen Daten (Issue #234) -
+      // best-effort, ein Fehler hier darf die Anmeldung nicht beeintraechtigen.
+      for (const [address, group] of groupExtraRecipients(createdRegistrations, contactPerson.email)) {
+        if (!allowInfoMail(address)) {
+          console.warn(`Info-Mail an ${address} uebersprungen (Tageslimit erreicht).`);
+          continue;
+        }
+        try {
+          await sendMail(
+            address,
+            getTripParticipantInfoMailSubject(tile, publicResult.status),
+            getTripParticipantInfoMailText(tile, contactPerson, group, publicResult),
+          );
+        } catch (mailError) {
+          console.error('Fehler beim Versand der Info-Mail an weitere Teilnehmende:', mailError);
+        }
       }
     }
 

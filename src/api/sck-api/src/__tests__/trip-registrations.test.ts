@@ -282,6 +282,100 @@ describe('Trip Registrations Routes', () => {
       expect(list.body.every((r: any) => r.confirmationMailSent === true)).toBe(true);
     });
 
+    it('Bestätigung zeigt Ausfahrt-Name, Datum und Geburtsdatum der Personen', async () => {
+      const tileId = createTile(10);
+      db.prepare("UPDATE tiles SET date = '2027-01-23' WHERE id = ?").run(tileId);
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Mika', lastName: 'Häkkinen', email: 'mika@test.com', birthday: '1988-07-26' }] });
+
+      const html = (mockedSendMail.mock.calls[0][0] as any).html as string;
+      expect(html).toContain('Ausfahrt: Skifahrt Ischgl');
+      expect(html).toContain('23. Januar 2027');
+      expect(html).toContain('Geburtsdatum: 26.07.1988');
+    });
+
+    it('weitere Person mit eigener Adresse bekommt eine eigene Info-Mail (nur eigene Daten)', async () => {
+      const tileId = createTile(10);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Kontakt', lastName: 'Person', email: 'kontakt-a@test.com', phone: '111', birthday: '1990-01-01' },
+            { firstName: 'Mila', lastName: 'Superstar', email: 'mila-a@test.com', phone: '222', birthday: '1992-01-01' },
+          ],
+        });
+
+      expect(res.status).toBe(201);
+      expect(mockedSendMail).toHaveBeenCalledTimes(2);
+      const [contactMail, infoMail] = mockedSendMail.mock.calls.map((c) => c[0] as any);
+      expect(contactMail.to).toBe('kontakt-a@test.com');
+      expect(infoMail.to).toBe('mila-a@test.com');
+      expect(infoMail.html).toContain('Mila Superstar');
+      expect(infoMail.html).toContain('Kontakt Person hat dich');
+      // Weder die Daten der Kontaktperson noch Telefonnummern der anderen.
+      expect(infoMail.html).not.toContain('kontakt-a@test.com');
+      expect(infoMail.html).not.toContain('222');
+      // Info-Mails gehen nicht an die Vereins-BCC-Liste.
+      expect(infoMail.bcc).toBeUndefined();
+    });
+
+    it('Personen mit derselben Adresse bekommen EINE gemeinsame Mail, Adresse der Kontaktperson keine zweite', async () => {
+      const tileId = createTile(10);
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Kontakt', lastName: 'Person', email: 'Kontakt-B@test.com', birthday: '1990-01-01' },
+            { firstName: 'Kind', lastName: 'Eins', email: 'kontakt-b@test.com', birthday: '2015-01-01' },
+            { firstName: 'Bruder', lastName: 'Zwei', email: 'bruder-b@test.com', birthday: '1991-01-01' },
+            { firstName: 'Bruders', lastName: 'Kind', email: ' BRUDER-B@test.com ', birthday: '2016-01-01' },
+          ],
+        });
+
+      const mails = mockedSendMail.mock.calls.map((c) => c[0] as any);
+      expect(mails).toHaveLength(2);
+      expect(mails[1].to).toBe('bruder-b@test.com');
+      expect(mails[1].html).toContain('Bruder Zwei');
+      expect(mails[1].html).toContain('Bruders Kind');
+    });
+
+    it('lehnt mehr als 5 verschiedene weitere Adressen ab (nichts gespeichert, keine Mail)', async () => {
+      const tileId = createTile(20);
+      const participants = [
+        { firstName: 'Kontakt', lastName: 'Person', email: 'kontakt-c@test.com', birthday: '1990-01-01' },
+        ...Array.from({ length: 6 }, (_, i) => ({
+          firstName: `P${i}`,
+          lastName: 'X',
+          email: `fremd-c${i}@test.com`,
+          birthday: '1990-01-01',
+        })),
+      ];
+      const res = await request(app).post(`/api/tiles/${tileId}/registrations/public`).send({ participants });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('verschiedene weitere E-Mail-Adressen');
+      expect(mockedSendMail).not.toHaveBeenCalled();
+      const count = db.prepare('SELECT COUNT(*) AS c FROM trip_registrations WHERE tile_id = ?').get(tileId) as { c: number };
+      expect(count.c).toBe(0);
+    });
+
+    it('Info-Mails an dieselbe Adresse sind pro Tag begrenzt (3)', async () => {
+      const tileId = createTile(50);
+      for (let i = 0; i < 4; i++) {
+        await request(app)
+          .post(`/api/tiles/${tileId}/registrations/public`)
+          .send({
+            participants: [
+              { firstName: 'Kontakt', lastName: `K${i}`, email: `kontakt-d${i}@test.com`, birthday: '1990-01-01' },
+              { firstName: 'Opfer', lastName: 'Adresse', email: 'opfer-d@test.com', birthday: '1990-01-01' },
+            ],
+          });
+      }
+      const toOpfer = mockedSendMail.mock.calls.filter((c) => (c[0] as any).to === 'opfer-d@test.com');
+      expect(toOpfer).toHaveLength(3);
+    });
+
     it('bleibt trotz fehlgeschlagenem Mailversand gespeichert (Best-Effort, kein Rollback, kein 500)', async () => {
       mockedSendMail.mockRejectedValue(new Error('SMTP down'));
 
