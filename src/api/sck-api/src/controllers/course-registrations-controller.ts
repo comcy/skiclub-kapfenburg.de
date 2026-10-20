@@ -78,7 +78,7 @@ export const createPublicCourseRegistration: RequestHandler = async (req, res) =
     const birthday = ISO_DATE.test(String(req.body.birthday ?? '')) ? String(req.body.birthday) : undefined;
     const registration = registrationsService.createPublicRegistration(tileId, { ...req.body, birthday });
     // Zahlbetrag wie im Formular angezeigt: verifizierte ODER selbst angegebene Mitgliedschaft.
-    const isMember = registration.isMember || req.body.memberSelfReported === true;
+    const isMember = registration.isMember || registration.selfReportedIsMember;
     const price = calculateCoursePrice(
       { sportType: registration.sportType, birthday: registration.birthday, isMember },
       getCurrentSkiCoursePricing(),

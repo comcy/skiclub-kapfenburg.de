@@ -25,6 +25,7 @@ interface CourseRegistrationRow {
   level: string | null;
   group_id: string | null;
   is_member: number;
+  self_reported_is_member: number;
   status: string;
   source: string;
   notes: string | null;
@@ -48,6 +49,7 @@ const rowToRegistration = (row: CourseRegistrationRow): CourseRegistration => ({
   level: row.level ?? undefined,
   groupId: row.group_id ?? undefined,
   isMember: row.is_member === 1,
+  selfReportedIsMember: row.self_reported_is_member === 1,
   status: row.status as CourseRegistration['status'],
   source: row.source as CourseRegistration['source'],
   notes: row.notes ?? undefined,
@@ -90,9 +92,9 @@ export const createRegistration = (
   db.prepare(
     `INSERT INTO course_registrations (
       id, tile_id, first_name, last_name, email, phone, member_id, birthday,
-      sport_type, level, group_id, is_member, status, source, notes, order_index,
-      entered_by, paid, transferred_to_external_list, confirmation_mail_sent
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      sport_type, level, group_id, is_member, self_reported_is_member, status, source, notes,
+      order_index, entered_by, paid, transferred_to_external_list, confirmation_mail_sent
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -106,6 +108,7 @@ export const createRegistration = (
     params.level ?? null,
     params.groupId ?? null,
     isMember,
+    params.selfReportedIsMember ? 1 : 0,
     params.status,
     params.source,
     params.notes ?? null,
@@ -128,7 +131,9 @@ export const updateRegistration = (
   id: string,
   params: CourseRegistrationCreationParams,
 ): CourseRegistration | undefined => {
-  const { id: memberId, isMember } = resolveMember(params.email);
+  // member_id leitet sich aus der (ggf. korrigierten) E-Mail ab; is_member uebernimmt den
+  // Wert des Admin-Editors (siehe CourseRegistrationCreationParams).
+  const { id: memberId } = resolveMember(params.email);
 
   const result = db
     .prepare(
@@ -149,7 +154,7 @@ export const updateRegistration = (
       params.sportType ?? null,
       params.level ?? null,
       params.groupId ?? null,
-      isMember,
+      params.isMember ? 1 : 0,
       params.status,
       params.source,
       params.notes ?? null,
@@ -184,8 +189,8 @@ export interface PublicCourseRegistrationInput {
   level?: string;
   // ISO-Datum (YYYY-MM-DD), Grundlage der serverseitigen Preisberechnung.
   birthday?: string;
-  // Selbstauskunft aus dem Formular - nur fuer die Preisberechnung, nicht gespeichert
-  // (isMember bleibt die serverseitig per E-Mail verifizierte Angabe).
+  // Selbstauskunft aus dem Formular - wird als selfReportedIsMember gespeichert
+  // (isMember bleibt die per E-Mail verifizierte bzw. vom Admin gesetzte Angabe).
   memberSelfReported?: boolean;
   notes?: string;
 }
@@ -204,6 +209,8 @@ export const createPublicRegistration = (tileId: string, params: PublicCourseReg
     sportType: params.sportType,
     birthday: params.birthday,
     level: params.level,
+    isMember: false,
+    selfReportedIsMember: params.memberSelfReported ?? false,
     status: 'confirmed',
     source: 'sheet-import',
     notes: params.notes,

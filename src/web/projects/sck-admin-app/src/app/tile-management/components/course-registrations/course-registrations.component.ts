@@ -91,6 +91,7 @@ export class CourseRegistrationsComponent implements OnInit {
             firstName: '',
             lastName: '',
             isMember: false,
+            selfReportedIsMember: false,
             status: 'confirmed',
             source: 'manual',
             orderIndex: 0,
@@ -119,6 +120,8 @@ export class CourseRegistrationsComponent implements OnInit {
             sportType: registration.sportType || undefined,
             level: registration.level || undefined,
             groupId: registration.groupId || undefined,
+            isMember: registration.isMember,
+            selfReportedIsMember: registration.selfReportedIsMember,
             status: registration.status,
             source: registration.source,
             notes: registration.notes || undefined,
@@ -141,7 +144,11 @@ export class CourseRegistrationsComponent implements OnInit {
             registration.birthday || '',
             registration.email || '',
             registration.phone || '',
-            registration.isMember ? 'Mitglied' : 'kein Mitglied',
+            registration.isMember
+                ? 'Mitglied'
+                : registration.selfReportedIsMember
+                  ? 'Mitglied (nicht verifiziert)'
+                  : 'kein Mitglied',
             registration.sportType || '',
             registration.level || '',
             this.price(registration) ?? '',

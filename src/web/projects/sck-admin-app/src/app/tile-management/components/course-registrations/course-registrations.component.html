@@ -41,7 +41,7 @@
                     <th>E-Mail</th>
                     <th>Telefon</th>
                     <th>Sportart</th>
-                    <th class="no-print">Mitglied</th>
+                    <th>Mitglied</th>
                     <th>Preis</th>
                     <th class="no-print">Eingetragen von</th>
                     <th>Bezahlt</th>
@@ -60,9 +60,19 @@
                         <td>{{ registration.email || '–' }}</td>
                         <td>{{ registration.phone || '–' }}</td>
                         <td>{{ registration.sportType || '–' }}</td>
-                        <td class="no-print">
-                            @if (registration.isMember) {
+                        <td>
+                            @if (registration.memberId) {
+                                <span class="badge-member" matTooltip="Per E-Mail verifiziert"
+                                    ><mat-icon>verified</mat-icon> Mitglied</span
+                                >
+                            } @else if (registration.isMember) {
                                 <span class="badge-member"><mat-icon>check</mat-icon> Mitglied</span>
+                            } @else if (registration.selfReportedIsMember) {
+                                <span
+                                    class="badge-warn"
+                                    matTooltip="Hat im Formular 'Mitglied' angegeben, ist aber nicht als Mitglied verifiziert"
+                                    ><mat-icon>help_outline</mat-icon> Nicht verifiziert</span
+                                >
                             } @else {
                                 <span class="badge-nonmember">kein Mitglied</span>
                             }
