@@ -3,8 +3,17 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { CourseRegistration } from '../../domain/course-registration';
 import { Tile } from '../../domain/tile';
 import { TilesDataService } from '../../services/tiles-data.service';
+
+export interface CourseOverviewRow {
+    tile: Tile;
+    // Ski Alpin / Snowboard bei Ski-Kursen - undefined bei Kursen ohne Sportart (Gymnastik).
+    sport?: string;
+    count: number;
+}
 
 // Kurs-Pendant zu RegistrationsOverviewComponent - ohne Kapazitäts-/
 // Wartelisten-Badge, da course_registrations dieses Konzept nicht kennt.
@@ -19,18 +28,37 @@ export class CourseRegistrationsOverviewComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
 
-    public tiles: Tile[] = [];
+    public rows: CourseOverviewRow[] = [];
     public loaded = false;
 
     ngOnInit(): void {
         this.dataService.getTiles(1, 1000, undefined, undefined, undefined, 'course').subscribe((response) => {
-            this.tiles = [...response.items].sort((a, b) => a.title.localeCompare(b.title));
-            this.loaded = true;
-            this.cdr.markForCheck();
+            const tiles = [...response.items].sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+            if (!tiles.length) {
+                this.loaded = true;
+                this.cdr.markForCheck();
+                return;
+            }
+            // Je Kurs die Anmeldungen laden, um nach Sportart zu trennen (A1 Ski und A1
+            // Snowboard sind getrennte Gruppen) - Vereinsgröße, wenige Kurs-Tiles.
+            forkJoin(tiles.map((tile) => this.dataService.getCourseRegistrations(tile.id))).subscribe((lists) => {
+                this.rows = tiles.flatMap((tile, index) => this.toRows(tile, lists[index]));
+                this.loaded = true;
+                this.cdr.markForCheck();
+            });
         });
     }
 
-    confirmedCount(tile: Tile): number {
-        return tile.confirmedRegistrationsCount ?? 0;
+    private toRows(tile: Tile, registrations: CourseRegistration[]): CourseOverviewRow[] {
+        const confirmed = registrations.filter((r) => r.status === 'confirmed');
+        const bySport = new Map<string, number>();
+        for (const r of confirmed) {
+            const sport = r.sportType?.trim() || '';
+            bySport.set(sport, (bySport.get(sport) ?? 0) + 1);
+        }
+        if (!bySport.size) return [{ tile, count: 0 }];
+        return [...bySport.entries()]
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([sport, count]) => ({ tile, sport: sport || undefined, count }));
     }
 }

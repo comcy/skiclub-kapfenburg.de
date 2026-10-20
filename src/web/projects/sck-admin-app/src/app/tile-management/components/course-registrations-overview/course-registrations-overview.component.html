@@ -13,19 +13,28 @@
                 </tr>
             </thead>
             <tbody>
-                @for (tile of tiles; track tile.id) {
-                    <tr class="row" [class.row-expired]="tile.expired">
-                        <td>{{ tile.title }}</td>
-                        <td>{{ confirmedCount(tile) }}</td>
+                @for (row of rows; track row.tile.id + (row.sport ?? '')) {
+                    <tr class="row" [class.row-expired]="row.tile.expired">
+                        <td>
+                            {{ row.tile.title }}
+                            @if (row.sport) {
+                                <span class="sport-tag">{{ row.sport }}</span>
+                            }
+                        </td>
+                        <td>{{ row.count }}</td>
                         <td class="actions-cell">
-                            <a mat-stroked-button [routerLink]="['/course-management', 'registrations', tile.id]">
+                            <a
+                                mat-stroked-button
+                                [routerLink]="['/registrations', 'kurse', row.tile.id]"
+                                [queryParams]="row.sport ? { sport: row.sport } : {}"
+                            >
                                 <mat-icon>how_to_reg</mat-icon>
-                                Anmeldungen
+                                <span class="btn-label">Anmeldungen</span>
                             </a>
                         </td>
                     </tr>
                 }
-                @if (loaded && !tiles.length) {
+                @if (loaded && !rows.length) {
                     <tr>
                         <td colspan="3" class="empty">Noch keine Kurse angelegt.</td>
                     </tr>

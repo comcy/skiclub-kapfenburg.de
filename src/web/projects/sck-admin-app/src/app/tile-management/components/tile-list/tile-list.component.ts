@@ -67,7 +67,8 @@ export class TileListComponent implements OnInit {
     public filterType: string = '';
     public filterStatus: string = '';
 
-    public readonly tileTypes = Object.values(TileType);
+    // Kurse (Sport-/Ski-/Snowboard) werden im Kurs-Management verwaltet, nicht hier.
+    public readonly tileTypes = Object.values(TileType).filter((type) => type !== TileType.Course);
     public readonly tileStatuses = Object.values(TileStatus);
 
     public displayedColumns: string[] = [
@@ -110,6 +111,7 @@ export class TileListComponent implements OnInit {
                 this.filterSearch,
                 this.filterType,
                 this.filterStatus,
+                TileType.Course,
             )
             .pipe(
                 tap((response) => (this.totalItems = response.total)),

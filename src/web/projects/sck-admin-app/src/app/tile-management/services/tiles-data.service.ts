@@ -47,6 +47,7 @@ export class TilesDataService {
         search?: string,
         type?: string,
         status?: string,
+        excludeType?: string,
     ): Observable<PaginatedResponse<Tile>> {
         const params: Record<string, string> = {
             page: page.toString(),
@@ -58,6 +59,7 @@ export class TilesDataService {
         if (search) params['search'] = search;
         if (type) params['type'] = type;
         if (status) params['status'] = status;
+        if (excludeType) params['excludeType'] = excludeType;
 
         return this.http.get<PaginatedResponse<Tile>>(`${this.apiUrl}/${this.endpoint}`, {
             params,

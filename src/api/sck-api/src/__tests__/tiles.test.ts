@@ -158,6 +158,20 @@ describe('Tiles Routes', () => {
     expect(infoGetRes.body.confirmedRegistrationsCount).toBeUndefined();
   });
 
+  it('GET /api/tiles?excludeType=course - liefert alles ausser Kurs-Tiles', async () => {
+    for (const [id, type] of [
+      ['t-event', 'event'],
+      ['t-info', 'info'],
+      ['t-course', 'course'],
+    ]) {
+      db.prepare('INSERT INTO tiles (id, type, title) VALUES (?, ?, ?)').run(id, type, id);
+    }
+
+    const res = await request(app).get('/api/tiles?excludeType=course');
+    expect((res.body.items as { type: string }[]).map((t) => t.type).sort()).toEqual(['event', 'info']);
+    expect(res.body.total).toBe(2);
+  });
+
   it('PUT /api/tiles/:id/boardings - ordnet Boardings anhand ihres Namens zu', async () => {
     const token = createAuthedUser(['tiles:write']);
 

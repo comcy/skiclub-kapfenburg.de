@@ -152,7 +152,7 @@ export class TripRegistrationsComponent implements OnInit {
     }
 
     onBack(): void {
-        this.router.navigate(['registrations']);
+        this.router.navigate(['registrations', 'ausfahrten']);
     }
 
     onCreate(): void {

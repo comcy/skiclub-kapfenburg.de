@@ -29,6 +29,7 @@ export const listTiles: RequestHandler = (req, res) => {
       direction: req.query.direction === 'desc' ? 'desc' : 'asc',
       search: req.query.search ? String(req.query.search) : undefined,
       type: req.query.type ? String(req.query.type) : undefined,
+      excludeType: req.query.excludeType ? String(req.query.excludeType) : undefined,
       status: req.query.status ? String(req.query.status) : undefined,
     });
 

@@ -145,6 +145,8 @@ export interface ListTilesParams {
   direction?: 'asc' | 'desc';
   search?: string;
   type?: string;
+  // Alle Typen AUSSER diesem (z.B. Event-Management ohne Kurs-Tiles).
+  excludeType?: string;
   status?: string;
 }
 
@@ -162,6 +164,10 @@ export const listTiles = (params: ListTilesParams): PaginatedResponse<Tile> => {
   if (params.type) {
     conditions.push('type = ?');
     values.push(params.type);
+  }
+  if (params.excludeType) {
+    conditions.push('type != ?');
+    values.push(params.excludeType);
   }
   if (params.status) {
     conditions.push('status = ?');
