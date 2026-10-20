@@ -22,6 +22,11 @@ table {
     width: 100%;
 }
 
+.iban {
+    font-family: monospace;
+    white-space: nowrap;
+}
+
 .empty {
     color: var(--mat-sys-on-surface-variant);
     font-size: 14px;

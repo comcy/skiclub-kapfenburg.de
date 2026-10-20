@@ -42,6 +42,11 @@ export class MembersDataService {
         return this.http.get<MembershipApplication[]>(`${this.apiUrl}/members/applications`);
     }
 
+    // Klartext-IBAN eines Antrags (members:manage) - nur auf ausdruecklichen Abruf, nie Teil der Liste.
+    getApplicationIban(registrationId: string): Observable<{ iban: string }> {
+        return this.http.get<{ iban: string }>(`${this.apiUrl}/members/applications/${registrationId}/iban`);
+    }
+
     getAnniversaries(date: string, years: number[]): Observable<AnniversaryGroup[]> {
         return this.http.get<AnniversaryGroup[]>(`${this.apiUrl}/members/anniversaries`, {
             params: { date, years: years.join(',') },

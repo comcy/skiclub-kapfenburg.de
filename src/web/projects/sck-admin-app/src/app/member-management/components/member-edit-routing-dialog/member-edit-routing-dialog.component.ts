@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { catchError, map, of } from 'rxjs';
 import { Member } from '../../domain/member';
 import { MemberChangesService } from '../../services/member-changes.service';
 import { MembersDataService } from '../../services/members-data.service';
@@ -53,18 +54,29 @@ export class MemberEditRoutingDialogComponent implements OnInit {
                         this.close();
                         return;
                     }
-                    this.open({
-                        ...BLANK_MEMBER,
-                        firstName: application.firstName,
-                        lastName: application.lastName,
-                        email: application.email,
-                        phone: application.phone,
-                        birthday: application.birthday,
-                        address: application.address,
-                        isFamilyMembership: !!application.isFamilyMembership,
-                        source: 'online',
-                        applicationRegistrationId: application.registrationId,
-                    });
+                    // IBAN des Antrags ins Mitgliedsformular uebernehmen - schlaegt der Abruf fehl
+                    // (keine IBAN gespeichert, Schluessel passt nicht), oeffnet das Formular ohne.
+                    this.dataService
+                        .getApplicationIban(application.registrationId)
+                        .pipe(
+                            map(({ iban }) => iban),
+                            catchError(() => of(undefined)),
+                        )
+                        .subscribe((iban) =>
+                            this.open({
+                                ...BLANK_MEMBER,
+                                firstName: application.firstName,
+                                lastName: application.lastName,
+                                email: application.email,
+                                phone: application.phone,
+                                birthday: application.birthday,
+                                address: application.address,
+                                iban,
+                                isFamilyMembership: !!application.isFamilyMembership,
+                                source: 'online',
+                                applicationRegistrationId: application.registrationId,
+                            }),
+                        );
                 },
                 error: () => this.close(),
             });

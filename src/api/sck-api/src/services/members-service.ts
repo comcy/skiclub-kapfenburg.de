@@ -7,7 +7,7 @@ import { db } from '../db/connection.js';
 import { AnniversaryGroup, Member, MemberCreationParams, MembershipApplication } from '../domain/member.js';
 import { PaginatedResponse } from '../domain/tile.js';
 import { decryptField, encryptField } from './crypto-service.js';
-import { listDataByType } from './data-service.js';
+import { getSepaCiphertext, listDataByType } from './data-service.js';
 import { listConfirmedRegistrationIds } from './membership-confirmation-service.js';
 
 interface MemberRow {
@@ -264,4 +264,13 @@ export const listMembershipApplications = (): MembershipApplication[] => {
   return listDataByType<Omit<MembershipApplication, 'confirmed'>>('membership-registration')
     .filter((application) => !promoted.has(application.registrationId))
     .map((application) => ({ ...application, confirmed: confirmed.has(application.registrationId) }));
+};
+
+// IBAN eines Online-Mitgliedsantrags (sepa-data.ndjson, verschluesselt) im Klartext -
+// nur fuer berechtigte Admins (members:manage, siehe Route). undefined = zu diesem
+// Antrag wurde keine IBAN gespeichert. Wirft, wenn sie mit dem konfigurierten
+// SEPA_ENCRYPTION_KEY nicht entschluesselt werden kann.
+export const getApplicationIban = (registrationId: string): string | undefined => {
+  const ciphertext = getSepaCiphertext(registrationId);
+  return ciphertext ? decryptField(ciphertext) : undefined;
 };

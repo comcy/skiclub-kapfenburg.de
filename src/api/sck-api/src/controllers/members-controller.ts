@@ -128,3 +128,22 @@ export const listMembershipApplications: RequestHandler = (_req, res) => {
     res.status(500).json({ error: 'Fehler beim Laden der Mitgliedsanträge.', details: error.message });
   }
 };
+
+// Klartext-IBAN eines Antrags - bewusst eigener Abruf statt Teil der Antragsliste, damit sie
+// nur auf ausdruecklichen Klick (members:manage) die Platte verlaesst. Zugriff wird
+// protokolliert (ohne die IBAN selbst).
+export const getApplicationIban: RequestHandler = (req, res) => {
+  const registrationId = String(req.params.registrationId);
+  try {
+    const iban = membersService.getApplicationIban(registrationId);
+    if (!iban) {
+      res.status(404).json({ error: 'Zu diesem Antrag wurde keine IBAN gespeichert.' });
+      return;
+    }
+    console.log(`IBAN von Antrag ${registrationId} abgerufen von ${req.user?.email ?? 'unbekannt'}.`);
+    res.status(200).json({ iban });
+  } catch (error: any) {
+    console.error('Fehler beim Entschlüsseln der Antrags-IBAN:', error?.message);
+    res.status(500).json({ error: 'Die IBAN konnte nicht entschlüsselt werden (passt der SEPA_ENCRYPTION_KEY?).' });
+  }
+};

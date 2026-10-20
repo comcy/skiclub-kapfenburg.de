@@ -6,9 +6,12 @@ import request from 'supertest';
 // listMembershipApplications() reads registrations.ndjson via data-service's
 // listDataByType() — mocked the same way membership.test.ts mocks saveData,
 // so these tests never touch the real (git-tracked) file on disk.
+process.env.SEPA_ENCRYPTION_KEY = '1'.repeat(64);
 const mockedListDataByType = jest.fn();
+const mockedGetSepaCiphertext = jest.fn<(registrationId: string) => string | undefined>();
 jest.unstable_mockModule('../services/data-service', () => ({
   listDataByType: mockedListDataByType,
+  getSepaCiphertext: mockedGetSepaCiphertext,
   dataDir: '/tmp',
 }));
 
@@ -225,5 +228,38 @@ describe('Members Routes', () => {
     const res = await request(app).get('/api/members/applications').set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body[0].confirmed).toBe(true);
+  });
+  describe('GET /api/members/applications/:registrationId/iban', () => {
+    it('erfordert members:manage', async () => {
+      const token = createAuthedUser(['tiles:write']);
+      const res = await request(app).get('/api/members/applications/reg-1/iban').set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(403);
+    });
+
+    it('liefert die entschlüsselte IBAN des Antrags', async () => {
+      const { encryptField } = await import('../services/crypto-service.js');
+      mockedGetSepaCiphertext.mockReturnValue(encryptField('DE89370400440532013000'));
+      const token = createAuthedUser(['members:manage']);
+
+      const res = await request(app).get('/api/members/applications/reg-1/iban').set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(200);
+      expect(res.body.iban).toBe('DE89370400440532013000');
+      expect(mockedGetSepaCiphertext).toHaveBeenCalledWith('reg-1');
+    });
+
+    it('404, wenn zum Antrag keine IBAN gespeichert wurde', async () => {
+      mockedGetSepaCiphertext.mockReturnValue(undefined);
+      const token = createAuthedUser(['members:manage']);
+      const res = await request(app).get('/api/members/applications/reg-x/iban').set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(404);
+    });
+
+    it('500 mit Hinweis auf den Schlüssel, wenn die Entschlüsselung scheitert', async () => {
+      mockedGetSepaCiphertext.mockReturnValue('00:00:00');
+      const token = createAuthedUser(['members:manage']);
+      const res = await request(app).get('/api/members/applications/reg-1/iban').set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(500);
+      expect(res.body.error).toContain('SEPA_ENCRYPTION_KEY');
+    });
   });
 });
