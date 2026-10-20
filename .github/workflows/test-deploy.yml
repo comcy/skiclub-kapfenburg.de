@@ -27,6 +27,11 @@ on:
         required: true
         default: "master"
 
+# Deploys nacheinander: ein laufender endet, von den wartenden bleibt nur der neueste.
+concurrency:
+  group: deploy-test
+  cancel-in-progress: false
+
 env:
   APP_DIR: "/opt/sck-test"
 

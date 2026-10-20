@@ -30,6 +30,11 @@ on:
       - ".github/workflows/sck-admin-app-build-deploy.yml"
       - "docker-compose.yml"
 
+# Deploys nacheinander: ein laufender endet, von den wartenden bleibt nur der neueste (der Deploy baut ohnehin den aktuellen master).
+concurrency:
+  group: deploy-admin-prod
+  cancel-in-progress: false
+
 env:
   APP_DIR: "/opt/sck-admin-prod"
 

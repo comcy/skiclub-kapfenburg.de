@@ -29,6 +29,11 @@ on:
       - "docker-compose.yml"
       - ".github/workflows/sck-api-prod-deploy.yml"
 
+# Deploys nacheinander: ein laufender endet, von den wartenden bleibt nur der neueste (der Deploy baut ohnehin den aktuellen master).
+concurrency:
+  group: deploy-api-prod
+  cancel-in-progress: false
+
 env:
   APP_DIR: "/opt/sck-server"
 
