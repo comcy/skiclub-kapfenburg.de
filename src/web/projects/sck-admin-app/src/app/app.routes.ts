@@ -54,13 +54,45 @@ export const routes: Routes = [
     },
     {
         path: 'registrations',
-        component: RegistrationsOverviewComponent,
+        component: TileManagementComponent,
         canActivate: [authGuard],
+        data: {
+            title: 'Anmeldungen',
+            navLinks: [
+                { label: 'Ausfahrten', link: 'ausfahrten' },
+                { label: 'Kurse', link: 'kurse' },
+            ],
+        },
+        children: [
+            {
+                path: 'ausfahrten',
+                component: RegistrationsOverviewComponent,
+            },
+            {
+                path: 'ausfahrten/:tileId',
+                component: TripRegistrationsComponent,
+            },
+            {
+                path: 'kurse',
+                component: CourseRegistrationsOverviewComponent,
+            },
+            {
+                path: 'kurse/:tileId',
+                component: CourseRegistrationsComponent,
+            },
+            {
+                path: '',
+                redirectTo: 'ausfahrten',
+                pathMatch: 'full',
+            },
+        ],
     },
+    // Alte Adresse (Lesezeichen, Mails): /registrations/<tileId> war die
+    // Ausfahrts-Anmeldeliste. Steht NACH der Shell-Route, damit
+    // /registrations/ausfahrten|kurse zuerst dort landen.
     {
         path: 'registrations/:tileId',
-        component: TripRegistrationsComponent,
-        canActivate: [authGuard],
+        redirectTo: 'registrations/ausfahrten/:tileId',
     },
     {
         path: 'event-management',
@@ -98,7 +130,6 @@ export const routes: Routes = [
             navLinks: [
                 { label: 'Sportkurse', link: 'sportkurse' },
                 { label: 'Ski-/Snowboardkurse', link: 'skikurse' },
-                { label: 'Anmeldungen', link: 'registrations' },
             ],
         },
         children: [
@@ -112,13 +143,15 @@ export const routes: Routes = [
                 component: CourseTileListComponent,
                 data: { courseKind: 'ski' },
             },
+            // Anmeldungen der Kurse leben jetzt unter /registrations/kurse (alte Links bleiben gültig).
             {
                 path: 'registrations',
-                component: CourseRegistrationsOverviewComponent,
+                redirectTo: '/registrations/kurse',
+                pathMatch: 'full',
             },
             {
                 path: 'registrations/:tileId',
-                component: CourseRegistrationsComponent,
+                redirectTo: '/registrations/kurse/:tileId',
             },
             {
                 path: '',

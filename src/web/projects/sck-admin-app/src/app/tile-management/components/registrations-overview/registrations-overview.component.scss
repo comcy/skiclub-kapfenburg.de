@@ -118,3 +118,15 @@
     color: var(--mat-sys-on-surface-variant);
     padding: 32px 0;
 }
+
+// Schmale Fenster: nur das Icon, sonst wird die Aktionsspalte abgeschnitten.
+@media (max-width: 600px) {
+    .btn-label {
+        display: none;
+    }
+
+    .actions-cell a {
+        min-width: 0;
+        padding: 0 12px;
+    }
+}

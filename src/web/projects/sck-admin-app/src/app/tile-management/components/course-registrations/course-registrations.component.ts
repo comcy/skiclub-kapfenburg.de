@@ -34,9 +34,12 @@ export class CourseRegistrationsComponent implements OnInit {
     public registrations: CourseRegistration[] = [];
     public selectedRegistration: CourseRegistration | null = null;
     public tileId!: string;
+    // Optional per ?sport=... auf eine Sportart eingeschränkt (A1 Ski vs. A1 Snowboard).
+    public sport: string | null = null;
 
     ngOnInit(): void {
         this.tileId = String(this.route.snapshot.paramMap.get('tileId'));
+        this.sport = this.route.snapshot.queryParamMap.get('sport');
         this.dataService.getTile(this.tileId).subscribe((tile) => {
             this.tile = tile;
             this.cdr.markForCheck();
@@ -54,8 +57,12 @@ export class CourseRegistrationsComponent implements OnInit {
         });
     }
 
+    get visibleRegistrations(): CourseRegistration[] {
+        return this.sport ? this.registrations.filter((r) => r.sportType === this.sport) : this.registrations;
+    }
+
     get confirmedCount(): number {
-        return this.registrations.filter((r) => r.status === 'confirmed').length;
+        return this.visibleRegistrations.filter((r) => r.status === 'confirmed').length;
     }
 
     age(registration: CourseRegistration): number | null {
@@ -73,13 +80,14 @@ export class CourseRegistrationsComponent implements OnInit {
     }
 
     onBack(): void {
-        this.router.navigate(['course-management', 'registrations']);
+        this.router.navigate(['registrations', 'kurse']);
     }
 
     onCreate(): void {
         this.selectedRegistration = {
             id: '',
             tileId: this.tileId,
+            sportType: this.sport ?? undefined,
             firstName: '',
             lastName: '',
             isMember: false,
