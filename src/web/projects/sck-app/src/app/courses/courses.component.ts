@@ -68,7 +68,7 @@ export class CoursesComponent implements OnInit {
     // Tabelle als Fallback.
     get skiPriceRows(): { label: string; member: string; nonMember: string }[] {
         const p = this.skiCoursePricing;
-        if (!p) return [];
+        if (!p?.snowboard || !p.alpine) return [];
         const groups = [
             { name: SKI_COURSE_TYPE_LABELS.snowboard, price: p.snowboard },
             { name: SKI_COURSE_TYPE_LABELS.alpine, price: p.alpine },
