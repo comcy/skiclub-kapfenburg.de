@@ -37,6 +37,10 @@ export interface PublicCourseRegistrationInput {
     phone?: string;
     sportType?: string;
     level?: string;
+    // ISO-Datum (YYYY-MM-DD) und Selbstauskunft "Mitglied" - der Server berechnet
+    // daraus den Zahlbetrag fuer die Bestaetigungsmail.
+    birthday?: string;
+    memberSelfReported?: boolean;
     notes?: string;
 }
 

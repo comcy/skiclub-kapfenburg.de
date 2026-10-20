@@ -67,13 +67,22 @@ export const getCourseConfirmationMailBcc = (): string => {
   return DEFAULT_BCC_LIST;
 };
 
-export const getCourseConfirmationMailText = (registration: CourseRegistration): string => {
+const formatCurrency = (amount: number): string =>
+  new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
+
+const formatIsoDate = (iso: string | undefined): string => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso ?? '');
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : (iso ?? '');
+};
+
+export const getCourseConfirmationMailText = (registration: CourseRegistration, price?: number): string => {
   const placeholders: Record<string, string> = {
     firstName: registration.firstName,
     lastName: registration.lastName,
     sportType: registration.sportType ?? '',
     level: registration.level ?? '',
-    birthday: registration.birthday ?? '',
+    birthday: formatIsoDate(registration.birthday),
+    price: price !== undefined ? formatCurrency(price) : '',
     email: registration.email ?? '',
     phone: registration.phone ?? '',
     additionalText: registration.notes ?? '',
@@ -105,7 +114,7 @@ export const getCourseConfirmationMailText = (registration: CourseRegistration):
                 <!-- Rechte Spalte -->
                 <div style="flex: 1; padding-left: 16px;">
                     <p style="margin: 4px 0;">Sportart: <span style="font-weight: bold; color: #333;">${registration.sportType ?? ''}</span></p>
-                    <p style="margin: 4px 0;">Geburtsdatum: <span style="font-weight: bold; color: #333;">${registration.birthday ?? ''}</span></p>
+                    <p style="margin: 4px 0;">Geburtsdatum: <span style="font-weight: bold; color: #333;">${formatIsoDate(registration.birthday)}</span></p>
                     <p style="margin: 4px 0;">Zusatzangaben:</p>
                     <div style="padding: 8px; background-color: #0073e610; border-radius: 4px; border: 1px solid #ddd;">
                         <p style="margin: 0; color: #333; padding-left: 8px;">${registration.notes ?? ''}</p>
@@ -113,6 +122,18 @@ export const getCourseConfirmationMailText = (registration: CourseRegistration):
                 </div>
             </div>
 
+            ${
+              price !== undefined && price > 0
+                ? `<div style="margin-top: 24px; padding: 16px 20px; background-color: #fafafa; border: 2px solid #0073e6; border-radius: 8px;">
+                <table style="width: 100%; font-size: 1.2em;">
+                    <tr>
+                        <td><strong>Zahlbetrag</strong></td>
+                        <td style="text-align: right; color: #2e7d32;"><strong>${formatCurrency(price)}</strong></td>
+                    </tr>
+                </table>
+            </div>`
+                : ''
+            }
 
             <div style="background-color: #f7f7f7; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 ${termsHtml}

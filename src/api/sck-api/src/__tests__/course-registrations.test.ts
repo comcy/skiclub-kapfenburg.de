@@ -3,6 +3,7 @@ import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import express from 'express';
 import request from 'supertest';
 import { db } from '../db/connection.js';
+import { setSetting } from '../services/settings-service.js';
 
 // sendMail() only calls out to nodemailer when SMTP_SERVER is set (see
 // mailer.ts's dev-log fallback branch) - set it before the route (which
@@ -199,6 +200,41 @@ describe('Course Registrations Routes', () => {
         .get(`/api/tiles/${tileId}/course-registrations`)
         .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
       expect(list.body[0].confirmationMailSent).toBe(true);
+    });
+
+    it('Mail enthält den serverseitig berechneten Zahlbetrag (Alter + Mitglied-Selbstauskunft)', async () => {
+      setSetting('ski-course-pricing', {
+        childUntilAge: 16,
+        snowboard: { adult: { member: 55, nonMember: 70 }, child: { member: 45, nonMember: 60 } },
+        alpine: { adult: { member: 60, nonMember: 75 }, child: { member: 50, nonMember: 65 } },
+      });
+      const tileId = createTile();
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/course-registrations/public`)
+        .send({
+          firstName: 'Max',
+          lastName: 'Mustermann',
+          email: 'max@test.com',
+          sportType: 'Ski Alpin',
+          birthday: '1990-01-01',
+          memberSelfReported: true,
+          notes: 'Preis: 1 €', // Client-Angabe darf den Betrag nicht beeinflussen
+        });
+
+      expect(res.status).toBe(201);
+      const html = (mockedSendMail.mock.calls[0][0] as any).html as string;
+      expect(html).toContain('Zahlbetrag');
+      expect(html).toContain('60,00');
+      expect(html).toContain('01.01.1990');
+    });
+
+    it('Mail ohne Geburtsdatum zeigt keinen Zahlbetrag', async () => {
+      const tileId = createTile();
+      await request(app)
+        .post(`/api/tiles/${tileId}/course-registrations/public`)
+        .send({ firstName: 'Max', lastName: 'Mustermann', email: 'max@test.com', sportType: 'Ski Alpin' });
+
+      expect((mockedSendMail.mock.calls[0][0] as any).html).not.toContain('Zahlbetrag');
     });
 
     it('bleibt trotz fehlgeschlagenem Mailversand gespeichert (Best-Effort, kein Rollback, kein 500)', async () => {

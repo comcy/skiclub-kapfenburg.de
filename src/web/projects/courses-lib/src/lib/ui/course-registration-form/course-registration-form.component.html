@@ -118,16 +118,20 @@
             <mat-error> Bitte alle erfordelichen Felder (*) ausfüllen. </mat-error>
         }
 
-        @if (
-            skiCoursePricing && courseRegisterForm.get('sportType')?.value && courseRegisterForm.get('birthday')?.value
-        ) {
+        @if (skiCoursePricing) {
             <div class="summary-total">
-                <strong>Preis</strong>
-                <strong class="total-amount">{{ getPrice() | currency: 'EUR' }}</strong>
+                <strong>Zahlbetrag</strong>
+                @if (courseRegisterForm.get('sportType')?.value && courseRegisterForm.get('birthday')?.value) {
+                    <strong class="total-amount">{{ getPrice() | currency: 'EUR' }}</strong>
+                } @else {
+                    <span class="total-hint">wird nach Sportart und Geburtsdatum berechnet</span>
+                }
             </div>
-            <p class="price-note">
-                Kinderpreise gelten für Teilnehmende unter {{ skiCoursePricing.childUntilAge }} Jahren.
-            </p>
+            @if (skiCoursePricing.childUntilAge) {
+                <p class="price-note">
+                    Kinderpreise gelten für Teilnehmende unter {{ skiCoursePricing.childUntilAge }} Jahren.
+                </p>
+            }
         }
 
         <shared-lib-turnstile-widget
