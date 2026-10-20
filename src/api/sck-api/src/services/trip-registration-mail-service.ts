@@ -73,17 +73,38 @@ export const getTripConfirmationMailBcc = (): string => {
 const formatCurrency = (amount: number): string =>
   new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
 
-// "Geb." (Geburtsdatum)/Alter kann hier nicht angezeigt werden wie im
-// ursprünglichen Client-Rendering - trip_registrations persistiert bewusst
-// nur die daraus abgeleitete ageCategory, nicht das Geburtsdatum selbst
-// (siehe die Spaltenliste im Plan). Stattdessen die Alterskategorie als Text.
+// Mitglied wie im Formular angezeigt: per E-Mail verifiziert ODER selbst
+// angegeben - sonst weicht der Betrag in der Mail vom Formular ab.
+const isEffectiveMember = (p: Pick<TripRegistration, 'isMember' | 'selfReportedIsMember'>): boolean =>
+  p.isMember || p.selfReportedIsMember;
+
+const formatDateDe = (value: string | undefined): string => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(value ?? '');
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : (value ?? '');
+};
+
+// Ausfahrts-Datum: ISO (Admin-Tiles) als "23. Januar 2027", Freitext der
+// migrierten Tiles ("15. bis 16. März 2027") unveraendert.
+const formatTileDate = (value: string): string => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (!m) return value;
+  return new Intl.DateTimeFormat('de-DE', { day: 'numeric', month: 'long', year: 'numeric' }).format(
+    new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])),
+  );
+};
+
 const AGE_CATEGORY_LABEL: Record<TripRegistration['ageCategory'], string> = {
   adult: 'Erwachsen',
   youthUntil16: 'Jugend',
   childUntil6: 'Kind',
 };
 
-const renderParticipant = (participant: TripRegistration, pricing: TripPricing, title?: string): string => {
+const renderParticipant = (
+  participant: TripRegistration,
+  pricing: TripPricing,
+  title?: string,
+  showContact = true,
+): string => {
   const price = calculateParticipantPrice(
     {
       busOnly: participant.busOnly,
@@ -91,14 +112,14 @@ const renderParticipant = (participant: TripRegistration, pricing: TripPricing, 
       courseRequested: participant.courseRequested,
       level: participant.level,
       ageCategory: participant.ageCategory,
-      isMember: participant.isMember,
+      isMember: isEffectiveMember(participant),
     },
     pricing,
   );
 
   const options: string[] = [];
   options.push(participant.busOnly ? 'Nur Busfahrt (ohne Skipass)' : `Bus + Lift (${AGE_CATEGORY_LABEL[participant.ageCategory]})`);
-  options.push(participant.isMember ? 'Mitglied' : 'Nicht-Mitglied');
+  options.push(isEffectiveMember(participant) ? 'Mitglied' : 'Nicht-Mitglied');
   if (participant.snowshoes) options.push('Schneeschuhe');
   if (participant.courseRequested && participant.level) options.push(participant.level);
 
@@ -114,8 +135,8 @@ const renderParticipant = (participant: TripRegistration, pricing: TripPricing, 
             </tr>
             <tr>
                 <td colspan="2" style="color: #555; font-size: 0.95em; padding-bottom: 12px;">
-                    E-Mail: ${participant.email ?? ''} <br>
-                    Tel: ${participant.phone ?? ''} | Zustieg: ${participant.boardingName ?? ''}
+                    ${participant.birthday ? `Geburtsdatum: ${formatDateDe(participant.birthday)} <br>` : ''}
+                    ${showContact ? `E-Mail: ${participant.email ?? ''} <br>Tel: ${participant.phone ?? ''} | ` : ''}Zustieg: ${participant.boardingName ?? ''}
                 </td>
             </tr>
             <tr>
@@ -155,7 +176,7 @@ export const getTripConfirmationMailText = (
           courseRequested: p.courseRequested,
           level: p.level,
           ageCategory: p.ageCategory,
-          isMember: p.isMember,
+          isMember: isEffectiveMember(p),
         },
         pricing,
       ),
@@ -164,8 +185,9 @@ export const getTripConfirmationMailText = (
 
   const placeholders: Record<string, string> = {
     firstName: contactPerson.firstName,
+    title: tile.title,
     destination: tile.destination ?? '',
-    date: tile.date,
+    date: formatTileDate(tile.date),
     totalPrice: formatCurrency(totalPrice),
     additionalText: contactPerson.notes ?? '',
   };
@@ -191,8 +213,8 @@ export const getTripConfirmationMailText = (
                     Anmeldebestätigung
                 </h1>
                 <p style="font-size: 16px; font-weight: bold; color: #555;">
-                    Ausfahrt: ${tile.destination ?? ''} <br>
-                    Datum: ${tile.date}
+                    Ausfahrt: ${tile.title}${tile.destination ? ` – ${tile.destination}` : ''} <br>
+                    Datum: ${formatTileDate(tile.date)}
                 </p>
 
                 <p>Hallo ${contactPerson.firstName},</p>
@@ -244,4 +266,112 @@ export const getTripConfirmationMailText = (
             </div>
         </div>
     `;
+};
+
+
+// ---------------------------------------------------------------------------
+// Info-Mail an weitere angemeldete Personen (Issue #234)
+// ---------------------------------------------------------------------------
+
+// Placeholders: {{contactName}}, {{title}}, {{destination}}, {{date}}
+export const DEFAULT_TRIP_PARTICIPANT_INTRO_HTML = `<p>
+    {{contactName}} hat dich zur Ausfahrt <strong>{{title}}</strong> ({{date}}) angemeldet.
+    Zu deinem Schutz informieren wir alle angemeldeten Personen. Bitte prüfe die folgenden Daten auf Richtigkeit.
+</p>`;
+
+export const DEFAULT_TRIP_PARTICIPANT_HINT_HTML = `<p>
+    <strong>Stimmt etwas nicht</strong> (z. B. der Zustieg) <strong>oder wurdest du nicht angemeldet?</strong>
+    Antworte einfach auf diese E-Mail oder schreibe an
+    <a href="mailto:registration@skiclub-kapfenburg.de">registration@skiclub-kapfenburg.de</a>.
+</p>`;
+
+export const getTripParticipantInfoMailSubject = (tile: Tile, status: RegistrationStatus): string =>
+  `SC-Kapfenburg Anmeldung: ${tile.title}${status === 'waitlist' ? ' (Warteliste)' : ''}`;
+
+// Mehrere Personen mit derselben Adresse bekommen EINE Mail (alle aufgelistet).
+// Ohne Telefon/E-Mail der anderen: nur Name, Zustieg, Optionen, Preis.
+export const getTripParticipantInfoMailText = (
+  tile: Tile,
+  contactPerson: TripRegistration,
+  participants: TripRegistration[],
+  waitlistInfo: PublicRegistrationResult,
+): string => {
+  const pricing = getEffectiveTripPricing(tile);
+  const placeholders: Record<string, string> = {
+    contactName: `${contactPerson.firstName} ${contactPerson.lastName}`,
+    title: tile.title,
+    destination: tile.destination ?? '',
+    date: formatTileDate(tile.date),
+  };
+  const cfg = getSetting<MailTemplateSettings>(MAIL_TEMPLATE_SETTING_KEY)?.trip;
+  const introHtml = renderTemplate(cfg?.participantIntroHtml || DEFAULT_TRIP_PARTICIPANT_INTRO_HTML, placeholders);
+  const hintHtml = renderTemplate(cfg?.participantHintHtml || DEFAULT_TRIP_PARTICIPANT_HINT_HTML, placeholders);
+  const signatureHtml = renderTemplate(cfg?.signatureHtml || DEFAULT_TRIP_SIGNATURE_HTML, placeholders);
+  const waitlistHtml =
+    waitlistInfo.status === 'waitlist'
+      ? renderTemplate(cfg?.waitlistHtml || DEFAULT_TRIP_WAITLIST_HTML, {
+          ...placeholders,
+          waitlistGroupText: waitlistInfo.waitlistCount === 1 ? '1 Person' : `${waitlistInfo.waitlistCount} Personen`,
+          waitlistPosition: `${waitlistInfo.waitlistPosition}`,
+        })
+      : '';
+
+  return `
+        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding: 20px; background-color: #f4f4f4;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #dddddd;">
+                <h1 style="color: #3f51b5; font-size: 22px; margin-top: 0;">Du wurdest angemeldet</h1>
+                <p style="font-size: 16px; font-weight: bold; color: #555;">
+                    Ausfahrt: ${tile.title}${tile.destination ? ` – ${tile.destination}` : ''} <br>
+                    Datum: ${formatTileDate(tile.date)}
+                </p>
+                ${introHtml}
+                ${waitlistHtml}
+                <div style="margin-top: 20px;">
+                    ${participants.map((p) => renderParticipant(p, pricing, undefined, false)).join('')}
+                </div>
+                ${hintHtml}
+                ${signatureHtml}
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #999;">Diese E-Mail wurde automatisch erstellt.</p>
+            </div>
+        </div>
+    `;
+};
+
+// ---------------------------------------------------------------------------
+// Empfaenger-Gruppierung und Missbrauchsschutz
+// ---------------------------------------------------------------------------
+
+export const MAX_EXTRA_RECIPIENT_ADDRESSES = 5;
+// ponytail: In-Memory-Zaehler, nach einem Neustart zurueckgesetzt - bei Bedarf in die DB.
+const MAX_INFO_MAILS_PER_ADDRESS_PER_DAY = 3;
+const infoMailCounts = new Map<string, { day: string; count: number }>();
+
+export const normalizeEmail = (email: string | undefined): string => (email ?? '').trim().toLowerCase();
+
+const isPlausibleEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+// Weitere Empfaenger-Adressen einer Anmeldung: alle gueltigen, verschiedenen
+// Adressen AUSSER der der Kontaktperson (die bekommt die Bestaetigung).
+export const groupExtraRecipients = <T extends { email?: string }>(
+  participants: T[],
+  contactEmail: string | undefined,
+): Map<string, T[]> => {
+  const contact = normalizeEmail(contactEmail);
+  const groups = new Map<string, T[]>();
+  for (const participant of participants) {
+    const email = normalizeEmail(participant.email);
+    if (!isPlausibleEmail(email) || email === contact) continue;
+    groups.set(email, [...(groups.get(email) ?? []), participant]);
+  }
+  return groups;
+};
+
+export const allowInfoMail = (email: string, now: Date = new Date()): boolean => {
+  const day = now.toISOString().slice(0, 10);
+  const entry = infoMailCounts.get(email);
+  const count = entry && entry.day === day ? entry.count : 0;
+  if (count >= MAX_INFO_MAILS_PER_ADDRESS_PER_DAY) return false;
+  infoMailCounts.set(email, { day, count: count + 1 });
+  return true;
 };
