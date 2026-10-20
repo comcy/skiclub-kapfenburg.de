@@ -10,6 +10,14 @@ export interface PriceByMembership {
     nonMember: number;
 }
 
+// Beschriftung inkl. Kursdauer - einzige Stelle, an der die Stundenzahl steht
+// (Admin-Preisformular und oeffentliche Preistabelle). ponytail: fest im Code,
+// editierbar erst bei wechselnden Stunden/weiteren Kursarten (siehe Issue).
+export const SKI_COURSE_TYPE_LABELS = {
+    snowboard: 'Snowboard (6 Stunden)',
+    alpine: 'Alpin (8 Stunden)',
+} as const;
+
 export interface SkiCoursePricing {
     // Age cutoff between "Kinder" and "Erwachsene" pricing, e.g. 16.
     childUntilAge: number;

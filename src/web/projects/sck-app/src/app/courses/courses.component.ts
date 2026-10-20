@@ -29,7 +29,7 @@ import {
     CourseTilesApiServiceInterface,
 } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
 import { mergeCourseTile } from 'projects/courses-lib/src/lib/domain/merge-course-tile';
-import { Price, SkiCoursePricing } from 'projects/courses-lib/src/lib/domain/models';
+import { Price, SKI_COURSE_TYPE_LABELS, SkiCoursePricing } from 'projects/courses-lib/src/lib/domain/models';
 import { InfoTile } from 'projects/shared-lib/src/lib/ui-common/models';
 
 // Admin-created "Ski-/Snowboardkurse" tiles (course-management/skikurse in
@@ -70,8 +70,8 @@ export class CoursesComponent implements OnInit {
         const p = this.skiCoursePricing;
         if (!p) return [];
         const groups = [
-            { name: 'Snowboard (6 Stunden)', price: p.snowboard },
-            { name: 'Alpin (8 Stunden)', price: p.alpine },
+            { name: SKI_COURSE_TYPE_LABELS.snowboard, price: p.snowboard },
+            { name: SKI_COURSE_TYPE_LABELS.alpine, price: p.alpine },
         ];
         const rows = groups.flatMap(({ name, price }) => [
             { label: `${name} – Erwachsene`, ...price.adult },
