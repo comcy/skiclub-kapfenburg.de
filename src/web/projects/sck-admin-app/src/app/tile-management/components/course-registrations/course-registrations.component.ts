@@ -10,6 +10,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../../domain/course-registration';
 import { NewsService } from '../../../shared/services/news.service';
 import { Tile } from '../../domain/tile';
+import { SkiCoursePricingSetting } from '../../../settings/domain/ski-course-pricing-setting';
+import { SettingsDataService } from '../../../settings/services/settings-data.service';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { CourseRegistrationEditorComponent } from './course-registration-editor/course-registration-editor.component';
 
@@ -28,6 +30,7 @@ export class CourseRegistrationsComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly settingsService = inject(SettingsDataService);
     private readonly snackBar = inject(MatSnackBar);
     public readonly auth = inject(AuthService);
     public readonly news = inject(NewsService);
@@ -38,6 +41,8 @@ export class CourseRegistrationsComponent implements OnInit {
     public tileId!: string;
     // Optional per ?sport=... auf eine Sportart eingeschränkt (A1 Ski vs. A1 Snowboard).
     public sport: string | null = null;
+    // Globale Ski-/Snowboardkurs-Preise (Einstellungen -> Preismanagement).
+    private skiPricing: SkiCoursePricingSetting | null = null;
 
     ngOnInit(): void {
         this.tileId = String(this.route.snapshot.paramMap.get('tileId'));
@@ -47,6 +52,10 @@ export class CourseRegistrationsComponent implements OnInit {
             this.cdr.markForCheck();
         });
         this.refresh();
+        this.settingsService.getSkiCoursePricing().subscribe((pricing) => {
+            this.skiPricing = pricing;
+            this.cdr.markForCheck();
+        });
     }
 
     // Zoneless change detection (see app.config.ts) - refresh() is also
@@ -77,8 +86,24 @@ export class CourseRegistrationsComponent implements OnInit {
     // (e.g. "80 €", not a number), so read as-is rather than computed here.
     price(registration: CourseRegistration): string | null {
         const prices = this.tile?.course?.prices;
-        if (!prices) return null;
-        return registration.isMember ? prices.member : prices.nonMember;
+        if (prices) return registration.isMember ? prices.member : prices.nonMember;
+        return this.skiPrice(registration);
+    }
+
+    // Ski-/Snowboardkurse haben keinen Preis am Tile: Betrag wie im Formular und in der
+    // Bestaetigungsmail aus den globalen Kurspreisen (Sportart, Alter, Mitglied). Mitglied =
+    // verifiziert/gesetzt ODER angegeben, wie in der Mail. ponytail: mit den AKTUELLEN Preisen
+    // berechnet, nicht beim Anmelden gespeichert - bei einem Preiswechsel mitten in der Saison
+    // zeigen alte Anmeldungen den neuen Betrag (dann Betrag je Anmeldung speichern).
+    private skiPrice(registration: CourseRegistration): string | null {
+        const pricing = this.skiPricing;
+        const age = calculateAge(registration.birthday);
+        if (!pricing?.alpine || !pricing.snowboard || !registration.sportType || isNaN(age)) return null;
+        const group = registration.sportType === 'Ski Alpin' ? pricing.alpine : pricing.snowboard;
+        const bracket = age < pricing.childUntilAge ? group.child : group.adult;
+        const member = registration.isMember || registration.selfReportedIsMember;
+        const amount = member ? bracket.member : bracket.nonMember;
+        return amount > 0 ? `${amount} €` : null;
     }
 
     onBack(): void {
