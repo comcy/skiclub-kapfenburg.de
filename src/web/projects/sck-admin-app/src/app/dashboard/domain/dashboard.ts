@@ -3,7 +3,6 @@ export interface DashboardStats {
     tilesOpen: number;
     tilesCanceled: number;
     tilesBookedUp: number;
-    boardingsTotal: number;
     usersTotal: number;
     pendingInvites: number;
 }

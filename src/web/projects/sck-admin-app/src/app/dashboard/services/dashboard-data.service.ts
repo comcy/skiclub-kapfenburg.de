@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map } from 'rxjs';
-import { BoardingsDataService } from '../../boardings-management/services/boardings-data.service';
 import { TileStatus } from '../../tile-management/domain/tile-enums';
 import { TilesDataService } from '../../tile-management/services/tiles-data.service';
 import { UsersDataService } from '../../user-management/services/users-data.service';
@@ -13,17 +12,15 @@ const isInviteExpired = (expiresAt: string): boolean => new Date(expiresAt).getT
 })
 export class DashboardDataService {
     private readonly tilesData = inject(TilesDataService);
-    private readonly boardingsData = inject(BoardingsDataService);
     private readonly usersData = inject(UsersDataService);
 
     load(): Observable<{ stats: DashboardStats; activity: ActivityEntry[] }> {
         return forkJoin({
             tiles: this.tilesData.getTiles(1, 1000, undefined, undefined, undefined, 'event'),
-            boardings: this.boardingsData.getBoardings(1, 1),
             users: this.usersData.getUsers(),
             invites: this.usersData.getInvites(),
         }).pipe(
-            map(({ tiles, boardings, users, invites }) => {
+            map(({ tiles, users, invites }) => {
                 const pendingInvites = invites.filter((i) => !i.acceptedAt && !isInviteExpired(i.expiresAt));
 
                 const stats: DashboardStats = {
@@ -31,7 +28,6 @@ export class DashboardDataService {
                     tilesOpen: tiles.items.filter((t) => t.status === TileStatus.Open).length,
                     tilesCanceled: tiles.items.filter((t) => t.status === TileStatus.Canceled).length,
                     tilesBookedUp: tiles.items.filter((t) => t.status === TileStatus.BookedUp).length,
-                    boardingsTotal: boardings.total,
                     usersTotal: users.length,
                     pendingInvites: pendingInvites.length,
                 };
