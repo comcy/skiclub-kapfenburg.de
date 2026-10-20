@@ -12,6 +12,7 @@ import {
     OnInit,
     Output,
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
 } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -93,6 +94,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
     @Output() submitForm: EventEmitter<boolean> = new EventEmitter<boolean>();
     public breakpointObserver = inject(BreakpointObserverService);
     private snackBar = inject(MatSnackBar);
+    private cdr = inject(ChangeDetectorRef);
     private snackAction = 'Ok';
     public isSending = false;
     // Bleibt nach einer erfolgreichen Anmeldung dauerhaft true (anders als
@@ -500,9 +502,14 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 .submitPublicRegistration(tileId, publicParticipants, this.turnstileToken as string)
                 .subscribe({
                     next: () => {
-                        this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
+                        // Zustand zuerst und explizit markieren: der Callback laeuft ausserhalb von
+                        // Angulars Change Detection (zoneless), ohne markForCheck bleibt das
+                        // Haekchen am Button aus.
                         this.isSending = false;
                         this.isSubmitted = true;
+                        this.cdr.markForCheck();
+                        this.snackBar.open(getTripConfirmationSuccessMessage(), this.snackAction);
+                        this.closeAfterSuccess();
                     },
                     error: (error) => {
                         console.error('Anmeldung fehlgeschlagen:', error);
@@ -511,6 +518,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                             this.snackAction,
                         );
                         this.isSending = false;
+                        this.cdr.markForCheck();
                     },
                 });
         } else {
@@ -520,9 +528,15 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
             // markieren, statt den Button offen zu lassen.
             this.isSending = false;
             this.isSubmitted = true;
+            this.closeAfterSuccess();
         }
+    }
 
-        this.submitForm.emit(true);
+    // Der Dialog schloss bisher sofort beim Absenden (vor der Antwort der API) - das Haekchen am
+    // Button war nie zu sehen, und ein Fehler liess dem Nutzer keinen zweiten Versuch. Jetzt erst
+    // nach erfolgreicher Anmeldung, mit kurzer Pause fuer das Haekchen.
+    private closeAfterSuccess(): void {
+        setTimeout(() => this.submitForm.emit(true), 1500);
     }
 
     private handleSheetRegistration(rows: SheetDbRow[], silent = false): void {
