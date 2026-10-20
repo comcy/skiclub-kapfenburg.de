@@ -94,7 +94,7 @@ export const createPublicTripRegistrations: RequestHandler = async (req, res) =>
     const extraAddresses = groupExtraRecipients(participants as PublicParticipantInput[], participants[0]?.email);
     if (extraAddresses.size > MAX_EXTRA_RECIPIENT_ADDRESSES) {
       res.status(400).json({
-        error: `Höchstens ${MAX_EXTRA_RECIPIENT_ADDRESSES} verschiedene weitere E-Mail-Adressen pro Anmeldung. Gib für Personen, die du anmeldest, bitte deine eigene Adresse an.`,
+        error: `Höchstens ${MAX_EXTRA_RECIPIENT_ADDRESSES} verschiedene weitere E-Mail-Adressen pro Anmeldung. Gib für Personen, die du anmeldest, deine eigene Adresse an, melde weitere Personen separat an oder wende dich an registration@skiclub-kapfenburg.de.`,
       });
       return;
     }

@@ -399,8 +399,32 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         return emailError && requiredError;
     }
 
+    // Wie sck-api: pro Anmeldung hoechstens so viele verschiedene weitere E-Mail-Adressen
+    // (Info-Mails an Dritte, Issue #234). Gleiche Adresse wie die erste Person zaehlt nicht.
+    public readonly maxExtraAddresses = 5;
+
+    public get extraAddressCount(): number {
+        const emails = this.participants().controls.map((group) =>
+            String(group.get('email')?.value ?? '')
+                .trim()
+                .toLowerCase(),
+        );
+        const contact = emails[0];
+        return new Set(emails.slice(1).filter((email) => email && email !== contact)).size;
+    }
+
+    public get tooManyAddresses(): boolean {
+        return this.extraAddressCount > this.maxExtraAddresses;
+    }
+
     public isSubmitDisabled(): boolean {
-        return !this.tripRegisterForm.valid || !this.turnstileToken || this.isSending || this.isSubmitted;
+        return (
+            !this.tripRegisterForm.valid ||
+            !this.turnstileToken ||
+            this.isSending ||
+            this.isSubmitted ||
+            this.tooManyAddresses
+        );
     }
 
     public onTurnstileToken(token: string | null): void {
@@ -506,8 +530,11 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                     },
                     error: (error) => {
                         console.error('Anmeldung fehlgeschlagen:', error);
+                        // Fachliche Ablehnung (400, z. B. zu viele Adressen) mit der Meldung der API zeigen.
+                        const apiMessage = error?.status === 400 ? error?.error?.error : undefined;
                         this.snackBar.open(
-                            'Anmeldung fehlgeschlagen - bitte versuche es erneut oder kontaktiere uns per Mail.',
+                            apiMessage ??
+                                'Anmeldung fehlgeschlagen - bitte versuche es erneut oder kontaktiere uns per Mail.',
                             this.snackAction,
                         );
                         this.isSending = false;

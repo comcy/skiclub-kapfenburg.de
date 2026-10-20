@@ -257,6 +257,15 @@
             verpflichtet, die Daten dieser Personen zu kontrollieren.
         </p>
 
+        @if (tooManyAddresses) {
+            <p class="email-hint email-hint-warn">
+                Pro Anmeldung sind höchstens {{ maxExtraAddresses }} verschiedene weitere E-Mail-Adressen möglich. Gib
+                für angemeldete Personen deine eigene Adresse an, melde die übrigen Personen in einer separaten
+                Anmeldung an oder wende dich an das Team des SCK:
+                <a href="mailto:registration@skiclub-kapfenburg.de">registration&#64;skiclub-kapfenburg.de</a>.
+            </p>
+        }
+
         <div class="agb-container">
             <mat-checkbox formControlName="agbAccepted">
                 Ich akzeptiere die
