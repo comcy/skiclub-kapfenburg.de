@@ -7,7 +7,7 @@
         </p>
 
         <mat-form-field appearance="outline" class="age-field">
-            <mat-label>Kinder bis (Jahre)</mat-label>
+            <mat-label>Kinder unter (Jahre)</mat-label>
             <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.childUntilAge" />
         </mat-form-field>
 
@@ -18,7 +18,7 @@
         </div>
 
         <div class="form-grid three-columns">
-            <span class="pricing-row-label">Snowboard (6 Stunden) – Erwachsene</span>
+            <span class="pricing-row-label">{{ skiCourseLabels.snowboard }} – Erwachsene</span>
             <mat-form-field>
                 <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.snowboard.adult.member" />
             </mat-form-field>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="form-grid three-columns">
-            <span class="pricing-row-label">Snowboard (6 Stunden) – Kinder</span>
+            <span class="pricing-row-label">{{ skiCourseLabels.snowboard }} – Kinder</span>
             <mat-form-field>
                 <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.snowboard.child.member" />
             </mat-form-field>
@@ -38,7 +38,7 @@
         </div>
 
         <div class="form-grid three-columns">
-            <span class="pricing-row-label">Alpin (8 Stunden) – Erwachsene</span>
+            <span class="pricing-row-label">{{ skiCourseLabels.alpine }} – Erwachsene</span>
             <mat-form-field>
                 <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.alpine.adult.member" />
             </mat-form-field>
@@ -48,7 +48,7 @@
         </div>
 
         <div class="form-grid three-columns">
-            <span class="pricing-row-label">Alpin (8 Stunden) – Kinder</span>
+            <span class="pricing-row-label">{{ skiCourseLabels.alpine }} – Kinder</span>
             <mat-form-field>
                 <input matInput type="number" min="0" [(ngModel)]="skiCoursePricing.alpine.child.member" />
             </mat-form-field>

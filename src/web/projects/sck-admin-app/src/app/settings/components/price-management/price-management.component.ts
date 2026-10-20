@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { SKI_COURSE_TYPE_LABELS } from 'projects/courses-lib/src/lib/domain/models/ski-course-pricing';
 import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-base';
 import { AuthService } from '../../../auth/services/auth.service';
 import { PanelShellComponent } from '../../../shared/components/panel-shell/panel-shell.component';
@@ -27,6 +28,7 @@ export class PriceManagementComponent implements OnInit {
     private readonly cdr = inject(ChangeDetectorRef);
     public readonly auth = inject(AuthService);
 
+    public readonly skiCourseLabels = SKI_COURSE_TYPE_LABELS;
     public skiCoursePricing: SkiCoursePricingSetting = {
         childUntilAge: 16,
         snowboard: { adult: zero(), child: zero() },

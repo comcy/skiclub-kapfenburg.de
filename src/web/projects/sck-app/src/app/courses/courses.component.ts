@@ -29,7 +29,7 @@ import {
     CourseTilesApiServiceInterface,
 } from 'projects/courses-lib/src/lib/api/course-tiles-api.interface';
 import { mergeCourseTile } from 'projects/courses-lib/src/lib/domain/merge-course-tile';
-import { Price, SkiCoursePricing } from 'projects/courses-lib/src/lib/domain/models';
+import { Price, SKI_COURSE_TYPE_LABELS, SkiCoursePricing } from 'projects/courses-lib/src/lib/domain/models';
 import { InfoTile } from 'projects/shared-lib/src/lib/ui-common/models';
 
 // Admin-created "Ski-/Snowboardkurse" tiles (course-management/skikurse in
@@ -61,6 +61,29 @@ export class CoursesComponent implements OnInit {
     public selectedCustomBccList: string[] | undefined;
     public selectedTileId: string | undefined;
     public skiCoursePricing: SkiCoursePricing | null = null;
+
+    // Kurspreistabelle aus den globalen Kurspreisen der API (Issue #240).
+    // Leer, solange noch nichts geladen ist oder alle Preise 0 sind (API-
+    // Fehler liefert eine nullgefuellte Struktur) - dann greift die statische
+    // Tabelle als Fallback.
+    get skiPriceRows(): { label: string; member: string; nonMember: string }[] {
+        const p = this.skiCoursePricing;
+        if (!p?.snowboard || !p.alpine) return [];
+        const groups = [
+            { name: SKI_COURSE_TYPE_LABELS.snowboard, price: p.snowboard },
+            { name: SKI_COURSE_TYPE_LABELS.alpine, price: p.alpine },
+        ];
+        const rows = groups.flatMap(({ name, price }) => [
+            { label: `${name} – Erwachsene`, ...price.adult },
+            { label: `${name} – Kinder`, ...price.child },
+        ]);
+        if (rows.every((r) => !r.member && !r.nonMember)) return [];
+        return rows.map((r) => ({
+            label: r.label,
+            member: `${r.member} EURO`,
+            nonMember: `${r.nonMember} EURO`,
+        }));
+    }
 
     private readonly courseTilesApi = inject(CourseTilesApiServiceInterface);
     private readonly cdr = inject(ChangeDetectorRef);
