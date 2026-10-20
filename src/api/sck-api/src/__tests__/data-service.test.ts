@@ -3,6 +3,7 @@ import { jest } from '@jest/globals';
 const mockAppendFile = jest.fn();
 const mockExistsSync = jest.fn();
 const mockMkdirSync = jest.fn();
+const mockReadFileSync = jest.fn();
 
 jest.unstable_mockModule('fs', () => ({
   __esModule: true,
@@ -10,12 +11,13 @@ jest.unstable_mockModule('fs', () => ({
     promises: { appendFile: mockAppendFile },
     existsSync: mockExistsSync,
     mkdirSync: mockMkdirSync,
+    readFileSync: mockReadFileSync,
   },
 }));
 
 mockExistsSync.mockReturnValue(true);
 
-const { saveData, saveSepaData } = await import('../services/data-service');
+const { saveData, saveSepaData, getSepaCiphertext } = await import('../services/data-service');
 
 describe('DataService', () => {
   beforeEach(() => {
@@ -83,5 +85,26 @@ describe('DataService', () => {
     expect(parsedData.registrationId).toBe('reg-1');
     expect(parsedData.ibanEncrypted).toBe('iv:tag:cipher');
     expect(parsedData.timestamp).toBeDefined();
+  });
+
+  describe('getSepaCiphertext', () => {
+    it('liefert den letzten Ciphertext zur registrationId, nichts bei unbekannter ID oder fehlender Datei', () => {
+      mockExistsSync.mockReturnValue(true);
+      mockReadFileSync.mockReturnValue(
+        [
+          { registrationId: 'a', ibanEncrypted: 'alt' },
+          { registrationId: 'b', ibanEncrypted: 'fremd' },
+          { registrationId: 'a', ibanEncrypted: 'neu' },
+        ]
+          .map((r) => JSON.stringify(r))
+          .join('\n') + '\n',
+      );
+
+      expect(getSepaCiphertext('a')).toBe('neu');
+      expect(getSepaCiphertext('zzz')).toBeUndefined();
+
+      mockExistsSync.mockReturnValue(false);
+      expect(getSepaCiphertext('a')).toBeUndefined();
+    });
   });
 });

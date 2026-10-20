@@ -76,3 +76,22 @@ export const saveSepaData = async (data: { registrationId: string; ibanEncrypted
 
   await appendRecord(sepaDataFile, record, 'SEPA-Daten konnten nicht gespeichert werden.');
 };
+
+/**
+ * Liest den (verschluesselten) IBAN-Datensatz eines Mitgliedsantrags aus
+ * sepa-data.ndjson. Gibt NUR den Ciphertext zurueck - entschluesselt wird in
+ * members-service.ts, hinter members:manage. Bei mehreren Datensaetzen zur
+ * selben registrationId zaehlt der letzte.
+ */
+export const getSepaCiphertext = (registrationId: string): string | undefined => {
+  if (!fs.existsSync(sepaDataFile)) return undefined;
+
+  const records = fs
+    .readFileSync(sepaDataFile, 'utf8')
+    .split('\n')
+    .filter((line) => line.trim())
+    .map((line) => JSON.parse(line) as { registrationId?: string; ibanEncrypted?: string })
+    .filter((record) => record.registrationId === registrationId && record.ibanEncrypted);
+
+  return records.at(-1)?.ibanEncrypted;
+};

@@ -9,6 +9,7 @@ import {
   getAnniversaries,
   getMember,
   listMembers,
+  getApplicationIban,
   listMembershipApplications,
   markHonored,
   updateMember,
@@ -23,6 +24,12 @@ const router = Router();
 // admin user.
 router.get('/members', requireAuth, requirePermission('members:manage'), listMembers);
 router.get('/members/applications', requireAuth, requirePermission('members:manage'), listMembershipApplications);
+router.get(
+  '/members/applications/:registrationId/iban',
+  requireAuth,
+  requirePermission('members:manage'),
+  getApplicationIban,
+);
 router.get('/members/anniversaries', requireAuth, requirePermission('members:manage'), getAnniversaries);
 router.get('/members/:id', requireAuth, requirePermission('members:manage'), getMember);
 router.post('/members', requireAuth, requirePermission('members:manage'), createMember);

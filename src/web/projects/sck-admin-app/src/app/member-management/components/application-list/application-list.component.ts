@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
@@ -27,9 +28,14 @@ export class ApplicationListComponent implements OnInit {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly router = inject(Router);
     private readonly memberChanges = inject(MemberChangesService);
+    private readonly snackBar = inject(MatSnackBar);
 
     public applications$!: Observable<MembershipApplication[]>;
-    public displayedColumns: string[] = ['name', 'email', 'submittedAt', 'confirmed', 'actions'];
+    public displayedColumns: string[] = ['name', 'email', 'submittedAt', 'confirmed', 'iban', 'actions'];
+
+    // Nur auf Klick abgerufen und nur im Speicher gehalten, nie in der Liste mitgeliefert.
+    public ibans: Record<string, string> = {};
+    public loadingIban = new Set<string>();
 
     // takeUntilDestroyed() needs an injection context - throws NG0203 inside ngOnInit().
     private readonly changesSubscription = this.memberChanges.changed$
@@ -43,6 +49,44 @@ export class ApplicationListComponent implements OnInit {
     refresh(): void {
         this.applications$ = this.dataService.getMembershipApplications();
         this.cdr.markForCheck();
+    }
+
+    onShowIban(application: MembershipApplication): void {
+        const id = application.registrationId;
+        this.loadingIban.add(id);
+        this.dataService.getApplicationIban(id).subscribe({
+            next: ({ iban }) => {
+                this.ibans[id] = iban;
+                this.loadingIban.delete(id);
+                this.cdr.markForCheck();
+            },
+            error: (error) => {
+                this.loadingIban.delete(id);
+                this.snackBar.open(error?.error?.error ?? 'IBAN konnte nicht geladen werden.', 'OK', {
+                    duration: 6000,
+                });
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    onHideIban(application: MembershipApplication): void {
+        delete this.ibans[application.registrationId];
+        this.cdr.markForCheck();
+    }
+
+    onCopyIban(application: MembershipApplication): void {
+        const iban = this.ibans[application.registrationId];
+        if (!iban) return;
+        navigator.clipboard.writeText(iban).then(() => this.snackBar.open('IBAN kopiert', 'OK', { duration: 2000 }));
+    }
+
+    // "DE89 3704 0044 0532 0130 00" - in Vierergruppen besser lesbar und abtippbar.
+    formatIban(iban: string): string {
+        return iban
+            .replace(/\s+/g, '')
+            .replace(/(.{4})/g, '$1 ')
+            .trim();
     }
 
     onPromote(application: MembershipApplication): void {

@@ -31,6 +31,30 @@
                 </td>
             </ng-container>
 
+            <ng-container matColumnDef="iban">
+                <th mat-header-cell *matHeaderCellDef>IBAN</th>
+                <td mat-cell *matCellDef="let application">
+                    @if (ibans[application.registrationId]; as iban) {
+                        <span class="iban">{{ formatIban(iban) }}</span>
+                        <button mat-icon-button matTooltip="Kopieren" (click)="onCopyIban(application)">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="Ausblenden" (click)="onHideIban(application)">
+                            <mat-icon>visibility_off</mat-icon>
+                        </button>
+                    } @else {
+                        <button
+                            mat-stroked-button
+                            [disabled]="loadingIban.has(application.registrationId)"
+                            (click)="onShowIban(application)"
+                        >
+                            <mat-icon>visibility</mat-icon>
+                            IBAN anzeigen
+                        </button>
+                    }
+                </td>
+            </ng-container>
+
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let application">
