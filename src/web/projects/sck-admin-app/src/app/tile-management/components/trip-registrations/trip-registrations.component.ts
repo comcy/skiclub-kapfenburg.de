@@ -12,6 +12,7 @@ import {
     TripRegistration,
     TripRegistrationCreationParams,
 } from '../../domain/trip-registration';
+import { NewsService } from '../../../shared/services/news.service';
 import { Tile } from '../../domain/tile';
 import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService, TripPricePreviewParticipant } from '../../services/tiles-data.service';
@@ -34,6 +35,7 @@ export class TripRegistrationsComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    public readonly news = inject(NewsService);
     private readonly dialog = inject(MatDialog);
     private readonly snackBar = inject(MatSnackBar);
     public readonly auth = inject(AuthService);

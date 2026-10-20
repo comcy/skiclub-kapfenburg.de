@@ -24,6 +24,64 @@ section + section {
     margin: 0 0 16px;
 }
 
+.news-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.news-seen {
+    border: 1px solid var(--mat-sys-outline-variant);
+    background: transparent;
+    color: var(--mat-sys-primary);
+    border-radius: 16px;
+    padding: 4px 14px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 8px;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Karte mit Neuem hebt sich ab, ohne Neues bleibt sie dezent.
+.news-card {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px 18px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--mat-sys-on-surface-variant);
+
+    &.has-news {
+        border-color: var(--mat-sys-primary);
+        background: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
+    }
+}
+
+.news-number {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.news-label {
+    font-size: 14px;
+}
+
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

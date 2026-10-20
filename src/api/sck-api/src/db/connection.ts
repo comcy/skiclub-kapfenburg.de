@@ -492,6 +492,13 @@ if (!courseRegistrationColumns.some((c) => c.name === 'self_reported_is_member')
 // registrant's own option choices (busOnly/snowshoes/courseRequested/level)
 // needed server-side to render the confirmation mail's price table (see
 // trip-pricing-service.ts) without re-deriving them from elsewhere.
+// news_since: Basis fuer "neu seit ..." im Admin (Dashboard-Widgets, Neu-Markierungen in Listen).
+// Wird beim Login auf den vorherigen Login gesetzt und mit "Alles gesehen" auf jetzt.
+const userColumns = db.prepare("SELECT name FROM pragma_table_info('users')").all() as { name: string }[];
+if (!userColumns.some((c) => c.name === 'news_since')) {
+  db.exec('ALTER TABLE users ADD COLUMN news_since TEXT;');
+}
+
 const tripRegistrationColumns = db.prepare("SELECT name FROM pragma_table_info('trip_registrations')").all() as {
   name: string;
 }[];

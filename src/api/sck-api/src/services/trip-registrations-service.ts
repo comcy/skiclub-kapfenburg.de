@@ -15,6 +15,7 @@ import {
 import { findMemberByEmail } from './members-service.js';
 
 interface TripRegistrationRow {
+  created_at: string;
   id: string;
   tile_id: string;
   first_name: string;
@@ -55,6 +56,7 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   email: row.email ?? undefined,
   phone: row.phone ?? undefined,
   birthday: row.birthday ?? undefined,
+  createdAt: row.created_at,
   memberId: row.member_id ?? undefined,
   boardingId: row.boarding_id ?? undefined,
   boardingName: row.boarding_name ?? undefined,

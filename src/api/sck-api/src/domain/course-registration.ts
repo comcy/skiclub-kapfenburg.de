@@ -38,6 +38,8 @@ export interface CourseRegistration {
   // course-registrations-service.ts's markConfirmationMailSent), nie über
   // ein PUT vom Client trustbar - siehe updateRegistration's Ausschluss.
   confirmationMailSent: boolean;
+  // Zeitpunkt der Anmeldung (Admin: "Neu"-Markierung).
+  createdAt: string;
 }
 
 // memberId is recomputed server-side from email on every write - never
@@ -50,7 +52,7 @@ export interface CourseRegistration {
 // korrigieren, was der automatische E-Mail-Abgleich nicht erkennt.
 export type CourseRegistrationCreationParams = Omit<
   CourseRegistration,
-  'id' | 'tileId' | 'memberId' | 'enteredBy' | 'confirmationMailSent'
+  'id' | 'tileId' | 'memberId' | 'enteredBy' | 'confirmationMailSent' | 'createdAt'
 >;
 
 export interface CourseGroup {

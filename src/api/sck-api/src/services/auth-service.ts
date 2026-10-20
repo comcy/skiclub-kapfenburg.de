@@ -68,6 +68,7 @@ const hashToken = (token: string): string => createHash('sha256').update(token).
 interface UserRow {
   id: string;
   email: string;
+  newsSince?: string | null;
 }
 
 const findUserByEmail = (email: string): UserRow | undefined =>
@@ -120,7 +121,14 @@ const createSession = (userId: string): string => {
     userId,
     addMs(SESSION_TTL_MS),
   );
-  db.prepare('UPDATE users SET last_login_at = ? WHERE id = ?').run(nowIso(), userId);
+  // news_since = vorheriger Login (beim allerersten Login: jetzt) - "neu seit dem letzten Login". Beide
+  // Zuweisungen lesen den Zustand VOR dem UPDATE.
+  const now = nowIso();
+  db.prepare('UPDATE users SET news_since = COALESCE(last_login_at, ?), last_login_at = ? WHERE id = ?').run(
+    now,
+    now,
+    userId,
+  );
   return token;
 };
 
@@ -129,12 +137,21 @@ const toAuthUser = (user: UserRow): AuthUser => ({
   email: user.email,
   isSuperAdmin: !!SUPER_ADMIN_EMAIL && user.email.toLowerCase() === SUPER_ADMIN_EMAIL,
   permissions: getPermissionsForUser(user.id),
+  newsSince: user.newsSince ?? null,
 });
+
+// Login-Ergebnis: Session anlegen (setzt news_since) und den Nutzer DANACH frisch lesen, damit
+// die Antwort schon den neuen newsSince enthaelt.
+const startSession = (user: UserRow): { user: AuthUser; sessionToken: string } => {
+  const sessionToken = createSession(user.id);
+  const fresh = db.prepare('SELECT id, email, news_since AS newsSince FROM users WHERE id = ?').get(user.id) as unknown as UserRow;
+  return { user: toAuthUser(fresh), sessionToken };
+};
 
 export const verifySessionToken = (token: string): AuthUser | undefined => {
   const row = db
     .prepare(
-      `SELECT u.id AS id, u.email AS email FROM sessions s
+      `SELECT u.id AS id, u.email AS email, u.news_since AS newsSince FROM sessions s
        JOIN users u ON u.id = s.user_id
        WHERE s.token_hash = ? AND s.expires_at > ?`,
     )
@@ -174,7 +191,7 @@ export const verifyMagicLink = (token: string): { user: AuthUser; sessionToken: 
   const user = isSuperAdmin ? (findUserByEmail(row.email) ?? createUser(row.email)) : ensureUserForAllowedEmail(row.email);
   if (!user) return undefined;
 
-  return { user: toAuthUser(user), sessionToken: createSession(user.id) };
+  return startSession(user);
 };
 
 export const createInvite = (email: string, invitedBy: string): { token: string } => {
@@ -216,7 +233,7 @@ export const acceptInvite = (token: string): { user: AuthUser; sessionToken: str
 
   db.prepare('UPDATE invites SET accepted_at = ? WHERE id = ?').run(nowIso(), invite.id);
   const user = findUserByEmail(invite.email) ?? createUser(invite.email);
-  return { user: toAuthUser(user), sessionToken: createSession(user.id) };
+  return startSession(user);
 };
 
 export const listUsers = (): (AuthUser & { lastLoginAt: string | null })[] => {
@@ -264,10 +281,17 @@ export const completeGoogleLogin = (email: string): { user: AuthUser; sessionTok
   const user = isSuperAdmin ? (findUserByEmail(email) ?? createUser(email)) : ensureUserForAllowedEmail(email);
   if (!user) return undefined;
 
-  return { user: toAuthUser(user), sessionToken: createSession(user.id) };
+  return startSession(user);
 };
 
 export const getUserById = (id: string): AuthUser | undefined => {
   const row = db.prepare('SELECT id, email FROM users WHERE id = ?').get(id) as UserRow | undefined;
   return row ? toAuthUser(row) : undefined;
+};
+
+// "Alles gesehen": ab jetzt gilt nur noch Neues als neu.
+export const markNewsSeen = (userId: string): string => {
+  const now = nowIso();
+  db.prepare('UPDATE users SET news_since = ? WHERE id = ?').run(now, userId);
+  return now;
 };

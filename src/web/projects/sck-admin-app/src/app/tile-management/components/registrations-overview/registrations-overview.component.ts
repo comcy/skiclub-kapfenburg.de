@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { NewsService } from '../../../shared/services/news.service';
 import { Tile } from '../../domain/tile';
 import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
@@ -22,6 +23,7 @@ import { TilesDataService } from '../../services/tiles-data.service';
 export class RegistrationsOverviewComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    public readonly news = inject(NewsService);
 
     public readonly tileStatusEnum = TileStatus;
     public tiles: Tile[] = [];

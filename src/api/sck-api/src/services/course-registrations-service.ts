@@ -34,6 +34,7 @@ interface CourseRegistrationRow {
   paid: number;
   transferred_to_external_list: number;
   confirmation_mail_sent: number;
+  created_at: string;
 }
 
 const rowToRegistration = (row: CourseRegistrationRow): CourseRegistration => ({
@@ -58,6 +59,7 @@ const rowToRegistration = (row: CourseRegistrationRow): CourseRegistration => ({
   paid: row.paid === 1,
   transferredToExternalList: row.transferred_to_external_list === 1,
   confirmationMailSent: row.confirmation_mail_sent === 1,
+  createdAt: row.created_at,
 });
 
 export const listRegistrationsForTile = (tileId: string): CourseRegistration[] => {

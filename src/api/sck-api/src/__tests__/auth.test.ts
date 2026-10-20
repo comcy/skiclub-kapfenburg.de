@@ -88,6 +88,27 @@ describe('Auth Routes', () => {
     expect(secondVerify.status).toBe(401);
   });
 
+  it('Login setzt newsSince auf den vorherigen Login (beim ersten Login: jetzt) - /auth/me liefert es', async () => {
+    const inviteId = randomUUID();
+    db.prepare(
+      "INSERT INTO invites (id, email, token_hash, expires_at) VALUES (?, ?, 'unused', datetime('now', '+7 days'))",
+    ).run(inviteId, 'news@example.com');
+
+    await request(app).post('/api/auth/magic-link').send({ email: 'news@example.com' });
+    const first = await request(app).post('/api/auth/magic-link/verify').send({ token: extractTokenFromLink() });
+    const firstLogin = (db.prepare('SELECT last_login_at AS t FROM users WHERE email = ?').get('news@example.com') as { t: string }).t;
+    // Erster Login: nichts ist "neu seit davor".
+    expect(first.body.user.newsSince).toBe(firstLogin);
+
+    await request(app).post('/api/auth/magic-link').send({ email: 'news@example.com' });
+    const second = await request(app).post('/api/auth/magic-link/verify').send({ token: extractTokenFromLink() });
+    // Zweiter Login: Basis = der erste Login.
+    expect(second.body.user.newsSince).toBe(firstLogin);
+
+    const me = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${second.body.sessionToken}`);
+    expect(me.body.newsSince).toBe(firstLogin);
+  });
+
   it('GET /api/auth/me - erfordert eine gültige Sitzung', async () => {
     const unauthedRes = await request(app).get('/api/auth/me');
     expect(unauthedRes.status).toBe(401);

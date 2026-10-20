@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { CourseRegistration } from '../../domain/course-registration';
+import { NewsService } from '../../../shared/services/news.service';
 import { Tile } from '../../domain/tile';
 import { TilesDataService } from '../../services/tiles-data.service';
 
@@ -13,6 +14,8 @@ export interface CourseOverviewRow {
     // Ski Alpin / Snowboard bei Ski-Kursen - undefined bei Kursen ohne Sportart (Gymnastik).
     sport?: string;
     count: number;
+    // Davon neu seit dem letzten Login ("Alles gesehen").
+    newCount: number;
 }
 
 // Kurs-Pendant zu RegistrationsOverviewComponent - ohne Kapazitäts-/
@@ -27,6 +30,7 @@ export interface CourseOverviewRow {
 export class CourseRegistrationsOverviewComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly news = inject(NewsService);
 
     public rows: CourseOverviewRow[] = [];
     public loaded = false;
@@ -51,14 +55,17 @@ export class CourseRegistrationsOverviewComponent implements OnInit {
 
     private toRows(tile: Tile, registrations: CourseRegistration[]): CourseOverviewRow[] {
         const confirmed = registrations.filter((r) => r.status === 'confirmed');
-        const bySport = new Map<string, number>();
+        const bySport = new Map<string, { count: number; newCount: number }>();
         for (const r of confirmed) {
             const sport = r.sportType?.trim() || '';
-            bySport.set(sport, (bySport.get(sport) ?? 0) + 1);
+            const entry = bySport.get(sport) ?? { count: 0, newCount: 0 };
+            entry.count += 1;
+            if (this.news.isNew(r.createdAt)) entry.newCount += 1;
+            bySport.set(sport, entry);
         }
-        if (!bySport.size) return [{ tile, count: 0 }];
+        if (!bySport.size) return [{ tile, count: 0, newCount: 0 }];
         return [...bySport.entries()]
             .sort(([a], [b]) => a.localeCompare(b))
-            .map(([sport, count]) => ({ tile, sport: sport || undefined, count }));
+            .map(([sport, { count, newCount }]) => ({ tile, sport: sport || undefined, count, newCount }));
     }
 }

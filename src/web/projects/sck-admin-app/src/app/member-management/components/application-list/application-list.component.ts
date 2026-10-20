@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { MembershipApplication } from '../../domain/membership-application';
+import { NewsService } from '../../../shared/services/news.service';
 import { MemberChangesService } from '../../services/member-changes.service';
 import { MembersDataService } from '../../services/members-data.service';
 
@@ -29,6 +30,7 @@ export class ApplicationListComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly memberChanges = inject(MemberChangesService);
     private readonly snackBar = inject(MatSnackBar);
+    public readonly news = inject(NewsService);
 
     public applications$!: Observable<MembershipApplication[]>;
     public displayedColumns: string[] = ['name', 'email', 'submittedAt', 'confirmed', 'iban', 'actions'];

@@ -91,7 +91,12 @@
                     </tr>
                     @for (registration of group.registrations; track registration.id) {
                         <tr class="row">
-                            <td>{{ registration.firstName }} {{ registration.lastName }}</td>
+                            <td>
+                                {{ registration.firstName }} {{ registration.lastName }}
+                                @if (news.isNew(registration.createdAt)) {
+                                    <span class="badge-new">Neu</span>
+                                }
+                            </td>
                             <td>
                                 {{ exactAge(registration.birthday) ?? ageCategoryLabels[registration.ageCategory] }}
                             </td>

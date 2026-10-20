@@ -21,6 +21,8 @@ export interface AuthUser {
   email: string;
   isSuperAdmin: boolean;
   permissions: Permission[];
+  // ISO-Zeitpunkt, ab dem Eintraege fuer diesen Admin als "neu" gelten (siehe news_since).
+  newsSince: string | null;
 }
 
 export interface MagicLinkRequestBody {

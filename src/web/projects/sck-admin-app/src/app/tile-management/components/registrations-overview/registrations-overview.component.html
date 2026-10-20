@@ -17,7 +17,12 @@
             <tbody>
                 @for (tile of tiles; track tile.id) {
                     <tr class="row" [class.row-expired]="tile.expired">
-                        <td>{{ tile.title }}</td>
+                        <td>
+                            {{ tile.title }}
+                            @if (news.newInTile('trips', tile.id); as count) {
+                                <span class="badge-new">{{ count }} neu</span>
+                            }
+                        </td>
                         <td>{{ tile.date }}</td>
                         <td>
                             <span

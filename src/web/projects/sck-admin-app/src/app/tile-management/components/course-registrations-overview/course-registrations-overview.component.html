@@ -20,6 +20,9 @@
                             @if (row.sport) {
                                 <span class="sport-tag">{{ row.sport }}</span>
                             }
+                            @if (row.newCount) {
+                                <span class="badge-new">{{ row.newCount }} neu</span>
+                            }
                         </td>
                         <td>{{ row.count }}</td>
                         <td class="actions-cell">

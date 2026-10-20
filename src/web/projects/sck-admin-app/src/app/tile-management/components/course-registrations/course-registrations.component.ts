@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { calculateAge } from 'projects/shared-lib/src/lib/date-time';
 import { AuthService } from '../../../auth/services/auth.service';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../../domain/course-registration';
+import { NewsService } from '../../../shared/services/news.service';
 import { Tile } from '../../domain/tile';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { CourseRegistrationEditorComponent } from './course-registration-editor/course-registration-editor.component';
@@ -29,6 +30,7 @@ export class CourseRegistrationsComponent implements OnInit {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly snackBar = inject(MatSnackBar);
     public readonly auth = inject(AuthService);
+    public readonly news = inject(NewsService);
 
     public tile: Tile | null = null;
     public registrations: CourseRegistration[] = [];

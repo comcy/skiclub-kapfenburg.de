@@ -30,6 +30,9 @@
                     >
                         <mat-icon>{{ item.icon }}</mat-icon>
                         <span class="nav-label">{{ item.name }}</span>
+                        @if (navBadge(item); as count) {
+                            <span class="nav-badge" [matTooltip]="count + ' neu'">{{ count }}</span>
+                        }
                     </a>
                 }
             </div>
