@@ -182,6 +182,11 @@ export interface PublicCourseRegistrationInput {
   phone?: string;
   sportType?: string;
   level?: string;
+  // ISO-Datum (YYYY-MM-DD), Grundlage der serverseitigen Preisberechnung.
+  birthday?: string;
+  // Selbstauskunft aus dem Formular - nur fuer die Preisberechnung, nicht gespeichert
+  // (isMember bleibt die serverseitig per E-Mail verifizierte Angabe).
+  memberSelfReported?: boolean;
   notes?: string;
 }
 
@@ -197,6 +202,7 @@ export const createPublicRegistration = (tileId: string, params: PublicCourseReg
     email: params.email,
     phone: params.phone,
     sportType: params.sportType,
+    birthday: params.birthday,
     level: params.level,
     status: 'confirmed',
     source: 'sheet-import',

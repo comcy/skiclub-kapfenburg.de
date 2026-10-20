@@ -151,6 +151,16 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
         return emailError && requiredError;
     }
 
+    // Lokale Datumsteile statt toISOString() - sonst rutscht das Datum je nach
+    // Zeitzone um einen Tag.
+    private toIsoDate(value: Date | string | null | undefined): string | undefined {
+        if (!value) return undefined;
+        const d = new Date(value);
+        if (isNaN(d.getTime())) return undefined;
+        const pad = (n: number) => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+
     public isSubmitDisabled(): boolean {
         return !this.courseRegisterForm.valid || !this.turnstileToken || this.isSending || this.isSubmitted;
     }
@@ -202,6 +212,8 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
                                 phone: rawValue.phone,
                                 sportType: rawValue.sportType,
                                 level: rawValue.level,
+                                birthday: this.toIsoDate(rawValue.birthday),
+                                memberSelfReported: !!rawValue.isMember,
                                 notes: [
                                     birthdayText ? `Geburtsdatum: ${birthdayText}` : '',
                                     rawValue.isMember ? 'Mitglied' : '',

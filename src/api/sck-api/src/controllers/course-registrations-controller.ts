@@ -9,6 +9,7 @@ import { PublicCourseRegistrationInput } from '../services/course-registrations-
 import { TileStatus } from '../domain/tile.js';
 import { getTile } from '../services/tiles-service.js';
 import { sendMail } from '../services/mailer.js';
+import { calculateCoursePrice, getCurrentSkiCoursePricing } from '../services/course-pricing-service.js';
 import {
   getCourseConfirmationMailBcc,
   getCourseConfirmationMailSubject,
@@ -25,6 +26,8 @@ const isValidPublicParams = (body: unknown): body is PublicCourseRegistrationInp
   const p = body as Record<string, unknown>;
   return typeof p.firstName === 'string' && p.firstName.trim().length > 0 && typeof p.lastName === 'string' && p.lastName.trim().length > 0;
 };
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 export const listCourseRegistrations: RequestHandler = (req, res) => {
   try {
@@ -71,13 +74,24 @@ export const createPublicCourseRegistration: RequestHandler = async (req, res) =
       return;
     }
 
-    const registration = registrationsService.createPublicRegistration(tileId, req.body);
+    // birthday kommt vom Client ungeprueft - nur ein ISO-Datum wird uebernommen.
+    const birthday = ISO_DATE.test(String(req.body.birthday ?? '')) ? String(req.body.birthday) : undefined;
+    const registration = registrationsService.createPublicRegistration(tileId, { ...req.body, birthday });
+    // Zahlbetrag wie im Formular angezeigt: verifizierte ODER selbst angegebene Mitgliedschaft.
+    const price = calculateCoursePrice(
+      {
+        sportType: registration.sportType,
+        birthday: registration.birthday,
+        isMember: registration.isMember || req.body.memberSelfReported === true,
+      },
+      getCurrentSkiCoursePricing(),
+    );
 
     try {
       const sent = await sendMail(
         registration.email ?? '',
         getCourseConfirmationMailSubject(registration),
-        getCourseConfirmationMailText(registration),
+        getCourseConfirmationMailText(registration, price),
         getCourseConfirmationMailBcc(),
       );
       if (sent) {
