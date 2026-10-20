@@ -34,6 +34,8 @@ export interface TripRegistration {
     // Server-only: nur nach erfolgreichem Mailversand serverseitig gesetzt,
     // nie über ein PUT vom Client editierbar - siehe die Omit unten.
     confirmationMailSent: boolean;
+    // Zeitpunkt der Anmeldung (ISO) - fuer die Neu-Markierung.
+    createdAt?: string;
     // Eigene Auswahl des Anmelders (Formular) - server-seitig persistiert
     // (siehe der Plan). Required (nicht optional), damit ein Editor-PUT, das
     // diese Felder vergisst, hier einen Compile-Fehler auslöst statt die
@@ -52,5 +54,12 @@ export interface TripRegistration {
 // automatic email match got wrong - see trip-registrations-service.ts.
 export type TripRegistrationCreationParams = Omit<
     TripRegistration,
-    'id' | 'tileId' | 'memberId' | 'boardingName' | 'confirmationMailSent' | 'enteredBy' | 'selfReportedIsMember'
+    | 'id'
+    | 'tileId'
+    | 'memberId'
+    | 'boardingName'
+    | 'confirmationMailSent'
+    | 'enteredBy'
+    | 'selfReportedIsMember'
+    | 'createdAt'
 >;

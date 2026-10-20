@@ -23,6 +23,8 @@ export interface TripRegistration {
   boardingName?: string;
   ageCategory: AgeCategory;
   isMember: boolean;
+  // Zeitpunkt der Anmeldung (Admin: "Neu"-Markierung).
+  createdAt: string;
   // What the participant themselves checked on the public form - kept
   // separate from isMember (server-verified via email, see resolveMember)
   // so admins can spot a mismatch (claimed member pricing but isMember is
@@ -66,7 +68,7 @@ export interface TripRegistration {
 // email match got wrong (see registration-editor.component.ts).
 export type TripRegistrationCreationParams = Omit<
   TripRegistration,
-  'id' | 'tileId' | 'memberId' | 'boardingName' | 'confirmationMailSent' | 'enteredBy'
+  'id' | 'tileId' | 'memberId' | 'boardingName' | 'confirmationMailSent' | 'enteredBy' | 'createdAt'
 >;
 
 // One participant as submitted by the PUBLIC registration form (see

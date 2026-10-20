@@ -11,6 +11,7 @@ interface AuthUser {
     email: string;
     isSuperAdmin: boolean;
     permissions: Permission[];
+    newsSince?: string | null;
 }
 
 interface LoginResult {
@@ -22,6 +23,7 @@ const toSession = (user: AuthUser): Session => ({
     email: user.email,
     isSuperAdmin: user.isSuperAdmin,
     permissions: user.permissions,
+    newsSince: user.newsSince,
 });
 
 @Injectable({

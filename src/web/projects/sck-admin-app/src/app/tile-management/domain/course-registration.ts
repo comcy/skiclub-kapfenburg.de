@@ -30,6 +30,8 @@ export interface CourseRegistration {
     // Server-only: nur nach erfolgreichem Mailversand serverseitig gesetzt,
     // nie über ein PUT vom Client editierbar - siehe die Omit unten.
     confirmationMailSent: boolean;
+    // Zeitpunkt der Anmeldung (ISO) - fuer die Neu-Markierung.
+    createdAt?: string;
 }
 
 // memberId is always recomputed server-side from email - never sent by the
@@ -40,5 +42,5 @@ export interface CourseRegistration {
 // editor's onSave()).
 export type CourseRegistrationCreationParams = Omit<
     CourseRegistration,
-    'id' | 'tileId' | 'memberId' | 'enteredBy' | 'confirmationMailSent'
+    'id' | 'tileId' | 'memberId' | 'enteredBy' | 'confirmationMailSent' | 'createdAt'
 >;

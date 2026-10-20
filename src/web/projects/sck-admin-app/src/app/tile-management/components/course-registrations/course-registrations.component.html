@@ -54,7 +54,12 @@
             <tbody>
                 @for (registration of visibleRegistrations; track registration.id) {
                     <tr class="row">
-                        <td>{{ registration.lastName }}</td>
+                        <td>
+                            {{ registration.lastName }}
+                            @if (news.isNew(registration.createdAt)) {
+                                <span class="badge-new">Neu</span>
+                            }
+                        </td>
                         <td>{{ registration.firstName }}</td>
                         <td>{{ age(registration) ?? '–' }}</td>
                         <td>{{ registration.email || '–' }}</td>

@@ -200,7 +200,32 @@
     }
 }
 
+// "N neu" am Menuepunkt; eingeklappt als Eck-Badge am Icon.
+.nav-badge {
+    margin-left: auto;
+    min-width: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+    text-align: center;
+}
+
+.collapsed .nav-badge {
+    position: absolute;
+    top: 2px;
+    right: 6px;
+    min-width: 16px;
+    padding: 0 4px;
+    font-size: 10px;
+    line-height: 16px;
+}
+
 .nav-item {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -215,6 +240,16 @@
     font-size: 14px;
     text-decoration: none;
     cursor: pointer;
+
+    // Icon und Label behalten ihre Groesse, auch wenn rechts ein Badge sitzt.
+    mat-icon {
+        flex: 0 0 auto;
+    }
+
+    .nav-label {
+        min-width: 0;
+        white-space: nowrap;
+    }
 
     &:hover {
         background: var(--mat-sys-surface-container);

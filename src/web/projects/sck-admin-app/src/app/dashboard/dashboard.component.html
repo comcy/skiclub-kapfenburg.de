@@ -1,6 +1,31 @@
 <shared-lib-site-header title="Willkommen zurück" [color]="undefined"></shared-lib-site-header>
 
 <div class="content-area">
+    @if (news.summary(); as n) {
+        <section>
+            <div class="news-header">
+                <h2 class="section-title">Neu seit {{ n.since | date: 'dd.MM.yyyy HH:mm' }}</h2>
+                <button class="news-seen" type="button" (click)="news.markSeen()">Alles gesehen</button>
+            </div>
+            <div class="news-grid">
+                <a class="news-card" [class.has-news]="n.trips.total > 0" routerLink="/registrations/ausfahrten">
+                    <div class="news-number">{{ n.trips.total }}</div>
+                    <div class="news-label">neue Anmeldungen zu Ausfahrten</div>
+                </a>
+                <a class="news-card" [class.has-news]="n.courses.total > 0" routerLink="/registrations/kurse">
+                    <div class="news-number">{{ n.courses.total }}</div>
+                    <div class="news-label">neue Kursanmeldungen</div>
+                </a>
+                @if (n.applications !== null) {
+                    <a class="news-card" [class.has-news]="n.applications > 0" routerLink="/member-management/antraege">
+                        <div class="news-number">{{ n.applications }}</div>
+                        <div class="news-label">neue Mitgliedsanträge</div>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+
     @if (stats) {
         <section>
             <div class="stat-grid">

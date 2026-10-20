@@ -165,3 +165,17 @@ shared-lib-site-header {
         overflow: visible !important;
     }
 }
+
+// "Neu" an Zeilen/Kacheln, die seit dem letzten Login (bzw. "Alles gesehen") hinzugekommen sind.
+.badge-new {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 16px;
+    vertical-align: middle;
+}

@@ -1,20 +1,23 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SiteHeaderComponent } from '@shared/ui-common';
 import { DashboardDataService } from './services/dashboard-data.service';
 import { ActivityEntry, DashboardStats } from './domain/dashboard';
 import { relativeTime } from './domain/relative-time';
+import { NewsService } from '../shared/services/news.service';
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [RouterLink, SiteHeaderComponent],
+    imports: [RouterLink, SiteHeaderComponent, DatePipe],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
     private readonly dataService = inject(DashboardDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    public readonly news = inject(NewsService);
 
     public stats: DashboardStats | null = null;
     public activity: ActivityEntry[] = [];
