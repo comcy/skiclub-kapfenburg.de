@@ -4,6 +4,7 @@
 
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import {
+    ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
@@ -68,6 +69,7 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
     private formBuilder = inject(FormBuilder);
     private courseRegistrationFormService = inject(CourseRegistrationFormServiceInterface);
     private snackBar = inject(MatSnackBar);
+    private cdr = inject(ChangeDetectorRef);
     private snackAction = 'Ok';
     breakpointObserver = inject(BreakpointObserverService);
 
@@ -214,22 +216,22 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
                                 level: rawValue.level,
                                 birthday: this.toIsoDate(rawValue.birthday),
                                 memberSelfReported: !!rawValue.isMember,
-                                notes: [
-                                    birthdayText ? `Geburtsdatum: ${birthdayText}` : '',
-                                    rawValue.isMember ? 'Mitglied' : '',
-                                    `Preis: ${price} €`,
-                                    rawValue.additionalText,
-                                ]
-                                    .filter(Boolean)
-                                    .join(' — '),
+                                // Geburtsdatum und Mitgliedschaft gehen als eigene Felder mit, der Preis
+                                // wird serverseitig berechnet - notes bleibt leer, solange die Person
+                                // nichts einträgt.
+                                notes: rawValue.additionalText?.trim() || undefined,
                             },
                             this.turnstileToken as string,
                         )
                         .subscribe({
                             next: () => {
-                                this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
+                                // Zustand zuerst und explizit markieren: der Callback läuft ausserhalb von
+                                // Angulars Change Detection (zoneless), ohne markForCheck bleibt das
+                                // Häkchen am Button aus.
                                 this.isSending = false;
                                 this.isSubmitted = true;
+                                this.cdr.markForCheck();
+                                this.snackBar.open(getCourseConfirmationSuccessMessage(), this.snackAction);
                             },
                             error: (error) => {
                                 console.error('Fehler beim Speichern der Kurs-Anmeldung:', error);
@@ -238,6 +240,7 @@ export class CourseRegistrationFormComponent implements OnInit, OnChanges {
                                     this.snackAction,
                                 );
                                 this.isSending = false;
+                                this.cdr.markForCheck();
                             },
                         });
                 } else {

@@ -226,6 +226,19 @@ describe('Course Registrations Routes', () => {
       expect(html).toContain('Zahlbetrag');
       expect(html).toContain('60,00');
       expect(html).toContain('01.01.1990');
+      expect(html).toContain('Mitglied:');
+      expect(html).toContain('Ja');
+    });
+
+    it('Mail zeigt Zusatzangaben nur, wenn die Person etwas eingetragen hat', async () => {
+      const tileId = createTile();
+      await request(app)
+        .post(`/api/tiles/${tileId}/course-registrations/public`)
+        .send({ firstName: 'Max', lastName: 'Mustermann', email: 'max@test.com', notes: 'Bitte Gruppe mit Freundin' });
+
+      const html = (mockedSendMail.mock.calls[0][0] as any).html as string;
+      expect(html).toContain('Zusatzangaben');
+      expect(html).toContain('Bitte Gruppe mit Freundin');
     });
 
     it('Mail ohne Geburtsdatum zeigt keinen Zahlbetrag', async () => {
@@ -234,7 +247,10 @@ describe('Course Registrations Routes', () => {
         .post(`/api/tiles/${tileId}/course-registrations/public`)
         .send({ firstName: 'Max', lastName: 'Mustermann', email: 'max@test.com', sportType: 'Ski Alpin' });
 
-      expect((mockedSendMail.mock.calls[0][0] as any).html).not.toContain('Zahlbetrag');
+      const html = (mockedSendMail.mock.calls[0][0] as any).html as string;
+      expect(html).not.toContain('Zahlbetrag');
+      // Keine Zusatzangaben eingetragen -> kein leerer Kasten.
+      expect(html).not.toContain('Zusatzangaben');
     });
 
     it('bleibt trotz fehlgeschlagenem Mailversand gespeichert (Best-Effort, kein Rollback, kein 500)', async () => {
