@@ -10,6 +10,11 @@ on:
       - ".github/workflows/*"
   workflow_dispatch:
 
+# Kein paralleler Upload auf dasselbe Ziel: ein laufender endet, von den wartenden bleibt nur der neueste.
+concurrency:
+  group: deploy-web-prod
+  cancel-in-progress: false
+
 env:
   PROJECT_PATH: "src/web/"
   INFRASTRUCTURE_SCRIPTS_PATH: "infrastructure/scripts/"
