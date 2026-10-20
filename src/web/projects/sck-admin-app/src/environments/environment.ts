@@ -8,4 +8,6 @@ export const environment = {
     // Cloudflare's official "always passes" test site key - no real
     // Turnstile account needed for local dev (see turnstile-widget.component.ts).
     turnstileSiteKey: '1x00000000000000000000AA',
+    gitCommitHash: '',
+    deployEnv: 'DEV',
 };

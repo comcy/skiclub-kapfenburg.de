@@ -91,6 +91,9 @@ services:
       args:
         SCK_API_URL: ${SCK_API_URL}
         TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY}
+        # Von den Deploy-Workflows exportiert - leer bei manuellem Build.
+        GIT_COMMIT_HASH: ${GIT_COMMIT_HASH}
+        DEPLOY_ENV: ${DEPLOY_ENV}
     restart: unless-stopped
     ports:
       - '8081:80'

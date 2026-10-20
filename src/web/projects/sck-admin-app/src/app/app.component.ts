@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { environment } from '../environments/environment';
 import { AuthService } from './auth/services/auth.service';
 import { ThemeSwitcherComponent } from './theme/theme-switcher/theme-switcher.component';
 
@@ -35,6 +36,8 @@ export class AppComponent implements OnInit {
 
     title = 'SCK Admin';
     navExpanded = true;
+    // "#TEST:abc1234" - welche Pipeline und welcher Commit hier laufen (leer lokal ohne Hash).
+    readonly buildTag = environment.gitCommitHash ? `#${environment.deployEnv}:${environment.gitCommitHash}` : '';
     navItems: NavItem[] = [
         { name: 'Übersicht', route: '/dashboard', icon: 'dashboard' },
         { name: 'Anmeldungen', route: '/registrations', icon: 'how_to_reg' },

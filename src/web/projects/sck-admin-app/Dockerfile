@@ -12,6 +12,8 @@ RUN pnpm install --frozen-lockfile
 
 ARG SCK_API_URL
 ARG TURNSTILE_SITE_KEY
+ARG GIT_COMMIT_HASH
+ARG DEPLOY_ENV
 
 # sck-admin-app talks to the same sck-api instance as sck-app, so it reuses
 # the same SCK_API_URL value rather than needing its own template/envsubst
@@ -20,6 +22,10 @@ ARG TURNSTILE_SITE_KEY
 RUN sed -i "s|sckApiUrl: ''|sckApiUrl: '$SCK_API_URL'|" \
   src/web/projects/sck-admin-app/src/environments/environment.prod.ts
 RUN sed -i "s|turnstileSiteKey: ''|turnstileSiteKey: '$TURNSTILE_SITE_KEY'|" \
+  src/web/projects/sck-admin-app/src/environments/environment.prod.ts
+# .git ist nicht im Build-Kontext (.dockerignore) - Hash und Umgebung kommen
+# als Build-Arg vom Deploy-Workflow, analog zu sck-app.
+RUN sed -i "s|gitCommitHash: ''|gitCommitHash: '$GIT_COMMIT_HASH'|; s|deployEnv: ''|deployEnv: '$DEPLOY_ENV'|" \
   src/web/projects/sck-admin-app/src/environments/environment.prod.ts
 RUN pnpm --filter web run build:admin
 
