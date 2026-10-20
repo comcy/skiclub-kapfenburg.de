@@ -33,6 +33,9 @@
                     </a>
                 }
             </div>
+            @if (buildTag) {
+                <span class="build-tag" [matTooltip]="'Build ' + buildTag">{{ buildTag }}</span>
+            }
             <button
                 mat-icon-button
                 class="collapse-toggle"

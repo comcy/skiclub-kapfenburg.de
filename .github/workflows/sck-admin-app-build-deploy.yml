@@ -85,6 +85,10 @@ jobs:
           git checkout master
           git reset --hard origin/master
 
+          # .git ist nicht im Docker-Build-Kontext - Hash/Umgebung als Build-Arg.
+          export GIT_COMMIT_HASH=$(git rev-parse --short HEAD)
+          export DEPLOY_ENV=PROD
+
           echo "🔨 Building admin image..."
           docker compose build admin
 
