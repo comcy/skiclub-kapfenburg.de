@@ -1,6 +1,4 @@
-<div class="header">
-    <h2>Nutzer</h2>
-</div>
+<app-page-heading title="Nutzer"> </app-page-heading>
 
 <table mat-table [dataSource]="(users$ | async) || []" class="mat-elevation-z8">
     <ng-container matColumnDef="email">

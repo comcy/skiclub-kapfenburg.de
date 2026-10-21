@@ -5,11 +5,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../auth/services/auth.service';
 import { SettingsDataService } from './services/settings-data.service';
+import { PageHeadingComponent } from '../shared/components/page-heading/page-heading.component';
 
 @Component({
     selector: 'app-settings',
     standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+    imports: [PageHeadingComponent, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
 })

@@ -1,10 +1,9 @@
-<div class="header">
-    <h2>Newsletter-Anmeldungen</h2>
+<app-page-heading title="Newsletter-Anmeldungen">
     <button mat-stroked-button [disabled]="!signups.length" (click)="onExport()">
         <mat-icon>download</mat-icon>
         CSV exportieren
     </button>
-</div>
+</app-page-heading>
 
 <table mat-table [dataSource]="signups" class="mat-elevation-z8">
     <ng-container matColumnDef="email">

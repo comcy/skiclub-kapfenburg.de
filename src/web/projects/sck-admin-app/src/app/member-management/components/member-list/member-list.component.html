@@ -1,5 +1,4 @@
-<div class="header">
-    <h2>Mitgliederliste</h2>
+<app-page-heading title="Mitgliederliste">
     @if (auth.hasPermission('members:manage')) {
         <div class="header-actions">
             <button mat-stroked-button (click)="onExportList()">
@@ -16,7 +15,7 @@
             </button>
         </div>
     }
-</div>
+</app-page-heading>
 
 <app-collapsible-filters>
     <div class="filters">

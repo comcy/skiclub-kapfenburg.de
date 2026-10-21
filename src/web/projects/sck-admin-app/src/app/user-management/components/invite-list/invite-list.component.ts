@@ -9,11 +9,12 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { Invite } from '../../domain/invite';
 import { UsersDataService } from '../../services/users-data.service';
 import { InviteEditDialogComponent } from '../invite-edit-dialog/invite-edit-dialog.component';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 @Component({
     selector: 'app-invite-list',
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+    imports: [PageHeadingComponent, CommonModule, MatTableModule, MatButtonModule, MatIconModule],
     templateUrl: './invite-list.component.html',
     styleUrls: ['./invite-list.component.scss'],
 })

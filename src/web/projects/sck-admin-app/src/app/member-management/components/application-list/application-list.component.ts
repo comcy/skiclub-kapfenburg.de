@@ -12,6 +12,7 @@ import { MembershipApplication } from '../../domain/membership-application';
 import { NewsService } from '../../../shared/services/news.service';
 import { MemberChangesService } from '../../services/member-changes.service';
 import { MembersDataService } from '../../services/members-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 // Now its own routed tab (Anträge) rather than a section nested under the
 // Mitglieder tab - "Als Mitglied übernehmen" navigates straight to the
@@ -20,7 +21,7 @@ import { MembersDataService } from '../../services/members-data.service';
 @Component({
     selector: 'app-application-list',
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatTooltipModule],
+    imports: [PageHeadingComponent, CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatTooltipModule],
     templateUrl: './application-list.component.html',
     styleUrls: ['./application-list.component.scss'],
 })

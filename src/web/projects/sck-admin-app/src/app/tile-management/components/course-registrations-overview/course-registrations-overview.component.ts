@@ -8,6 +8,7 @@ import { CourseRegistration } from '../../domain/course-registration';
 import { NewsService } from '../../../shared/services/news.service';
 import { Tile } from '../../domain/tile';
 import { TilesDataService } from '../../services/tiles-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 export interface CourseOverviewRow {
     tile: Tile;
@@ -23,7 +24,7 @@ export interface CourseOverviewRow {
 @Component({
     selector: 'app-course-registrations-overview',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, RouterLink],
+    imports: [PageHeadingComponent, CommonModule, MatButtonModule, MatIconModule, RouterLink],
     templateUrl: './course-registrations-overview.component.html',
     styleUrls: ['./course-registrations-overview.component.scss'],
 })

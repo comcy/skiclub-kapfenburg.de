@@ -21,11 +21,13 @@ import {
 } from '../member-export-dialog/member-export-dialog.component';
 import { MemberChangesService } from '../../services/member-changes.service';
 import { MembersDataService } from '../../services/members-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 @Component({
     selector: 'app-member-list',
     standalone: true,
     imports: [
+        PageHeadingComponent,
         CommonModule,
         FormsModule,
         MatTableModule,

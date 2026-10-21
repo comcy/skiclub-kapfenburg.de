@@ -3,27 +3,6 @@
     padding: var(--sck-page-inset);
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    row-gap: 8px;
-    gap: 12px;
-    margin-bottom: 16px;
-
-    h2 {
-        flex: 1;
-        margin: 0;
-        font-size: 20px;
-        font-weight: 500;
-    }
-
-    button mat-spinner {
-        display: inline-block;
-        margin-right: 8px;
-    }
-}
-
 .state-message {
     display: flex;
     justify-content: center;

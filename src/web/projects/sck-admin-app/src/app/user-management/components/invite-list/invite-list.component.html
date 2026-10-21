@@ -1,12 +1,11 @@
-<div class="header">
-    <h2>Einladungen</h2>
+<app-page-heading title="Einladungen">
     @if (auth.hasPermission('users:manage')) {
         <button mat-raised-button color="primary" (click)="onCreate()">
             <mat-icon>add</mat-icon>
             Neu einladen
         </button>
     }
-</div>
+</app-page-heading>
 
 <table mat-table [dataSource]="(invites$ | async) || []" class="mat-elevation-z8">
     <ng-container matColumnDef="email">

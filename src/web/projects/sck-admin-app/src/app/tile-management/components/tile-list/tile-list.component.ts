@@ -21,11 +21,13 @@ import { Tile } from '../../domain/tile';
 import { TileStatus, TileType } from '../../domain/tile-enums';
 import { TileChangesService } from '../../services/tile-changes.service';
 import { TilesDataService } from '../../services/tiles-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 @Component({
     selector: 'app-tile-list',
     standalone: true,
     imports: [
+        PageHeadingComponent,
         CommonModule,
         MatTableModule,
         MatPaginatorModule,
