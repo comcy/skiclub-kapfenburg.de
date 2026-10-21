@@ -61,6 +61,16 @@ export class TileCardComponent {
     public readonly tileActions = TileActions;
     public readonly weekdayLabels = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
 
+    // Event OHNE Aktion "Anmelden" (z. B. Skibörse): ein Termin, zu dem man sich nicht anmeldet.
+    // Fehlt `actions` ganz (statische Alt-Daten), gilt der Event wie bisher als anmeldbar.
+    get isAppointment(): boolean {
+        return (
+            this.tile.type === TileType.Event &&
+            Array.isArray(this.tile.actions) &&
+            !this.tile.actions.includes(TileActions.Register)
+        );
+    }
+
     get isEventFull(): boolean {
         if (this.tile.type !== TileType.Event) {
             return false;
@@ -79,7 +89,7 @@ export class TileCardComponent {
         if (this.tile.status === TileStatus.BookedUp || this.isEventFull) {
             return 'Warteliste';
         }
-        if (this.tile.type === TileType.Event) {
+        if (this.tile.type === TileType.Event && !this.isAppointment) {
             return 'Plätze frei';
         }
         return undefined;
@@ -96,6 +106,9 @@ export class TileCardComponent {
     }
 
     get description(): string {
+        if (this.isAppointment) {
+            return this.markdown.render(this.buildAppointmentDescription(this.tile as EventTile));
+        }
         if (this.tile.type === TileType.Event) {
             return (this.tile as EventTile).destination ?? '';
         }
@@ -108,6 +121,16 @@ export class TileCardComponent {
     // Port of home.component.ts's former getTileDescription(): Info tiles
     // append their location/timeData onto the description, other types
     // don't carry these fields at all.
+    // Termin ohne Anmeldung: Beschreibung wie bei Info-Kacheln, der Ort (subTitle) wird angehaengt;
+    // Datum steht als Eyebrow ueber dem Titel.
+    private buildAppointmentDescription(tile: EventTile): string {
+        let content = tile.description || '';
+        if (tile.subTitle) {
+            content += `\n\n**Ort:** ${tile.subTitle}\n`;
+        }
+        return content;
+    }
+
     private buildInfoDescription(tile: InfoTile): string {
         let content = tile.description || '';
         if (tile.location) {
@@ -123,7 +146,7 @@ export class TileCardComponent {
     }
 
     get metaChips(): MetaChip[] {
-        if (this.tile.type !== TileType.Event) {
+        if (this.tile.type !== TileType.Event || this.isAppointment) {
             return [];
         }
         const trip = this.tile as EventTile;

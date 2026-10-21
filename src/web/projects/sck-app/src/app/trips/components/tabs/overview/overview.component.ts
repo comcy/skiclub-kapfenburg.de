@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { TRIP_DATA } from '@data';
-import { EventTile, InfoTile, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
+import { EventTile, InfoTile, TileActions, TileType } from 'projects/shared-lib/src/lib/ui-common/models';
 import { TileCardComponent } from '@shared/ui-common';
 import { TripTilesApiServiceInterface } from 'projects/trips-lib/src/lib/api/trip-tiles-api.interface';
 
@@ -35,7 +35,9 @@ const ALL = 'Alle';
 export class OverviewComponent implements OnInit {
     public allTrips: EventTile[] = [];
     public filteredTrips: EventTile[] = [];
-    /** Standing offers alongside the trips (e.g. Skibörse, Schneeschuhverleih) - not date-bound events. */
+    /** Events ohne Anmeldung (z. B. Skibörse) - eigener Abschnitt "Termine", nicht in der Ausfahrten-Liste. */
+    public appointments: EventTile[] = [];
+    /** Standing offers alongside the trips (e.g. Schneeschuhverleih) - not date-bound events. */
     public otherOffers: InfoTile[] = [];
 
     public audiences: string[] = [ALL];
@@ -55,9 +57,13 @@ export class OverviewComponent implements OnInit {
         this.otherOffers = TRIP_DATA.filter((t): t is InfoTile => t.type === TileType.Info);
 
         this.tripsApi.getAllTrips().subscribe((tiles) => {
-            this.allTrips = tiles
+            const events = tiles
                 .filter((t): t is EventTile => t.type === TileType.Event)
                 .sort((a, b) => a.expiration.getTime() - b.expiration.getTime());
+            // Ohne die Aktion "Anmelden" ist es ein Termin (fehlt `actions` ganz, gilt es als Ausfahrt).
+            const isTrip = (e: EventTile) => !Array.isArray(e.actions) || e.actions.includes(TileActions.Register);
+            this.allTrips = events.filter(isTrip);
+            this.appointments = events.filter((e) => !isTrip(e) && e.expiration.getTime() >= Date.now());
 
             this.audiences = [
                 ALL,

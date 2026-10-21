@@ -44,6 +44,22 @@
         </section>
     }
 
+    @if (upcomingAppointments.length > 0) {
+        <section class="tile-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Termine</h2>
+                    <p>Veranstaltungen des Vereins, zu denen du einfach vorbeikommen kannst.</p>
+                </div>
+            </div>
+            <div class="tiles-grid">
+                @for (appointment of upcomingAppointments; track appointment.id) {
+                    <shared-lib-tile-card [tile]="appointment"></shared-lib-tile-card>
+                }
+            </div>
+        </section>
+    }
+
     <section class="tile-section highlighted">
         <div class="section-heading">
             <div>

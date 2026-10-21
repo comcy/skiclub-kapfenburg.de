@@ -45,7 +45,7 @@
 
     @if (!tile.imageOnly) {
         <div class="tile-card-content">
-            @if (tile.type !== tileType.Event) {
+            @if (tile.type !== tileType.Event || isAppointment) {
                 <div class="eyebrow">{{ tile.type === tileType.Course ? tile.subTitle : tile.date }}</div>
             }
             <h3>{{ tile.title }}</h3>
@@ -94,7 +94,7 @@
             }
 
             <div class="card-actions">
-                @if (tile.type === tileType.Info && !ctaOverride) {
+                @if ((tile.type === tileType.Info || isAppointment) && !ctaOverride) {
                     <span></span>
                     @for (action of tile.actions ?? []; track action) {
                         @switch (action) {

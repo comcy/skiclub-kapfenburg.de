@@ -3,7 +3,7 @@
  */
 
 import { Tile } from 'projects/shared-lib/src/lib/ui-common/models';
-import { SKIBOERSE_TILE, SCHNEESCHUHVERLEIH_TILE } from './events';
+import { SCHNEESCHUHVERLEIH_TILE } from './events';
 
 export const BOARDING_LIST = [
     'Westhausen Turnhalle (5:40 Uhr)',
@@ -16,5 +16,7 @@ export const BOARDING_LIST_SHORT = ['Schwabsberg Schule (5:00 Uhr)', 'Westhausen
 
 // Die Ausfahrten-Events selbst kommen seit Issue #215 ausschliesslich aus
 // der sck-api-DB (siehe trip-tiles-api.service.ts) - hier bleiben nur noch
-// die zwei Info-Tiles, fuer die es noch keine API-Anbindung gibt.
-export const TRIP_DATA: Tile[] = [SKIBOERSE_TILE, SCHNEESCHUHVERLEIH_TILE];
+// der Schneeschuhverleih als Info-Tile, fuer den es noch keine API-Anbindung gibt.
+// Termine ohne Anmeldung (z. B. die Skiboerse) sind Events in der API, ohne Aktion
+// "register" - siehe tile-card.component.ts (isAppointment).
+export const TRIP_DATA: Tile[] = [SCHNEESCHUHVERLEIH_TILE];

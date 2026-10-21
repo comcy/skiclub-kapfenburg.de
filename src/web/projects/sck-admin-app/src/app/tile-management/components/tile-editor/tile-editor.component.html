@@ -79,6 +79,16 @@
                         </mat-form-field>
                     </div>
 
+                    @if (tile.type === 'event') {
+                        <mat-checkbox [ngModel]="hasRegistration" (ngModelChange)="onRegistrationEnabledChange($event)">
+                            Anmeldung möglich
+                        </mat-checkbox>
+                        <p class="hint-text">
+                            Ohne Anmeldung erscheint der Event als „Termin“ (Datum, Ort, Beschreibung, Bild) im Kalender
+                            und unter „Termine“ – ohne Anmelden-Button, Preise, Kapazität und Zustiege.
+                        </p>
+                    }
+
                     <div class="form-grid two-columns">
                         <mat-form-field>
                             <mat-label>Actions</mat-label>
@@ -91,40 +101,50 @@
                             </mat-select>
                         </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>Boardings</mat-label>
-                            <mat-select [(ngModel)]="tile.boardings" multiple>
-                                @for (boarding of availableBoardings$ | async; track boarding.id) {
-                                    <mat-option [value]="boarding.name">
-                                        {{ boarding.name }}
-                                    </mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
+                        @if (hasRegistration) {
+                            <mat-form-field>
+                                <mat-label>Boardings</mat-label>
+                                <mat-select [(ngModel)]="tile.boardings" multiple>
+                                    @for (boarding of availableBoardings$ | async; track boarding.id) {
+                                        <mat-option [value]="boarding.name">
+                                            {{ boarding.name }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        }
                     </div>
 
-                    <div class="form-grid two-columns">
-                        <mat-form-field>
-                            <mat-label>Capacity (seats)</mat-label>
-                            <input matInput type="number" min="0" [(ngModel)]="tile.capacity" placeholder="Unlimited" />
-                        </mat-form-field>
+                    @if (hasRegistration) {
+                        <div class="form-grid two-columns">
+                            <mat-form-field>
+                                <mat-label>Capacity (seats)</mat-label>
+                                <input
+                                    matInput
+                                    type="number"
+                                    min="0"
+                                    [(ngModel)]="tile.capacity"
+                                    placeholder="Unlimited"
+                                />
+                            </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>Organizer</mat-label>
-                            <mat-select [(ngModel)]="tile.organizerUserId">
-                                <mat-option [value]="undefined">–</mat-option>
-                                @for (user of availableUsers$ | async; track user.id) {
-                                    <mat-option [value]="user.id">
-                                        {{ user.email }}
-                                    </mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
+                            <mat-form-field>
+                                <mat-label>Organizer</mat-label>
+                                <mat-select [(ngModel)]="tile.organizerUserId">
+                                    <mat-option [value]="undefined">–</mat-option>
+                                    @for (user of availableUsers$ | async; track user.id) {
+                                        <mat-option [value]="user.id">
+                                            {{ user.email }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    }
 
                     <mat-checkbox [(ngModel)]="tile.visible">Visible</mat-checkbox>
 
-                    @if (tile.tripConfig) {
+                    @if (tile.tripConfig && hasRegistration) {
                         <app-editable-text
                             label="Ziel"
                             [value]="tile.destination ?? ''"
