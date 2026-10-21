@@ -15,6 +15,10 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
+app-page-heading {
+    padding: var(--sck-page-inset) var(--sck-page-inset) 0;
+}
+
 .page {
     display: flex;
     flex-direction: column;

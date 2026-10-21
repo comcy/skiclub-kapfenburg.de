@@ -1,9 +1,9 @@
 <div class="container">
-    <div class="header">
+    <app-page-heading title="Ausfahrten">
         @if (auth.hasPermission('tiles:write')) {
             <button mat-raised-button color="primary" (click)="onCreate()">Event erstellen</button>
         }
-    </div>
+    </app-page-heading>
 
     <app-collapsible-filters>
         <div class="filters">

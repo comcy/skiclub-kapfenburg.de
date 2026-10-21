@@ -18,6 +18,7 @@ import { Tile } from '../../domain/tile';
 import { TileStatus, TileType } from '../../domain/tile-enums';
 import { TileChangesService } from '../../services/tile-changes.service';
 import { TilesDataService } from '../../services/tiles-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 export type CourseKind = 'sport' | 'ski';
 
@@ -25,6 +26,7 @@ export type CourseKind = 'sport' | 'ski';
     selector: 'app-course-tile-list',
     standalone: true,
     imports: [
+        PageHeadingComponent,
         CommonModule,
         FormsModule,
         MatTableModule,
@@ -73,6 +75,10 @@ export class CourseTileListComponent implements OnInit {
     private readonly changesSubscription = this.courseTileChanges.changed$
         .pipe(takeUntilDestroyed())
         .subscribe(() => this.refresh());
+
+    public get heading(): string {
+        return this.courseKind === 'sport' ? 'Sportkurse' : 'Ski-/Snowboardkurse';
+    }
 
     public get createButtonLabel(): string {
         return this.courseKind === 'sport' ? 'Sportkurs erstellen' : 'Ski-/Snowboardkurs erstellen';

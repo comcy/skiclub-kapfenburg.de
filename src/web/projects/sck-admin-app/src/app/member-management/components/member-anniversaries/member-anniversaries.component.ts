@@ -11,6 +11,7 @@ import { GERMAN_DATE_FORMATS, GermanDateAdapter } from 'projects/shared-lib/src/
 import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
 import { AnniversaryGroup, Member } from '../../domain/member';
 import { MembersDataService } from '../../services/members-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 const toIsoDate = (date: Date): string => {
     const year = date.getFullYear();
@@ -23,6 +24,7 @@ const toIsoDate = (date: Date): string => {
     selector: 'app-member-anniversaries',
     standalone: true,
     imports: [
+        PageHeadingComponent,
         CommonModule,
         FormsModule,
         MatButtonModule,

@@ -1,5 +1,4 @@
-<div class="header">
-    <h2>Medien</h2>
+<app-page-heading title="Medien">
     @if (auth.hasPermission('tiles:write')) {
         <button mat-raised-button color="primary" (click)="onUploadClick()" [disabled]="isUploading">
             @if (isUploading) {
@@ -11,7 +10,7 @@
         </button>
         <input #fileInput type="file" accept="image/*" style="display: none" (change)="onFileSelected($event)" />
     }
-</div>
+</app-page-heading>
 
 @if (isLoading) {
     <div class="state-message"><mat-spinner diameter="32"></mat-spinner></div>

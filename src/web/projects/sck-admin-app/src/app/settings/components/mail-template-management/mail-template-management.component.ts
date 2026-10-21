@@ -28,6 +28,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { PanelShellComponent } from '../../../shared/components/panel-shell/panel-shell.component';
 import { MailTemplateSettings } from '../../domain/mail-template-setting';
 import { SettingsDataService } from '../../services/settings-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 interface PlaceholderInfo {
     token: string;
@@ -40,7 +41,15 @@ const EMPTY_TEXT = { introHtml: '', termsHtml: '', signatureHtml: '' };
 @Component({
     selector: 'app-mail-template-management',
     standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, TextFieldModule, PanelShellComponent],
+    imports: [
+        PageHeadingComponent,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        TextFieldModule,
+        PanelShellComponent,
+    ],
     templateUrl: './mail-template-management.component.html',
     styleUrls: ['./mail-template-management.component.scss'],
 })

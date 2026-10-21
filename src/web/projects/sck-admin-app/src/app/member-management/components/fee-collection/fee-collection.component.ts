@@ -19,6 +19,7 @@ import { SepaCreditorSetting } from '../../../settings/domain/sepa-creditor-sett
 import { SettingsDataService } from '../../../settings/services/settings-data.service';
 import { SepaExportCandidate, SepaExportPreview, SepaSequenceType } from '../../domain/sepa-export';
 import { MembersDataService } from '../../services/members-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 // Same day-precision ISO conversion as member-editor.component.ts's
 // toIsoDate() - duplicated rather than shared for a two-call-site helper.
@@ -33,6 +34,7 @@ const toIsoDate = (date: Date): string => {
     selector: 'app-fee-collection',
     standalone: true,
     imports: [
+        PageHeadingComponent,
         FormsModule,
         MatFormFieldModule,
         MatInputModule,

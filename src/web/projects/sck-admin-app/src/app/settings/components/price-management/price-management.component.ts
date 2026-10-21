@@ -10,6 +10,7 @@ import { PanelShellComponent } from '../../../shared/components/panel-shell/pane
 import { SkiCoursePricingSetting } from '../../domain/ski-course-pricing-setting';
 import { TripPricingSetting } from '../../domain/trip-pricing-setting';
 import { SettingsDataService } from '../../services/settings-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 const zero = () => ({ member: 0, nonMember: 0 });
 
@@ -19,7 +20,14 @@ const zero = () => ({ member: 0, nonMember: 0 });
 @Component({
     selector: 'app-price-management',
     standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, PanelShellComponent],
+    imports: [
+        PageHeadingComponent,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        PanelShellComponent,
+    ],
     templateUrl: './price-management.component.html',
     styleUrls: ['./price-management.component.scss'],
 })

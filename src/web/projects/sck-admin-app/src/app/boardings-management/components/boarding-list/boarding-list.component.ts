@@ -11,20 +11,20 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { Boarding } from '../../domain/boarding';
 import { BoardingsDataService } from '../../services/boardings-data.service';
 import { BoardingEditDialogComponent } from '../boarding-edit-dialog/boarding-edit-dialog.component';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 @Component({
     selector: 'app-boarding-list',
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatPaginatorModule],
+    imports: [PageHeadingComponent, CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatPaginatorModule],
     template: `
-        <div class="header">
-            <h2>Boardings</h2>
+        <app-page-heading title="Boardings">
             @if (auth.hasPermission('boardings:write')) {
                 <button mat-raised-button color="primary" (click)="onCreate()">
                     <mat-icon>add</mat-icon> Create New Boarding
                 </button>
             }
-        </div>
+        </app-page-heading>
 
         <table mat-table [dataSource]="(boardings$ | async) || []" class="mat-elevation-z8">
             <ng-container matColumnDef="name">
@@ -62,12 +62,6 @@ import { BoardingEditDialogComponent } from '../boarding-edit-dialog/boarding-ed
     `,
     styles: [
         `
-            .header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 16px;
-            }
             table {
                 width: 100%;
             }

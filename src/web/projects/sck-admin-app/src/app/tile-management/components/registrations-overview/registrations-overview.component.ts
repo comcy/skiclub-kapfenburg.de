@@ -7,6 +7,7 @@ import { NewsService } from '../../../shared/services/news.service';
 import { Tile } from '../../domain/tile';
 import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 // Dedicated shortcut page for "wie steht diese Ausfahrt gerade" - the
 // generic Tiles list already has a per-row "Anmeldungen" button, but it's
@@ -16,7 +17,7 @@ import { TilesDataService } from '../../services/tiles-data.service';
 @Component({
     selector: 'app-registrations-overview',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, RouterLink],
+    imports: [PageHeadingComponent, CommonModule, MatButtonModule, MatIconModule, RouterLink],
     templateUrl: './registrations-overview.component.html',
     styleUrls: ['./registrations-overview.component.scss'],
 })

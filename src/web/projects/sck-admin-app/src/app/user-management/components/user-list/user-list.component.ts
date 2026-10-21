@@ -7,11 +7,12 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../../../auth/services/auth.service';
 import { AdminUser } from '../../domain/user';
 import { UsersDataService } from '../../services/users-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 @Component({
     selector: 'app-user-list',
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+    imports: [PageHeadingComponent, CommonModule, MatTableModule, MatButtonModule, MatIconModule],
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.scss'],
 })

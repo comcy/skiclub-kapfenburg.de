@@ -13,13 +13,9 @@
     min-height: 0;
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 16px;
-    border-bottom: 1px solid var(--mat-sys-outline-variant);
-    flex-shrink: 0;
+// Ueberschrift mit Aktion (gemeinsame Komponente) sitzt auf dem Seitenrand.
+app-page-heading {
+    padding: var(--sck-page-inset) var(--sck-page-inset) 0;
 }
 
 // Filter-Button und -Felder sitzen auf dem gemeinsamen Seitenrand.

@@ -5,11 +5,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Image } from '../../domain/image';
 import { TilesDataService } from '../../services/tiles-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 @Component({
     selector: 'app-media-management',
     standalone: true,
-    imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+    imports: [PageHeadingComponent, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
     templateUrl: './media-management.component.html',
     styleUrls: ['./media-management.component.scss'],
 })

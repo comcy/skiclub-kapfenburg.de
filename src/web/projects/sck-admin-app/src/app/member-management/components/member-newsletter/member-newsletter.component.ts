@@ -5,11 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { NewsletterSignup } from '../../domain/newsletter-signup';
 import { MembersDataService } from '../../services/members-data.service';
+import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 @Component({
     selector: 'app-member-newsletter',
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+    imports: [PageHeadingComponent, CommonModule, MatTableModule, MatButtonModule, MatIconModule],
     templateUrl: './member-newsletter.component.html',
     styleUrls: ['./member-newsletter.component.scss'],
 })

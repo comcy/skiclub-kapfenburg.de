@@ -1,6 +1,4 @@
-<div class="header">
-    <h2>Eingereichte Anträge</h2>
-</div>
+<app-page-heading title="Eingereichte Anträge"> </app-page-heading>
 
 @if (applications$ | async; as applications) {
     @if (applications.length) {
