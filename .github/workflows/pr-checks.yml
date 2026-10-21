@@ -1,0 +1,78 @@
+name: PR Checks
+
+# Lint und Unit-Tests von Admin-App, Web-App und API schon im Pull Request.
+# Bisher liefen diese Tests nur NACH dem Push auf master (in den Deploy-
+# Workflows) - ein kaputter Test fiel erst nach dem Merge auf und blockierte
+# den Deploy. E2E (Playwright) laufen weiterhin separat in e2e-tests.yml.
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "src/web/**"
+      - "src/api/sck-api/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/pr-checks.yml"
+
+# Ein neuer Push in denselben PR ersetzt den noch laufenden, veralteten Lauf.
+concurrency:
+  group: pr-checks-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  admin:
+    name: admin (lint + unit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - name: Lint und Tests (sck-admin-app)
+        run: |
+          pnpm --filter web run lint:admin
+          pnpm --filter web run test:admin
+        env:
+          CHROME_BIN: /usr/bin/google-chrome-stable
+
+  web:
+    name: web (unit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - name: Tests (sck-app)
+        run: pnpm --filter web run test
+        env:
+          CHROME_BIN: /usr/bin/google-chrome-stable
+
+  api:
+    name: api (typecheck + tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - name: Typecheck und Tests (sck-api)
+        run: |
+          pnpm --filter sck-api run lint
+          pnpm --filter sck-api run test

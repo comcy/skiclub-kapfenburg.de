@@ -47,7 +47,7 @@ describe('TripRegistrationsComponent', () => {
                         deleteRegistration: () => of(undefined),
                     },
                 },
-                { provide: AuthService, useValue: { hasPermission: () => true } },
+                { provide: AuthService, useValue: { hasPermission: () => true, session: () => null } },
                 { provide: MatDialog, useValue: jasmine.createSpyObj<MatDialog>('MatDialog', ['open']) },
             ],
         }).compileComponents();
