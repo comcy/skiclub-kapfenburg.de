@@ -17,6 +17,7 @@ import { CourseTileEditRoutingDialogComponent } from './tile-management/componen
 import { CourseTileListComponent } from './tile-management/components/course-tile-list/course-tile-list.component';
 import { EventTileEditRoutingDialogComponent } from './tile-management/components/event-tile-edit-routing-dialog/event-tile-edit-routing-dialog.component';
 import { MediaManagementComponent } from './tile-management/components/media-management/media-management.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
 import { RegistrationsOverviewComponent } from './tile-management/components/registrations-overview/registrations-overview.component';
 import { TileListComponent } from './tile-management/components/tile-list/tile-list.component';
 import { TripRegistrationsComponent } from './tile-management/components/trip-registrations/trip-registrations.component';
@@ -199,6 +200,21 @@ export const routes: Routes = [
                 path: '',
                 redirectTo: 'mitglieder',
                 pathMatch: 'full',
+            },
+        ],
+    },
+    {
+        path: 'analytics',
+        component: TileManagementComponent,
+        canActivate: [authGuard],
+        data: {
+            title: 'Analytics',
+            navLinks: [],
+        },
+        children: [
+            {
+                path: '',
+                component: AnalyticsComponent,
             },
         ],
     },

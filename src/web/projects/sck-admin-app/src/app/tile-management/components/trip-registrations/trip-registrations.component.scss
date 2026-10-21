@@ -54,7 +54,7 @@
     flex: 1;
     min-height: 0;
     overflow: auto;
-    padding: 24px 32px;
+    padding: var(--sck-page-inset);
 }
 
 .print-title {

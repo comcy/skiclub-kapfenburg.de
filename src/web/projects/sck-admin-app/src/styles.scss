@@ -179,3 +179,10 @@ shared-lib-site-header {
     line-height: 16px;
     vertical-align: middle;
 }
+
+// Einheitlicher Seitenrand im Admin: Inhalt (Ueberschriften, Filter, Tabellen) sitzt auf allen
+// Seiten um diesen Abstand vom linken/rechten Rand der Seite eingerueckt. Neue Seiten nutzen
+// diesen Wert statt eigener padding-Zahlen.
+:root {
+    --sck-page-inset: 16px;
+}

@@ -49,6 +49,7 @@ export class AppComponent implements OnInit {
         { name: 'Event-Management', route: '/event-management', icon: 'grid_view' },
         { name: 'Kurs-Management', route: '/course-management', icon: 'school' },
         { name: 'Vereinsverwaltung', route: '/member-management', icon: 'badge' },
+        { name: 'Analytics', route: '/analytics', icon: 'insights' },
         { name: 'Einstellungen', route: '/settings', icon: 'settings' },
     ];
 
