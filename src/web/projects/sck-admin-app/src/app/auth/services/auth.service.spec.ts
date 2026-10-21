@@ -41,7 +41,13 @@ describe('AuthService', () => {
         const req = httpMock.expectOne(`${environment.sckApiUrl}/auth/magic-link/verify`);
         expect(req.request.body).toEqual({ token: 'magic-token' });
         req.flush({
-            user: { id: '1', email: 'member@example.com', isSuperAdmin: false, permissions: ['tiles:write'] },
+            user: {
+                id: '1',
+                email: 'member@example.com',
+                isSuperAdmin: false,
+                permissions: ['tiles:write'],
+                newsSince: '2026-10-01T00:00:00.000Z',
+            },
             sessionToken: 'session-token',
         });
 
@@ -49,6 +55,7 @@ describe('AuthService', () => {
             email: 'member@example.com',
             isSuperAdmin: false,
             permissions: ['tiles:write'],
+            newsSince: '2026-10-01T00:00:00.000Z',
         });
         expect(service.getToken()).toBe('session-token');
     });
@@ -62,12 +69,13 @@ describe('AuthService', () => {
 
         expect(service.getToken()).toBe('session-token');
         const meReq = httpMock.expectOne(`${environment.sckApiUrl}/auth/me`);
-        meReq.flush({ id: '1', email: 'member@example.com', isSuperAdmin: false, permissions: [] });
+        meReq.flush({ id: '1', email: 'member@example.com', isSuperAdmin: false, permissions: [], newsSince: null });
 
         expect(service.session()).toEqual({
             email: 'member@example.com',
             isSuperAdmin: false,
             permissions: [],
+            newsSince: null,
         });
     });
 
@@ -80,12 +88,19 @@ describe('AuthService', () => {
 
         service.checkSession().subscribe();
         const req = httpMock.expectOne(`${environment.sckApiUrl}/auth/me`);
-        req.flush({ id: '1', email: 'member@example.com', isSuperAdmin: false, permissions: ['boardings:write'] });
+        req.flush({
+            id: '1',
+            email: 'member@example.com',
+            isSuperAdmin: false,
+            permissions: ['boardings:write'],
+            newsSince: '2026-10-02T00:00:00.000Z',
+        });
 
         expect(service.session()).toEqual({
             email: 'member@example.com',
             isSuperAdmin: false,
             permissions: ['boardings:write'],
+            newsSince: '2026-10-02T00:00:00.000Z',
         });
         expect(service.hasPermission('boardings:write')).toBeTrue();
         expect(service.hasPermission('users:manage')).toBeFalse();
