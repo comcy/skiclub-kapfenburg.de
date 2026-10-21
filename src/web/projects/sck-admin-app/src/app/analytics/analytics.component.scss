@@ -1,0 +1,33 @@
+// Seite haengt unter der tile-management-Shell (clippt statt zu scrollen): Flex-Kette fuer die
+// Panel-Shell, siehe CLAUDE.md.
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--mat-sys-on-surface-variant);
+
+    mat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 40px;
+    }
+
+    h3 {
+        margin: 0;
+        color: var(--mat-sys-on-surface);
+    }
+
+    p {
+        margin: 0;
+        max-width: 520px;
+    }
+}

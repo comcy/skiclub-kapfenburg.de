@@ -14,25 +14,11 @@
     overflow: hidden;
 }
 
-.page-header {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--mat-sys-outline-variant);
-}
-
-.page-title {
-    font-size: 18px;
-    font-weight: 500;
-}
-
 .page-content {
     flex: 1;
     min-height: 0;
     overflow: auto;
-    padding: 24px 32px;
+    padding: var(--sck-page-inset);
 }
 
 .overview-table {
