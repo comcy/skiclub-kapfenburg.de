@@ -1,0 +1,65 @@
+.export {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: min(640px, 80vw);
+}
+
+.options-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    mat-form-field {
+        flex: 1 1 240px;
+    }
+}
+
+.field-select summary {
+    cursor: pointer;
+    padding: 4px 0 8px;
+    font-size: 14px;
+    color: var(--mat-sys-primary);
+}
+
+.fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 8px 16px;
+
+    fieldset {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 4px 12px 8px;
+        border: 1px solid var(--mat-sys-outline-variant);
+        border-radius: 8px;
+
+        &.bank {
+            border-color: light-dark(#8a6d00, #e6c85c);
+        }
+    }
+
+    legend {
+        padding: 0 6px;
+        font-size: 13px;
+        color: var(--mat-sys-on-surface-variant);
+    }
+}
+
+.bank-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: light-dark(#8a6d00, #e6c85c);
+    background: light-dark(#fff8e1, #3a3320);
+}
+
+.output textarea {
+    font-family: monospace;
+    font-size: 13px;
+    white-space: pre;
+}

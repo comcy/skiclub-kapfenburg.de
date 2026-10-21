@@ -1,0 +1,72 @@
+<app-dialog-shell [title]="data.title">
+    <div class="export">
+        @if (isList) {
+            <div class="options-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Welche Mitglieder</mat-label>
+                    <mat-select [ngModel]="scopeIndex()" (ngModelChange)="scopeIndex.set($event)">
+                        @for (scope of data.scopes; track scope.label; let i = $index) {
+                            <mat-option [value]="i">{{ scope.label }} ({{ scope.members.length }})</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Format</mat-label>
+                    <mat-select [ngModel]="format()" (ngModelChange)="format.set($event)">
+                        <mat-option value="tsv">Tabelle (zum Einfügen in Excel/Sheets)</mat-option>
+                        <mat-option value="csv">CSV (Semikolon, für Excel)</mat-option>
+                        <mat-option value="text">Text (ein Block je Mitglied)</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            @if (format() !== 'text') {
+                <mat-checkbox [ngModel]="withHeader()" (ngModelChange)="withHeader.set($event)">
+                    Kopfzeile mit Spaltennamen
+                </mat-checkbox>
+            }
+        }
+
+        @if (includesBank()) {
+            <div class="bank-warning">
+                <mat-icon>warning</mat-icon>
+                Enthält Bankdaten – nur an berechtigte Personen weitergeben.
+            </div>
+        }
+
+        <mat-form-field appearance="outline" class="output">
+            <mat-label>Vorschau</mat-label>
+            <textarea matInput readonly rows="12" [value]="output()"></textarea>
+        </mat-form-field>
+
+        <details class="field-select" [open]="isList">
+            <summary>Felder auswählen</summary>
+            <div class="fields">
+                @for (g of groups; track g.group) {
+                    <fieldset [class.bank]="g.group === 'Bankdaten'">
+                        <legend>{{ g.group }}</legend>
+                        @for (field of g.fields; track field.key) {
+                            <mat-checkbox [ngModel]="isOn(field.key)" (ngModelChange)="toggle(field.key, $event)">
+                                {{ field.label }}
+                            </mat-checkbox>
+                        }
+                    </fieldset>
+                }
+            </div>
+        </details>
+    </div>
+
+    <ng-container dialogActions>
+        @if (isList) {
+            <button mat-stroked-button (click)="download()" [disabled]="!output()">
+                <mat-icon>download</mat-icon>
+                Herunterladen
+            </button>
+        }
+        <button mat-raised-button color="primary" (click)="copy()" [disabled]="!output()">
+            <mat-icon>content_copy</mat-icon>
+            Kopieren
+        </button>
+    </ng-container>
+</app-dialog-shell>

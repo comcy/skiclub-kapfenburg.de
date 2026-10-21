@@ -9,10 +9,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
 import { Member } from '../../domain/member';
+import {
+    MemberExportDialogComponent,
+    MemberExportDialogData,
+} from '../member-export-dialog/member-export-dialog.component';
 import { MemberChangesService } from '../../services/member-changes.service';
 import { MembersDataService } from '../../services/members-data.service';
 
@@ -29,6 +35,7 @@ import { MembersDataService } from '../../services/members-data.service';
         MatInputModule,
         MatSelectModule,
         MatPaginatorModule,
+        MatTooltipModule,
         CollapsibleFiltersComponent,
     ],
     templateUrl: './member-list.component.html',
@@ -38,6 +45,7 @@ export class MemberListComponent implements OnInit {
     private readonly dataService = inject(MembersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly router = inject(Router);
+    private readonly dialog = inject(MatDialog);
     private readonly memberChanges = inject(MemberChangesService);
     public readonly auth = inject(AuthService);
 
@@ -49,6 +57,7 @@ export class MemberListComponent implements OnInit {
     // filtered/paginated client-side, no reason to round-trip to the API for
     // every keystroke or page click.
     private allMembers: Member[] = [];
+    private filteredMembers: Member[] = [];
     public pagedMembers: Member[] = [];
     public totalFiltered = 0;
 
@@ -96,10 +105,39 @@ export class MemberListComponent implements OnInit {
             }
             return true;
         });
+        this.filteredMembers = filtered;
         this.totalFiltered = filtered.length;
         const start = this.pageIndex * this.pageSize;
         this.pagedMembers = filtered.slice(start, start + this.pageSize);
         this.cdr.markForCheck();
+    }
+
+    // Einzelexport einer Zeile: Klartext zum Kopieren (z. B. fuer den Kassierer).
+    onExportMember(member: Member): void {
+        this.dialog.open<MemberExportDialogComponent, MemberExportDialogData>(MemberExportDialogComponent, {
+            data: {
+                title: `Daten exportieren: ${member.firstName} ${member.lastName}`,
+                scopes: [{ label: 'Mitglied', members: [member] }],
+                format: 'text',
+            },
+            maxWidth: '95vw',
+        });
+    }
+
+    // Listenexport mit Auswahl: aktuelle Filterung, alle aktiven oder alle Mitglieder.
+    onExportList(): void {
+        this.dialog.open<MemberExportDialogComponent, MemberExportDialogData>(MemberExportDialogComponent, {
+            data: {
+                title: 'Mitgliederliste exportieren',
+                scopes: [
+                    { label: 'Aktuelle Filterung', members: this.filteredMembers },
+                    { label: 'Alle aktiven', members: this.allMembers.filter((m) => m.status === 'active') },
+                    { label: 'Alle Mitglieder', members: this.allMembers },
+                ],
+                format: 'tsv',
+            },
+            maxWidth: '95vw',
+        });
     }
 
     onEdit(member: Member): void {
