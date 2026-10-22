@@ -94,11 +94,27 @@
             <textarea matInput rows="3" [(ngModel)]="registration.notes"></textarea>
         </mat-form-field>
 
-        <div class="participant-options-hint">
-            Bus only: {{ registration.busOnly ? 'ja' : 'nein' }} · Schneeschuhe:
-            {{ registration.snowshoes ? 'ja' : 'nein' }} · Kurs:
-            {{ registration.courseRequested ? registration.level || 'ja' : '–' }}
+        <div class="participant-options">
+            <mat-checkbox [(ngModel)]="registration.busOnly">Nur Busfahrt</mat-checkbox>
+            @if (showSnowshoes) {
+                <mat-checkbox [(ngModel)]="registration.snowshoes">Schneeschuhverleih</mat-checkbox>
+            }
+            @if (showCourse) {
+                <mat-checkbox [(ngModel)]="registration.courseRequested" (ngModelChange)="onCourseToggle()">
+                    Kurs gewünscht
+                </mat-checkbox>
+            }
         </div>
+        @if (showCourse && registration.courseRequested) {
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Kursstufe</mat-label>
+                <mat-select [(ngModel)]="registration.level">
+                    @for (option of levelOptions; track option) {
+                        <mat-option [value]="option">{{ option }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        }
 
         <mat-checkbox [(ngModel)]="registration.transferredToExternalList" class="checkbox-row">
             Extern erfasst

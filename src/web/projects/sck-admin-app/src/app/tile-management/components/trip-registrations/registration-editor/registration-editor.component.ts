@@ -16,6 +16,7 @@ import {
     TripRegistration,
     TripRegistrationCreationParams,
 } from '../../../domain/trip-registration';
+import { Tile } from '../../../domain/tile';
 import { TilesDataService } from '../../../services/tiles-data.service';
 
 @Component({
@@ -37,6 +38,7 @@ import { TilesDataService } from '../../../services/tiles-data.service';
 })
 export class RegistrationEditorComponent {
     @Input() tileId!: string;
+    @Input() tile: Tile | null = null;
     @Input() registration: TripRegistration | null = null;
     @Output() saved = new EventEmitter<void>();
 
@@ -54,6 +56,34 @@ export class RegistrationEditorComponent {
         youthUntil16: 'Jugend (bis 16)',
         childUntil6: 'Kind (bis 6)',
     };
+
+    // Kurs-/Techniktraining-Stufen wie im öffentlichen Formular; sind für die Ausfahrt
+    // Zuschläge hinterlegt, werden nur diese angeboten.
+    get levelOptions(): string[] {
+        const addons = this.tile?.tripConfig?.pricing?.addons;
+        const all: [string, boolean | undefined][] = [
+            ['Anfängerkurs', !!addons?.courseBeginner],
+            ['Fortgeschrittenenkurs', !!addons?.courseAdvanced],
+            ['Techniktraining (1/2 Tag)', !!addons?.technikHalf],
+            ['Techniktraining (ganzer Tag)', !!addons?.technikFull],
+        ];
+        const configured = all.filter(([, on]) => on).map(([label]) => label);
+        const options = configured.length ? configured : all.map(([label]) => label);
+        const current = this.registration?.level;
+        return current && !options.includes(current) ? [...options, current] : options;
+    }
+
+    get showCourse(): boolean {
+        return !!this.tile?.tripConfig?.hasCourseOption || !!this.registration?.courseRequested;
+    }
+
+    get showSnowshoes(): boolean {
+        return !!this.tile?.tripConfig?.pricing?.addons?.snowshoes || !!this.registration?.snowshoes;
+    }
+
+    onCourseToggle(): void {
+        if (this.registration && !this.registration.courseRequested) this.registration.level = undefined;
+    }
 
     // Read by the dialog's own Speichern button (outside this component, in
     // the dialog shell's sticky actions area).
@@ -80,9 +110,6 @@ export class RegistrationEditorComponent {
             notes: this.registration.notes || undefined,
             orderIndex: this.registration.orderIndex,
             transferredToExternalList: this.registration.transferredToExternalList,
-            // Not editable here (see the template) - carried through as-is
-            // so a save never wipes the registrant's own form choices (see
-            // the plan's critical correctness note on this exact bug).
             busOnly: this.registration.busOnly,
             snowshoes: this.registration.snowshoes,
             courseRequested: this.registration.courseRequested,
