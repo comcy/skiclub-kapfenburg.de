@@ -2,6 +2,7 @@
     <app-page-heading title="Kurse"></app-page-heading>
 
     <div class="page-content">
+        <mat-checkbox [(ngModel)]="showArchive" (ngModelChange)="load()">Archiv anzeigen</mat-checkbox>
         <table class="overview-table">
             <thead>
                 <tr>

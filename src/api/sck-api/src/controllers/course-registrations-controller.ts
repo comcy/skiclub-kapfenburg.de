@@ -64,7 +64,7 @@ export const createPublicCourseRegistration: RequestHandler = async (req, res) =
       res.status(404).json({ error: 'Kurs nicht gefunden.' });
       return;
     }
-    if (tile.status === TileStatus.Canceled || tile.expired) {
+    if (tile.status === TileStatus.Canceled || tile.expired || tile.archivedAt) {
       res.status(400).json({ error: 'Für diesen Kurs ist keine Anmeldung mehr möglich.' });
       return;
     }

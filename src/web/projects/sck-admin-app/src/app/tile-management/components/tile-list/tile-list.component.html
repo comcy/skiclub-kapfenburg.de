@@ -36,6 +36,7 @@
                     }
                 </mat-select>
             </mat-form-field>
+            <mat-checkbox [(ngModel)]="showArchive" (ngModelChange)="onFilterChange()">Archiv anzeigen</mat-checkbox>
         </div>
     </app-collapsible-filters>
 
@@ -58,7 +59,16 @@
             <!-- Title Column -->
             <ng-container matColumnDef="title">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
-                <td mat-cell *matCellDef="let tile">{{ tile.title }}</td>
+                <td mat-cell *matCellDef="let tile">
+                    {{ tile.title }}
+                    @if (tile.archivedAt) {
+                        <span class="badge-archived">archiviert</span>
+                    } @else if (tile.expired) {
+                        <span class="badge-expired" matTooltip="Abgelaufen - archivieren, wenn die Saison vorbei ist"
+                            >abgelaufen</span
+                        >
+                    }
+                </td>
             </ng-container>
 
             <!-- SubTitle Column -->
@@ -116,7 +126,16 @@
                         <button mat-icon-button (click)="onEdit(tile)" matTooltip="Bearbeiten">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button (click)="onDelete(tile)" matTooltip="Löschen">
+                        @if (tile.archivedAt) {
+                            <button mat-icon-button (click)="onUnarchive(tile)" matTooltip="Wiederherstellen">
+                                <mat-icon>unarchive</mat-icon>
+                            </button>
+                        } @else {
+                            <button mat-icon-button (click)="onArchive(tile)" matTooltip="Archivieren">
+                                <mat-icon>inventory_2</mat-icon>
+                            </button>
+                        }
+                        <button mat-icon-button (click)="onDelete(tile)" matTooltip="Löschen (nur ohne Anmeldungen)">
                             <mat-icon>delete</mat-icon>
                         </button>
                     }

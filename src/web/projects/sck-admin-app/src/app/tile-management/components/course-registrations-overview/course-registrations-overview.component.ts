@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -24,7 +26,15 @@ export interface CourseOverviewRow {
 @Component({
     selector: 'app-course-registrations-overview',
     standalone: true,
-    imports: [PageHeadingComponent, CommonModule, MatButtonModule, MatIconModule, RouterLink],
+    imports: [
+        PageHeadingComponent,
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCheckboxModule,
+        FormsModule,
+        RouterLink,
+    ],
     templateUrl: './course-registrations-overview.component.html',
     styleUrls: ['./course-registrations-overview.component.scss'],
 })
@@ -35,23 +45,31 @@ export class CourseRegistrationsOverviewComponent implements OnInit {
 
     public rows: CourseOverviewRow[] = [];
     public loaded = false;
+    public showArchive = false;
 
     ngOnInit(): void {
-        this.dataService.getTiles(1, 1000, undefined, undefined, undefined, 'course').subscribe((response) => {
-            const tiles = [...response.items].sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
-            if (!tiles.length) {
-                this.loaded = true;
-                this.cdr.markForCheck();
-                return;
-            }
-            // Je Kurs die Anmeldungen laden, um nach Sportart zu trennen (A1 Ski und A1
-            // Snowboard sind getrennte Gruppen) - Vereinsgröße, wenige Kurs-Tiles.
-            forkJoin(tiles.map((tile) => this.dataService.getCourseRegistrations(tile.id))).subscribe((lists) => {
-                this.rows = tiles.flatMap((tile, index) => this.toRows(tile, lists[index]));
-                this.loaded = true;
-                this.cdr.markForCheck();
+        this.load();
+    }
+
+    load(): void {
+        this.dataService
+            .getTiles(1, 1000, undefined, undefined, undefined, 'course', undefined, undefined, this.showArchive)
+            .subscribe((response) => {
+                const tiles = [...response.items].sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+                if (!tiles.length) {
+                    this.rows = [];
+                    this.loaded = true;
+                    this.cdr.markForCheck();
+                    return;
+                }
+                // Je Kurs die Anmeldungen laden, um nach Sportart zu trennen (A1 Ski und A1
+                // Snowboard sind getrennte Gruppen) - Vereinsgröße, wenige Kurs-Tiles.
+                forkJoin(tiles.map((tile) => this.dataService.getCourseRegistrations(tile.id))).subscribe((lists) => {
+                    this.rows = tiles.flatMap((tile, index) => this.toRows(tile, lists[index]));
+                    this.loaded = true;
+                    this.cdr.markForCheck();
+                });
             });
-        });
     }
 
     private toRows(tile: Tile, registrations: CourseRegistration[]): CourseOverviewRow[] {

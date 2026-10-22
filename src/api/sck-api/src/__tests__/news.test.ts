@@ -81,6 +81,17 @@ describe('News Routes', () => {
     expect(res.body.applications).toBe(1);
   });
 
+  it('archivierte Tiles zählen nicht mit', async () => {
+    addTile('trip-arch', 'event');
+    db.prepare("UPDATE tiles SET archived_at = '2026-10-01T00:00:00.000Z' WHERE id = 'trip-arch'").run();
+    db.prepare(
+      "INSERT INTO trip_registrations (id, tile_id, first_name, last_name, age_category, status, source, created_at) VALUES ('ta', 'trip-arch', 'A', 'B', 'adult', 'confirmed', 'manual', '2026-10-21T12:00:00.000Z')",
+    ).run();
+    const token = createAuthedUser([], SINCE);
+    const res = await request(app).get('/api/news').set('Authorization', `Bearer ${token}`);
+    expect(res.body.trips.total).toBe(0);
+  });
+
   it('Anträge nur mit members:manage - sonst null statt 0', async () => {
     const token = createAuthedUser([], SINCE);
     const res = await request(app).get('/api/news').set('Authorization', `Bearer ${token}`);

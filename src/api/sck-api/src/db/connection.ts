@@ -260,6 +260,11 @@ if (!tileColumns.some((c) => c.name === 'capacity')) {
 if (!tileColumns.some((c) => c.name === 'organizer_user_id')) {
   db.exec('ALTER TABLE tiles ADD COLUMN organizer_user_id TEXT REFERENCES users (id) ON DELETE SET NULL;');
 }
+// archived_at: Zeitpunkt der Archivierung (NULL = aktiv). Archivierte Tiles verschwinden von der
+// oeffentlichen Seite und aus den Admin-Standardlisten, bleiben samt Anmeldungen aber erhalten.
+if (!tileColumns.some((c) => c.name === 'archived_at')) {
+  db.exec('ALTER TABLE tiles ADD COLUMN archived_at TEXT;');
+}
 
 // SQLite can't ALTER a CHECK constraint, so an already-existing permissions
 // table (from before 'members:manage'/'sepa:export' existed) needs a full

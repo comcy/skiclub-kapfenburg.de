@@ -11,7 +11,7 @@ import {
   listTripRegistrations,
   updateTripRegistration,
 } from '../controllers/trip-registrations-controller.js';
-import { requireAuth, requirePermission } from '../middleware/auth-middleware.js';
+import { requireAuth, requirePermission, requireSuperAdmin } from '../middleware/auth-middleware.js';
 import { publicReadLimiter, publicWriteLimiter } from '../middleware/rate-limit.js';
 import { requireTurnstile } from '../middleware/turnstile-middleware.js';
 
@@ -26,7 +26,7 @@ router.post(
   createPublicTripRegistrations,
 );
 router.put('/registrations/:id', requireAuth, requirePermission('tiles:write'), updateTripRegistration);
-router.delete('/registrations/:id', requireAuth, requirePermission('tiles:write'), deleteTripRegistration);
+router.delete('/registrations/:id', requireAuth, requireSuperAdmin, deleteTripRegistration);
 
 // Public, read-only computation (no DB write) - no Turnstile needed, unlike
 // the registration POST above. publicReadLimiter, not publicWriteLimiter:

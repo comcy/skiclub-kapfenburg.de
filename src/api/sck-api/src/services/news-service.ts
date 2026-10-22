@@ -16,7 +16,7 @@ export interface NewsSummary {
 
 const countByTile = (table: 'trip_registrations' | 'course_registrations', since: string) => {
   const rows = db
-    .prepare(`SELECT tile_id AS tileId, COUNT(*) AS count FROM ${table} WHERE created_at > ? GROUP BY tile_id`)
+    .prepare(`SELECT tile_id AS tileId, COUNT(*) AS count FROM ${table} WHERE created_at > ? AND tile_id IN (SELECT id FROM tiles WHERE archived_at IS NULL) GROUP BY tile_id`)
     .all(since) as { tileId: string; count: number }[];
   return {
     total: rows.reduce((sum, row) => sum + row.count, 0),

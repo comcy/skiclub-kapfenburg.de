@@ -172,6 +172,86 @@ describe('Tiles Routes', () => {
     expect(res.body.total).toBe(2);
   });
 
+  describe('Archiv', () => {
+    const createEvent = (title: string): string => {
+      const id = randomUUID();
+      db.prepare("INSERT INTO tiles (id, type, title, status) VALUES (?, 'event', ?, 'open')").run(id, title);
+      return id;
+    };
+    const addRegistration = (tileId: string): void => {
+      db.prepare(
+        "INSERT INTO trip_registrations (id, tile_id, first_name, last_name, age_category, status, source) VALUES (?, ?, 'A', 'B', 'adult', 'confirmed', 'manual')",
+      ).run(randomUUID(), tileId);
+    };
+
+    it('archivieren braucht tiles:write; archivierte Tiles verschwinden aus der öffentlichen Liste', async () => {
+      const id = createEvent('Fellhorn 2026');
+      createEvent('Ehrwald 2027');
+
+      const forbidden = await request(app)
+        .post(`/api/tiles/${id}/archive`)
+        .set('Authorization', `Bearer ${createAuthedUser(['members:manage'])}`);
+      expect(forbidden.status).toBe(403);
+
+      const token = createAuthedUser(['tiles:write']);
+      const res = await request(app).post(`/api/tiles/${id}/archive`).set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(200);
+      expect(res.body.archivedAt).toBeDefined();
+
+      const publicList = await request(app).get('/api/tiles');
+      expect((publicList.body.items as { title: string }[]).map((t) => t.title)).toEqual(['Ehrwald 2027']);
+    });
+
+    it('GET /api/tiles/archive zeigt nur Archiviertes und nur für angemeldete Admins', async () => {
+      const id = createEvent('Fellhorn 2026');
+      createEvent('Ehrwald 2027');
+      const token = createAuthedUser(['tiles:write']);
+      await request(app).post(`/api/tiles/${id}/archive`).set('Authorization', `Bearer ${token}`);
+
+      expect((await request(app).get('/api/tiles/archive')).status).toBe(401);
+      const res = await request(app).get('/api/tiles/archive').set('Authorization', `Bearer ${token}`);
+      expect((res.body.items as { title: string }[]).map((t) => t.title)).toEqual(['Fellhorn 2026']);
+      expect(res.body.total).toBe(1);
+    });
+
+    it('Wiederherstellen holt ein Tile zurück in die normale Liste', async () => {
+      const id = createEvent('Fellhorn 2026');
+      const token = createAuthedUser(['tiles:write']);
+      await request(app).post(`/api/tiles/${id}/archive`).set('Authorization', `Bearer ${token}`);
+      const res = await request(app).post(`/api/tiles/${id}/unarchive`).set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(200);
+      expect(res.body.archivedAt).toBeUndefined();
+      expect((await request(app).get('/api/tiles')).body.total).toBe(1);
+    });
+
+    it('ein normales Speichern ändert den Archiv-Status nicht', async () => {
+      const id = createEvent('Fellhorn 2026');
+      const token = createAuthedUser(['tiles:write']);
+      await request(app).post(`/api/tiles/${id}/archive`).set('Authorization', `Bearer ${token}`);
+      await request(app)
+        .put(`/api/tiles/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ ...validTilePayload, type: 'event', title: 'Fellhorn 2026 (neu)' });
+      const archive = await request(app).get('/api/tiles/archive').set('Authorization', `Bearer ${token}`);
+      expect(archive.body.items[0].title).toBe('Fellhorn 2026 (neu)');
+    });
+
+    it('löschen wird abgelehnt (409), sobald Anmeldungen existieren - ohne Anmeldungen geht es', async () => {
+      const withRegs = createEvent('Fellhorn 2026');
+      addRegistration(withRegs);
+      const empty = createEvent('Entwurf');
+      const token = createAuthedUser(['tiles:write']);
+
+      const blocked = await request(app).delete(`/api/tiles/${withRegs}`).set('Authorization', `Bearer ${token}`);
+      expect(blocked.status).toBe(409);
+      expect(blocked.body.error).toContain('archivieren');
+      expect((db.prepare('SELECT COUNT(*) AS c FROM trip_registrations').get() as { c: number }).c).toBe(1);
+
+      const ok = await request(app).delete(`/api/tiles/${empty}`).set('Authorization', `Bearer ${token}`);
+      expect(ok.status).toBe(204);
+    });
+  });
+
   it('PUT /api/tiles/:id/boardings - ordnet Boardings anhand ihres Namens zu', async () => {
     const token = createAuthedUser(['tiles:write']);
 

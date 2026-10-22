@@ -3,11 +3,13 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -27,6 +29,7 @@ import { PageHeadingComponent } from '../../../shared/components/page-heading/pa
     selector: 'app-tile-list',
     standalone: true,
     imports: [
+        MatCheckboxModule,
         PageHeadingComponent,
         CommonModule,
         MatTableModule,
@@ -53,6 +56,7 @@ export class TileListComponent implements OnInit {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly tileChanges = inject(TileChangesService);
     public readonly auth = inject(AuthService);
+    private readonly snackBar = inject(MatSnackBar);
 
     private readonly changesSubscription = this.tileChanges.changed$
         .pipe(takeUntilDestroyed())
@@ -68,6 +72,8 @@ export class TileListComponent implements OnInit {
     public filterSearch = '';
     public filterType: string = '';
     public filterStatus: string = '';
+    // Archiv anzeigen: archivierte Tiles statt der aktuellen (Standard).
+    public showArchive = false;
 
     // Kurse (Sport-/Ski-/Snowboard) werden im Kurs-Management verwaltet, nicht hier.
     public readonly tileTypes = Object.values(TileType).filter((type) => type !== TileType.Course);
@@ -94,6 +100,7 @@ export class TileListComponent implements OnInit {
             this.filterSearch = params['search'] || '';
             this.filterType = params['type'] || '';
             this.filterStatus = params['status'] || '';
+            this.showArchive = params['archive'] === '1';
             this.loadTiles();
         });
     }
@@ -114,6 +121,7 @@ export class TileListComponent implements OnInit {
                 this.filterType,
                 this.filterStatus,
                 TileType.Course,
+                this.showArchive,
             )
             .pipe(
                 tap((response) => (this.totalItems = response.total)),
@@ -143,6 +151,7 @@ export class TileListComponent implements OnInit {
             search: this.filterSearch || null,
             type: this.filterType || null,
             status: this.filterStatus || null,
+            archive: this.showArchive ? '1' : null,
         });
     }
 
@@ -158,9 +167,32 @@ export class TileListComponent implements OnInit {
         this.router.navigate([{ outlets: { modal: ['event-bearbeiten', tile.id] } }]);
     }
 
+    onArchive(tile: Tile): void {
+        this.dataService.archiveTile(tile.id).subscribe({
+            next: () => {
+                this.snackBar.open(`„${tile.title}“ archiviert`, 'OK', { duration: 4000 });
+                this.loadTiles();
+            },
+            error: () => this.snackBar.open('Archivieren fehlgeschlagen', 'OK', { duration: 5000 }),
+        });
+    }
+
+    onUnarchive(tile: Tile): void {
+        this.dataService.unarchiveTile(tile.id).subscribe({
+            next: () => {
+                this.snackBar.open(`„${tile.title}“ wiederhergestellt`, 'OK', { duration: 4000 });
+                this.loadTiles();
+            },
+            error: () => this.snackBar.open('Wiederherstellen fehlgeschlagen', 'OK', { duration: 5000 }),
+        });
+    }
+
+    // Mit Anmeldungen lehnt die API das Loeschen ab (409) - die Meldung nennt dann das Archivieren.
     onDelete(tile: Tile): void {
-        this.dataService.deleteTile(tile.id).subscribe(() => {
-            this.loadTiles();
+        this.dataService.deleteTile(tile.id).subscribe({
+            next: () => this.loadTiles(),
+            error: (error) =>
+                this.snackBar.open(error?.error?.error ?? 'Löschen fehlgeschlagen', 'OK', { duration: 6000 }),
         });
     }
 

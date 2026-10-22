@@ -50,6 +50,8 @@ export interface Tile {
   visible?: boolean;
   expired?: boolean;
   createdAt?: string;
+  // Archiviert am (ISO) - nur gesetzt, wenn archiviert; nie ueber ein normales Speichern aenderbar.
+  archivedAt?: string;
   updatedAt?: string;
   // Real tiles columns (Phase 2 of the trip-registration plan) — capacity is
   // nullable (unlimited), organizerUserId a plain informational reference to

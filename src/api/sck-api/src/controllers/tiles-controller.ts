@@ -17,21 +17,49 @@ const isValidTilePayload = (body: Partial<TileCreationParams>): string | undefin
   return undefined;
 };
 
+const parseListParams = (req: Parameters<RequestHandler>[0], archived: boolean) => ({
+  page: parseInt(String(req.query.page ?? '1'), 10) || 1,
+  limit: parseInt(String(req.query.limit ?? '100'), 10) || 100,
+  sort: req.query.sort ? String(req.query.sort) : undefined,
+  direction: (req.query.direction === 'desc' ? 'desc' : 'asc') as 'asc' | 'desc',
+  search: req.query.search ? String(req.query.search) : undefined,
+  type: req.query.type ? String(req.query.type) : undefined,
+  excludeType: req.query.excludeType ? String(req.query.excludeType) : undefined,
+  status: req.query.status ? String(req.query.status) : undefined,
+  archived,
+});
+
+// Archiv (nur Admin): archivierte Tiles samt Anmeldungsanzahl, gleiche Filter wie die normale Liste.
+export const listArchivedTiles: RequestHandler = (req, res) => {
+  try {
+    res.status(200).json(tilesService.listTiles(parseListParams(req, true)));
+  } catch (error: any) {
+    console.error('Fehler beim Laden des Archivs:', error);
+    res.status(500).json({ error: 'Fehler beim Laden des Archivs.' });
+  }
+};
+
+export const archiveTile: RequestHandler = (req, res) => {
+  const tile = tilesService.setTileArchived(String(req.params.id), true);
+  if (!tile) {
+    res.status(404).json({ error: 'Tile nicht gefunden.' });
+    return;
+  }
+  res.status(200).json(tile);
+};
+
+export const unarchiveTile: RequestHandler = (req, res) => {
+  const tile = tilesService.setTileArchived(String(req.params.id), false);
+  if (!tile) {
+    res.status(404).json({ error: 'Tile nicht gefunden.' });
+    return;
+  }
+  res.status(200).json(tile);
+};
+
 export const listTiles: RequestHandler = (req, res) => {
   try {
-    const page = parseInt(String(req.query.page ?? '1'), 10) || 1;
-    const limit = parseInt(String(req.query.limit ?? '100'), 10) || 100;
-
-    const result = tilesService.listTiles({
-      page,
-      limit,
-      sort: req.query.sort ? String(req.query.sort) : undefined,
-      direction: req.query.direction === 'desc' ? 'desc' : 'asc',
-      search: req.query.search ? String(req.query.search) : undefined,
-      type: req.query.type ? String(req.query.type) : undefined,
-      excludeType: req.query.excludeType ? String(req.query.excludeType) : undefined,
-      status: req.query.status ? String(req.query.status) : undefined,
-    });
+    const result = tilesService.listTiles(parseListParams(req, false));
 
     res.status(200).json(result);
   } catch (error: any) {
@@ -94,9 +122,13 @@ export const updateTile: RequestHandler = (req, res) => {
 
 export const deleteTile: RequestHandler = (req, res) => {
   try {
-    const deleted = tilesService.deleteTile(String(req.params.id));
-    if (!deleted) {
+    const outcome = tilesService.deleteTile(String(req.params.id));
+    if (outcome === 'not-found') {
       res.status(404).json({ error: 'Tile nicht gefunden.' });
+      return;
+    }
+    if (outcome === 'has-registrations') {
+      res.status(409).json({ error: 'Dieses Tile hat Anmeldungen und wird nicht gelöscht. Bitte archivieren.' });
       return;
     }
     res.status(204).send();

@@ -126,7 +126,7 @@ describe('Trip Registrations Routes', () => {
     expect(res.status).toBe(403);
   });
 
-  it('erstellt, listet, aktualisiert und löscht eine Anmeldung mit tiles:write', async () => {
+  it('erstellt, listet, aktualisiert und aktualisiert eine Anmeldung mit tiles:write (Löschen nur Super-Admin)', async () => {
     const tileId = createTile();
     const token = createAuthedUser(['tiles:write']);
 
@@ -160,12 +160,12 @@ describe('Trip Registrations Routes', () => {
     expect(updateRes.body.confirmationMailSent).toBe(false);
 
     const deleteRes = await request(app).delete(`/api/registrations/${id}`).set('Authorization', `Bearer ${token}`);
-    expect(deleteRes.status).toBe(204);
+    expect(deleteRes.status).toBe(403); // nur Super-Admin darf löschen
 
     const listAfter = await request(app)
       .get(`/api/tiles/${tileId}/registrations`)
       .set('Authorization', `Bearer ${token}`);
-    expect(listAfter.body).toHaveLength(0);
+    expect(listAfter.body).toHaveLength(1);
   });
 
   it('lehnt eine Anmeldung ohne Vor-/Nachname mit 400 ab', async () => {
@@ -374,6 +374,16 @@ describe('Trip Registrations Routes', () => {
       }
       const toOpfer = mockedSendMail.mock.calls.filter((c) => (c[0] as any).to === 'opfer-d@test.com');
       expect(toOpfer).toHaveLength(3);
+    });
+
+    it('lehnt die Anmeldung zu einer archivierten Ausfahrt ab (400)', async () => {
+      const tileId = createTile(10);
+      db.prepare("UPDATE tiles SET archived_at = '2026-10-01T00:00:00.000Z' WHERE id = ?").run(tileId);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Max', lastName: 'Mustermann', email: 'm@test.com', birthday: '1990-01-01' }] });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('keine Anmeldung mehr möglich');
     });
 
     it('bleibt trotz fehlgeschlagenem Mailversand gespeichert (Best-Effort, kein Rollback, kein 500)', async () => {
