@@ -29,6 +29,7 @@ interface TileRow {
   updated_at: string;
   capacity: number | null;
   organizer_user_id: string | null;
+  archived_at: string | null;
 }
 
 // Picks only the whitelisted passthrough fields (see EXTRA_FIELD_KEYS) into
@@ -106,6 +107,7 @@ const rowToTile = (row: TileRow): Tile => {
     expired: expiration ? expiration.getTime() < Date.now() : false,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    archivedAt: row.archived_at ?? undefined,
     capacity: row.capacity ?? undefined,
     organizerUserId: row.organizer_user_id ?? undefined,
     confirmedRegistrationsCount:
@@ -148,6 +150,8 @@ export interface ListTilesParams {
   // Alle Typen AUSSER diesem (z.B. Event-Management ohne Kurs-Tiles).
   excludeType?: string;
   status?: string;
+  // true = NUR archivierte Tiles (Archiv), sonst nur aktive. Die oeffentliche Seite bekommt nie Archiviertes.
+  archived?: boolean;
 }
 
 type SqlValue = string | number;
@@ -169,6 +173,7 @@ export const listTiles = (params: ListTilesParams): PaginatedResponse<Tile> => {
     conditions.push('type != ?');
     values.push(params.excludeType);
   }
+  conditions.push(params.archived ? 'archived_at IS NOT NULL' : 'archived_at IS NULL');
   if (params.status) {
     conditions.push('status = ?');
     values.push(params.status);
@@ -284,7 +289,25 @@ export const updateTile = (id: string, params: TileCreationParams): Tile | undef
   return getTile(id);
 };
 
-export const deleteTile = (id: string): boolean => {
+// true = hat Anmeldungen (Ausfahrt oder Kurs, jeder Status) - dann wird nicht geloescht, sondern archiviert.
+export const tileHasRegistrations = (id: string): boolean =>
+  !!db
+    .prepare(
+      `SELECT 1 FROM trip_registrations WHERE tile_id = ?
+       UNION ALL SELECT 1 FROM course_registrations WHERE tile_id = ? LIMIT 1`,
+    )
+    .get(id, id);
+
+// Das System loescht erst mal nichts, was Anmeldungen hat: die haengen per ON DELETE CASCADE am Tile.
+export const deleteTile = (id: string): 'deleted' | 'not-found' | 'has-registrations' => {
+  if (tileHasRegistrations(id)) return 'has-registrations';
   const result = db.prepare('DELETE FROM tiles WHERE id = ?').run(id);
-  return result.changes > 0;
+  return result.changes > 0 ? 'deleted' : 'not-found';
+};
+
+export const setTileArchived = (id: string, archived: boolean): Tile | undefined => {
+  const result = db
+    .prepare('UPDATE tiles SET archived_at = ? WHERE id = ?')
+    .run(archived ? new Date().toISOString() : null, id);
+  return result.changes > 0 ? getTile(id) : undefined;
 };

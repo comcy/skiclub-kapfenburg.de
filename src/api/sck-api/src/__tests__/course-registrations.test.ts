@@ -123,12 +123,12 @@ describe('Course Registrations Routes', () => {
     const deleteRes = await request(app)
       .delete(`/api/course-registrations/${id}`)
       .set('Authorization', `Bearer ${token}`);
-    expect(deleteRes.status).toBe(204);
+    expect(deleteRes.status).toBe(403); // nur Super-Admin darf löschen
 
     const listAfter = await request(app)
       .get(`/api/tiles/${tileId}/course-registrations`)
       .set('Authorization', `Bearer ${token}`);
-    expect(listAfter.body).toHaveLength(0);
+    expect(listAfter.body).toHaveLength(1);
   });
 
   it('lehnt eine Anmeldung ohne Vor-/Nachname mit 400 ab', async () => {

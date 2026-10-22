@@ -48,6 +48,7 @@ export class TilesDataService {
         type?: string,
         status?: string,
         excludeType?: string,
+        archived = false,
     ): Observable<PaginatedResponse<Tile>> {
         const params: Record<string, string> = {
             page: page.toString(),
@@ -61,7 +62,8 @@ export class TilesDataService {
         if (status) params['status'] = status;
         if (excludeType) params['excludeType'] = excludeType;
 
-        return this.http.get<PaginatedResponse<Tile>>(`${this.apiUrl}/${this.endpoint}`, {
+        // Archiv = eigener Endpunkt (nur Admin); die normale Liste enthaelt nie Archiviertes.
+        return this.http.get<PaginatedResponse<Tile>>(`${this.apiUrl}/${this.endpoint}${archived ? '/archive' : ''}`, {
             params,
         });
     }
@@ -76,6 +78,14 @@ export class TilesDataService {
 
     updateTile(id: string, tile: Tile): Observable<Tile> {
         return this.http.put<Tile>(`${this.apiUrl}/${this.endpoint}/${id}`, tile);
+    }
+
+    archiveTile(id: string): Observable<Tile> {
+        return this.http.post<Tile>(`${this.apiUrl}/${this.endpoint}/${id}/archive`, {});
+    }
+
+    unarchiveTile(id: string): Observable<Tile> {
+        return this.http.post<Tile>(`${this.apiUrl}/${this.endpoint}/${id}/unarchive`, {});
     }
 
     deleteTile(id: string): Observable<void> {

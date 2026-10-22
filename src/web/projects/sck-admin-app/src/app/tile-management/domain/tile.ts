@@ -28,6 +28,8 @@ export interface Tile {
     visible?: boolean;
     expired?: boolean;
     createdAt?: string;
+    // Archiviert am (ISO) - Archivierte verschwinden von der oeffentlichen Seite, bleiben samt Anmeldungen erhalten.
+    archivedAt?: string;
     updatedAt?: string;
     // Real tiles columns (Phase 2 of the trip-registration plan) — capacity
     // is nullable (unlimited), organizerUserId a plain informational

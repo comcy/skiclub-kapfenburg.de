@@ -52,3 +52,13 @@ export const requirePermission = (permission: Permission): RequestHandler => {
     res.status(403).json({ error: 'Fehlende Berechtigung.' });
   };
 };
+
+// Registrierungen werden nicht gelöscht (Archiv, Auswertungen) - nur der
+// Super-Admin darf im Ausnahmefall (z.B. Testdaten, DSGVO-Anfrage) löschen.
+export const requireSuperAdmin: RequestHandler = (req, res, next) => {
+  if (req.user?.isSuperAdmin) {
+    next();
+    return;
+  }
+  res.status(req.user ? 403 : 401).json({ error: 'Nur der Super-Admin darf Anmeldungen löschen.' });
+};

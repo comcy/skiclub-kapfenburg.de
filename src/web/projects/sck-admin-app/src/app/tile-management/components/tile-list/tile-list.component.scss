@@ -74,3 +74,13 @@ tr.mat-mdc-header-row {
         display: none;
     }
 }
+
+.badge-archived,
+.badge-expired {
+    margin-left: 8px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    color: var(--mat-sys-on-surface-variant);
+}

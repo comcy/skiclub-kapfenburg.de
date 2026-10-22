@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -17,7 +19,15 @@ import { PageHeadingComponent } from '../../../shared/components/page-heading/pa
 @Component({
     selector: 'app-registrations-overview',
     standalone: true,
-    imports: [PageHeadingComponent, CommonModule, MatButtonModule, MatIconModule, RouterLink],
+    imports: [
+        PageHeadingComponent,
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCheckboxModule,
+        FormsModule,
+        RouterLink,
+    ],
     templateUrl: './registrations-overview.component.html',
     styleUrls: ['./registrations-overview.component.scss'],
 })
@@ -29,18 +39,25 @@ export class RegistrationsOverviewComponent implements OnInit {
     public readonly tileStatusEnum = TileStatus;
     public tiles: Tile[] = [];
     public loaded = false;
+    public showArchive = false;
 
     ngOnInit(): void {
+        this.load();
+    }
+
+    load(): void {
         // Same "all event tiles in one go" call as the dashboard - club-scale
         // data, no pagination UI needed here either.
-        this.dataService.getTiles(1, 1000, undefined, undefined, undefined, 'event').subscribe((response) => {
-            this.tiles = [...response.items].sort((a, b) => {
-                if (!!a.expired !== !!b.expired) return a.expired ? 1 : -1;
-                return new Date(a.expiration).getTime() - new Date(b.expiration).getTime();
+        this.dataService
+            .getTiles(1, 1000, undefined, undefined, undefined, 'event', undefined, undefined, this.showArchive)
+            .subscribe((response) => {
+                this.tiles = [...response.items].sort((a, b) => {
+                    if (!!a.expired !== !!b.expired) return a.expired ? 1 : -1;
+                    return new Date(a.expiration).getTime() - new Date(b.expiration).getTime();
+                });
+                this.loaded = true;
+                this.cdr.markForCheck();
             });
-            this.loaded = true;
-            this.cdr.markForCheck();
-        });
     }
 
     confirmedCount(tile: Tile): number {

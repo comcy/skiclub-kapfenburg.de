@@ -173,9 +173,11 @@
                                     <button mat-icon-button (click)="onEdit(registration)">
                                         <mat-icon>edit</mat-icon>
                                     </button>
-                                    <button mat-icon-button (click)="onDelete(registration)">
-                                        <mat-icon>delete</mat-icon>
-                                    </button>
+                                    @if (auth.session()?.isSuperAdmin) {
+                                        <button mat-icon-button (click)="onDelete(registration)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    }
                                 }
                             </td>
                         </tr>
