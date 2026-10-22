@@ -189,6 +189,19 @@ export class TileEditorComponent implements OnInit, OnChanges {
     // Skipass fachlich nicht sinnvoll ist). pricing.busOnly selbst (nicht
     // nur ein Preis darin) steuert das in trips-registration-form.component
     // und der Preistabelle.
+    // Event MIT Aktion "register" = Ausfahrt (Preise, Kapazitaet, Zustiege, Anmeldeformular); ohne = Termin,
+    // zu dem man sich nicht anmeldet (z. B. Skiboerse): nur Bild, Datum, Beschreibung. Andere Typen
+    // (Info, Kurs) haben ihre eigene Logik und bleiben unberuehrt.
+    get hasRegistration(): boolean {
+        return this.tile?.type !== TileType.Event || !!this.tile.actions?.includes(TileActions.Register);
+    }
+
+    onRegistrationEnabledChange(enabled: boolean): void {
+        if (!this.tile) return;
+        const actions = (this.tile.actions ?? []).filter((action) => action !== TileActions.Register);
+        this.tile.actions = enabled ? [...actions, TileActions.Register] : actions;
+    }
+
     onBusOnlyEnabledChange(enabled: boolean): void {
         if (!this.tile?.tripConfig?.pricing) return;
         this.tile.tripConfig.pricing.busOnly = enabled ? { member: 0, nonMember: 0 } : undefined;

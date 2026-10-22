@@ -46,6 +46,7 @@ import {
     EventTile,
     InfoTile,
     Tile,
+    TileActions,
     TileBehavior,
     TileStatus,
     TileType,
@@ -54,6 +55,12 @@ import { ComponentsModule } from 'projects/shared-lib/src/public-api';
 import { TileCardComponent, TileCardCtaOverride } from '@shared/ui-common';
 import { combineLatest } from 'rxjs';
 import { GYM_ROUTE, TRIPS_ROUTE } from '../../route-segments';
+import { parseEventDays } from './event-dates';
+
+// Event mit Aktion "Anmelden" = Ausfahrt; ohne (z. B. Skibörse) = Termin ohne Anmeldung. Fehlt `actions` ganz
+// (statische Alt-Daten), gilt er wie bisher als anmeldbar - gleiche Regel wie in der Tile-Karte.
+const hasRegistration = (event: EventTile): boolean =>
+    !Array.isArray(event.actions) || event.actions.includes(TileActions.Register);
 
 interface CalendarDayEvent {
     title: string;
@@ -111,6 +118,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     /** Next upcoming trips, teased on the home page; full list lives on the Ausfahrten overview tab. */
     public upcomingTrips: EventTile[] = [];
+    /** Events ohne Anmeldung (z. B. Skibörse) - eigener Abschnitt "Termine". */
+    public upcomingAppointments: EventTile[] = [];
     public courseTiles: CourseTile[] = [];
     public infoTiles: InfoTile[] = [];
 
@@ -165,16 +174,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
                 this.tiles = homeTiles;
 
-                this.upcomingTrips = homeTiles
+                const openEvents = homeTiles
                     .filter((t): t is EventTile => t.type === TileType.Event && !t.expired)
-                    .sort((a, b) => a.expiration.getTime() - b.expiration.getTime())
-                    .slice(0, 3);
+                    .sort((a, b) => a.expiration.getTime() - b.expiration.getTime());
+                this.upcomingTrips = openEvents.filter(hasRegistration).slice(0, 3);
+                this.upcomingAppointments = openEvents.filter((event) => !hasRegistration(event));
                 this.courseTiles = homeTiles.filter((t): t is CourseTile => t.type === TileType.Course);
                 this.infoTiles = homeTiles.filter((t): t is InfoTile => t.type === TileType.Info);
 
-                const openTrips = homeTiles.filter((t): t is EventTile => t.type === TileType.Event && !t.expired);
+                // Im Kalender stehen alle Events (auch Termine ohne Anmeldung), im Karussell nur anmeldbare Ausfahrten.
+                const openTrips = openEvents.filter(hasRegistration);
 
-                this.calendarEvents = this.buildCalendarEvents(openTrips, this.courseTiles);
+                this.calendarEvents = this.buildCalendarEvents(openEvents, this.courseTiles);
                 this.calendarGrid = this.buildCalendarGrid(this.calendarMonth);
 
                 this.carouselSlides = [
@@ -260,7 +271,13 @@ export class HomeComponent implements OnInit, OnDestroy {
             map.set(key, list);
         };
 
-        trips.forEach((trip) => addEvent(trip.expiration, trip.title, 'trip', trip.id));
+        // Veranstaltungstag aus dem Datum (z. B. "7. November 2026", auch Zeitraeume); das Ablaufdatum liegt
+        // oft einen Tag danach und nur Fallback, wenn das Datum Freitext ist. Termine ohne Anmeldung haben
+        // keine Detailseite, also keine id.
+        trips.forEach((trip) => {
+            const days = parseEventDays(trip.date) ?? [trip.expiration];
+            days.forEach((day) => addEvent(day, trip.title, 'trip', hasRegistration(trip) ? trip.id : undefined));
+        });
         courses.forEach((course) => {
             const schedule = course.course?.schedule;
             if (!schedule) {

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EventTile, TileBehavior, TileStatus, TileType } from '../../models/tile';
+import { EventTile, TileActions, TileBehavior, TileStatus, TileType } from '../../models/tile';
 import { TileCardComponent } from './tile-card.component';
 
 const makeTrip = (overrides: Partial<EventTile> = {}): EventTile => ({
@@ -34,6 +34,42 @@ describe('TileCardComponent', () => {
     // Ported from the former isTripFull/resolveStatusLabel tests on
     // OverviewComponent/HomeComponent - the logic moved here so it's tested
     // once, for every page that renders an EventTile card.
+    describe('Termin ohne Anmeldung (Event ohne Aktion "register", z. B. Skibörse)', () => {
+        it('ist ein Termin nur, wenn actions gesetzt ist und "register" fehlt', () => {
+            setup(makeTrip({ actions: [] }));
+            expect(component.isAppointment).toBeTrue();
+            setup(makeTrip({ actions: [TileActions.Share] }));
+            expect(component.isAppointment).toBeTrue();
+            setup(makeTrip({ actions: [TileActions.Register] }));
+            expect(component.isAppointment).toBeFalse();
+            // Alt-Daten ohne actions gelten weiter als anmeldbare Ausfahrt.
+            setup(makeTrip({ actions: undefined }));
+            expect(component.isAppointment).toBeFalse();
+        });
+
+        it('zeigt weder "Plätze frei" noch Anmelden-Button, aber Datum, Beschreibung und Ort', () => {
+            setup(
+                makeTrip({
+                    actions: [],
+                    date: '7. November 2026',
+                    subTitle: 'Altes Schulhaus Hülen',
+                    description: 'Flohmarkt',
+                }),
+            );
+            expect(component.badgeLabel).toBeUndefined();
+            expect(component.metaChips).toEqual([]);
+            const el: HTMLElement = fixture.nativeElement;
+            expect(el.textContent).not.toContain('Anmelden');
+            expect(el.querySelector('.eyebrow')?.textContent).toContain('7. November 2026');
+            expect(el.querySelector('.description')?.textContent).toContain('Ort: Altes Schulhaus Hülen');
+        });
+
+        it('Absage/Warteliste-Badges gelten weiter (Abgesagt)', () => {
+            setup(makeTrip({ actions: [], status: TileStatus.Canceled }));
+            expect(component.badgeLabel).toBe('Abgesagt');
+        });
+    });
+
     describe('isEventFull / badgeLabel (Kapazitäts-Warnung + Warteliste)', () => {
         it('shows "Plätze frei" when open and below capacity', () => {
             setup(makeTrip({ capacity: 10, confirmedRegistrationsCount: 5 }));

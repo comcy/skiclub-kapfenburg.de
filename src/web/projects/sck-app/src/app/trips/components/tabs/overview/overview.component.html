@@ -41,6 +41,15 @@
         }
     </div>
 
+    @if (appointments.length > 0) {
+        <h2 class="section-title">Termine</h2>
+        <div class="offers-grid">
+            @for (appointment of appointments; track appointment.id) {
+                <shared-lib-tile-card [tile]="appointment"></shared-lib-tile-card>
+            }
+        </div>
+    }
+
     @if (otherOffers.length > 0) {
         <h2 class="section-title">Weitere Angebote</h2>
         <div class="offers-grid">
