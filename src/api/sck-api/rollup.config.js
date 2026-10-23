@@ -26,6 +26,7 @@ export default {
     'nodemailer',
     'cors',
     'dotenv',
+    'dotenv/config', // Subpath ist ein eigener Import - sonst wird dotenv (CJS, require.main) in das ESM-Bundle gezogen und crasht beim Start
     'multer',
     'google-auth-library',
     'node:sqlite',
