@@ -66,6 +66,7 @@ export class MemberListComponent implements OnInit {
     public searchText = '';
     public filterStatus = '';
     public filterSource = '';
+    public filterTeam = '';
     public pageIndex = 0;
     public pageSize = 20;
 
@@ -101,6 +102,7 @@ export class MemberListComponent implements OnInit {
         const filtered = this.allMembers.filter((member) => {
             if (this.filterStatus && member.status !== this.filterStatus) return false;
             if (this.filterSource && member.source !== this.filterSource) return false;
+            if (this.filterTeam && !member.isTeachingTeam) return false;
             if (search) {
                 const haystack = `${member.firstName} ${member.lastName} ${member.email ?? ''}`.toLowerCase();
                 if (!haystack.includes(search)) return false;
@@ -139,6 +141,13 @@ export class MemberListComponent implements OnInit {
                 format: 'tsv',
             },
             maxWidth: '95vw',
+        });
+    }
+
+    onToggleTeachingTeam(member: Member): void {
+        this.dataService.setTeachingTeam(member, !member.isTeachingTeam).subscribe((updated) => {
+            this.allMembers = this.allMembers.map((m) => (m.id === updated.id ? updated : m));
+            this.applyFilters();
         });
     }
 

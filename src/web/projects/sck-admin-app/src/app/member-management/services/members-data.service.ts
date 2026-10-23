@@ -34,6 +34,12 @@ export class MembersDataService {
         return this.http.put<Member>(`${this.apiUrl}/members/${id}`, params);
     }
 
+    // Lehrteam-Markierung umschalten (PUT braucht den ganzen Datensatz).
+    setTeachingTeam(member: Member, isTeachingTeam: boolean): Observable<Member> {
+        const { id, ...params } = member;
+        return this.updateMember(id, { ...params, isTeachingTeam });
+    }
+
     deleteMember(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/members/${id}`);
     }

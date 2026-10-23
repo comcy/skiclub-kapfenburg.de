@@ -29,6 +29,8 @@ export interface Member {
     // Year-thresholds (e.g. [25, 40]) already honored at a JHV - only ever
     // set via MembersDataService.markHonored(), never through a normal save.
     honoredYears?: number[];
+    // Lehrteam (Skischul-Team) - Markierung aus der Mitgliederliste.
+    isTeachingTeam?: boolean;
 }
 
 export type MemberCreationParams = Omit<Member, 'id'>;

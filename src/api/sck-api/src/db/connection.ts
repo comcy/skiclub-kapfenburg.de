@@ -450,6 +450,11 @@ for (const [column, ddl] of [
 // written through the importer or the Round-C datepicker; any pre-existing
 // non-ISO free text just won't match either UPDATE below and is silently
 // left un-backfilled).
+// Lehrteam-Markierung (Vereinsverwaltung → Lehrteam).
+if (!memberColumns.some((c) => c.name === 'is_teaching_team')) {
+  db.exec(`ALTER TABLE members ADD COLUMN is_teaching_team INTEGER NOT NULL DEFAULT 0;`);
+}
+
 if (!memberColumns.some((c) => c.name === 'honored_years')) {
   db.exec(`ALTER TABLE members ADD COLUMN honored_years TEXT NOT NULL DEFAULT '[]';`);
   db.exec(`

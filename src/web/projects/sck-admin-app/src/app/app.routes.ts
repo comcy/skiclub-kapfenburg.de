@@ -6,6 +6,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { BoardingManagementComponent } from './boardings-management/boarding-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ApplicationListComponent } from './member-management/components/application-list/application-list.component';
+import { TeachingTeamComponent } from './member-management/components/teaching-team/teaching-team.component';
 import { MemberAnniversariesComponent } from './member-management/components/member-anniversaries/member-anniversaries.component';
 import { MemberEditRoutingDialogComponent } from './member-management/components/member-edit-routing-dialog/member-edit-routing-dialog.component';
 import { FeeCollectionComponent } from './member-management/components/fee-collection/fee-collection.component';
@@ -170,6 +171,7 @@ export const routes: Routes = [
             navLinks: [
                 { label: 'Mitglieder', link: 'mitglieder' },
                 { label: 'Anträge', link: 'antraege' },
+                { label: 'Lehrteam', link: 'lehrteam' },
                 { label: 'Jubiläen', link: 'jubilaeen' },
                 { label: 'Newsletter', link: 'newsletter' },
                 { label: 'Beitragseinzug', link: 'beitragseinzug' },
@@ -183,6 +185,10 @@ export const routes: Routes = [
             {
                 path: 'antraege',
                 component: ApplicationListComponent,
+            },
+            {
+                path: 'lehrteam',
+                component: TeachingTeamComponent,
             },
             {
                 path: 'jubilaeen',

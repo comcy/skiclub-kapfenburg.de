@@ -124,6 +124,7 @@ export class MemberEditorComponent implements OnChanges {
             bankName: this.member.bankName || undefined,
             accountHolder: this.member.accountHolder || undefined,
             paymentMethod: this.member.paymentMethod || undefined,
+            isTeachingTeam: !!this.member.isTeachingTeam,
         };
 
         // Zoneless change detection (see app.config.ts) - without
