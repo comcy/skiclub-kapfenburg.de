@@ -3,7 +3,6 @@ import { authGuard } from './auth/auth.guard';
 import { AuthCallbackComponent } from './auth/auth-callback/auth-callback.component';
 import { InviteAcceptComponent } from './auth/invite-accept/invite-accept.component';
 import { LoginComponent } from './auth/login/login.component';
-import { BoardingManagementComponent } from './boardings-management/boarding-management.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ApplicationListComponent } from './member-management/components/application-list/application-list.component';
 import { TeachingTeamComponent } from './member-management/components/teaching-team/teaching-team.component';
@@ -97,32 +96,44 @@ export const routes: Routes = [
         redirectTo: 'registrations/ausfahrten/:tileId',
     },
     {
-        path: 'event-management',
+        path: 'card-management',
         component: TileManagementComponent,
         canActivate: [authGuard],
         data: {
-            title: 'Event-Management',
+            title: 'Karten-Management',
             navLinks: [
-                { label: 'Ausfahrten', link: 'tiles' },
-                { label: 'Boardings', link: 'boardings' },
+                { label: 'Ausfahrten', link: 'ausfahrten' },
+                { label: 'Events', link: 'events' },
+                { label: 'Infos', link: 'infos' },
             ],
         },
         children: [
             {
-                path: 'tiles',
+                path: 'ausfahrten',
                 component: TileListComponent,
+                data: { kind: 'trip' },
             },
             {
-                path: 'boardings',
-                component: BoardingManagementComponent,
+                path: 'events',
+                component: TileListComponent,
+                data: { kind: 'event' },
+            },
+            {
+                path: 'infos',
+                component: TileListComponent,
+                data: { kind: 'info' },
             },
             {
                 path: '',
-                redirectTo: 'tiles',
+                redirectTo: 'ausfahrten',
                 pathMatch: 'full',
             },
         ],
     },
+    // Alte Pfade (Lesezeichen): Event-Management -> Karten-Management, Boardings -> Einstellungen > Allgemein.
+    { path: 'event-management/boardings', redirectTo: 'settings/general' },
+    { path: 'event-management/tiles', redirectTo: 'card-management/ausfahrten' },
+    { path: 'event-management', redirectTo: 'card-management/ausfahrten' },
     {
         path: 'course-management',
         component: TileManagementComponent,

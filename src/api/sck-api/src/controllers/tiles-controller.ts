@@ -3,29 +3,55 @@
  */
 
 import { RequestHandler } from 'express';
-import { TileActions, TileBehavior, TileCreationParams, TileStatus, TileType } from '../domain/tile.js';
+import {
+  TileActions,
+  TileBehavior,
+  TileCreationParams,
+  TileStatus,
+  TileType,
+} from '../domain/tile.js';
 import * as tilesService from '../services/tiles-service.js';
 
-const isValidTilePayload = (body: Partial<TileCreationParams>): string | undefined => {
+const isValidTilePayload = (
+  body: Partial<TileCreationParams>,
+): string | undefined => {
   if (!body.title) return 'Titel ist erforderlich.';
-  if (!body.type || !Object.values(TileType).includes(body.type)) return 'Ungültiger Tile-Typ.';
-  if (!body.status || !Object.values(TileStatus).includes(body.status)) return 'Ungültiger Status.';
-  if (!body.behavior || !Object.values(TileBehavior).includes(body.behavior)) return 'Ungültiges Verhalten.';
-  if (body.actions && !body.actions.every((a) => Object.values(TileActions).includes(a))) {
+  if (!body.type || !Object.values(TileType).includes(body.type))
+    return 'Ungültiger Tile-Typ.';
+  if (!body.status || !Object.values(TileStatus).includes(body.status))
+    return 'Ungültiger Status.';
+  if (!body.behavior || !Object.values(TileBehavior).includes(body.behavior))
+    return 'Ungültiges Verhalten.';
+  if (
+    body.actions &&
+    !body.actions.every((a) => Object.values(TileActions).includes(a))
+  ) {
     return 'Ungültige Aktion.';
   }
   return undefined;
 };
 
-const parseListParams = (req: Parameters<RequestHandler>[0], archived: boolean) => ({
+const parseListParams = (
+  req: Parameters<RequestHandler>[0],
+  archived: boolean,
+) => ({
   page: parseInt(String(req.query.page ?? '1'), 10) || 1,
   limit: parseInt(String(req.query.limit ?? '100'), 10) || 100,
   sort: req.query.sort ? String(req.query.sort) : undefined,
-  direction: (req.query.direction === 'desc' ? 'desc' : 'asc') as 'asc' | 'desc',
+  direction: (req.query.direction === 'desc' ? 'desc' : 'asc') as
+    'asc' | 'desc',
   search: req.query.search ? String(req.query.search) : undefined,
   type: req.query.type ? String(req.query.type) : undefined,
-  excludeType: req.query.excludeType ? String(req.query.excludeType) : undefined,
+  excludeType: req.query.excludeType
+    ? String(req.query.excludeType)
+    : undefined,
   status: req.query.status ? String(req.query.status) : undefined,
+  registration:
+    req.query.registration === '1'
+      ? true
+      : req.query.registration === '0'
+        ? false
+        : undefined,
   archived,
 });
 
@@ -128,7 +154,12 @@ export const deleteTile: RequestHandler = (req, res) => {
       return;
     }
     if (outcome === 'has-registrations') {
-      res.status(409).json({ error: 'Dieses Tile hat Anmeldungen und wird nicht gelöscht. Bitte archivieren.' });
+      res
+        .status(409)
+        .json({
+          error:
+            'Dieses Tile hat Anmeldungen und wird nicht gelöscht. Bitte archivieren.',
+        });
       return;
     }
     res.status(204).send();
@@ -143,8 +174,13 @@ export const deleteTile: RequestHandler = (req, res) => {
 export const updateTileBoardings: RequestHandler = (req, res) => {
   try {
     const boardings = req.body?.boardings;
-    if (!Array.isArray(boardings) || !boardings.every((b) => typeof b === 'string')) {
-      res.status(400).json({ error: 'boardings muss ein Array von Namen sein.' });
+    if (
+      !Array.isArray(boardings) ||
+      !boardings.every((b) => typeof b === 'string')
+    ) {
+      res
+        .status(400)
+        .json({ error: 'boardings muss ein Array von Namen sein.' });
       return;
     }
 

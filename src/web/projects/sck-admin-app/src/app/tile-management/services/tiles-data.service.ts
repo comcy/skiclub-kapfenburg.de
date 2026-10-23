@@ -50,6 +50,7 @@ export class TilesDataService {
         status?: string,
         excludeType?: string,
         archived = false,
+        registration?: boolean,
     ): Observable<PaginatedResponse<Tile>> {
         const params: Record<string, string> = {
             page: page.toString(),
@@ -62,6 +63,7 @@ export class TilesDataService {
         if (type) params['type'] = type;
         if (status) params['status'] = status;
         if (excludeType) params['excludeType'] = excludeType;
+        if (registration !== undefined) params['registration'] = registration ? '1' : '0';
 
         // Archiv = eigener Endpunkt (nur Admin); die normale Liste enthaelt nie Archiviertes.
         return this.http.get<PaginatedResponse<Tile>>(`${this.apiUrl}/${this.endpoint}${archived ? '/archive' : ''}`, {

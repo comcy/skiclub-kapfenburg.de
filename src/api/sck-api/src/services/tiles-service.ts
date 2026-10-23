@@ -4,7 +4,12 @@
 
 import { randomUUID } from 'node:crypto';
 import { db } from '../db/connection.js';
-import { EXTRA_FIELD_KEYS, PaginatedResponse, Tile, TileCreationParams } from '../domain/tile.js';
+import {
+  EXTRA_FIELD_KEYS,
+  PaginatedResponse,
+  Tile,
+  TileCreationParams,
+} from '../domain/tile.js';
 
 interface TileRow {
   id: string;
@@ -58,14 +63,18 @@ const SORTABLE_COLUMNS: Record<string, string> = {
 
 const getConfirmedRegistrationsCount = (tileId: string): number => {
   const row = db
-    .prepare(`SELECT COUNT(*) AS count FROM trip_registrations WHERE tile_id = ? AND status = 'confirmed'`)
+    .prepare(
+      `SELECT COUNT(*) AS count FROM trip_registrations WHERE tile_id = ? AND status = 'confirmed'`,
+    )
     .get(tileId) as { count: number };
   return row.count;
 };
 
 const getConfirmedCourseRegistrationsCount = (tileId: string): number => {
   const row = db
-    .prepare(`SELECT COUNT(*) AS count FROM course_registrations WHERE tile_id = ? AND status = 'confirmed'`)
+    .prepare(
+      `SELECT COUNT(*) AS count FROM course_registrations WHERE tile_id = ? AND status = 'confirmed'`,
+    )
     .get(tileId) as { count: number };
   return row.count;
 };
@@ -124,17 +133,26 @@ const rowToTile = (row: TileRow): Tile => {
 // (the admin UI's multi-select uses names as the value, matching the legacy
 // Trip.availableBoardings: string[] this replaces). Unknown names are
 // ignored rather than silently creating catalog entries.
-export const setTileBoardings = (tileId: string, boardingNames: string[]): void => {
-  const names = [...new Set(boardingNames.filter((n) => n && n.trim().length > 0))];
+export const setTileBoardings = (
+  tileId: string,
+  boardingNames: string[],
+): void => {
+  const names = [
+    ...new Set(boardingNames.filter((n) => n && n.trim().length > 0)),
+  ];
   const placeholders = names.map(() => '?').join(',');
   const boardingIds = names.length
-    ? (db.prepare(`SELECT id FROM boardings WHERE name IN (${placeholders})`).all(...names) as { id: string }[]).map(
-        (r) => r.id,
-      )
+    ? (
+        db
+          .prepare(`SELECT id FROM boardings WHERE name IN (${placeholders})`)
+          .all(...names) as { id: string }[]
+      ).map((r) => r.id)
     : [];
 
   db.prepare('DELETE FROM trip_boardings WHERE tile_id = ?').run(tileId);
-  const insert = db.prepare('INSERT INTO trip_boardings (tile_id, boarding_id) VALUES (?, ?)');
+  const insert = db.prepare(
+    'INSERT INTO trip_boardings (tile_id, boarding_id) VALUES (?, ?)',
+  );
   for (const boardingId of boardingIds) {
     insert.run(tileId, boardingId);
   }
@@ -150,6 +168,8 @@ export interface ListTilesParams {
   // Alle Typen AUSSER diesem (z.B. Event-Management ohne Kurs-Tiles).
   excludeType?: string;
   status?: string;
+  // true = nur Tiles MIT 'register'-Action (Ausfahrten), false = nur OHNE (Events/Infos).
+  registration?: boolean;
   // true = NUR archivierte Tiles (Archiv), sonst nur aktive. Die oeffentliche Seite bekommt nie Archiviertes.
   archived?: boolean;
 }
@@ -173,30 +193,45 @@ export const listTiles = (params: ListTilesParams): PaginatedResponse<Tile> => {
     conditions.push('type != ?');
     values.push(params.excludeType);
   }
-  conditions.push(params.archived ? 'archived_at IS NOT NULL' : 'archived_at IS NULL');
+  if (params.registration !== undefined) {
+    conditions.push(
+      `${params.registration ? '' : 'NOT '}EXISTS (SELECT 1 FROM json_each(tiles.actions) WHERE value = 'register')`,
+    );
+  }
+  conditions.push(
+    params.archived ? 'archived_at IS NOT NULL' : 'archived_at IS NULL',
+  );
   if (params.status) {
     conditions.push('status = ?');
     values.push(params.status);
   }
 
-  const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(' AND ')}`
+    : '';
   const sortColumn = SORTABLE_COLUMNS[params.sort ?? 'order'] ?? 'order_index';
   const direction = params.direction === 'desc' ? 'DESC' : 'ASC';
   const limit = Math.max(1, params.limit);
   const offset = Math.max(0, (params.page - 1) * limit);
 
-  const total = (db.prepare(`SELECT COUNT(*) AS count FROM tiles ${whereClause}`).get(...values) as { count: number })
-    .count;
+  const total = (
+    db
+      .prepare(`SELECT COUNT(*) AS count FROM tiles ${whereClause}`)
+      .get(...values) as { count: number }
+  ).count;
 
   const rows = db
-    .prepare(`SELECT * FROM tiles ${whereClause} ORDER BY ${sortColumn} ${direction} LIMIT ? OFFSET ?`)
+    .prepare(
+      `SELECT * FROM tiles ${whereClause} ORDER BY ${sortColumn} ${direction} LIMIT ? OFFSET ?`,
+    )
     .all(...values, limit, offset) as unknown as TileRow[];
 
   return { items: rows.map(rowToTile), total };
 };
 
 export const getTile = (id: string): Tile | undefined => {
-  const row = db.prepare('SELECT * FROM tiles WHERE id = ?').get(id) as TileRow | undefined;
+  const row = db.prepare('SELECT * FROM tiles WHERE id = ?').get(id) as
+    TileRow | undefined;
   return row ? rowToTile(row) : undefined;
 };
 
@@ -238,10 +273,13 @@ export const createTile = (params: TileCreationParams): Tile => {
   return getTile(id) as Tile;
 };
 
-export const updateTile = (id: string, params: TileCreationParams): Tile | undefined => {
-  const existing = db.prepare('SELECT extra_json FROM tiles WHERE id = ?').get(id) as
-    | { extra_json: string }
-    | undefined;
+export const updateTile = (
+  id: string,
+  params: TileCreationParams,
+): Tile | undefined => {
+  const existing = db
+    .prepare('SELECT extra_json FROM tiles WHERE id = ?')
+    .get(id) as { extra_json: string } | undefined;
   if (!existing) return undefined;
 
   // The admin editor doesn't model the extra passthrough fields, so its
@@ -299,13 +337,18 @@ export const tileHasRegistrations = (id: string): boolean =>
     .get(id, id);
 
 // Das System loescht erst mal nichts, was Anmeldungen hat: die haengen per ON DELETE CASCADE am Tile.
-export const deleteTile = (id: string): 'deleted' | 'not-found' | 'has-registrations' => {
+export const deleteTile = (
+  id: string,
+): 'deleted' | 'not-found' | 'has-registrations' => {
   if (tileHasRegistrations(id)) return 'has-registrations';
   const result = db.prepare('DELETE FROM tiles WHERE id = ?').run(id);
   return result.changes > 0 ? 'deleted' : 'not-found';
 };
 
-export const setTileArchived = (id: string, archived: boolean): Tile | undefined => {
+export const setTileArchived = (
+  id: string,
+  archived: boolean,
+): Tile | undefined => {
   const result = db
     .prepare('UPDATE tiles SET archived_at = ? WHERE id = ?')
     .run(archived ? new Date().toISOString() : null, id);

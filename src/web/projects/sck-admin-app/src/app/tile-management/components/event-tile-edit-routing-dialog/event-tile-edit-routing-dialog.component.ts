@@ -2,15 +2,15 @@ import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Tile } from '../../domain/tile';
-import { TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
+import { TileBehavior, TileKind, TileStatus, TileType, tileKindOf } from '../../domain/tile-enums';
 import { TileChangesService } from '../../services/tile-changes.service';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { EventTileEditDialogComponent } from '../event-tile-edit-dialog/event-tile-edit-dialog.component';
 
-const buildBlankTile = (): Tile => ({
+const buildBlankTile = (kind: TileKind): Tile => ({
     id: `new-${Date.now()}`,
     order: 0,
-    type: TileType.Event,
+    type: kind === 'info' ? TileType.Info : TileType.Event,
     title: '',
     date: new Date().toISOString(),
     subTitle: '',
@@ -40,21 +40,23 @@ export class EventTileEditRoutingDialogComponent implements OnInit {
 
     ngOnInit(): void {
         const id = this.route.snapshot.paramMap.get('id');
+        // Neu: Reiter-Art als Matrix-Parameter (…/neu;kind=info); bestehende Tiles leiten sie aus Typ/Aktionen ab.
+        const newKind = (this.route.snapshot.paramMap.get('kind') as TileKind | null) ?? 'trip';
 
         if (id && id !== 'neu') {
             this.dataService.getTile(id).subscribe({
-                next: (tile) => this.open(tile),
+                next: (tile) => this.open(tile, tileKindOf(tile)),
                 error: () => this.close(),
             });
             return;
         }
 
-        this.open(buildBlankTile());
+        this.open(buildBlankTile(newKind), newKind);
     }
 
-    private open(tile: Tile): void {
+    private open(tile: Tile, kind: TileKind): void {
         const dialogRef = this.dialog.open(EventTileEditDialogComponent, {
-            data: { tile },
+            data: { tile, kind },
             panelClass: 'tile-dialog-panel',
             position: { top: '0', right: '0', bottom: '0' },
             width: '640px',

@@ -21,7 +21,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
 import { SafeDatePipe } from '../../../shared/pipes/safe-date.pipe';
 import { Tile } from '../../domain/tile';
-import { TileStatus, TileType } from '../../domain/tile-enums';
+import { TileKind, TileStatus, TileType } from '../../domain/tile-enums';
 import { TileChangesService } from '../../services/tile-changes.service';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
@@ -72,20 +72,23 @@ export class TileListComponent implements OnInit {
     public sortField = 'order';
     public sortDirection: 'asc' | 'desc' = 'asc';
     public filterSearch = '';
-    public filterType: string = '';
     public filterStatus: string = '';
     // Archiv anzeigen: archivierte Tiles statt der aktuellen (Standard).
     public showArchive = false;
 
-    // Kurse (Sport-/Ski-/Snowboard) werden im Kurs-Management verwaltet, nicht hier.
-    public readonly tileTypes = Object.values(TileType).filter((type) => type !== TileType.Course);
+    // Reiter im Karten-Management (Route-Data): Ausfahrten / Events / Infos. Kurse laufen im Kurs-Management.
+    public readonly kind: TileKind = this.route.snapshot.data['kind'] ?? 'trip';
+    public readonly kindLabels: Record<TileKind, { title: string; create: string }> = {
+        trip: { title: 'Ausfahrten', create: 'Ausfahrt erstellen' },
+        event: { title: 'Events', create: 'Event erstellen' },
+        info: { title: 'Infos', create: 'Info erstellen' },
+    };
     public readonly tileStatuses = Object.values(TileStatus);
 
     public displayedColumns: string[] = [
         'order',
         'title',
         'subTitle',
-        'type',
         'status',
         'occupancy',
         'behavior',
@@ -101,11 +104,12 @@ export class TileListComponent implements OnInit {
             this.sortField = params['sort'] || 'order';
             this.sortDirection = params['direction'] || 'asc';
             this.filterSearch = params['search'] || '';
-            this.filterType = params['type'] || '';
             this.filterStatus = params['status'] || '';
             this.showArchive = params['archive'] === '1';
             this.loadTiles();
         });
+        // Belegung gibt es nur bei Ausfahrten.
+        if (this.kind !== 'trip') this.displayedColumns = this.displayedColumns.filter((c) => c !== 'occupancy');
     }
 
     // Zoneless change detection (see app.config.ts) doesn't track a plain
@@ -121,10 +125,11 @@ export class TileListComponent implements OnInit {
                 this.sortField,
                 this.sortDirection,
                 this.filterSearch,
-                this.filterType,
+                this.kind === 'info' ? TileType.Info : TileType.Event,
                 this.filterStatus,
-                TileType.Course,
+                undefined,
                 this.showArchive,
+                this.kind === 'info' ? undefined : this.kind === 'trip',
             )
             .pipe(
                 tap((response) => (this.totalItems = response.total)),
@@ -152,7 +157,6 @@ export class TileListComponent implements OnInit {
         this.updateUrl({
             page: 1,
             search: this.filterSearch || null,
-            type: this.filterType || null,
             status: this.filterStatus || null,
             archive: this.showArchive ? '1' : null,
         });
@@ -200,6 +204,6 @@ export class TileListComponent implements OnInit {
     }
 
     onCreate(): void {
-        this.router.navigate([{ outlets: { modal: ['event-bearbeiten', 'neu'] } }]);
+        this.router.navigate([{ outlets: { modal: ['event-bearbeiten', 'neu', { kind: this.kind }] } }]);
     }
 }

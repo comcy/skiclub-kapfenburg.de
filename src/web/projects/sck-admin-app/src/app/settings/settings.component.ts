@@ -6,11 +6,21 @@ import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../auth/services/auth.service';
 import { SettingsDataService } from './services/settings-data.service';
 import { PageHeadingComponent } from '../shared/components/page-heading/page-heading.component';
+import { PanelShellComponent } from '../shared/components/panel-shell/panel-shell.component';
+import { BoardingListComponent } from '../boardings-management/components/boarding-list/boarding-list.component';
 
 @Component({
     selector: 'app-settings',
     standalone: true,
-    imports: [PageHeadingComponent, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+    imports: [
+        PageHeadingComponent,
+        PanelShellComponent,
+        BoardingListComponent,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+    ],
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
 })
