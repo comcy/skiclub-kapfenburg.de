@@ -6,6 +6,7 @@ import { Tile } from '../domain/tile.js';
 import { MAIL_TEMPLATE_SETTING_KEY, MailTemplateSettings, NOTIFICATION_BCC_SETTING_KEY, NotificationBccSetting } from '../domain/settings.js';
 import { PublicRegistrationResult, RegistrationStatus, TripRegistration } from '../domain/trip-registration.js';
 import { renderTemplate } from './mail-template-engine.js';
+import { getResponsibleEmails } from './members-service.js';
 import { getSetting } from './settings-service.js';
 import { calculateParticipantPrice, getEffectiveTripPricing } from './trip-pricing-service.js';
 import { TripPricing } from '../domain/settings.js';
@@ -62,12 +63,11 @@ export const getTripConfirmationMailSubject = (contactFirstName: string, status:
   return `SC-Kapfenburg Anmeldung: ${contactFirstName}${waitlistSuffix}`;
 };
 
-export const getTripConfirmationMailBcc = (): string => {
+export const getTripConfirmationMailBcc = (tile?: Pick<Tile, 'responsibleMemberIds'>): string => {
   const globalList = getSetting<NotificationBccSetting>(NOTIFICATION_BCC_SETTING_KEY)?.customBccList;
-  if (globalList && globalList.length > 0) {
-    return globalList.join(',');
-  }
-  return DEFAULT_BCC_LIST;
+  const base = globalList && globalList.length > 0 ? globalList : DEFAULT_BCC_LIST.split(',');
+  // Verantwortliche (Lehrteam) bekommen jede Mail zur Ausfahrt/zum Kurs mit.
+  return [...new Set([...base, ...getResponsibleEmails(tile)].map((e) => e.trim()).filter(Boolean))].join(',');
 };
 
 const formatCurrency = (amount: number): string =>

@@ -11,6 +11,7 @@ import {
   listMembers,
   getApplicationIban,
   listMembershipApplications,
+  listTeachingTeam,
   markHonored,
   updateMember,
 } from '../controllers/members-controller.js';
@@ -30,6 +31,7 @@ router.get(
   requirePermission('members:manage'),
   getApplicationIban,
 );
+router.get('/members/teaching-team', requireAuth, requirePermission('tiles:write'), listTeachingTeam);
 router.get('/members/anniversaries', requireAuth, requirePermission('members:manage'), getAnniversaries);
 router.get('/members/:id', requireAuth, requirePermission('members:manage'), getMember);
 router.post('/members', requireAuth, requirePermission('members:manage'), createMember);

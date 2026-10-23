@@ -7,6 +7,7 @@ import { TileStatus } from '../domain/tile.js';
 import { PublicParticipantInput, TripRegistrationCreationParams } from '../domain/trip-registration.js';
 import * as registrationsService from '../services/trip-registrations-service.js';
 import { getTile } from '../services/tiles-service.js';
+import { getResponsibleEmails } from '../services/members-service.js';
 import { sendMail } from '../services/mailer.js';
 import {
   allowInfoMail,
@@ -112,7 +113,7 @@ export const createPublicTripRegistrations: RequestHandler = async (req, res) =>
           contactPerson.email ?? '',
           getTripConfirmationMailSubject(contactPerson.firstName, publicResult.status),
           getTripConfirmationMailText(tile, contactPerson, createdRegistrations, publicResult),
-          getTripConfirmationMailBcc(),
+          getTripConfirmationMailBcc(tile),
         );
         if (sent) registrationsService.markConfirmationMailSent(registrationIds);
       } catch (mailError) {
@@ -131,6 +132,7 @@ export const createPublicTripRegistrations: RequestHandler = async (req, res) =>
             address,
             getTripParticipantInfoMailSubject(tile, publicResult.status),
             getTripParticipantInfoMailText(tile, contactPerson, group, publicResult),
+            getResponsibleEmails(tile).join(',') || undefined,
           );
         } catch (mailError) {
           console.error('Fehler beim Versand der Info-Mail an weitere Teilnehmende:', mailError);

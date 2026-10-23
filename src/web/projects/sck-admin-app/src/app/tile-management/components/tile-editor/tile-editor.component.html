@@ -129,15 +129,15 @@
                             </mat-form-field>
 
                             <mat-form-field>
-                                <mat-label>Organizer</mat-label>
-                                <mat-select [(ngModel)]="tile.organizerUserId">
-                                    <mat-option [value]="undefined">–</mat-option>
-                                    @for (user of availableUsers$ | async; track user.id) {
-                                        <mat-option [value]="user.id">
-                                            {{ user.email }}
+                                <mat-label>Verantwortliche (Lehrteam)</mat-label>
+                                <mat-select [(ngModel)]="tile.responsibleMemberIds" multiple>
+                                    @for (member of teachingTeam$ | async; track member.id) {
+                                        <mat-option [value]="member.id">
+                                            {{ member.firstName }} {{ member.lastName }}
                                         </mat-option>
                                     }
                                 </mat-select>
+                                <mat-hint>Erhalten alle Anmelde-Mails per BCC</mat-hint>
                             </mat-form-field>
                         </div>
                     }

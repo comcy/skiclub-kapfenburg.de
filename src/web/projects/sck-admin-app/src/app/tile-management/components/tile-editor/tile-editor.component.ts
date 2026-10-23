@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-base';
 import type { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-config';
 import { getVisibleAgeCategories } from 'projects/trips-lib/src/lib/domain/models/trip-price-table';
-import { Tile, TileCreationParams } from '../../domain/tile';
+import { TeachingTeamEntry, Tile, TileCreationParams } from '../../domain/tile';
 import { Image } from '../../domain/image';
 import { TileActions, TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
 import { toSharedTile } from '../../domain/to-shared-tile';
@@ -26,8 +26,6 @@ import { EditableTextComponent } from '../editable-text/editable-text.component'
 import { BoardingsDataService } from '../../../boardings-management/services/boardings-data.service';
 import { Boarding } from '../../../boardings-management/domain/boarding';
 import { AuthService } from '../../../auth/services/auth.service';
-import { UsersDataService } from '../../../user-management/services/users-data.service';
-import { UserDirectoryEntry } from '../../../user-management/domain/user-directory-entry';
 
 @Component({
     selector: 'app-tile-editor',
@@ -58,13 +56,12 @@ export class TileEditorComponent implements OnInit, OnChanges {
 
     private readonly dataService = inject(TilesDataService);
     private readonly boardingsService = inject(BoardingsDataService);
-    private readonly usersService = inject(UsersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
     public readonly auth = inject(AuthService);
 
     public isUploadingImage = false;
     public availableBoardings$: Observable<Boarding[]> | undefined;
-    public availableUsers$: Observable<UserDirectoryEntry[]> | undefined;
+    public teachingTeam$: Observable<TeachingTeamEntry[]> | undefined;
     public isShowingPreview = false;
 
     public readonly tileTypes = Object.values(TileType);
@@ -87,7 +84,7 @@ export class TileEditorComponent implements OnInit, OnChanges {
     ngOnInit(): void {
         // Load all boardings/users for the dropdowns (up to 1000)
         this.availableBoardings$ = this.boardingsService.getBoardings(1, 1000).pipe(map((response) => response.items));
-        this.availableUsers$ = this.usersService.getUserDirectory();
+        this.teachingTeam$ = this.dataService.getTeachingTeam();
     }
 
     ngOnChanges(): void {
