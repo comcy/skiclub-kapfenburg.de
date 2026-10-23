@@ -16,7 +16,18 @@ export class DashboardDataService {
 
     load(): Observable<{ stats: DashboardStats; activity: ActivityEntry[] }> {
         return forkJoin({
-            tiles: this.tilesData.getTiles(1, 1000, undefined, undefined, undefined, 'event'),
+            tiles: this.tilesData.getTiles(
+                1,
+                1000,
+                undefined,
+                undefined,
+                undefined,
+                'event',
+                undefined,
+                undefined,
+                false,
+                true,
+            ),
             users: this.usersData.getUsers(),
             invites: this.usersData.getInvites(),
         }).pipe(
