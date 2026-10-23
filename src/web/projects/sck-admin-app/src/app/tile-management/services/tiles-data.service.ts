@@ -13,6 +13,7 @@ import { CourseRegistration, CourseRegistrationCreationParams } from '../domain/
 // participant fields the global pricing config needs.
 export interface TripPricePreviewParticipant {
     birthday?: string;
+    ageCategory?: string;
     isMember?: boolean;
     busOnly?: boolean;
     snowshoes?: boolean;

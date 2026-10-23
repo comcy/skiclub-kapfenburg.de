@@ -4,7 +4,7 @@
 
 import { RequestHandler } from 'express';
 import { TileStatus } from '../domain/tile.js';
-import { PublicParticipantInput, TripRegistrationCreationParams } from '../domain/trip-registration.js';
+import { AgeCategory, PublicParticipantInput, TripRegistrationCreationParams } from '../domain/trip-registration.js';
 import * as registrationsService from '../services/trip-registrations-service.js';
 import { getTile } from '../services/tiles-service.js';
 import { getResponsibleEmails } from '../services/members-service.js';
@@ -180,8 +180,12 @@ export const deleteTripRegistration: RequestHandler = (req, res) => {
   }
 };
 
+const isAgeCategory = (value: unknown): value is AgeCategory =>
+  value === 'adult' || value === 'youthUntil16' || value === 'childUntil6';
+
 interface PricePreviewParticipant {
   birthday?: string;
+  ageCategory?: string;
   isMember?: boolean;
   busOnly?: boolean;
   snowshoes?: boolean;
@@ -217,7 +221,12 @@ export const getTripPricePreview: RequestHandler = (req, res) => {
           snowshoes: participant.snowshoes ?? false,
           courseRequested: participant.courseRequested ?? false,
           level: participant.level,
-          ageCategory: registrationsService.resolveAgeCategory(participant.birthday),
+          // Ohne Geburtsdatum (manuell erfasst) gilt die gespeicherte Alterskategorie - wie in der Bestätigungsmail.
+          ageCategory: participant.birthday
+            ? registrationsService.resolveAgeCategory(participant.birthday)
+            : isAgeCategory(participant.ageCategory)
+              ? participant.ageCategory
+              : 'adult',
           isMember: participant.isMember ?? false,
         },
         pricing,

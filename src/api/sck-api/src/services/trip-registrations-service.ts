@@ -97,6 +97,11 @@ const resolveMember = (email: string | undefined): { id: string | null; isMember
   return { id: member?.id ?? null, isMember: member ? 1 : 0 };
 };
 
+// Mit Geburtsdatum immer daraus abgeleitet (kein Auseinanderlaufen von Datum und Kategorie);
+// ohne Geburtsdatum gilt die vom Admin gewählte Kategorie.
+const ageCategoryFor = (params: Pick<TripRegistrationCreationParams, 'birthday' | 'ageCategory'>): AgeCategory =>
+  params.birthday ? resolveAgeCategory(params.birthday) : params.ageCategory;
+
 export const createRegistration = (
   tileId: string,
   params: TripRegistrationCreationParams,
@@ -125,7 +130,7 @@ export const createRegistration = (
     params.birthday ?? null,
     memberId,
     params.boardingId ?? null,
-    params.ageCategory,
+    ageCategoryFor(params),
     isMember,
     params.selfReportedIsMember ? 1 : 0,
     params.status,
@@ -178,7 +183,7 @@ export const updateRegistration = (
       params.birthday ?? null,
       memberId,
       params.boardingId ?? null,
-      params.ageCategory,
+      ageCategoryFor(params),
       params.isMember ? 1 : 0,
       params.status,
       params.source,

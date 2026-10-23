@@ -84,6 +84,24 @@ export class RegistrationEditorComponent {
         if (this.registration && !this.registration.courseRequested) this.registration.level = undefined;
     }
 
+    // Mit Geburtsdatum ergibt sich die Kategorie daraus (gleiche Grenzen wie sck-api resolveAgeCategory),
+    // ohne Geburtsdatum wählt der Admin sie selbst.
+    onBirthdayChange(): void {
+        const birthday = this.registration?.birthday;
+        if (!this.registration || !birthday) return;
+        const dob = new Date(birthday);
+        if (isNaN(dob.getTime())) return;
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        if (
+            today.getMonth() < dob.getMonth() ||
+            (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())
+        ) {
+            age -= 1;
+        }
+        this.registration.ageCategory = age < 0 || age > 16 ? 'adult' : age <= 6 ? 'childUntil6' : 'youthUntil16';
+    }
+
     // Read by the dialog's own Speichern button (outside this component, in
     // the dialog shell's sticky actions area).
     get canSave(): boolean {
