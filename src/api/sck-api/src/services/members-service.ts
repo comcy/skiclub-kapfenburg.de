@@ -92,6 +92,29 @@ export const listActiveMembers = (): Member[] =>
       .all() as unknown as MemberRow[]
   ).map(rowToMember);
 
+// Nur Name - für Auswahllisten (z.B. Verantwortliche im Tile-Editor), ohne Kontaktdaten.
+export const listTeachingTeamBrief = (): { id: string; firstName: string; lastName: string }[] =>
+  (
+    db
+      .prepare(
+        "SELECT id, first_name, last_name FROM members WHERE is_teaching_team = 1 AND status = 'active' ORDER BY last_name, first_name",
+      )
+      .all() as unknown as { id: string; first_name: string; last_name: string }[]
+  ).map((r) => ({ id: r.id, firstName: r.first_name, lastName: r.last_name }));
+
+// E-Mail-Adressen der Verantwortlichen eines Tiles - nur Personen, die (noch) im Lehrteam
+// und aktiv sind; wer aus dem Lehrteam entfernt wird, bekommt keine Mails mehr.
+export const getResponsibleEmails = (tile: { responsibleMemberIds?: string[] } | undefined): string[] => {
+  const ids = tile?.responsibleMemberIds?.filter((id) => typeof id === 'string') ?? [];
+  if (!ids.length) return [];
+  const rows = db
+    .prepare(
+      `SELECT email FROM members WHERE is_teaching_team = 1 AND status = 'active' AND email IS NOT NULL AND email != '' AND id IN (${ids.map(() => '?').join(',')})`,
+    )
+    .all(...ids) as unknown as { email: string }[];
+  return rows.map((r) => r.email);
+};
+
 export const getMember = (id: string): Member | undefined => {
   const row = db.prepare('SELECT * FROM members WHERE id = ?').get(id) as MemberRow | undefined;
   return row ? rowToMember(row) : undefined;

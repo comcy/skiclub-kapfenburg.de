@@ -89,7 +89,7 @@ export const createPublicCourseRegistration: RequestHandler = async (req, res) =
         registration.email ?? '',
         getCourseConfirmationMailSubject(registration),
         getCourseConfirmationMailText(registration, { price, isMember }),
-        getCourseConfirmationMailBcc(),
+        getCourseConfirmationMailBcc(tile),
       );
       if (sent) {
         registrationsService.markConfirmationMailSent(registration.id);

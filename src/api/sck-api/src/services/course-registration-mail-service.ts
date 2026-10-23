@@ -4,7 +4,9 @@
 
 import { CourseRegistration } from '../domain/course-registration.js';
 import { MAIL_TEMPLATE_SETTING_KEY, MailTemplateSettings, NOTIFICATION_BCC_SETTING_KEY, NotificationBccSetting } from '../domain/settings.js';
+import { Tile } from '../domain/tile.js';
 import { renderTemplate } from './mail-template-engine.js';
+import { getResponsibleEmails } from './members-service.js';
 import { getSetting } from './settings-service.js';
 
 // Same default recipients as the removed client-side default (see the
@@ -59,12 +61,11 @@ export const DEFAULT_COURSE_SIGNATURE_HTML = `<p style="margin: 15px 0 0 0; font
 export const getCourseConfirmationMailSubject = (registration: CourseRegistration): string =>
   `SC-Kapfenburg Kursanmeldung: ${registration.sportType} / ${registration.level}`;
 
-export const getCourseConfirmationMailBcc = (): string => {
+export const getCourseConfirmationMailBcc = (tile?: Pick<Tile, 'responsibleMemberIds'>): string => {
   const globalList = getSetting<NotificationBccSetting>(NOTIFICATION_BCC_SETTING_KEY)?.customBccList;
-  if (globalList && globalList.length > 0) {
-    return globalList.join(',');
-  }
-  return DEFAULT_BCC_LIST;
+  const base = globalList && globalList.length > 0 ? globalList : DEFAULT_BCC_LIST.split(',');
+  // Verantwortliche (Lehrteam) bekommen jede Mail zur Ausfahrt/zum Kurs mit.
+  return [...new Set([...base, ...getResponsibleEmails(tile)].map((e) => e.trim()).filter(Boolean))].join(',');
 };
 
 const formatCurrency = (amount: number): string =>

@@ -58,6 +58,9 @@ export interface Tile {
   // a users.id with no access-control implications (see the plan).
   capacity?: number;
   organizerUserId?: string;
+  // Verantwortliche (Lehrteam-Mitglieder, members.id) - bekommen alle Anmelde-Mails der Ausfahrt/des Kurses per BCC.
+  // Liegt in extra_json (siehe EXTRA_FIELD_KEYS).
+  responsibleMemberIds?: string[];
   // Computed, not stored - COUNT of trip_registrations with status='confirmed'
   // for this tile, only populated for type='event'. Public-safe: a bare
   // number, no registrant PII, used to derive the "Warteliste" badge on the
@@ -93,6 +96,7 @@ export const EXTRA_FIELD_KEYS = [
   'tripConfig',
   'course',
   'courseConfig',
+  'responsibleMemberIds',
 ] as const satisfies readonly (keyof Tile)[];
 
 export type TileCreationParams = Omit<Tile, 'id'>;

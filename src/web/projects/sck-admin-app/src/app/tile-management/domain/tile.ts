@@ -3,6 +3,13 @@ import type { CourseConfig } from 'projects/courses-lib/src/lib/domain/models/co
 import type { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-config';
 import { TileActions, TileBehavior, TileStatus, TileType } from './tile-enums';
 
+// Lehrteam-Mitglied für die Auswahl der Verantwortlichen (nur Name, keine Kontaktdaten).
+export interface TeachingTeamEntry {
+    id: string;
+    firstName: string;
+    lastName: string;
+}
+
 export interface Tile {
     id: string;
     order: number;
@@ -36,6 +43,8 @@ export interface Tile {
     // reference to a users.id, no access-control implications (see the plan).
     capacity?: number;
     organizerUserId?: string;
+    // Verantwortliche (Lehrteam-Mitglieder) - bekommen alle Mails zur Anmeldung per BCC.
+    responsibleMemberIds?: string[];
     // Computed server-side, read-only - COUNT of confirmed trip_registrations,
     // only populated for type='event' (see sck-api's rowToTile).
     confirmedRegistrationsCount?: number;

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Image } from '../domain/image';
 import { PaginatedResponse } from '../domain/paginated-response';
-import { Tile, TileCreationParams } from '../domain/tile';
+import { TeachingTeamEntry, Tile, TileCreationParams } from '../domain/tile';
 import { TripRegistration, TripRegistrationCreationParams } from '../domain/trip-registration';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../domain/course-registration';
 
@@ -66,6 +66,10 @@ export class TilesDataService {
         return this.http.get<PaginatedResponse<Tile>>(`${this.apiUrl}/${this.endpoint}${archived ? '/archive' : ''}`, {
             params,
         });
+    }
+
+    getTeachingTeam(): Observable<TeachingTeamEntry[]> {
+        return this.http.get<TeachingTeamEntry[]>(`${this.apiUrl}/members/teaching-team`);
     }
 
     getTile(id: string): Observable<Tile> {

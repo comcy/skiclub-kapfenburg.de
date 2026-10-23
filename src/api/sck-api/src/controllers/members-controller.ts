@@ -20,6 +20,16 @@ export const listMembers: RequestHandler = (req, res) => {
   }
 };
 
+// Nur Namen der Lehrteam-Mitglieder (Auswahl der Verantwortlichen im Tile-Editor).
+export const listTeachingTeam: RequestHandler = (_req, res) => {
+  try {
+    res.status(200).json(membersService.listTeachingTeamBrief());
+  } catch (error: any) {
+    console.error('Fehler beim Laden des Lehrteams:', error);
+    res.status(500).json({ error: 'Fehler beim Laden des Lehrteams.' });
+  }
+};
+
 export const getMember: RequestHandler = (req, res) => {
   try {
     const member = membersService.getMember(String(req.params.id));
