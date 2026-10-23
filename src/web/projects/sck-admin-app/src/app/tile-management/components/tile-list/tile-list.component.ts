@@ -85,6 +85,7 @@ export class TileListComponent implements OnInit {
         'subTitle',
         'type',
         'status',
+        'occupancy',
         'behavior',
         'date',
         'expiration',
