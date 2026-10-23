@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,7 +27,7 @@ interface RegistrationGroup {
 @Component({
     selector: 'app-trip-registrations',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
+    imports: [CommonModule, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule],
     templateUrl: './trip-registrations.component.html',
     styleUrls: ['./trip-registrations.component.scss'],
 })

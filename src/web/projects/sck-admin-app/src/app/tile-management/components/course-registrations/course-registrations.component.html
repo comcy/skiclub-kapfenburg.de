@@ -113,19 +113,32 @@
                         </td>
                         <td>{{ registration.notes || '–' }}</td>
                         <td class="no-print actions-cell">
-                            <button mat-icon-button (click)="onCopyRow(registration)" matTooltip="Als Zeile kopieren">
-                                <mat-icon>content_copy</mat-icon>
+                            <button
+                                mat-icon-button
+                                [matMenuTriggerFor]="rowMenu"
+                                matTooltip="Aktionen"
+                                aria-label="Aktionen"
+                            >
+                                <mat-icon>more_vert</mat-icon>
                             </button>
-                            @if (auth.hasPermission('tiles:write')) {
-                                <button mat-icon-button (click)="onEdit(registration)">
-                                    <mat-icon>edit</mat-icon>
+                            <mat-menu #rowMenu="matMenu">
+                                <button mat-menu-item (click)="onCopyRow(registration)">
+                                    <mat-icon>content_copy</mat-icon>
+                                    <span>Als Zeile kopieren</span>
                                 </button>
-                                @if (auth.session()?.isSuperAdmin) {
-                                    <button mat-icon-button (click)="onDelete(registration)">
-                                        <mat-icon>delete</mat-icon>
+                                @if (auth.hasPermission('tiles:write')) {
+                                    <button mat-menu-item (click)="onEdit(registration)">
+                                        <mat-icon>edit</mat-icon>
+                                        <span>Bearbeiten</span>
                                     </button>
+                                    @if (auth.session()?.isSuperAdmin) {
+                                        <button mat-menu-item (click)="onDelete(registration)">
+                                            <mat-icon>delete</mat-icon>
+                                            <span>Löschen</span>
+                                        </button>
+                                    }
                                 }
-                            }
+                            </mat-menu>
                         </td>
                     </tr>
                 }

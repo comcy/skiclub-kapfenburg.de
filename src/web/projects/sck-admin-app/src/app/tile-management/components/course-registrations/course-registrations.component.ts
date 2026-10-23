@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,7 +22,14 @@ import { CourseRegistrationEditorComponent } from './course-registration-editor/
 @Component({
     selector: 'app-course-registrations',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, CourseRegistrationEditorComponent],
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+        MatTooltipModule,
+        CourseRegistrationEditorComponent,
+    ],
     templateUrl: './course-registrations.component.html',
     styleUrls: ['./course-registrations.component.scss'],
 })
