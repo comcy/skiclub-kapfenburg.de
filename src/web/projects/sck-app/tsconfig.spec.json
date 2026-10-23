@@ -5,8 +5,7 @@
         "outDir": "../../out-tsc/spec",
         "types": ["jasmine"]
     },
-    "files": ["src/test.ts", "src/polyfills.ts"],
-    "include": ["src/**/*.spec.ts", "src/**/*.d.ts"],
+    "include": ["src/**/*.spec.ts", "src/**/*.d.ts", "../data/**/*.spec.ts"],
     "angularCompilerOptions": {
         "extendedDiagnostics": {
             "checks": {
