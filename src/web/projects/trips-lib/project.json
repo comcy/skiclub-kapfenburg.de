@@ -6,10 +6,7 @@
   "prefix": "lib",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:ng-packagr",
-      "options": {
-        "project": "projects/trips-lib/ng-package.json"
-      },
+      "executor": "@angular/build:ng-packagr",
       "configurations": {
         "production": {
           "tsConfig": "projects/trips-lib/tsconfig.lib.prod.json"
@@ -24,11 +21,13 @@
       ]
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@angular/build:karma",
       "options": {
-        "main": "projects/trips-lib/src/test.ts",
         "tsConfig": "projects/trips-lib/tsconfig.spec.json",
-        "karmaConfig": "projects/trips-lib/karma.conf.js"
+        "polyfills": [
+          "zone.js",
+          "zone.js/testing"
+        ]
       }
     }
   }

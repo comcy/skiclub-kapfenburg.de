@@ -63,8 +63,7 @@ if [ -z "$FILTER" ] || [ "$FILTER" = "web" ]; then
 
   # Same gap as trips-lib above, for every other Angular library in this
   # workspace: each has real .spec.ts files but no test target of its own
-  # ever ran them (ng test --project X reports "0 of 0" success without
-  # this - see each library's test.ts for the require.context() explanation).
+  # ever ran them.
   run pnpm --filter web run test:shared-lib
   run pnpm --filter web run test:courses-lib
   run pnpm --filter web run test:gym-lib

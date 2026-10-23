@@ -6,10 +6,7 @@
   "prefix": "lib",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:ng-packagr",
-      "options": {
-        "project": "projects/membership-lib/ng-package.json"
-      },
+      "executor": "@angular/build:ng-packagr",
       "configurations": {
         "production": {
           "tsConfig": "projects/membership-lib/tsconfig.lib.prod.json"
@@ -24,11 +21,13 @@
       ]
     },
     "test": {
-      "executor": "@angular-devkit/build-angular:karma",
+      "executor": "@angular/build:karma",
       "options": {
-        "main": "projects/membership-lib/src/test.ts",
         "tsConfig": "projects/membership-lib/tsconfig.spec.json",
-        "karmaConfig": "projects/membership-lib/karma.conf.js"
+        "polyfills": [
+          "zone.js",
+          "zone.js/testing"
+        ]
       }
     }
   }
