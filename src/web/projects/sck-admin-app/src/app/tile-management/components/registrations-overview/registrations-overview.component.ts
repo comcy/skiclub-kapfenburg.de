@@ -46,10 +46,10 @@ export class RegistrationsOverviewComponent implements OnInit {
     }
 
     load(): void {
-        // Same "all event tiles in one go" call as the dashboard - club-scale
+        // Nur Ausfahrten (mit Anmeldung), keine Events ohne Anmeldung. Same "all event tiles in one go" call as the dashboard - club-scale
         // data, no pagination UI needed here either.
         this.dataService
-            .getTiles(1, 1000, undefined, undefined, undefined, 'event', undefined, undefined, this.showArchive)
+            .getTiles(1, 1000, undefined, undefined, undefined, 'event', undefined, undefined, this.showArchive, true)
             .subscribe((response) => {
                 this.tiles = [...response.items].sort((a, b) => {
                     if (!!a.expired !== !!b.expired) return a.expired ? 1 : -1;
