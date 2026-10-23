@@ -87,6 +87,16 @@ jobs:
           git checkout master
           git reset --hard origin/master
 
+          # Ein fehlgeschlagener Deploy erreicht das Prune am Ende nie - dann waechst der
+          # Build-Cache bis "no space left on device" und blockiert jeden weiteren Deploy.
+          # Deshalb VOR dem Build aufraeumen (laufende Container bleiben unberuehrt).
+          echo "💾 Disk vor dem Build:"
+          df -h / | tail -1
+          docker image prune -f || true
+          docker builder prune -f || true
+          echo "💾 Disk nach dem Aufraeumen:"
+          df -h / | tail -1
+
           echo "🔨 Building api image..."
           docker compose build api
 
