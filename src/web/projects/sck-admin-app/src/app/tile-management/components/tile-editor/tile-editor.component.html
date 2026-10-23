@@ -43,7 +43,7 @@
                             <input matInput type="number" [(ngModel)]="tile.order" />
                         </mat-form-field>
 
-                        @if (!fixedType) {
+                        @if (!fixedType && !kind) {
                             <mat-form-field>
                                 <mat-label>Type</mat-label>
                                 <mat-select [(ngModel)]="tile.type">
@@ -79,7 +79,7 @@
                         </mat-form-field>
                     </div>
 
-                    @if (tile.type === 'event') {
+                    @if (tile.type === 'event' && !kind) {
                         <mat-checkbox [ngModel]="hasRegistration" (ngModelChange)="onRegistrationEnabledChange($event)">
                             Anmeldung möglich
                         </mat-checkbox>
@@ -90,16 +90,18 @@
                     }
 
                     <div class="form-grid two-columns">
-                        <mat-form-field>
-                            <mat-label>Actions</mat-label>
-                            <mat-select [(ngModel)]="tile.actions" multiple>
-                                @for (action of tileActions; track action) {
-                                    <mat-option [value]="action">
-                                        {{ action }}
-                                    </mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
+                        @if (!kind || kind === 'info') {
+                            <mat-form-field>
+                                <mat-label>Actions</mat-label>
+                                <mat-select [(ngModel)]="tile.actions" multiple>
+                                    @for (action of tileActions; track action) {
+                                        <mat-option [value]="action">
+                                            {{ action }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        }
 
                         @if (hasRegistration) {
                             <mat-form-field>

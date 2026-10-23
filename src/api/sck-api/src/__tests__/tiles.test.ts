@@ -9,19 +9,23 @@ const app = express();
 app.use(express.json());
 app.use('/api', tilesRoutes);
 
-const hashToken = (token: string): string => createHash('sha256').update(token).digest('hex');
+const hashToken = (token: string): string =>
+  createHash('sha256').update(token).digest('hex');
 
 const createAuthedUser = (permissions: string[] = []): string => {
   const userId = randomUUID();
-  db.prepare('INSERT INTO users (id, email) VALUES (?, ?)').run(userId, `${userId}@test.com`);
-  const token = randomBytes(16).toString('hex');
-  db.prepare('INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)').run(
-    hashToken(token),
+  db.prepare('INSERT INTO users (id, email) VALUES (?, ?)').run(
     userId,
-    new Date(Date.now() + 100000).toISOString(),
+    `${userId}@test.com`,
   );
+  const token = randomBytes(16).toString('hex');
+  db.prepare(
+    'INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)',
+  ).run(hashToken(token), userId, new Date(Date.now() + 100000).toISOString());
   for (const permission of permissions) {
-    db.prepare('INSERT INTO permissions (user_id, permission) VALUES (?, ?)').run(userId, permission);
+    db.prepare(
+      'INSERT INTO permissions (user_id, permission) VALUES (?, ?)',
+    ).run(userId, permission);
   }
   return token;
 };
@@ -65,7 +69,10 @@ describe('Tiles Routes', () => {
 
   it('POST /api/tiles - erfordert die Berechtigung tiles:write', async () => {
     const token = createAuthedUser([]);
-    const res = await request(app).post('/api/tiles').set('Authorization', `Bearer ${token}`).send(validTilePayload);
+    const res = await request(app)
+      .post('/api/tiles')
+      .set('Authorization', `Bearer ${token}`)
+      .send(validTilePayload);
     expect(res.status).toBe(403);
   });
 
@@ -81,7 +88,10 @@ describe('Tiles Routes', () => {
   it('erstellt, liest, aktualisiert und löscht ein Tile mit tiles:write', async () => {
     const token = createAuthedUser(['tiles:write']);
 
-    const createRes = await request(app).post('/api/tiles').set('Authorization', `Bearer ${token}`).send(validTilePayload);
+    const createRes = await request(app)
+      .post('/api/tiles')
+      .set('Authorization', `Bearer ${token}`)
+      .send(validTilePayload);
     expect(createRes.status).toBe(201);
     expect(createRes.body.title).toBe('Test Tile');
     const id = createRes.body.id as string;
@@ -97,7 +107,9 @@ describe('Tiles Routes', () => {
     expect(putRes.status).toBe(200);
     expect(putRes.body.title).toBe('Updated title');
 
-    const deleteRes = await request(app).delete(`/api/tiles/${id}`).set('Authorization', `Bearer ${token}`);
+    const deleteRes = await request(app)
+      .delete(`/api/tiles/${id}`)
+      .set('Authorization', `Bearer ${token}`);
     expect(deleteRes.status).toBe(204);
 
     const getAfterDelete = await request(app).get(`/api/tiles/${id}`);
@@ -107,13 +119,21 @@ describe('Tiles Routes', () => {
   it('rundet capacity, organizerUserId und tripConfig (Phase 2) korrekt', async () => {
     const token = createAuthedUser(['tiles:write']);
     const organizerId = randomUUID();
-    db.prepare('INSERT INTO users (id, email) VALUES (?, ?)').run(organizerId, 'organizer@test.com');
+    db.prepare('INSERT INTO users (id, email) VALUES (?, ?)').run(
+      organizerId,
+      'organizer@test.com',
+    );
 
     const tripConfig = { pricing: { busOnly: { member: 30, nonMember: 40 } } };
     const createRes = await request(app)
       .post('/api/tiles')
       .set('Authorization', `Bearer ${token}`)
-      .send({ ...validTilePayload, capacity: 40, organizerUserId: organizerId, tripConfig });
+      .send({
+        ...validTilePayload,
+        capacity: 40,
+        organizerUserId: organizerId,
+        tripConfig,
+      });
 
     expect(createRes.status).toBe(201);
     expect(createRes.body.capacity).toBe(40);
@@ -164,18 +184,48 @@ describe('Tiles Routes', () => {
       ['t-info', 'info'],
       ['t-course', 'course'],
     ]) {
-      db.prepare('INSERT INTO tiles (id, type, title) VALUES (?, ?, ?)').run(id, type, id);
+      db.prepare('INSERT INTO tiles (id, type, title) VALUES (?, ?, ?)').run(
+        id,
+        type,
+        id,
+      );
     }
 
     const res = await request(app).get('/api/tiles?excludeType=course');
-    expect((res.body.items as { type: string }[]).map((t) => t.type).sort()).toEqual(['event', 'info']);
+    expect(
+      (res.body.items as { type: string }[]).map((t) => t.type).sort(),
+    ).toEqual(['event', 'info']);
     expect(res.body.total).toBe(2);
+  });
+
+  it('GET /api/tiles?type=event&registration=1|0 - trennt Ausfahrten (register-Action) von Events', async () => {
+    db.prepare(
+      "INSERT INTO tiles (id, type, title, actions) VALUES ('t-trip', 'event', 't-trip', '[\"register\"]')",
+    ).run();
+    db.prepare(
+      "INSERT INTO tiles (id, type, title, actions) VALUES ('t-plain', 'event', 't-plain', '[]')",
+    ).run();
+    db.prepare(
+      "INSERT INTO tiles (id, type, title, actions) VALUES ('t-share', 'event', 't-share', '[\"share\"]')",
+    ).run();
+
+    const ids = async (query: string) =>
+      (
+        (await request(app).get(`/api/tiles?type=event&${query}`)).body
+          .items as { id: string }[]
+      )
+        .map((t) => t.id)
+        .sort();
+    expect(await ids('registration=1')).toEqual(['t-trip']);
+    expect(await ids('registration=0')).toEqual(['t-plain', 't-share']);
   });
 
   describe('Archiv', () => {
     const createEvent = (title: string): string => {
       const id = randomUUID();
-      db.prepare("INSERT INTO tiles (id, type, title, status) VALUES (?, 'event', ?, 'open')").run(id, title);
+      db.prepare(
+        "INSERT INTO tiles (id, type, title, status) VALUES (?, 'event', ?, 'open')",
+      ).run(id, title);
       return id;
     };
     const addRegistration = (tileId: string): void => {
@@ -194,31 +244,45 @@ describe('Tiles Routes', () => {
       expect(forbidden.status).toBe(403);
 
       const token = createAuthedUser(['tiles:write']);
-      const res = await request(app).post(`/api/tiles/${id}/archive`).set('Authorization', `Bearer ${token}`);
+      const res = await request(app)
+        .post(`/api/tiles/${id}/archive`)
+        .set('Authorization', `Bearer ${token}`);
       expect(res.status).toBe(200);
       expect(res.body.archivedAt).toBeDefined();
 
       const publicList = await request(app).get('/api/tiles');
-      expect((publicList.body.items as { title: string }[]).map((t) => t.title)).toEqual(['Ehrwald 2027']);
+      expect(
+        (publicList.body.items as { title: string }[]).map((t) => t.title),
+      ).toEqual(['Ehrwald 2027']);
     });
 
     it('GET /api/tiles/archive zeigt nur Archiviertes und nur für angemeldete Admins', async () => {
       const id = createEvent('Fellhorn 2026');
       createEvent('Ehrwald 2027');
       const token = createAuthedUser(['tiles:write']);
-      await request(app).post(`/api/tiles/${id}/archive`).set('Authorization', `Bearer ${token}`);
+      await request(app)
+        .post(`/api/tiles/${id}/archive`)
+        .set('Authorization', `Bearer ${token}`);
 
       expect((await request(app).get('/api/tiles/archive')).status).toBe(401);
-      const res = await request(app).get('/api/tiles/archive').set('Authorization', `Bearer ${token}`);
-      expect((res.body.items as { title: string }[]).map((t) => t.title)).toEqual(['Fellhorn 2026']);
+      const res = await request(app)
+        .get('/api/tiles/archive')
+        .set('Authorization', `Bearer ${token}`);
+      expect(
+        (res.body.items as { title: string }[]).map((t) => t.title),
+      ).toEqual(['Fellhorn 2026']);
       expect(res.body.total).toBe(1);
     });
 
     it('Wiederherstellen holt ein Tile zurück in die normale Liste', async () => {
       const id = createEvent('Fellhorn 2026');
       const token = createAuthedUser(['tiles:write']);
-      await request(app).post(`/api/tiles/${id}/archive`).set('Authorization', `Bearer ${token}`);
-      const res = await request(app).post(`/api/tiles/${id}/unarchive`).set('Authorization', `Bearer ${token}`);
+      await request(app)
+        .post(`/api/tiles/${id}/archive`)
+        .set('Authorization', `Bearer ${token}`);
+      const res = await request(app)
+        .post(`/api/tiles/${id}/unarchive`)
+        .set('Authorization', `Bearer ${token}`);
       expect(res.status).toBe(200);
       expect(res.body.archivedAt).toBeUndefined();
       expect((await request(app).get('/api/tiles')).body.total).toBe(1);
@@ -227,12 +291,20 @@ describe('Tiles Routes', () => {
     it('ein normales Speichern ändert den Archiv-Status nicht', async () => {
       const id = createEvent('Fellhorn 2026');
       const token = createAuthedUser(['tiles:write']);
-      await request(app).post(`/api/tiles/${id}/archive`).set('Authorization', `Bearer ${token}`);
+      await request(app)
+        .post(`/api/tiles/${id}/archive`)
+        .set('Authorization', `Bearer ${token}`);
       await request(app)
         .put(`/api/tiles/${id}`)
         .set('Authorization', `Bearer ${token}`)
-        .send({ ...validTilePayload, type: 'event', title: 'Fellhorn 2026 (neu)' });
-      const archive = await request(app).get('/api/tiles/archive').set('Authorization', `Bearer ${token}`);
+        .send({
+          ...validTilePayload,
+          type: 'event',
+          title: 'Fellhorn 2026 (neu)',
+        });
+      const archive = await request(app)
+        .get('/api/tiles/archive')
+        .set('Authorization', `Bearer ${token}`);
       expect(archive.body.items[0].title).toBe('Fellhorn 2026 (neu)');
     });
 
@@ -242,12 +314,22 @@ describe('Tiles Routes', () => {
       const empty = createEvent('Entwurf');
       const token = createAuthedUser(['tiles:write']);
 
-      const blocked = await request(app).delete(`/api/tiles/${withRegs}`).set('Authorization', `Bearer ${token}`);
+      const blocked = await request(app)
+        .delete(`/api/tiles/${withRegs}`)
+        .set('Authorization', `Bearer ${token}`);
       expect(blocked.status).toBe(409);
       expect(blocked.body.error).toContain('archivieren');
-      expect((db.prepare('SELECT COUNT(*) AS c FROM trip_registrations').get() as { c: number }).c).toBe(1);
+      expect(
+        (
+          db.prepare('SELECT COUNT(*) AS c FROM trip_registrations').get() as {
+            c: number;
+          }
+        ).c,
+      ).toBe(1);
 
-      const ok = await request(app).delete(`/api/tiles/${empty}`).set('Authorization', `Bearer ${token}`);
+      const ok = await request(app)
+        .delete(`/api/tiles/${empty}`)
+        .set('Authorization', `Bearer ${token}`);
       expect(ok.status).toBe(204);
     });
   });
@@ -255,11 +337,17 @@ describe('Tiles Routes', () => {
   it('PUT /api/tiles/:id/boardings - ordnet Boardings anhand ihres Namens zu', async () => {
     const token = createAuthedUser(['tiles:write']);
 
-    const createRes = await request(app).post('/api/tiles').set('Authorization', `Bearer ${token}`).send(validTilePayload);
+    const createRes = await request(app)
+      .post('/api/tiles')
+      .set('Authorization', `Bearer ${token}`)
+      .send(validTilePayload);
     const id = createRes.body.id as string;
 
     const boardingId = randomUUID();
-    db.prepare('INSERT INTO boardings (id, name) VALUES (?, ?)').run(boardingId, 'Westhausen Turnhalle (5:15 Uhr)');
+    db.prepare('INSERT INTO boardings (id, name) VALUES (?, ?)').run(
+      boardingId,
+      'Westhausen Turnhalle (5:15 Uhr)',
+    );
 
     const assignRes = await request(app)
       .put(`/api/tiles/${id}/boardings`)
@@ -267,6 +355,8 @@ describe('Tiles Routes', () => {
       .send({ boardings: ['Westhausen Turnhalle (5:15 Uhr)'] });
 
     expect(assignRes.status).toBe(200);
-    expect(assignRes.body.boardings).toEqual(['Westhausen Turnhalle (5:15 Uhr)']);
+    expect(assignRes.body.boardings).toEqual([
+      'Westhausen Turnhalle (5:15 Uhr)',
+    ]);
   });
 });

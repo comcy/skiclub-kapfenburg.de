@@ -1,25 +1,32 @@
 @if (auth.hasPermission('tiles:write')) {
-    <div class="content-area">
-        <app-page-heading title="Allgemein"></app-page-heading>
-        <h3>Globale Benachrichtigungs-E-Mails (BCC)</h3>
-        <p class="hint-text">
-            Wird für alle Anmeldungen (Ausfahrten, Kurse, Gymnastik) verwendet, wenn für die jeweilige Ausfahrt/den Kurs
-            keine eigene BCC-Liste hinterlegt ist.
-        </p>
+    <app-panel-shell>
+        <div class="settings-grid">
+            <section class="settings-card">
+                <app-page-heading title="Benachrichtigungen"></app-page-heading>
+                <p class="hint-text">
+                    Wird für alle Anmeldungen (Ausfahrten, Kurse, Gymnastik) verwendet, wenn für die jeweilige
+                    Ausfahrt/den Kurs keine eigene BCC-Liste hinterlegt ist.
+                </p>
 
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Globale Benachrichtigungs-E-Mails (BCC)</mat-label>
-            <input matInput [(ngModel)]="globalBccListText" placeholder="a@example.com, b@example.com" />
-            <mat-hint>Kommagetrennt. Leer = interne Standardliste im Code wird verwendet.</mat-hint>
-        </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Globale Benachrichtigungs-E-Mails (BCC)</mat-label>
+                    <input matInput [(ngModel)]="globalBccListText" placeholder="a@example.com, b@example.com" />
+                    <mat-hint>Kommagetrennt. Leer = interne Standardliste im Code wird verwendet.</mat-hint>
+                </mat-form-field>
 
-        <div class="actions">
-            <button mat-raised-button color="primary" (click)="onSave()">Speichern</button>
-            @if (isSaved) {
-                <span class="saved-hint">Gespeichert.</span>
-            }
+                <div class="actions">
+                    <button mat-raised-button color="primary" (click)="onSave()">Speichern</button>
+                    @if (isSaved) {
+                        <span class="saved-hint">Gespeichert.</span>
+                    }
+                </div>
+            </section>
+
+            <section class="settings-card">
+                <app-boarding-list></app-boarding-list>
+            </section>
         </div>
-    </div>
+    </app-panel-shell>
 } @else {
     <div class="no-access">Keine Berechtigung, Einstellungen zu verwalten.</div>
 }

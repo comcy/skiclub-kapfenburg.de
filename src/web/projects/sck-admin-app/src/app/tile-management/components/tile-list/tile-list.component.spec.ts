@@ -34,7 +34,7 @@ describe('TileListComponent', () => {
         await TestBed.configureTestingModule({
             imports: [TileListComponent],
             providers: [
-                { provide: ActivatedRoute, useValue: { queryParams: of({}) } },
+                { provide: ActivatedRoute, useValue: { queryParams: of({}), snapshot: { data: { kind: 'trip' } } } },
                 { provide: Router, useValue: routerSpy },
                 { provide: TilesDataService, useValue: { getTiles: () => of({ items: [], total: 0 }) } },
                 { provide: AuthService, useValue: { hasPermission: () => true } },
@@ -48,7 +48,17 @@ describe('TileListComponent', () => {
 
     it('navigates to the modal editor with "neu" on create', () => {
         component.onCreate();
-        expect(routerSpy.navigate).toHaveBeenCalledWith([{ outlets: { modal: ['event-bearbeiten', 'neu'] } }]);
+        expect(routerSpy.navigate).toHaveBeenCalledWith([
+            { outlets: { modal: ['event-bearbeiten', 'neu', { kind: 'trip' }] } },
+        ]);
+    });
+
+    it('create passes the kind of the tab', () => {
+        (component as { kind: string }).kind = 'info';
+        component.onCreate();
+        expect(routerSpy.navigate).toHaveBeenCalledWith([
+            { outlets: { modal: ['event-bearbeiten', 'neu', { kind: 'info' }] } },
+        ]);
     });
 
     it('navigates to the modal editor with the tile id on edit', () => {

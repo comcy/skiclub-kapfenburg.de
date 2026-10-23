@@ -3,10 +3,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Tile } from '../../domain/tile';
+import { TileKind } from '../../domain/tile-enums';
 import { TileEditorComponent } from '../tile-editor/tile-editor.component';
 
 export interface EventTileEditDialogData {
     tile: Tile;
+    kind: TileKind;
 }
 
 // Same shape as CourseTileEditDialogComponent (see its own reasoning for why
@@ -25,7 +27,8 @@ export class EventTileEditDialogComponent {
     public readonly data = inject<EventTileEditDialogData>(MAT_DIALOG_DATA);
 
     get title(): string {
-        return this.data.tile.id.startsWith('new-') ? 'Ausfahrt anlegen' : 'Ausfahrt bearbeiten';
+        const name = { trip: 'Ausfahrt', event: 'Event', info: 'Info' }[this.data.kind];
+        return this.data.tile.id.startsWith('new-') ? `${name} anlegen` : `${name} bearbeiten`;
     }
 
     onSaved(): void {

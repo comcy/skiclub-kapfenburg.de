@@ -9,7 +9,7 @@ export interface SectionNavLink {
     link: string;
 }
 
-// Reused as the shell for event-management (Ausfahrten/Boardings),
+// Reused as the shell for card-management (Ausfahrten/Events/Infos),
 // course-management (Kurse/Anmeldungen) and settings (Allgemein/Users/
 // Media) - see app.routes.ts's `data: { title, navLinks }` on each parent
 // route. Sub-items are shown as top tabs, mirroring sck-app's

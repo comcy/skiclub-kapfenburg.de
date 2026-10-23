@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
     navItems: NavItem[] = [
         { name: 'Übersicht', route: '/dashboard', icon: 'dashboard' },
         { name: 'Anmeldungen', route: '/registrations', icon: 'how_to_reg' },
-        { name: 'Event-Management', route: '/event-management', icon: 'grid_view' },
+        { name: 'Karten-Management', route: '/card-management', icon: 'grid_view' },
         { name: 'Kurs-Management', route: '/course-management', icon: 'school' },
         { name: 'Vereinsverwaltung', route: '/member-management', icon: 'badge' },
         { name: 'Analytics', route: '/analytics', icon: 'insights' },

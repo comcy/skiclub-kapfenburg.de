@@ -15,7 +15,7 @@ import type { TripConfig } from 'projects/trips-lib/src/lib/domain/models/trip-c
 import { getVisibleAgeCategories } from 'projects/trips-lib/src/lib/domain/models/trip-price-table';
 import { TeachingTeamEntry, Tile, TileCreationParams } from '../../domain/tile';
 import { Image } from '../../domain/image';
-import { TileActions, TileBehavior, TileStatus, TileType } from '../../domain/tile-enums';
+import { TileActions, TileBehavior, TileKind, TileStatus, TileType } from '../../domain/tile-enums';
 import { toSharedTile } from '../../domain/to-shared-tile';
 import { TilesDataService } from '../../services/tiles-data.service';
 import { EditableDateComponent } from '../editable-date/editable-date.component';
@@ -52,6 +52,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 export class TileEditorComponent implements OnInit, OnChanges {
     @Input() tile: Tile | null = null;
     @Input() fixedType: TileType | undefined;
+    // Karten-Management-Reiter (Ausfahrt/Event/Info) - legt Typ und Anmeldung fest, kein Type-/Anmeldung-Feld.
+    @Input() kind: TileKind | undefined;
     @Output() tileSaved = new EventEmitter<void>();
 
     private readonly dataService = inject(TilesDataService);
@@ -88,11 +90,20 @@ export class TileEditorComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(): void {
+        this.applyKind();
         if (this.fixedType === TileType.Course) {
             this.ensureCourseConfigShape();
-        } else {
+        } else if (this.kind !== 'event' && this.kind !== 'info') {
             this.ensureTripConfigShape();
         }
+    }
+
+    // Der Reiter bestimmt Typ und Anmeldung: Ausfahrt = event + register, Event = event ohne register, Info = info.
+    private applyKind(): void {
+        if (!this.tile || !this.kind) return;
+        this.tile.type = this.kind === 'info' ? TileType.Info : TileType.Event;
+        if (this.kind === 'trip') this.onRegistrationEnabledChange(true);
+        else if (this.kind === 'event') this.onRegistrationEnabledChange(false);
     }
 
     // Kurse section (fixedType===Course) only needs a BCC config, not the
@@ -189,11 +200,13 @@ export class TileEditorComponent implements OnInit, OnChanges {
     // zu dem man sich nicht anmeldet (z. B. Skiboerse): nur Bild, Datum, Beschreibung. Andere Typen
     // (Info, Kurs) haben ihre eigene Logik und bleiben unberuehrt.
     get hasRegistration(): boolean {
+        if (this.kind) return this.kind === 'trip';
         return this.tile?.type !== TileType.Event || !!this.tile.actions?.includes(TileActions.Register);
     }
 
     onRegistrationEnabledChange(enabled: boolean): void {
         if (!this.tile) return;
+        if (!enabled && !this.tile.actions?.includes(TileActions.Register)) return;
         const actions = (this.tile.actions ?? []).filter((action) => action !== TileActions.Register);
         this.tile.actions = enabled ? [...actions, TileActions.Register] : actions;
     }
