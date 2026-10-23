@@ -242,7 +242,7 @@ export class TripRegistrationsComponent implements OnInit {
 
     private openEditor(registration: TripRegistration): void {
         const dialogRef = this.dialog.open(RegistrationEditDialogComponent, {
-            data: { tileId: this.tileId, registration },
+            data: { tileId: this.tileId, tile: this.tile, registration },
             width: '640px',
             maxWidth: '95vw',
         });

@@ -2,11 +2,13 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogShellComponent } from '../../../../shared/components/dialog-shell/dialog-shell.component';
+import { Tile } from '../../../domain/tile';
 import { TripRegistration } from '../../../domain/trip-registration';
 import { RegistrationEditorComponent } from '../registration-editor/registration-editor.component';
 
 export interface RegistrationEditDialogData {
     tileId: string;
+    tile: Tile | null;
     registration: TripRegistration;
 }
 
