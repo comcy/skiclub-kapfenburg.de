@@ -155,6 +155,20 @@ export class MemberListComponent implements OnInit {
         this.router.navigate([{ outlets: { modal: ['mitglieder-bearbeiten', member.id] } }]);
     }
 
+    onDelete(member: Member): void {
+        const name = `${member.firstName} ${member.lastName}`;
+        if (
+            !confirm(
+                `${name} endgültig löschen?\n\nDas kann nicht rückgängig gemacht werden. Bestehende Anmeldungen bleiben erhalten, verlieren aber die Mitglieder-Verknüpfung. Zum Ausblenden besser den Status auf „inaktiv“ setzen.`,
+            )
+        )
+            return;
+        this.dataService.deleteMember(member.id).subscribe(() => {
+            this.allMembers = this.allMembers.filter((m) => m.id !== member.id);
+            this.applyFilters();
+        });
+    }
+
     onCreate(): void {
         this.router.navigate([{ outlets: { modal: ['mitglieder-bearbeiten', 'neu'] } }]);
     }
