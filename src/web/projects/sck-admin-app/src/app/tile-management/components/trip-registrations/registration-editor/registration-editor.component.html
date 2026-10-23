@@ -49,11 +49,7 @@
                     }
                 </mat-select>
                 <mat-hint>
-                    {{
-                        registration.birthday
-                            ? 'Aus dem Geburtsdatum berechnet'
-                            : 'Ohne Geburtsdatum bestimmt sie den Preis'
-                    }}
+                    {{ registration.birthday ? 'Aus Geburtsdatum' : 'Zählt für den Preis' }}
                 </mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">
