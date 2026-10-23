@@ -45,7 +45,7 @@
     "@types/nodemailer": "^6.4.16",
     "@types/supertest": "^7.2.1",
     "jest": "^30.5.2",
-    "rollup": "^2.79.2",
+    "rollup": "^4.64.12",
     "rollup-plugin-terser": "^7.0.2",
     "supertest": "^7.3.1",
     "ts-jest": "^29.4.15",
