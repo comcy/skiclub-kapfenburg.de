@@ -178,7 +178,6 @@ export class TileEditorComponent implements OnInit, OnChanges {
                 technikHalf: pricing?.addons?.technikHalf ?? zero(),
                 technikFull: pricing?.addons?.technikFull ?? zero(),
                 courseBeginner: pricing?.addons?.courseBeginner ?? zero(),
-                courseAdvanced: pricing?.addons?.courseAdvanced ?? zero(),
             },
         };
     }
