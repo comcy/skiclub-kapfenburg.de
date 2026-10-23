@@ -9,7 +9,6 @@ export interface TripAddons {
     technikHalf?: PriceByMembership;
     technikFull?: PriceByMembership;
     courseBeginner?: PriceByMembership;
-    courseAdvanced?: PriceByMembership;
 }
 
 export interface TripPricing {

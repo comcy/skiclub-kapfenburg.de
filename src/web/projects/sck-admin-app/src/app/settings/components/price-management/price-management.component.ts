@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SKI_COURSE_TYPE_LABELS } from 'projects/courses-lib/src/lib/domain/models/ski-course-pricing';
-import type { AgeCategory } from 'projects/trips-lib/src/lib/domain/models/trip-base';
 import { AuthService } from '../../../auth/services/auth.service';
 import { PanelShellComponent } from '../../../shared/components/panel-shell/panel-shell.component';
 import { SkiCoursePricingSetting } from '../../domain/ski-course-pricing-setting';
@@ -47,13 +46,6 @@ export class PriceManagementComponent implements OnInit {
     public isSkiCoursePricingSaved = false;
     public isTripPricingSaved = false;
 
-    public readonly ageCategories: AgeCategory[] = ['adult', 'youthUntil16', 'childUntil6'];
-    public readonly ageCategoryLabels: Record<AgeCategory, string> = {
-        adult: 'Erwachsene',
-        youthUntil16: 'Jugendliche (bis 16 J.)',
-        childUntil6: 'Kinder (bis 6 J.)',
-    };
-
     ngOnInit(): void {
         this.dataService.getSkiCoursePricing().subscribe((setting) => {
             this.skiCoursePricing = setting;
@@ -83,7 +75,6 @@ export class PriceManagementComponent implements OnInit {
                 technikHalf: pricing.addons?.technikHalf ?? zero(),
                 technikFull: pricing.addons?.technikFull ?? zero(),
                 courseBeginner: pricing.addons?.courseBeginner ?? zero(),
-                courseAdvanced: pricing.addons?.courseAdvanced ?? zero(),
             },
         };
     }

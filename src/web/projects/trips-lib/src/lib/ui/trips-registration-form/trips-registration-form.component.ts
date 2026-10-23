@@ -189,9 +189,6 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         if (addons.courseBeginner) {
             this.availableLevelOptions.push({ label: 'Anfängerkurs', value: 'Anfängerkurs' });
         }
-        if (addons.courseAdvanced) {
-            this.availableLevelOptions.push({ label: 'Fortgeschrittenenkurs', value: 'Fortgeschrittenenkurs' });
-        }
         if (addons.technikHalf) {
             this.availableLevelOptions.push({ label: 'Techniktraining (1/2 Tag)', value: 'Techniktraining (1/2 Tag)' });
         }
@@ -315,7 +312,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
         const addons = this.tripConfig?.pricing?.addons;
         if (!addons) return '';
 
-        const hasCourses = !!(addons.courseBeginner || addons.courseAdvanced);
+        const hasCourses = !!addons.courseBeginner;
         const hasTechnik = !!(addons.technikHalf || addons.technikFull);
 
         if (hasCourses && hasTechnik) {

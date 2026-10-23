@@ -39,7 +39,6 @@ export interface TripPricing {
     technikHalf?: PriceByMembership;
     technikFull?: PriceByMembership;
     courseBeginner?: PriceByMembership;
-    courseAdvanced?: PriceByMembership;
   };
 }
 

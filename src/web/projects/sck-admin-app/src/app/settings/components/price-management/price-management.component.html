@@ -68,8 +68,7 @@
         <h3>Ausfahrten mit Kursmöglichkeit</h3>
         <p class="hint-text">
             Wird automatisch jeder Ausfahrt hinzugefügt, die im Event-Management als "Ausfahrt mit Kursmöglichkeit"
-            markiert wurde. Bus+Lift und Nur Busfahrt gelten für jede Ausfahrt, die restlichen Zeilen nur für
-            kursmarkierte Ausfahrten.
+            markiert wurde. Bus+Lift und Nur Busfahrt werden direkt je Ausfahrt gepflegt.
         </p>
 
         @if (tripPricing.busLift) {
@@ -79,28 +78,6 @@
                 <span class="pricing-col-label">Nicht-Mitglied</span>
             </div>
 
-            @for (category of ageCategories; track category) {
-                <div class="form-grid three-columns">
-                    <span class="pricing-row-label">Bus + Liftkarte — {{ ageCategoryLabels[category] }}</span>
-                    <mat-form-field>
-                        <input matInput type="number" min="0" [(ngModel)]="tripPricing.busLift![category].member" />
-                    </mat-form-field>
-                    <mat-form-field>
-                        <input matInput type="number" min="0" [(ngModel)]="tripPricing.busLift![category].nonMember" />
-                    </mat-form-field>
-                </div>
-            }
-
-            <div class="form-grid three-columns">
-                <span class="pricing-row-label">Nur Busfahrt</span>
-                <mat-form-field>
-                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.busOnly!.member" />
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.busOnly!.nonMember" />
-                </mat-form-field>
-            </div>
-
             <div class="form-grid three-columns">
                 <span class="pricing-row-label">Anfängerkurs</span>
                 <mat-form-field>
@@ -108,16 +85,6 @@
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.courseBeginner!.nonMember" />
-                </mat-form-field>
-            </div>
-
-            <div class="form-grid three-columns">
-                <span class="pricing-row-label">Fortgeschrittenenkurs</span>
-                <mat-form-field>
-                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.courseAdvanced!.member" />
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput type="number" min="0" [(ngModel)]="tripPricing.addons!.courseAdvanced!.nonMember" />
                 </mat-form-field>
             </div>
 
