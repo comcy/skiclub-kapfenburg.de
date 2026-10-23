@@ -63,7 +63,6 @@ export class RegistrationEditorComponent {
         const addons = this.tile?.tripConfig?.pricing?.addons;
         const all: [string, boolean | undefined][] = [
             ['Anfängerkurs', !!addons?.courseBeginner],
-            ['Fortgeschrittenenkurs', !!addons?.courseAdvanced],
             ['Techniktraining (1/2 Tag)', !!addons?.technikHalf],
             ['Techniktraining (ganzer Tag)', !!addons?.technikFull],
         ];

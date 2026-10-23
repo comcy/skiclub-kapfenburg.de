@@ -71,7 +71,6 @@ export const calculateParticipantPrice = (participant: PriceableParticipant, pri
     let coursePricing = null;
 
     if (level === 'Anfängerkurs') coursePricing = pricing.addons.courseBeginner;
-    else if (level === 'Fortgeschrittenenkurs') coursePricing = pricing.addons.courseAdvanced;
     else if (level === 'Techniktraining (1/2 Tag)') coursePricing = pricing.addons.technikHalf;
     else if (level === 'Techniktraining (ganzer Tag)') coursePricing = pricing.addons.technikFull;
 

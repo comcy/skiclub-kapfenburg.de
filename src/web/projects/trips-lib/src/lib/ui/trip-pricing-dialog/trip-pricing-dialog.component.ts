@@ -92,13 +92,6 @@ export class TripPricingDialogComponent {
                     nonMember: addons.courseBeginner.nonMember,
                 });
             }
-            if (addons.courseAdvanced) {
-                courseRows.push({
-                    category: 'Fortgeschrittenenkurs',
-                    member: addons.courseAdvanced.member,
-                    nonMember: addons.courseAdvanced.nonMember,
-                });
-            }
             if (addons.technikHalf) {
                 courseRows.push({
                     category: 'Techniktraining (1/2 Tag)',

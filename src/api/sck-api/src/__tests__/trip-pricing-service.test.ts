@@ -13,7 +13,6 @@ const pricing: TripPricing = {
     technikHalf: { member: 20, nonMember: 25 },
     technikFull: { member: 35, nonMember: 40 },
     courseBeginner: { member: 18, nonMember: 22 },
-    courseAdvanced: { member: 24, nonMember: 28 },
   },
 };
 
@@ -66,10 +65,10 @@ describe('calculateParticipantPrice', () => {
   it('kombiniert busLift + Schneeschuhe + Kurs-Zuschlag', () => {
     expect(
       calculateParticipantPrice(
-        base({ ageCategory: 'youthUntil16', isMember: false, snowshoes: true, courseRequested: true, level: 'Fortgeschrittenenkurs' }),
+        base({ ageCategory: 'youthUntil16', isMember: false, snowshoes: true, courseRequested: true, level: 'Techniktraining (1/2 Tag)' }),
         pricing,
       ),
-    ).toBe(25 + 12 + 28);
+    ).toBe(25 + 12 + 25);
   });
 
   it('fehlende Preis-Konfiguration ergibt 0', () => {

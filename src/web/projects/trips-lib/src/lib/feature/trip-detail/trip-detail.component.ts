@@ -157,9 +157,6 @@ export class TripDetailComponent implements OnInit, OnDestroy {
                 if (addons.courseBeginner) {
                     content += `| Anfängerkurs | ${addons.courseBeginner.member},00 € | ${addons.courseBeginner.nonMember},00 € |\n`;
                 }
-                if (addons.courseAdvanced) {
-                    content += `| Fortgeschrittenenkurs | ${addons.courseAdvanced.member},00 € | ${addons.courseAdvanced.nonMember},00 € |\n`;
-                }
                 if (addons.technikHalf) {
                     content += `| Techniktraining (1/2 Tag) | ${addons.technikHalf.member},00 € | ${addons.technikHalf.nonMember},00 € |\n`;
                 }
