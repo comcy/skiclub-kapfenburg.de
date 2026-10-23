@@ -97,6 +97,19 @@ describe('TripRegistrationsComponent', () => {
 
             expect(component.capacityPercent).toBe(100);
         });
+
+        it('marks confirmed registrations beyond capacity (by signup time) as Notplätze', () => {
+            component.tile = { capacity: 2, emergencySeats: 2 } as never;
+            component.registrations = [
+                makeRegistration({ id: 'c', createdAt: '2026-01-03T00:00:00Z' }),
+                makeRegistration({ id: 'a', createdAt: '2026-01-01T00:00:00Z' }),
+                makeRegistration({ id: 'b', createdAt: '2026-01-02T00:00:00Z' }),
+                makeRegistration({ id: 'w', status: 'waitlist', createdAt: '2026-01-04T00:00:00Z' }),
+            ];
+
+            expect([...component.emergencyRegistrationIds]).toEqual(['c']);
+            expect(component.emergencyUsed).toBe(1);
+        });
     });
 
     describe('tileStatusLabel (Anmeldungs-Metadaten)', () => {

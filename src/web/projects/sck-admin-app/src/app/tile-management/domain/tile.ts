@@ -45,6 +45,8 @@ export interface Tile {
     organizerUserId?: string;
     // Verantwortliche (Lehrteam-Mitglieder) - bekommen alle Mails zur Anmeldung per BCC.
     responsibleMemberIds?: string[];
+    // Notplätze zusätzlich zur Capacity - werden nur manuell durch Organisatoren vergeben.
+    emergencySeats?: number;
     // Computed server-side, read-only - COUNT of confirmed trip_registrations,
     // only populated for type='event' (see sck-api's rowToTile).
     confirmedRegistrationsCount?: number;

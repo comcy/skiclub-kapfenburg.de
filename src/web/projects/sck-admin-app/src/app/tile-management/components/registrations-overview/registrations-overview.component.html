@@ -35,7 +35,8 @@
                         <td>
                             @if (tile.capacity) {
                                 <span [class.capacity-full]="isOverCapacity(tile)">
-                                    {{ confirmedCount(tile) }} / {{ tile.capacity }}
+                                    {{ confirmedCount(tile) }} / {{ tile.capacity
+                                    }}{{ tile.emergencySeats ? ' (+' + tile.emergencySeats + ' Notplätze)' : '' }}
                                     @if (isOverCapacity(tile)) {
                                         <mat-icon class="capacity-warning-icon" inline>warning</mat-icon>
                                     }

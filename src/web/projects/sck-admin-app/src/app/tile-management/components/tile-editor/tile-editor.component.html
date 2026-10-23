@@ -129,6 +129,18 @@
                             </mat-form-field>
 
                             <mat-form-field>
+                                <mat-label>Notplätze</mat-label>
+                                <input
+                                    matInput
+                                    type="number"
+                                    min="0"
+                                    [(ngModel)]="tile.emergencySeats"
+                                    placeholder="0"
+                                />
+                                <mat-hint>Zusätzlich zur Capacity, nur manuell durch Orga vergebbar</mat-hint>
+                            </mat-form-field>
+
+                            <mat-form-field>
                                 <mat-label>Verantwortliche (Lehrteam)</mat-label>
                                 <mat-select [(ngModel)]="tile.responsibleMemberIds" multiple>
                                     @for (member of teachingTeam$ | async; track member.id) {
