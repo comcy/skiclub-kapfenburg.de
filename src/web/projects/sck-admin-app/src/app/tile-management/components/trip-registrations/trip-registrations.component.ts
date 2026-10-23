@@ -122,6 +122,23 @@ export class TripRegistrationsComponent implements OnInit {
         return this.registrations.filter((r) => r.status === 'waitlist').length;
     }
 
+    // Bestätigte jenseits der Capacity (nach Anmeldezeit) belegen Notplätze.
+    get emergencyRegistrationIds(): Set<string> {
+        const capacity = this.tile?.capacity;
+        if (!capacity) return new Set();
+        return new Set(
+            this.registrations
+                .filter((r) => r.status === 'confirmed')
+                .sort((a, b) => (a.createdAt ?? '').localeCompare(b.createdAt ?? ''))
+                .slice(capacity)
+                .map((r) => r.id),
+        );
+    }
+
+    get emergencyUsed(): number {
+        return this.emergencyRegistrationIds.size;
+    }
+
     get capacityPercent(): number {
         if (!this.tile?.capacity) return 0;
         return Math.min(100, Math.round((this.confirmedCount / this.tile.capacity) * 100));

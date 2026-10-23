@@ -61,6 +61,9 @@ export interface Tile {
   // Verantwortliche (Lehrteam-Mitglieder, members.id) - bekommen alle Anmelde-Mails der Ausfahrt/des Kurses per BCC.
   // Liegt in extra_json (siehe EXTRA_FIELD_KEYS).
   responsibleMemberIds?: string[];
+  // Notplaetze zusaetzlich zur capacity - nur manuell durch Organisatoren vergeben (oeffentlich zaehlt nur capacity).
+  // Liegt in extra_json (siehe EXTRA_FIELD_KEYS).
+  emergencySeats?: number;
   // Computed, not stored - COUNT of trip_registrations with status='confirmed'
   // for this tile, only populated for type='event'. Public-safe: a bare
   // number, no registrant PII, used to derive the "Warteliste" badge on the
@@ -97,6 +100,7 @@ export const EXTRA_FIELD_KEYS = [
   'course',
   'courseConfig',
   'responsibleMemberIds',
+  'emergencySeats',
 ] as const satisfies readonly (keyof Tile)[];
 
 export type TileCreationParams = Omit<Tile, 'id'>;
