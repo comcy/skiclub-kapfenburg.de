@@ -37,6 +37,9 @@ export interface Member {
   // (defaults to []) so every existing MemberCreationParams call site
   // doesn't need to know about it - only markHonored() ever sets it.
   honoredYears?: number[];
+  // Lehrteam (Skischul-Team) - optional wie honoredYears: ein Speichern ohne
+  // dieses Feld (z.B. der Importer) lässt die Markierung unangetastet.
+  isTeachingTeam?: boolean;
 }
 
 export type MemberCreationParams = Omit<Member, 'id'>;

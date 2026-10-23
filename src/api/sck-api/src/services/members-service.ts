@@ -33,6 +33,7 @@ interface MemberRow {
   account_holder: string | null;
   payment_method: string | null;
   honored_years: string;
+  is_teaching_team: number;
 }
 
 const parseHonoredYears = (json: string): number[] => {
@@ -67,6 +68,7 @@ const rowToMember = (row: MemberRow): Member => ({
   accountHolder: row.account_holder ?? undefined,
   paymentMethod: row.payment_method ?? undefined,
   honoredYears: parseHonoredYears(row.honored_years),
+  isTeachingTeam: row.is_teaching_team === 1,
 });
 
 export const listMembers = (page: number, limit: number): PaginatedResponse<Member> => {
@@ -102,8 +104,8 @@ export const createMember = (params: MemberCreationParams): Member => {
       id, first_name, last_name, email, phone, mobile, birthday, address,
       is_family_membership, family_group_id, status, source,
       application_registration_id, notes, member_since, external_id,
-      iban_encrypted, bic, bank_name, account_holder, payment_method
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      iban_encrypted, bic, bank_name, account_holder, payment_method, is_teaching_team
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     params.firstName,
@@ -126,6 +128,7 @@ export const createMember = (params: MemberCreationParams): Member => {
     params.bankName ?? null,
     params.accountHolder ?? null,
     params.paymentMethod ?? null,
+    params.isTeachingTeam ? 1 : 0,
   );
   // Re-fetch rather than trusting `{ id, ...params }` - honoredYears is
   // deliberately not part of MemberCreationParams (only markHonored() sets
@@ -142,6 +145,7 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
         is_family_membership = ?, family_group_id = ?, status = ?, source = ?,
         application_registration_id = ?, notes = ?, member_since = ?, external_id = ?,
         iban_encrypted = ?, bic = ?, bank_name = ?, account_holder = ?, payment_method = ?,
+        is_teaching_team = COALESCE(?, is_teaching_team),
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
@@ -166,6 +170,7 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
       params.bankName ?? null,
       params.accountHolder ?? null,
       params.paymentMethod ?? null,
+      params.isTeachingTeam === undefined ? null : params.isTeachingTeam ? 1 : 0,
       id,
     );
   if (result.changes === 0) return undefined;

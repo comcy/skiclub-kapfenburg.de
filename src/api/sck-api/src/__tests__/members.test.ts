@@ -88,6 +88,25 @@ describe('Members Routes', () => {
     expect(deleteRes.status).toBe(204);
   });
 
+  it('Lehrteam-Markierung: setzbar, bleibt bei Speichern ohne das Feld erhalten', async () => {
+    const token = createAuthedUser(['members:manage']);
+    const auth = { Authorization: `Bearer ${token}` };
+
+    const created = await request(app).post('/api/members').set(auth).send(validMember);
+    expect(created.body.isTeachingTeam).toBe(false);
+    const id = created.body.id as string;
+
+    const marked = await request(app).put(`/api/members/${id}`).set(auth).send({ ...validMember, isTeachingTeam: true });
+    expect(marked.body.isTeachingTeam).toBe(true);
+
+    // z.B. Importer: Feld fehlt -> Markierung bleibt
+    const resaved = await request(app).put(`/api/members/${id}`).set(auth).send({ ...validMember, notes: 'x' });
+    expect(resaved.body.isTeachingTeam).toBe(true);
+
+    const unmarked = await request(app).put(`/api/members/${id}`).set(auth).send({ ...validMember, isTeachingTeam: false });
+    expect(unmarked.body.isTeachingTeam).toBe(false);
+  });
+
   it('lehnt ein Mitglied ohne Vor-/Nachname mit 400 ab', async () => {
     const token = createAuthedUser(['members:manage']);
     const res = await request(app)

@@ -103,3 +103,13 @@ tr.mat-mdc-header-row {
     background: var(--mat-sys-tertiary-container);
     color: var(--mat-sys-on-tertiary-container);
 }
+
+.chip-team {
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    margin-top: 4px;
+}
+
+.team-active {
+    color: var(--mat-sys-primary);
+}

@@ -1,0 +1,50 @@
+<div class="page">
+    <app-page-heading title="Lehrteam"></app-page-heading>
+
+    <mat-form-field appearance="outline" class="add-field">
+        <mat-label>Mitglied zum Lehrteam hinzufügen</mat-label>
+        <input matInput [(ngModel)]="addText" [matAutocomplete]="auto" placeholder="Name eingeben" />
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAdd($event.option.value)">
+            @for (member of suggestions; track member.id) {
+                <mat-option [value]="member">{{ label(member) }}</mat-option>
+            }
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <div class="results-area">
+        @if (loaded && !team.length) {
+            <p class="empty">Noch niemand im Lehrteam.</p>
+        }
+        @if (team.length) {
+            <table class="simple-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>E-Mail</th>
+                        <th>Telefon</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (member of team; track member.id) {
+                        <tr>
+                            <td>{{ label(member) }}</td>
+                            <td>{{ member.email || '–' }}</td>
+                            <td>{{ member.mobile || member.phone || '–' }}</td>
+                            <td>
+                                <button
+                                    mat-icon-button
+                                    (click)="onRemove(member)"
+                                    matTooltip="Aus dem Lehrteam entfernen"
+                                    aria-label="Aus dem Lehrteam entfernen"
+                                >
+                                    <mat-icon>person_remove</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

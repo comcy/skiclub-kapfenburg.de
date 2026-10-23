@@ -49,6 +49,14 @@
                 <mat-option value="imported">Importiert</mat-option>
             </mat-select>
         </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Lehrteam</mat-label>
+            <mat-select [(ngModel)]="filterTeam" (selectionChange)="onFilterChange()">
+                <mat-option value="">Alle</mat-option>
+                <mat-option value="yes">Nur Lehrteam</mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
 </app-collapsible-filters>
 
@@ -60,6 +68,9 @@
                 {{ member.firstName }} {{ member.lastName }}
                 @if (member.isFamilyMembership) {
                     <div class="family-hint">Familienmitgliedschaft</div>
+                }
+                @if (member.isTeachingTeam) {
+                    <span class="chip chip-team">Lehrteam</span>
                 }
             </td>
         </ng-container>
@@ -129,6 +140,17 @@
                         aria-label="Daten exportieren"
                     >
                         <mat-icon>ios_share</mat-icon>
+                    </button>
+                    <button
+                        mat-icon-button
+                        (click)="onToggleTeachingTeam(member)"
+                        [matTooltip]="member.isTeachingTeam ? 'Aus dem Lehrteam entfernen' : 'Zum Lehrteam hinzufügen'"
+                        [attr.aria-label]="
+                            member.isTeachingTeam ? 'Aus dem Lehrteam entfernen' : 'Zum Lehrteam hinzufügen'
+                        "
+                        [class.team-active]="member.isTeachingTeam"
+                    >
+                        <mat-icon>school</mat-icon>
                     </button>
                     <button mat-icon-button (click)="onEdit(member)" matTooltip="Bearbeiten" aria-label="Bearbeiten">
                         <mat-icon>edit</mat-icon>
