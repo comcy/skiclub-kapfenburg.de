@@ -76,3 +76,12 @@ jobs:
         run: |
           pnpm --filter sck-api run lint
           pnpm --filter sck-api run test
+      # Jest testet die TS-Quellen, nie das gerollte Bundle - ein ESM/CJS-Bruch
+      # (z.B. dotenv 18 im Bundle, #294) fiel erst beim Prod-Start auf.
+      - name: Produktions-Bundle startet (sck-api)
+        run: |
+          pnpm --filter sck-api run build
+          cd "$(mktemp -d)"
+          SEPA_ENCRYPTION_KEY=$(printf '0%.0s' {1..64}) timeout 8 node "$GITHUB_WORKSPACE/src/api/sck-api/dist/index.js" > out.log 2>&1 || true
+          cat out.log
+          grep -q "Server läuft" out.log
