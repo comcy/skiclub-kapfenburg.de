@@ -622,6 +622,43 @@ describe('Trip Registrations Routes', () => {
       expect(typeof res.body.total).toBe('number');
     });
 
+    it('nutzt ohne Geburtsdatum die Alterskategorie, mit Geburtsdatum das Datum', async () => {
+      const tileId = randomUUID();
+      const tier = (m: number, n: number) => ({ member: m, nonMember: n });
+      db.prepare("INSERT INTO tiles (id, type, title, extra_json) VALUES (?, 'event', 'Preise', ?)").run(
+        tileId,
+        JSON.stringify({
+          tripConfig: { pricing: { busLift: { adult: tier(90, 100), youthUntil16: tier(65, 75), childUntil6: tier(50, 55) } } },
+        }),
+      );
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/trip-price-preview`)
+        .send({
+          participants: [
+            { ageCategory: 'youthUntil16' },
+            { ageCategory: 'childUntil6' },
+            { ageCategory: 'youthUntil16', birthday: '1990-01-01' },
+            {},
+          ],
+        });
+      expect(res.body.prices).toEqual([75, 55, 100, 100]);
+    });
+
+    it('Admin-Anmeldung mit Geburtsdatum leitet die Kategorie daraus ab', async () => {
+      const tileId = createTile();
+      const token = createAuthedUser(['tiles:write']);
+      const res = await request(app)
+        .post(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ ...validRegistration, birthday: '1990-01-01', ageCategory: 'childUntil6' });
+      expect(res.body.ageCategory).toBe('adult');
+      const noBirthday = await request(app)
+        .post(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ ...validRegistration, ageCategory: 'youthUntil16' });
+      expect(noBirthday.body.ageCategory).toBe('youthUntil16');
+    });
+
     it('lehnt eine leere Teilnehmerliste mit 400 ab', async () => {
       const tileId = createTile();
       const res = await request(app).post(`/api/tiles/${tileId}/trip-price-preview`).send({ participants: [] });

@@ -36,18 +36,25 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Geburtsdatum</mat-label>
-                <input matInput type="date" [(ngModel)]="registration.birthday" />
+                <input matInput type="date" [(ngModel)]="registration.birthday" (ngModelChange)="onBirthdayChange()" />
             </mat-form-field>
         </div>
 
         <div class="field-row">
             <mat-form-field appearance="outline">
                 <mat-label>Alterskategorie</mat-label>
-                <mat-select [(ngModel)]="registration.ageCategory">
+                <mat-select [(ngModel)]="registration.ageCategory" [disabled]="!!registration.birthday">
                     @for (category of ageCategories; track category) {
                         <mat-option [value]="category">{{ ageCategoryLabels[category] }}</mat-option>
                     }
                 </mat-select>
+                <mat-hint>
+                    {{
+                        registration.birthday
+                            ? 'Aus dem Geburtsdatum berechnet'
+                            : 'Ohne Geburtsdatum bestimmt sie den Preis'
+                    }}
+                </mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Boarding-Ort</mat-label>

@@ -82,6 +82,7 @@ export class TripRegistrationsComponent implements OnInit {
         }
         const participants: TripPricePreviewParticipant[] = registrations.map((r) => ({
             birthday: r.birthday,
+            ageCategory: r.ageCategory,
             // The final, effective member status (possibly admin-corrected,
             // see registration-editor.component.ts) - what would actually be
             // charged, not necessarily what the participant self-reported.
