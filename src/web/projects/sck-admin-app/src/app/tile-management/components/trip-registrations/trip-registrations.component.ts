@@ -234,27 +234,39 @@ export class TripRegistrationsComponent implements OnInit {
         this.dataService.updateRegistration(registration.id, params).subscribe(() => this.refresh());
     }
 
-    // Tab-separated so it pastes as a ready-made row into Google Sheets
-    // (see GitHub #185) - includes the contact/option fields the table
-    // itself doesn't show a column for, since the point is a complete row.
-    onCopyRow(registration: TripRegistration): void {
-        const row = [
-            registration.firstName,
-            registration.lastName,
-            this.exactAge(registration.birthday) ?? this.ageCategoryLabels[registration.ageCategory],
-            registration.isMember ? 'Mitglied' : 'kein Mitglied',
-            registration.boardingName || '',
-            registration.email || '',
+    // Tab-getrennt, Spaltenfolge = Vereins-Sheet (Name,Vorname | Checkbox | Geb. Datum | Alter | Telefon |
+    // Kurs SB/Alpin | leer | Schneeschuh Verleih | Preis | Anzahlung | Skipass | Gesamt offen | Zustieg |
+    // eingetragen von). Felder ohne Gegenstück im System bleiben leer.
+    sheetRow(registration: TripRegistration): string {
+        return [
+            `${registration.lastName}, ${registration.firstName}`,
+            '',
+            this.birthdayDe(registration.birthday),
+            this.exactAge(registration.birthday) ?? '',
             registration.phone || '',
-            registration.busOnly ? 'ja' : 'nein',
-            registration.snowshoes ? 'ja' : 'nein',
-            registration.courseRequested ? registration.level || 'ja' : 'nein',
-            this.pricesByRegistrationId.get(registration.id) ?? '',
-            registration.status,
-            registration.notes || '',
+            '',
+            '',
+            registration.snowshoes ? 'ja' : '',
+            String(this.pricesByRegistrationId.get(registration.id) ?? '').replace('.', ','),
+            '',
+            '',
+            '',
+            registration.boardingName || '',
+            registration.enteredBy || '',
         ].join('\t');
+    }
 
-        navigator.clipboard.writeText(row).then(() => {
+    // Reines Datum ohne Zeitzonen-Umweg; alte Zeitstempel-Werte (UTC, Vortag-Bug) werden lokal gelesen.
+    private birthdayDe(birthday: string | undefined): string {
+        if (!birthday) return '';
+        const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(birthday);
+        if (iso) return `${iso[3]}.${iso[2]}.${iso[1]}`;
+        const d = new Date(birthday);
+        return isNaN(d.getTime()) ? '' : d.toLocaleDateString('de-DE');
+    }
+
+    onCopyRow(registration: TripRegistration): void {
+        navigator.clipboard.writeText(this.sheetRow(registration)).then(() => {
             this.snackBar.open('Anmeldung in Zwischenablage kopiert', 'OK', { duration: 3000 });
         });
     }

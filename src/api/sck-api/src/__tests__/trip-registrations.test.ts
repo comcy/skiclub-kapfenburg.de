@@ -256,6 +256,23 @@ describe('Trip Registrations Routes', () => {
       expect(list.body[0].transferredToExternalList).toBe(false);
     });
 
+    it('normalisiert UTC-Zeitstempel-Geburtsdaten (alter Client) auf den Berliner Kalendertag', async () => {
+      const tileId = createTile(2);
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Winter', lastName: 'Kind', birthday: '2000-01-09T23:00:00.000Z' },
+            { firstName: 'Sommer', lastName: 'Kind', birthday: '2000-05-09T22:00:00.000Z' },
+          ],
+        });
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body.map((r: { birthday: string }) => r.birthday).sort()).toEqual(['2000-01-10', '2000-05-10']);
+    });
+
     it('verschickt genau eine Bestätigungsmail pro Gruppen-Submit (nicht pro Teilnehmer)', async () => {
       const tileId = createTile(10);
       const res = await request(app)

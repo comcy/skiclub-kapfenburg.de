@@ -97,6 +97,14 @@ const resolveMember = (email: string | undefined): { id: string | null; isMember
   return { id: member?.id ?? null, isMember: member ? 1 : 0 };
 };
 
+// Ältere (gecachte) Website-Versionen schickten das Datepicker-Date als UTC-Zeitstempel
+// ("2000-05-09T22:00:00.000Z" für den 10.5.") - zurück auf den Berliner Kalendertag.
+export const normalizeBirthday = (value: string | undefined): string | undefined => {
+  if (!value || /^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? value : d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+};
+
 // Mit Geburtsdatum immer daraus abgeleitet (kein Auseinanderlaufen von Datum und Kategorie);
 // ohne Geburtsdatum gilt die vom Admin gewählte Kategorie.
 const ageCategoryFor = (params: Pick<TripRegistrationCreationParams, 'birthday' | 'ageCategory'>): AgeCategory =>
@@ -107,6 +115,7 @@ export const createRegistration = (
   params: TripRegistrationCreationParams,
   enteredBy?: string,
 ): TripRegistration => {
+  params = { ...params, birthday: normalizeBirthday(params.birthday) };
   const id = randomUUID();
   // Always freshly derived on create, ignoring whatever params.isMember may
   // hold (a public submission never sets it at all; an admin-typed one gets
@@ -164,6 +173,7 @@ export const updateRegistration = (
   id: string,
   params: TripRegistrationCreationParams,
 ): TripRegistration | undefined => {
+  params = { ...params, birthday: normalizeBirthday(params.birthday) };
   const { id: memberId } = resolveMember(params.email);
 
   const result = db
