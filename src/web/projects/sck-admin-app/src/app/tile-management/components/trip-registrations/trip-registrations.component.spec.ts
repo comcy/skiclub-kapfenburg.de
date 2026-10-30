@@ -143,30 +143,28 @@ describe('TripRegistrationsComponent', () => {
     });
 
     describe('sheetRow (Zeilen-Kopie fürs Vereins-Sheet)', () => {
-        it('liefert 14 Spalten in Sheet-Reihenfolge', () => {
+        it('liefert 11 Spalten in der Reihenfolge der sichtbaren Sheet-Spalten', () => {
             const reg = makeRegistration({
                 firstName: 'Max',
                 lastName: 'Muster',
                 birthday: '2000-05-10',
                 phone: '0170 1',
                 snowshoes: true,
-                courseRequested: true,
-                sportType: 'Snowboard',
                 boardingName: 'Ellwangen',
             });
             component.pricesByRegistrationId.set(reg.id, 45.5);
 
             const cols = component.sheetRow(reg).split('\t');
 
-            expect(cols.length).toBe(14);
+            expect(cols.length).toBe(11);
             expect(cols[0]).toBe('Muster, Max');
-            expect(cols[2]).toBe('10.05.2000');
-            expect(cols[4]).toBe('0170 1');
-            expect(cols[5]).toBe('SB');
-            expect(cols[7]).toBe('ja');
-            expect(cols[8]).toBe('45,5');
-            expect(cols[12]).toBe('Ellwangen');
-            expect(cols[13]).toBe('');
+            expect(cols[1]).toBe('');
+            expect(cols[2]).toMatch(/^\d+$/);
+            expect(cols[3]).toBe('0170 1');
+            expect(cols[4]).toBe('ja');
+            expect(cols[5]).toBe('45,5');
+            expect(cols[9]).toBe('Ellwangen');
+            expect(cols[10]).toBe('');
         });
     });
 });

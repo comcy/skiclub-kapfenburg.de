@@ -235,24 +235,15 @@ export class TripRegistrationsComponent implements OnInit {
         this.dataService.updateRegistration(registration.id, params).subscribe(() => this.refresh());
     }
 
-    // Tab-getrennt, Spaltenfolge = Vereins-Sheet (Name,Vorname | Checkbox | Geb. Datum | Alter | Telefon |
-    // Kurs SB/Alpin | leer | Schneeschuh Verleih | Preis | Anzahlung | Skipass | Gesamt offen | Zustieg |
-    // eingetragen von). Felder ohne Gegenstück im System bleiben leer.
+    // Tab-getrennt, Spaltenfolge = sichtbare Spalten des Vereins-Sheets (Name,Vorname | Checkbox | Alter | Telefon |
+    // Schneeschuh Verleih | Preis | Anzahlung | Skipass | Gesamt offen | Zustieg | eingetragen von).
+    // Felder ohne Gegenstück im System bleiben leer. Geb. Datum/Kurs sind im Sheet nicht sichtbar -> nicht enthalten.
     sheetRow(registration: TripRegistration): string {
         return [
             `${registration.lastName}, ${registration.firstName}`,
             '',
-            this.birthdayDe(registration.birthday),
             this.exactAge(registration.birthday) ?? '',
             registration.phone || '',
-            registration.courseRequested
-                ? registration.sportType === 'Snowboard'
-                    ? 'SB'
-                    : registration.sportType
-                      ? 'Alpin'
-                      : ''
-                : '',
-            '',
             registration.snowshoes ? 'ja' : '',
             String(this.pricesByRegistrationId.get(registration.id) ?? '').replace('.', ','),
             '',
@@ -269,15 +260,6 @@ export class TripRegistrationsComponent implements OnInit {
         if (session?.firstName) return session.firstName;
         const first = session?.email.split('@')[0].split(/[._-]/)[0] ?? '';
         return first.charAt(0).toUpperCase() + first.slice(1);
-    }
-
-    // Reines Datum ohne Zeitzonen-Umweg; alte Zeitstempel-Werte (UTC, Vortag-Bug) werden lokal gelesen.
-    private birthdayDe(birthday: string | undefined): string {
-        if (!birthday) return '';
-        const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(birthday);
-        if (iso) return `${iso[3]}.${iso[2]}.${iso[1]}`;
-        const d = new Date(birthday);
-        return isNaN(d.getTime()) ? '' : d.toLocaleDateString('de-DE');
     }
 
     onCopyRow(registration: TripRegistration): void {
