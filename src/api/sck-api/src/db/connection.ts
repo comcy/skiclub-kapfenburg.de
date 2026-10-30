@@ -5,6 +5,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import fs from 'fs';
 import path from 'path';
+import { normalizeBirthday } from '../domain/birthday.js';
 import { dataDir } from '../services/data-service.js';
 
 // ponytail: node:sqlite is built into the Node versions this repo already
@@ -530,6 +531,9 @@ if (!tripRegistrationColumns.some((c) => c.name === 'course_requested')) {
 if (!tripRegistrationColumns.some((c) => c.name === 'level')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN level TEXT;');
 }
+if (!tripRegistrationColumns.some((c) => c.name === 'sport_type')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN sport_type TEXT;');
+}
 // entered_by: same as course_registrations above, just added later here.
 // birthday: the registrant's own raw input - only age_category was kept
 // before, which is enough for pricing but not for the admin list showing
@@ -546,3 +550,27 @@ if (!tripRegistrationColumns.some((c) => c.name === 'birthday')) {
 if (!tripRegistrationColumns.some((c) => c.name === 'self_reported_is_member')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN self_reported_is_member INTEGER NOT NULL DEFAULT 0;');
 }
+
+// Einmalige, idempotente Korrektur: Datepicker-Geburtsdaten wurden als UTC-Zeitstempel gespeichert
+// (Vortag, z.B. "2000-05-09T22:00:00.000Z" für den 10.5.). Betrifft nur Werte mit Zeitanteil,
+// bereits korrekte "YYYY-MM-DD"-Werte bleiben unverändert.
+export const fixShiftedBirthdays = (): number => {
+  let fixed = 0;
+  for (const table of ['trip_registrations', 'members']) {
+    const rows = db.prepare(`SELECT id, birthday FROM ${table} WHERE birthday LIKE '____-__-__T%'`).all() as {
+      id: string;
+      birthday: string;
+    }[];
+    const update = db.prepare(`UPDATE ${table} SET birthday = ? WHERE id = ?`);
+    for (const row of rows) {
+      const normalized = normalizeBirthday(row.birthday);
+      if (normalized && normalized !== row.birthday) {
+        update.run(normalized, row.id);
+        fixed++;
+      }
+    }
+  }
+  if (fixed > 0) console.log(`Geburtsdaten korrigiert: ${fixed}`);
+  return fixed;
+};
+fixShiftedBirthdays();

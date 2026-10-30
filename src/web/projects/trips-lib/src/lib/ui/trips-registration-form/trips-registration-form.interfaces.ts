@@ -53,6 +53,7 @@ export interface PublicRegistrationParticipantInput {
     snowshoes?: boolean;
     courseRequested?: boolean;
     level?: string;
+    sportType?: string;
     // What the participant checked on the form's own member checkbox (used
     // client-side for the live price preview) - now also sent along so the
     // admin list can flag a mismatch against the real, email-verified

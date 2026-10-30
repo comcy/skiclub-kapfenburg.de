@@ -35,6 +35,7 @@ import {
     formatDateTime,
     GERMAN_DATE_FORMATS,
     GermanDateAdapter,
+    toIsoDate,
 } from 'projects/shared-lib/src/lib/date-time';
 import { getTripConfirmationSuccessMessage } from 'projects/data/mail-templates';
 import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
@@ -351,7 +352,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                 snowshoes: value.snowshoes,
                 courseRequested: value.courseRequested,
                 level: value.level || undefined,
-                birthday: value.birthday,
+                birthday: toIsoDate(value.birthday),
                 isMember: value.isMember,
             };
         });
@@ -509,12 +510,13 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                     lastName: participant.lastName,
                     email: participant.email || contactPerson.email,
                     phone: participant.phone || contactPerson.phone,
-                    birthday: participant.birthday,
+                    birthday: toIsoDate(participant.birthday),
                     boarding: participant.boarding,
                     busOnly: participant.busOnly,
                     snowshoes: participant.snowshoes,
                     courseRequested: participant.courseRequested,
                     level: participant.level,
+                    sportType: participant.sportType || undefined,
                     isMember: participant.isMember,
                 }),
             );

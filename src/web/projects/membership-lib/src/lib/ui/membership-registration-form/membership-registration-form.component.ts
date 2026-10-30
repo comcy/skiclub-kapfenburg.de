@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { GERMAN_DATE_FORMATS, GermanDateAdapter } from 'projects/shared-lib/src/lib/date-time';
+import { GERMAN_DATE_FORMATS, GermanDateAdapter, toIsoDate } from 'projects/shared-lib/src/lib/date-time';
 import { TurnstileWidgetComponent } from 'projects/shared-lib/src/lib/ui-common/components/turnstile-widget/turnstile-widget.component';
 import { BreakpointObserverService } from 'projects/shared-lib/src/lib/ui-common/services';
 import { Subject, takeUntil } from 'rxjs';
@@ -151,8 +151,14 @@ export class MembershipRegistrationFormComponent implements OnInit, OnDestroy {
             return;
         }
 
+        const raw = this.membershipRegisterForm.getRawValue();
         const formValues = {
-            ...this.membershipRegisterForm.getRawValue(),
+            ...raw,
+            birthday: toIsoDate(raw.birthday),
+            familyMembers: raw.familyMembers.map((m: { birthday: Date }) => ({
+                ...m,
+                birthday: toIsoDate(m.birthday),
+            })),
             turnstileToken: this.turnstileToken,
         } as MembershipRegisterFormValue;
 
