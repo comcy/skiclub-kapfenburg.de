@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import express from 'express';
 import request from 'supertest';
-import { db } from '../db/connection.js';
+import { db, fixShiftedBirthdays } from '../db/connection.js';
 
 // requireTurnstile fails open unless this is set (see turnstile-middleware.ts)
 // - a static top-level `import` of the route below would be hoisted before
@@ -271,6 +271,23 @@ describe('Trip Registrations Routes', () => {
         .get(`/api/tiles/${tileId}/registrations`)
         .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
       expect(list.body.map((r: { birthday: string }) => r.birthday).sort()).toEqual(['2000-01-10', '2000-05-10']);
+    });
+
+    it('korrigiert bereits gespeicherte Zeitstempel-Geburtsdaten (idempotent, nur mit Zeitanteil)', () => {
+      const tileId = createTile(5);
+      const insert = db.prepare(
+        `INSERT INTO trip_registrations (id, tile_id, first_name, last_name, birthday, age_category, status, source)
+         VALUES (?, ?, 'A', 'B', ?, 'adult', 'confirmed', 'manual')`,
+      );
+      insert.run('bd-1', tileId, '2000-05-09T22:00:00.000Z');
+      insert.run('bd-2', tileId, '1990-03-04');
+
+      expect(fixShiftedBirthdays()).toBeGreaterThanOrEqual(1);
+      expect(fixShiftedBirthdays()).toBe(0);
+
+      const get = (id: string) => (db.prepare('SELECT birthday FROM trip_registrations WHERE id = ?').get(id) as { birthday: string }).birthday;
+      expect(get('bd-1')).toBe('2000-05-10');
+      expect(get('bd-2')).toBe('1990-03-04');
     });
 
     it('speichert die gewählte Sportart', async () => {

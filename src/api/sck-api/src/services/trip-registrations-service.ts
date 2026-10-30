@@ -12,6 +12,7 @@ import {
   TripRegistration,
   TripRegistrationCreationParams,
 } from '../domain/trip-registration.js';
+import { normalizeBirthday } from '../domain/birthday.js';
 import { findMemberByEmail } from './members-service.js';
 
 interface TripRegistrationRow {
@@ -97,14 +98,6 @@ export const getRegistration = (id: string): TripRegistration | undefined => {
 const resolveMember = (email: string | undefined): { id: string | null; isMember: number } => {
   const member = email ? findMemberByEmail(email) : undefined;
   return { id: member?.id ?? null, isMember: member ? 1 : 0 };
-};
-
-// Ältere (gecachte) Website-Versionen schickten das Datepicker-Date als UTC-Zeitstempel
-// ("2000-05-09T22:00:00.000Z" für den 10.5.") - zurück auf den Berliner Kalendertag.
-export const normalizeBirthday = (value: string | undefined): string | undefined => {
-  if (!value || /^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-  const d = new Date(value);
-  return isNaN(d.getTime()) ? value : d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
 };
 
 // Mit Geburtsdatum immer daraus abgeleitet (kein Auseinanderlaufen von Datum und Kategorie);
