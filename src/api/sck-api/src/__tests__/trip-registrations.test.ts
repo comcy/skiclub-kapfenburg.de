@@ -273,6 +273,18 @@ describe('Trip Registrations Routes', () => {
       expect(list.body.map((r: { birthday: string }) => r.birthday).sort()).toEqual(['2000-01-10', '2000-05-10']);
     });
 
+    it('speichert die gewählte Sportart', async () => {
+      const tileId = createTile(2);
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({ participants: [{ firstName: 'Sven', lastName: 'Board', courseRequested: true, sportType: 'Snowboard' }] });
+
+      const list = await request(app)
+        .get(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', `Bearer ${createAuthedUser(['tiles:write'])}`);
+      expect(list.body[0].sportType).toBe('Snowboard');
+    });
+
     it('verschickt genau eine Bestätigungsmail pro Gruppen-Submit (nicht pro Teilnehmer)', async () => {
       const tileId = createTile(10);
       const res = await request(app)

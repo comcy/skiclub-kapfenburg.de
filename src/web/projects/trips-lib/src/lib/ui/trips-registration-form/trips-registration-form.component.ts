@@ -516,6 +516,7 @@ export class TripsRegistrationFormComponent implements OnInit, OnDestroy {
                     snowshoes: participant.snowshoes,
                     courseRequested: participant.courseRequested,
                     level: participant.level,
+                    sportType: participant.sportType || undefined,
                     isMember: participant.isMember,
                 }),
             );

@@ -150,8 +150,9 @@ describe('TripRegistrationsComponent', () => {
                 birthday: '2000-05-10',
                 phone: '0170 1',
                 snowshoes: true,
+                courseRequested: true,
+                sportType: 'Snowboard',
                 boardingName: 'Ellwangen',
-                enteredBy: 'a@b.de',
             });
             component.pricesByRegistrationId.set(reg.id, 45.5);
 
@@ -161,10 +162,11 @@ describe('TripRegistrationsComponent', () => {
             expect(cols[0]).toBe('Muster, Max');
             expect(cols[2]).toBe('10.05.2000');
             expect(cols[4]).toBe('0170 1');
+            expect(cols[5]).toBe('SB');
             expect(cols[7]).toBe('ja');
             expect(cols[8]).toBe('45,5');
             expect(cols[12]).toBe('Ellwangen');
-            expect(cols[13]).toBe('a@b.de');
+            expect(cols[13]).toBe('');
         });
     });
 });

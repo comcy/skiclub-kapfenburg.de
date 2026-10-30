@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import { OAuth2Client } from 'google-auth-library';
 import { db } from '../db/connection.js';
 import { AuthUser } from '../domain/auth.js';
+import { findMemberByEmail } from './members-service.js';
 import { getPermissionsForUser } from './permissions-service.js';
 
 dotenv.config();
@@ -137,6 +138,7 @@ const toAuthUser = (user: UserRow): AuthUser => ({
   email: user.email,
   isSuperAdmin: !!SUPER_ADMIN_EMAIL && user.email.toLowerCase() === SUPER_ADMIN_EMAIL,
   permissions: getPermissionsForUser(user.id),
+  firstName: findMemberByEmail(user.email)?.firstName,
   newsSince: user.newsSince ?? null,
 });
 

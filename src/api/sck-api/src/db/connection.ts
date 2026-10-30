@@ -530,6 +530,9 @@ if (!tripRegistrationColumns.some((c) => c.name === 'course_requested')) {
 if (!tripRegistrationColumns.some((c) => c.name === 'level')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN level TEXT;');
 }
+if (!tripRegistrationColumns.some((c) => c.name === 'sport_type')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN sport_type TEXT;');
+}
 // entered_by: same as course_registrations above, just added later here.
 // birthday: the registrant's own raw input - only age_category was kept
 // before, which is enough for pricing but not for the admin list showing

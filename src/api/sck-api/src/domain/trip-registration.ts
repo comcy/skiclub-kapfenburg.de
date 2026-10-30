@@ -54,6 +54,8 @@ export interface TripRegistration {
   snowshoes: boolean;
   courseRequested: boolean;
   level?: string;
+  // 'Ski Alpin' | 'Snowboard' - nur bei gewünschtem Kurs.
+  sportType?: string;
 }
 
 // memberId is always recomputed server-side from email (see
@@ -89,6 +91,7 @@ export interface PublicParticipantInput {
   snowshoes?: boolean;
   courseRequested?: boolean;
   level?: string;
+  sportType?: string;
   // What the participant checked on the public form's own (client-side-only,
   // for the live price preview) member checkbox - stored as-is into
   // selfReportedIsMember, never used to derive the real isMember (that stays

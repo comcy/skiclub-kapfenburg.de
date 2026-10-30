@@ -21,6 +21,8 @@ export interface AuthUser {
   email: string;
   isSuperAdmin: boolean;
   permissions: Permission[];
+  // Vorname aus dem Mitglied mit gleicher E-Mail (falls vorhanden).
+  firstName?: string;
   // ISO-Zeitpunkt, ab dem Eintraege fuer diesen Admin als "neu" gelten (siehe news_since).
   newsSince: string | null;
 }

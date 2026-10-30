@@ -11,6 +11,7 @@ interface AuthUser {
     email: string;
     isSuperAdmin: boolean;
     permissions: Permission[];
+    firstName?: string;
     newsSince?: string | null;
 }
 
@@ -23,6 +24,7 @@ const toSession = (user: AuthUser): Session => ({
     email: user.email,
     isSuperAdmin: user.isSuperAdmin,
     permissions: user.permissions,
+    firstName: user.firstName,
     newsSince: user.newsSince,
 });
 

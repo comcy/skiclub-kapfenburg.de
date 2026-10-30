@@ -110,6 +110,14 @@
         </div>
         @if (showCourse && registration.courseRequested) {
             <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Sportart</mat-label>
+                <mat-select [(ngModel)]="registration.sportType">
+                    @for (option of sportTypeOptions; track option) {
+                        <mat-option [value]="option">{{ option }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Kursstufe</mat-label>
                 <mat-select [(ngModel)]="registration.level">
                     @for (option of levelOptions; track option) {

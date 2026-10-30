@@ -40,6 +40,7 @@ interface TripRegistrationRow {
   snowshoes: number;
   course_requested: number;
   level: string | null;
+  sport_type: string | null;
 }
 
 const SELECT_WITH_BOARDING_NAME = `
@@ -74,6 +75,7 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   snowshoes: row.snowshoes === 1,
   courseRequested: row.course_requested === 1,
   level: row.level ?? undefined,
+  sportType: row.sport_type ?? undefined,
 });
 
 export const listRegistrationsForTile = (tileId: string): TripRegistration[] => {
@@ -127,8 +129,8 @@ export const createRegistration = (
       id, tile_id, first_name, last_name, email, phone, birthday, member_id, boarding_id,
       age_category, is_member, self_reported_is_member, status, source, notes, order_index,
       entered_by, transferred_to_external_list, confirmation_mail_sent, bus_only, snowshoes,
-      course_requested, level
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      course_requested, level, sport_type
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -155,6 +157,7 @@ export const createRegistration = (
     params.snowshoes ? 1 : 0,
     params.courseRequested ? 1 : 0,
     params.level ?? null,
+    params.sportType ?? null,
   );
 
   return getRegistration(id) as TripRegistration;
@@ -181,7 +184,7 @@ export const updateRegistration = (
       `UPDATE trip_registrations SET
         first_name = ?, last_name = ?, email = ?, phone = ?, birthday = ?, member_id = ?, boarding_id = ?,
         age_category = ?, is_member = ?, status = ?, source = ?, notes = ?, order_index = ?,
-        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?,
+        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?, sport_type = ?,
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
@@ -204,6 +207,7 @@ export const updateRegistration = (
       params.snowshoes ? 1 : 0,
       params.courseRequested ? 1 : 0,
       params.level ?? null,
+      params.sportType ?? null,
       id,
     );
 
@@ -314,6 +318,7 @@ export const createPublicRegistrations = (
       snowshoes: participant.snowshoes ?? false,
       courseRequested: participant.courseRequested ?? false,
       level: participant.level,
+      sportType: participant.sportType,
       isMember: false,
       selfReportedIsMember: participant.isMember ?? false,
     }).id,

@@ -59,6 +59,8 @@ export class RegistrationEditorComponent {
 
     // Kurs-/Techniktraining-Stufen wie im öffentlichen Formular; sind für die Ausfahrt
     // Zuschläge hinterlegt, werden nur diese angeboten.
+    public readonly sportTypeOptions = ['Ski Alpin', 'Snowboard'];
+
     get levelOptions(): string[] {
         const addons = this.tile?.tripConfig?.pricing?.addons;
         const all: [string, boolean | undefined][] = [
@@ -81,7 +83,10 @@ export class RegistrationEditorComponent {
     }
 
     onCourseToggle(): void {
-        if (this.registration && !this.registration.courseRequested) this.registration.level = undefined;
+        if (this.registration && !this.registration.courseRequested) {
+            this.registration.level = undefined;
+            this.registration.sportType = undefined;
+        }
     }
 
     // Mit Geburtsdatum ergibt sich die Kategorie daraus (gleiche Grenzen wie sck-api resolveAgeCategory),
@@ -131,6 +136,7 @@ export class RegistrationEditorComponent {
             snowshoes: this.registration.snowshoes,
             courseRequested: this.registration.courseRequested,
             level: this.registration.level,
+            sportType: this.registration.sportType,
         };
 
         // Zoneless change detection (see app.config.ts) - without

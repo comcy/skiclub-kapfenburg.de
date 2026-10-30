@@ -52,6 +52,7 @@ describe('AuthService', () => {
         });
 
         expect(service.session()).toEqual({
+            firstName: undefined,
             email: 'member@example.com',
             isSuperAdmin: false,
             permissions: ['tiles:write'],
@@ -72,6 +73,7 @@ describe('AuthService', () => {
         meReq.flush({ id: '1', email: 'member@example.com', isSuperAdmin: false, permissions: [], newsSince: null });
 
         expect(service.session()).toEqual({
+            firstName: undefined,
             email: 'member@example.com',
             isSuperAdmin: false,
             permissions: [],
@@ -97,6 +99,7 @@ describe('AuthService', () => {
         });
 
         expect(service.session()).toEqual({
+            firstName: undefined,
             email: 'member@example.com',
             isSuperAdmin: false,
             permissions: ['boardings:write'],

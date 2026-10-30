@@ -229,6 +229,7 @@ export class TripRegistrationsComponent implements OnInit {
             snowshoes: registration.snowshoes,
             courseRequested: registration.courseRequested,
             level: registration.level,
+            sportType: registration.sportType,
         };
 
         this.dataService.updateRegistration(registration.id, params).subscribe(() => this.refresh());
@@ -244,7 +245,13 @@ export class TripRegistrationsComponent implements OnInit {
             this.birthdayDe(registration.birthday),
             this.exactAge(registration.birthday) ?? '',
             registration.phone || '',
-            '',
+            registration.courseRequested
+                ? registration.sportType === 'Snowboard'
+                    ? 'SB'
+                    : registration.sportType
+                      ? 'Alpin'
+                      : ''
+                : '',
             '',
             registration.snowshoes ? 'ja' : '',
             String(this.pricesByRegistrationId.get(registration.id) ?? '').replace('.', ','),
@@ -252,8 +259,16 @@ export class TripRegistrationsComponent implements OnInit {
             '',
             '',
             registration.boardingName || '',
-            registration.enteredBy || '',
+            this.copierFirstName(),
         ].join('\t');
+    }
+
+    // Vorname des angemeldeten Admins: Mitglied zur E-Mail, sonst erster Teil der Adresse ("christian.x@" -> "Christian").
+    private copierFirstName(): string {
+        const session = this.auth.session();
+        if (session?.firstName) return session.firstName;
+        const first = session?.email.split('@')[0].split(/[._-]/)[0] ?? '';
+        return first.charAt(0).toUpperCase() + first.slice(1);
     }
 
     // Reines Datum ohne Zeitzonen-Umweg; alte Zeitstempel-Werte (UTC, Vortag-Bug) werden lokal gelesen.

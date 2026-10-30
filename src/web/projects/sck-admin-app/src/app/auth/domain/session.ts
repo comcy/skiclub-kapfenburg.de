@@ -7,6 +7,7 @@ export interface Session {
     email: string;
     isSuperAdmin: boolean;
     permissions: Permission[];
+    firstName?: string;
     // Ab wann Eintraege fuer diesen Admin als "neu" gelten (Login davor bzw. "Alles gesehen").
     newsSince?: string | null;
 }

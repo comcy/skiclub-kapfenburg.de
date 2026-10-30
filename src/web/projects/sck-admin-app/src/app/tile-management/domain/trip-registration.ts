@@ -44,6 +44,7 @@ export interface TripRegistration {
     snowshoes: boolean;
     courseRequested: boolean;
     level?: string;
+    sportType?: string;
 }
 
 // memberId is always recomputed server-side from email - never sent by the
