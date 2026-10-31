@@ -117,15 +117,17 @@ export class TileListComponent implements OnInit {
     // onDelete()'s async callback and from the TileChangesService
     // subscription above (after the aux-routed dialog saves), both outside
     // any tracked context, so mark here to cover every call site uniformly.
-    // Füllstand der Ausfahrt: < 70 % grün, 70-99 % gelb, voll (>= 100 %) rot.
+    // Füllstand der Ausfahrt: < 70 % grün, ab 70 % gelb, rot sobald nur noch der letzte reguläre Platz
+    // (vor den Notplätzen) frei ist bzw. alles belegt/überbucht.
     occupancyPercent(tile: Tile): number {
         if (!tile.capacity) return 0;
         return Math.min(100, Math.round(((tile.confirmedRegistrationsCount ?? 0) / tile.capacity) * 100));
     }
 
     occupancyLevel(tile: Tile): 'ok' | 'warn' | 'full' {
-        const percent = this.occupancyPercent(tile);
-        return percent >= 100 ? 'full' : percent >= 70 ? 'warn' : 'ok';
+        const count = tile.confirmedRegistrationsCount ?? 0;
+        if (count > 0 && count >= (tile.capacity ?? 0) - 1) return 'full';
+        return this.occupancyPercent(tile) >= 70 ? 'warn' : 'ok';
     }
 
     loadTiles(): void {
