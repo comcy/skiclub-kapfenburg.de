@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { NewsService } from '../../../shared/services/news.service';
+import { OccupancyBarComponent } from '../../../shared/components/occupancy-bar/occupancy-bar.component';
 import { Tile } from '../../domain/tile';
 import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService } from '../../services/tiles-data.service';
@@ -27,6 +28,7 @@ import { PageHeadingComponent } from '../../../shared/components/page-heading/pa
         MatCheckboxModule,
         FormsModule,
         RouterLink,
+        OccupancyBarComponent,
     ],
     templateUrl: './registrations-overview.component.html',
     styleUrls: ['./registrations-overview.component.scss'],
