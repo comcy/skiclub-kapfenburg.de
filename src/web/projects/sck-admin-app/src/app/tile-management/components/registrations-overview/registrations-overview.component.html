@@ -41,6 +41,7 @@
                                         <mat-icon class="capacity-warning-icon" inline>warning</mat-icon>
                                     }
                                 </span>
+                                <app-occupancy-bar [count]="confirmedCount(tile)" [capacity]="tile.capacity" />
                             } @else {
                                 <span class="capacity-unlimited">{{ confirmedCount(tile) }} (unbegrenzt)</span>
                             }
