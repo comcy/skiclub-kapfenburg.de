@@ -16,6 +16,12 @@ const BLANK_MEMBER: Member = {
     source: 'manual',
 };
 
+const toLocalIsoDate = (date: Date): string => {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${date.getFullYear()}-${month}-${day}`;
+};
+
 // Aux-route (outlet: 'modal') driven dialog opener - same pattern as
 // sck-app's RoutingDialogComponent: an empty-template component that reads
 // the route, opens a real MatDialog, and clears the outlet again on close.
@@ -79,6 +85,8 @@ export class MemberEditRoutingDialogComponent implements OnInit {
                                     ? `SEPA-Lastschrift (Mandat online erteilt am ${new Date(application.timestamp).toLocaleDateString('de-DE')})`
                                     : undefined,
                                 isFamilyMembership: !!application.isFamilyMembership,
+                                // "Mitglied seit" = Eingangsdatum des Antrags (lokales Datum, nicht UTC).
+                                memberSince: toLocalIsoDate(new Date(application.timestamp)),
                                 source: 'online',
                                 applicationRegistrationId: application.registrationId,
                             }),
