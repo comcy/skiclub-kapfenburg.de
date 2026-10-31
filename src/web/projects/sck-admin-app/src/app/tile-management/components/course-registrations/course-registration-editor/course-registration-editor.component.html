@@ -1,6 +1,15 @@
 @if (registration) {
-    <div>
+    <div (paste)="onPaste($event)">
         <h3>{{ registration.id ? 'Anmeldung bearbeiten' : 'Neue Anmeldung' }}</h3>
+        @if (!registration.id) {
+            <div class="paste-hint">
+                <mat-icon>content_paste</mat-icon>
+                {{
+                    pasteInfo ||
+                        'Tipp: Zeile aus der Anmelde-Tabelle in ein Feld einfügen (Strg+V), um Felder vorzubefüllen.'
+                }}
+            </div>
+        }
 
         @if (registration.id && registration.memberId) {
             <div class="member-hint">
