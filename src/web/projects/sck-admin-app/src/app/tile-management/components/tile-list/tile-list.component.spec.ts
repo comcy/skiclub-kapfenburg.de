@@ -65,4 +65,18 @@ describe('TileListComponent', () => {
         component.onEdit(buildTile('tile-42'));
         expect(routerSpy.navigate).toHaveBeenCalledWith([{ outlets: { modal: ['event-bearbeiten', 'tile-42'] } }]);
     });
+
+    it('Füllstand: < 70 % ok, ab 70 % warn, rot ab dem letzten freien regulären Platz, ohne Kapazität 0', () => {
+        const tile = (count: number, capacity?: number) =>
+            ({ ...buildTile('t'), confirmedRegistrationsCount: count, capacity }) as Tile;
+
+        expect(component.occupancyLevel(tile(6, 10))).toBe('ok');
+        expect(component.occupancyLevel(tile(7, 10))).toBe('warn');
+        expect(component.occupancyLevel(tile(8, 10))).toBe('warn');
+        expect(component.occupancyLevel(tile(9, 10))).toBe('full'); // letzter Platz
+        expect(component.occupancyLevel(tile(10, 10))).toBe('full');
+        expect(component.occupancyLevel(tile(0, 1))).toBe('ok');
+        expect(component.occupancyPercent(tile(14, 10))).toBe(100);
+        expect(component.occupancyPercent(tile(3, undefined))).toBe(0);
+    });
 });
