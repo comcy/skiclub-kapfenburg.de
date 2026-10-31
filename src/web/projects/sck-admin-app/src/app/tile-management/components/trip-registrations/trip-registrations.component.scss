@@ -53,8 +53,21 @@
 .page-content {
     flex: 1;
     min-height: 0;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     padding: var(--sck-page-inset);
+}
+
+// Kopfbereich (Meta, Belegung, Toolbar) bleibt stehen, nur die Tabelle scrollt - mit festem Tabellenkopf.
+.page-content > * {
+    flex: 0 0 auto;
+}
+
+.page-content > .table-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
 }
 
 .print-title {
@@ -135,6 +148,10 @@
         padding: 0 16px;
         height: 40px;
         border-bottom: 1px solid var(--mat-sys-outline-variant);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--mat-sys-surface);
     }
 
     td {
@@ -275,8 +292,17 @@
 
 @media print {
     .page-content {
+        display: block;
         overflow: visible;
         padding: 0;
+    }
+
+    .page-content > .table-scroll {
+        overflow: visible;
+    }
+
+    .registrations-table th {
+        position: static;
     }
 
     .print-title {
