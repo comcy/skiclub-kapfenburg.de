@@ -33,4 +33,28 @@ describe('parseRegistrationRow', () => {
         expect(parseRegistrationRow('Max\tMuster', boardings).boardingId).toBeUndefined();
         expect(parseRegistrationRow('Max').firstName).toBe('Max');
     });
+
+    it('ordnet die Zeile aus der Sheet-Liste zu ("Nachname, Vorname", Alter, eindeutiges Boarding)', () => {
+        const row = 'Neukamm, Peter\t\t37\t15143255999\t\t100,00 €\t\t\t\tHülen\tChristian';
+
+        expect(parseRegistrationRow(row, boardings)).toEqual({
+            lastName: 'Neukamm',
+            firstName: 'Peter',
+            phone: '15143255999',
+            boardingId: 'b2',
+            ageCategory: 'adult',
+        });
+    });
+
+    it('Alter -> Alterskategorie, aber nur ohne Geburtsdatum; mehrdeutiges Boarding wird nicht geraten', () => {
+        expect(parseRegistrationRow('Muster, Max\t5').ageCategory).toBe('childUntil6');
+        expect(parseRegistrationRow('Muster, Max\t12').ageCategory).toBe('youthUntil16');
+        expect(parseRegistrationRow('Muster, Max\t30\t01.01.1996').ageCategory).toBeUndefined();
+
+        const two = [
+            { id: 'x1', name: 'Hülen Nord' },
+            { id: 'x2', name: 'Hülen Süd' },
+        ];
+        expect(parseRegistrationRow('Muster, Max\tHülen', two).boardingId).toBeUndefined();
+    });
 });

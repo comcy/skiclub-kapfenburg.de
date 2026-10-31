@@ -48,7 +48,7 @@ export class CourseRegistrationEditorComponent {
         const text = event.clipboardData?.getData('text') ?? '';
         if (!this.registration || this.registration.id || !text.includes('\t')) return;
         event.preventDefault();
-        const parsed = { ...parseRegistrationRow(text), boardingId: undefined }; // Boardings gibt es nur bei Ausfahrten
+        const parsed = { ...parseRegistrationRow(text), boardingId: undefined, ageCategory: undefined }; // Boardings/Alterskategorie gibt es nur bei Ausfahrten
         Object.assign(this.registration, Object.fromEntries(Object.entries(parsed).filter(([, v]) => v)));
         this.pasteInfo = `Aus Zeile übernommen: ${Object.values(parsed).filter(Boolean).length} Felder - bitte prüfen.`;
         this.cdr.markForCheck();
