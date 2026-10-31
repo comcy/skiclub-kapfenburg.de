@@ -84,3 +84,29 @@ tr.mat-mdc-header-row {
     border: 1px solid var(--mat-sys-outline-variant);
     color: var(--mat-sys-on-surface-variant);
 }
+
+.occupancy-bar {
+    height: 6px;
+    min-width: 90px;
+    margin-top: 4px;
+    border-radius: 3px;
+    background: var(--mat-sys-surface-variant);
+    overflow: hidden;
+}
+
+.occupancy-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+}
+
+.occupancy-ok {
+    background: light-dark(#2e7d32, #81c784);
+}
+
+.occupancy-warn {
+    background: light-dark(#f9a825, #ffd54f);
+}
+
+.occupancy-full {
+    background: light-dark(#c62828, #ffb4a8);
+}

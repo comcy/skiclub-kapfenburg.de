@@ -80,6 +80,21 @@
                     @if (tile.type === 'event') {
                         {{ tile.confirmedRegistrationsCount ?? 0 }}{{ tile.capacity ? ' / ' + tile.capacity : ''
                         }}{{ tile.emergencySeats ? ' (+' + tile.emergencySeats + ' Notplätze)' : '' }}
+                        @if (tile.capacity) {
+                            <div
+                                class="occupancy-bar"
+                                role="progressbar"
+                                [attr.aria-valuenow]="occupancyPercent(tile)"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                                [attr.aria-label]="'Belegung ' + occupancyPercent(tile) + ' Prozent'"
+                            >
+                                <div
+                                    class="occupancy-bar-fill occupancy-{{ occupancyLevel(tile) }}"
+                                    [style.width.%]="occupancyPercent(tile)"
+                                ></div>
+                            </div>
+                        }
                     } @else {
                         –
                     }

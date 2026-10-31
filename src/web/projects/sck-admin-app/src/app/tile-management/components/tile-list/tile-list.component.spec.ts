@@ -65,4 +65,15 @@ describe('TileListComponent', () => {
         component.onEdit(buildTile('tile-42'));
         expect(routerSpy.navigate).toHaveBeenCalledWith([{ outlets: { modal: ['event-bearbeiten', 'tile-42'] } }]);
     });
+
+    it('Füllstand: < 70 % ok, 70-99 % warn, voll (auch überbucht) full, ohne Kapazität 0', () => {
+        const tile = (count: number, capacity?: number) =>
+            ({ ...buildTile('t'), confirmedRegistrationsCount: count, capacity }) as Tile;
+
+        expect(component.occupancyLevel(tile(6, 10))).toBe('ok');
+        expect(component.occupancyLevel(tile(7, 10))).toBe('warn');
+        expect(component.occupancyLevel(tile(10, 10))).toBe('full');
+        expect(component.occupancyPercent(tile(14, 10))).toBe(100);
+        expect(component.occupancyPercent(tile(3, undefined))).toBe(0);
+    });
 });
