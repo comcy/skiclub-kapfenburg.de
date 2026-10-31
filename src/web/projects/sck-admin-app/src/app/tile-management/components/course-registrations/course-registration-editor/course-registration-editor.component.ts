@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../../../domain/course-registration';
+import { parseRegistrationRow } from '../../../domain/parse-registration-row';
 import { TilesDataService } from '../../../services/tiles-data.service';
 
 @Component({
@@ -38,6 +39,20 @@ export class CourseRegistrationEditorComponent {
     private readonly cdr = inject(ChangeDetectorRef);
 
     public readonly sportTypes = ['Ski Alpin', 'Snowboard'];
+
+    public pasteInfo = '';
+
+    // "Umgekehrtes Kopieren": eine aus der Anmelde-Tabelle kopierte Zeile (tab-getrennt) in ein beliebiges Feld
+    // der neuen Anmeldung einfügen füllt die erkannten Felder vor. Nur bei neuer Anmeldung.
+    onPaste(event: ClipboardEvent): void {
+        const text = event.clipboardData?.getData('text') ?? '';
+        if (!this.registration || this.registration.id || !text.includes('\t')) return;
+        event.preventDefault();
+        const parsed = { ...parseRegistrationRow(text), boardingId: undefined }; // Boardings gibt es nur bei Ausfahrten
+        Object.assign(this.registration, Object.fromEntries(Object.entries(parsed).filter(([, v]) => v)));
+        this.pasteInfo = `Aus Zeile übernommen: ${Object.values(parsed).filter(Boolean).length} Felder - bitte prüfen.`;
+        this.cdr.markForCheck();
+    }
 
     onSave(): void {
         if (!this.registration) return;

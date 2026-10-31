@@ -1,5 +1,14 @@
 @if (registration) {
-    <div class="editor-form">
+    <div class="editor-form" (paste)="onPaste($event)">
+        @if (!registration.id) {
+            <div class="paste-hint">
+                <mat-icon>content_paste</mat-icon>
+                {{
+                    pasteInfo ||
+                        'Tipp: Zeile aus der Anmelde-Tabelle in ein Feld einfügen (Strg+V), um Felder vorzubefüllen.'
+                }}
+            </div>
+        }
         @if (registration.id && registration.memberId) {
             <div class="member-hint">
                 <mat-icon>check_circle</mat-icon>

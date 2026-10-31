@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Observable, map } from 'rxjs';
+import { Observable, map, take } from 'rxjs';
 import { Boarding } from '../../../../boardings-management/domain/boarding';
 import { BoardingsDataService } from '../../../../boardings-management/services/boardings-data.service';
 import {
@@ -17,6 +17,7 @@ import {
     TripRegistrationCreationParams,
 } from '../../../domain/trip-registration';
 import { Tile } from '../../../domain/tile';
+import { parseRegistrationRow } from '../../../domain/parse-registration-row';
 import { TilesDataService } from '../../../services/tiles-data.service';
 
 @Component({
@@ -80,6 +81,25 @@ export class RegistrationEditorComponent {
 
     get showSnowshoes(): boolean {
         return !!this.tile?.tripConfig?.pricing?.addons?.snowshoes || !!this.registration?.snowshoes;
+    }
+
+    public pasteInfo = '';
+
+    // "Umgekehrtes Kopieren": eine aus der Anmelde-Tabelle kopierte Zeile (tab-getrennt) in ein beliebiges Feld
+    // der neuen Anmeldung einfügen füllt die erkannten Felder vor. Nur bei neuer Anmeldung.
+    onPaste(event: ClipboardEvent): void {
+        const text = event.clipboardData?.getData('text') ?? '';
+        if (this.registration?.id || !text.includes('\t')) return;
+        event.preventDefault();
+        this.availableBoardings$.pipe(take(1)).subscribe((boardings) => {
+            const registration = this.registration;
+            if (!registration) return;
+            const parsed = parseRegistrationRow(text, boardings);
+            Object.assign(registration, Object.fromEntries(Object.entries(parsed).filter(([, v]) => v)));
+            if (parsed.birthday) this.onBirthdayChange();
+            this.pasteInfo = `Aus Zeile übernommen: ${Object.keys(parsed).filter((k) => parsed[k as keyof typeof parsed]).length} Felder - bitte prüfen.`;
+            this.cdr.markForCheck();
+        });
     }
 
     onCourseToggle(): void {
