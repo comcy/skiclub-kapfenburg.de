@@ -14,7 +14,7 @@
         @if (registration.id && registration.memberId) {
             <div class="member-hint">
                 <mat-icon>check_circle</mat-icon>
-                Als Mitglied verifiziert (E-Mail-Abgleich mit der Mitgliederliste)
+                Als Mitglied verifiziert: Vor-/Nachname und E-Mail stimmen mit der Mitgliederliste überein
             </div>
         } @else if (registration.id && registration.selfReportedIsMember && !registration.isMember) {
             <div class="member-hint member-hint-warn">
@@ -86,7 +86,9 @@
         <mat-checkbox [(ngModel)]="registration.isMember" class="checkbox-row">
             Mitglied
             @if (registration.memberId) {
-                <mat-icon class="verified-icon" matTooltip="Per E-Mail mit der Mitgliederliste abgeglichen"
+                <mat-icon
+                    class="verified-icon"
+                    matTooltip="Mit der Mitgliederliste abgeglichen (Name + E-Mail/Geburtsdatum)"
                     >verified</mat-icon
                 >
             }

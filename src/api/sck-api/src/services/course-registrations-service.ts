@@ -49,7 +49,9 @@ const rowToRegistration = (row: CourseRegistrationRow): CourseRegistration => ({
   sportType: row.sport_type ?? undefined,
   level: row.level ?? undefined,
   groupId: row.group_id ?? undefined,
-  isMember: row.is_member === 1,
+  // Eine Verknüpfung mit der Mitgliederliste (member_id) bedeutet immer Mitglied - auch wenn die Markierung
+  // älter ist als die Verknüpfung (z.B. Mitglied erst später angelegt).
+  isMember: row.is_member === 1 || row.member_id !== null,
   selfReportedIsMember: row.self_reported_is_member === 1,
   status: row.status as CourseRegistration['status'],
   source: row.source as CourseRegistration['source'],
@@ -149,7 +151,7 @@ export const updateRegistration = (
       params.sportType ?? null,
       params.level ?? null,
       params.groupId ?? null,
-      params.isMember ? 1 : 0,
+      params.isMember || memberId ? 1 : 0,
       params.status,
       params.source,
       params.notes ?? null,
