@@ -194,6 +194,33 @@ describe('Members Routes', () => {
     expect(second.familyGroupId).toBe(child.familyGroupId);
   });
 
+  it('weitere E-Mail-Adressen: normalisiert gespeichert, bleiben beim Speichern ohne Feld erhalten, dienen dem Abgleich', async () => {
+    const token = createAuthedUser(['members:manage']);
+    const created = await request(app)
+      .post('/api/members')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...validMember, firstName: 'Eva', lastName: 'Mehrfach', email: 'eva@haupt.de', additionalEmails: [' Eva@Privat.de ', 'eva@haupt.de', 'eva@privat.de', 'kaputt'] });
+    expect(created.status).toBe(201);
+    expect(created.body.additionalEmails).toEqual(['eva@privat.de']);
+
+    // Update ohne additionalEmails (z. B. Import) lässt die Liste unangetastet
+    const { additionalEmails: _drop, ...withoutField } = created.body;
+    const kept = await request(app).put(`/api/members/${created.body.id}`).set('Authorization', `Bearer ${token}`).send(withoutField);
+    expect(kept.body.additionalEmails).toEqual(['eva@privat.de']);
+
+    // Abgleich: Name + weitere Adresse zählt wie die Haupt-E-Mail
+    const { resolveMember } = await import('../services/member-match-service.js');
+    expect(resolveMember({ email: 'EVA@privat.de', firstName: 'Eva', lastName: 'Mehrfach' }, false)).toEqual({ id: created.body.id, isMember: 1 });
+    expect(resolveMember({ email: 'eva@privat.de', firstName: 'Fremd', lastName: 'Mehrfach' }, false).isMember).toBe(0);
+
+    // Explizit leeren
+    const cleared = await request(app).put(`/api/members/${created.body.id}`).set('Authorization', `Bearer ${token}`).send({ ...withoutField, additionalEmails: [] });
+    expect(cleared.body.additionalEmails).toEqual([]);
+
+    const invalid = await request(app).post('/api/members').set('Authorization', `Bearer ${token}`).send({ ...validMember, additionalEmails: 'x' });
+    expect(invalid.status).toBe(400);
+  });
+
   it('GET /api/members/anniversaries - meldet jeden, der mindestens N Jahre dabei und dafür noch nicht geehrt ist', async () => {
     const token = createAuthedUser(['members:manage']);
     await request(app)

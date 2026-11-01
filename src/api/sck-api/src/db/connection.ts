@@ -473,6 +473,11 @@ for (const [column, ddl] of [
 // written through the importer or the Round-C datepicker; any pre-existing
 // non-ISO free text just won't match either UPDATE below and is silently
 // left un-backfilled).
+// Weitere E-Mail-Adressen eines Mitglieds (JSON-Array, nur Admin-gepflegt, dienen dem Abgleich/der Verifizierung).
+if (!memberColumns.some((c) => c.name === 'extra_emails')) {
+  db.exec(`ALTER TABLE members ADD COLUMN extra_emails TEXT NOT NULL DEFAULT '[]';`);
+}
+
 // Lehrteam-Markierung (Vereinsverwaltung → Lehrteam).
 if (!memberColumns.some((c) => c.name === 'is_teaching_team')) {
   db.exec(`ALTER TABLE members ADD COLUMN is_teaching_team INTEGER NOT NULL DEFAULT 0;`);

@@ -34,6 +34,7 @@ interface MemberRow {
   payment_method: string | null;
   honored_years: string;
   is_teaching_team: number;
+  extra_emails: string;
 }
 
 const parseHonoredYears = (json: string): number[] => {
@@ -45,11 +46,33 @@ const parseHonoredYears = (json: string): number[] => {
   }
 };
 
+const parseEmails = (json: string | null | undefined): string[] => {
+  try {
+    const parsed = JSON.parse(json || '[]');
+    return Array.isArray(parsed) ? parsed.filter((e): e is string => typeof e === 'string') : [];
+  } catch {
+    return [];
+  }
+};
+
+// Trimmen, kleinschreiben, Dubletten und die Haupt-Adresse entfernen, höchstens 10.
+const normalizeAdditionalEmails = (emails: string[] | undefined, primary: string | undefined): string[] | null => {
+  if (emails === undefined) return null; // nicht mitgeschickt -> bestehende Werte unangetastet lassen
+  const main = primary?.trim().toLowerCase();
+  const seen = new Set<string>();
+  for (const e of emails) {
+    const value = e.trim().toLowerCase();
+    if (value.includes('@') && value !== main) seen.add(value);
+  }
+  return [...seen].slice(0, 10);
+};
+
 const rowToMember = (row: MemberRow): Member => ({
   id: row.id,
   firstName: row.first_name,
   lastName: row.last_name,
   email: row.email ?? undefined,
+  additionalEmails: parseEmails(row.extra_emails),
   phone: row.phone ?? undefined,
   mobile: row.mobile ?? undefined,
   birthday: row.birthday ?? undefined,
@@ -127,8 +150,8 @@ export const createMember = (params: MemberCreationParams): Member => {
       id, first_name, last_name, email, phone, mobile, birthday, address,
       is_family_membership, family_group_id, status, source,
       application_registration_id, notes, member_since, external_id,
-      iban_encrypted, bic, bank_name, account_holder, payment_method, is_teaching_team
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      iban_encrypted, bic, bank_name, account_holder, payment_method, is_teaching_team, extra_emails
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     params.firstName,
@@ -152,6 +175,7 @@ export const createMember = (params: MemberCreationParams): Member => {
     params.accountHolder ?? null,
     params.paymentMethod ?? null,
     params.isTeachingTeam ? 1 : 0,
+    JSON.stringify(normalizeAdditionalEmails(params.additionalEmails, params.email) ?? []),
   );
   // Re-fetch rather than trusting `{ id, ...params }` - honoredYears is
   // deliberately not part of MemberCreationParams (only markHonored() sets
@@ -169,6 +193,7 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
         application_registration_id = ?, notes = ?, member_since = ?, external_id = ?,
         iban_encrypted = ?, bic = ?, bank_name = ?, account_holder = ?, payment_method = ?,
         is_teaching_team = COALESCE(?, is_teaching_team),
+        extra_emails = COALESCE(?, extra_emails),
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
@@ -194,6 +219,10 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
       params.accountHolder ?? null,
       params.paymentMethod ?? null,
       params.isTeachingTeam === undefined ? null : params.isTeachingTeam ? 1 : 0,
+      (() => {
+        const normalized = normalizeAdditionalEmails(params.additionalEmails, params.email);
+        return normalized === null ? null : JSON.stringify(normalized);
+      })(),
       id,
     );
   if (result.changes === 0) return undefined;
@@ -226,9 +255,12 @@ export const deleteMember = (id: string): boolean => {
 // roster (Phase 3) to flag a registrant as a known member without exposing
 // the full member list to whoever is just managing that roster.
 export const findMemberByEmail = (email: string): Member | undefined => {
-  const row = db.prepare('SELECT * FROM members WHERE email = ? COLLATE NOCASE').get(email) as
-    | MemberRow
-    | undefined;
+  const row = db
+    .prepare(
+      `SELECT * FROM members WHERE email = ? COLLATE NOCASE
+       OR EXISTS (SELECT 1 FROM json_each(members.extra_emails) WHERE lower(value) = lower(?))`,
+    )
+    .get(email, email) as MemberRow | undefined;
   return row ? rowToMember(row) : undefined;
 };
 

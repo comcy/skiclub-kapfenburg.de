@@ -6,6 +6,8 @@ export interface Member {
     firstName: string;
     lastName: string;
     email?: string;
+    // Weitere Adressen (nur intern): zählen beim Abgleich/der Verifizierung wie die Haupt-E-Mail.
+    additionalEmails?: string[];
     phone?: string;
     mobile?: string;
     birthday?: string;

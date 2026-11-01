@@ -7,7 +7,10 @@ import { MemberCreationParams } from '../domain/member.js';
 import * as membersService from '../services/members-service.js';
 
 const isValidMember = (body: Partial<MemberCreationParams>): boolean =>
-  !!body.firstName?.trim() && !!body.lastName?.trim();
+  !!body.firstName?.trim() &&
+  !!body.lastName?.trim() &&
+  (body.additionalEmails === undefined ||
+    (Array.isArray(body.additionalEmails) && body.additionalEmails.every((e) => typeof e === 'string')));
 
 export const listMembers: RequestHandler = (req, res) => {
   try {

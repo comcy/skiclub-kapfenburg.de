@@ -178,7 +178,8 @@ export class MemberListComponent implements OnInit {
             if (this.filterBirthday === 'missing' && (member.birthday || member.status !== 'active')) return false;
             if (this.filterBirthday === 'adult18' && !this.alerts.overdue.includes(member)) return false;
             if (search) {
-                const haystack = `${member.firstName} ${member.lastName} ${member.email ?? ''}`.toLowerCase();
+                const haystack =
+                    `${member.firstName} ${member.lastName} ${member.email ?? ''} ${(member.additionalEmails ?? []).join(' ')}`.toLowerCase();
                 if (!haystack.includes(search)) return false;
             }
             return true;
