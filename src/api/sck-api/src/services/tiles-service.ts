@@ -70,6 +70,13 @@ const getConfirmedRegistrationsCount = (tileId: string): number => {
   return row.count;
 };
 
+const getWaitlistRegistrationsCount = (tileId: string): number => {
+  const row = db
+    .prepare(`SELECT COUNT(*) AS count FROM trip_registrations WHERE tile_id = ? AND status = 'waitlist'`)
+    .get(tileId) as { count: number };
+  return row.count;
+};
+
 const getConfirmedCourseRegistrationsCount = (tileId: string): number => {
   const row = db
     .prepare(
@@ -125,6 +132,7 @@ const rowToTile = (row: TileRow): Tile => {
         : row.type === 'course'
           ? getConfirmedCourseRegistrationsCount(row.id)
           : undefined,
+    waitlistRegistrationsCount: row.type === 'event' ? getWaitlistRegistrationsCount(row.id) : undefined,
     ...extra,
   };
 };

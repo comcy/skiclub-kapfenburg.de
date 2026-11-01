@@ -169,6 +169,7 @@ describe('Tiles Routes', () => {
 
     const getRes = await request(app).get(`/api/tiles/${eventId}`);
     expect(getRes.body.confirmedRegistrationsCount).toBe(2);
+    expect(getRes.body.waitlistRegistrationsCount).toBe(1);
 
     const infoRes = await request(app)
       .post('/api/tiles')
@@ -176,6 +177,7 @@ describe('Tiles Routes', () => {
       .send(validTilePayload);
     const infoGetRes = await request(app).get(`/api/tiles/${infoRes.body.id}`);
     expect(infoGetRes.body.confirmedRegistrationsCount).toBeUndefined();
+    expect(infoGetRes.body.waitlistRegistrationsCount).toBeUndefined();
   });
 
   it('GET /api/tiles?excludeType=course - liefert alles ausser Kurs-Tiles', async () => {

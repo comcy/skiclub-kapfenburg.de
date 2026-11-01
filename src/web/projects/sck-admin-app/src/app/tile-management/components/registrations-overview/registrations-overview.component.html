@@ -41,9 +41,19 @@
                                         <mat-icon class="capacity-warning-icon" inline>warning</mat-icon>
                                     }
                                 </span>
+                                @if (tile.waitlistRegistrationsCount) {
+                                    <div class="waitlist-count">
+                                        {{ tile.waitlistRegistrationsCount }} auf der Warteliste
+                                    </div>
+                                }
                                 <app-occupancy-bar [count]="confirmedCount(tile)" [capacity]="tile.capacity" />
                             } @else {
                                 <span class="capacity-unlimited">{{ confirmedCount(tile) }} (unbegrenzt)</span>
+                                @if (tile.waitlistRegistrationsCount) {
+                                    <div class="waitlist-count">
+                                        {{ tile.waitlistRegistrationsCount }} auf der Warteliste
+                                    </div>
+                                }
                             }
                         </td>
                         <td class="actions-cell">

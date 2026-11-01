@@ -50,6 +50,8 @@ export interface Tile {
     // Computed server-side, read-only - COUNT of confirmed trip_registrations,
     // only populated for type='event' (see sck-api's rowToTile).
     confirmedRegistrationsCount?: number;
+    // Computed server-side, read-only - COUNT der Wartelisten-Anmeldungen, nur fuer type='event'.
+    waitlistRegistrationsCount?: number;
     // Still opaque passthrough in extra_json server-side (see EXTRA_FIELD_KEYS
     // in sck-api's domain/tile.ts) — typed here now that the editor actually
     // reads/writes into it, previously round-tripped completely blind.
