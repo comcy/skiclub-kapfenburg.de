@@ -186,3 +186,21 @@ shared-lib-site-header {
 :root {
     --sck-page-inset: 16px;
 }
+
+// Alle Tabellen: dezente Zebra-Streifen + Hervorhebung der Zeile unter dem Mauszeiger.
+// Farbe aus dem Theme (on-surface, transparent gemischt) -> funktioniert in hell und dunkel.
+// Opt-out per class="no-zebra" (z. B. Mitgliederliste mit eigener Gruppen-Färbung); Hover bleibt immer.
+table:not(.mat-calendar-table):not(.no-zebra) tbody tr:nth-child(even) {
+    background-color: color-mix(in srgb, var(--mat-sys-on-surface) 3.5%, transparent);
+}
+
+table:not(.mat-calendar-table) tbody tr:hover {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
+}
+
+@media print {
+    table tbody tr,
+    table tbody tr:hover {
+        background-color: transparent !important;
+    }
+}

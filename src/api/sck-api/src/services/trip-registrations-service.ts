@@ -63,7 +63,9 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   boardingId: row.boarding_id ?? undefined,
   boardingName: row.boarding_name ?? undefined,
   ageCategory: row.age_category as TripRegistration['ageCategory'],
-  isMember: row.is_member === 1,
+  // Eine Verknüpfung mit der Mitgliederliste (member_id) bedeutet immer Mitglied - auch wenn die Markierung
+  // älter ist als die Verknüpfung (z.B. Mitglied erst später angelegt).
+  isMember: row.is_member === 1 || row.member_id !== null,
   selfReportedIsMember: row.self_reported_is_member === 1,
   status: row.status as TripRegistration['status'],
   source: row.source as TripRegistration['source'],
@@ -93,11 +95,12 @@ const responsibleIdsOf = (tileId: string): string[] => {
 // Rolle ergibt sich aus dem verknüpften Mitglied (E-Mail/Name+Geburtsdatum/Name): Organisator vor Lehrteam.
 const withRole = (registration: TripRegistration, responsibleIds: string[]): TripRegistration => {
   if (!registration.memberId) return registration;
-  if (responsibleIds.includes(registration.memberId)) return { ...registration, participantRole: 'organizer' };
-  const member = db.prepare('SELECT is_teaching_team FROM members WHERE id = ?').get(registration.memberId) as
-    | { is_teaching_team: number }
+  const member = db.prepare('SELECT first_name, last_name, is_teaching_team FROM members WHERE id = ?').get(registration.memberId) as
+    | { first_name: string; last_name: string; is_teaching_team: number }
     | undefined;
-  return member?.is_teaching_team === 1 ? { ...registration, participantRole: 'teachingTeam' } : registration;
+  const enriched = { ...registration, memberName: member ? `${member.first_name} ${member.last_name}` : undefined };
+  if (responsibleIds.includes(registration.memberId)) return { ...enriched, participantRole: 'organizer' };
+  return member?.is_teaching_team === 1 ? { ...enriched, participantRole: 'teachingTeam' } : enriched;
 };
 
 export const listRegistrationsForTile = (tileId: string): TripRegistration[] => {
@@ -205,7 +208,7 @@ export const updateRegistration = (
       memberId,
       params.boardingId ?? null,
       ageCategoryFor(params),
-      params.isMember ? 1 : 0,
+      params.isMember || memberId ? 1 : 0,
       params.status,
       params.source,
       params.notes ?? null,

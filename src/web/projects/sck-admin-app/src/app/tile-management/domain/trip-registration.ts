@@ -47,6 +47,8 @@ export interface TripRegistration {
     sportType?: string;
     // Abgeleitet vom Server: Organisator (Verantwortlicher) bzw. Lehrteam -> Pauschalpreis.
     participantRole?: 'organizer' | 'teachingTeam';
+    // Name des verknüpften Mitglieds (abgeleitet, nur Anzeige).
+    memberName?: string;
 }
 
 // memberId is always recomputed server-side from email - never sent by the
