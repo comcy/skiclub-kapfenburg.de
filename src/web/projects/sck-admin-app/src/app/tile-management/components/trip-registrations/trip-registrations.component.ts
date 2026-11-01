@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import {
     RegistrationAgeCategory,
+    RegistrationStatus,
     TripRegistration,
     TripRegistrationCreationParams,
 } from '../../domain/trip-registration';
@@ -22,6 +23,7 @@ import { RegistrationEditDialogComponent } from './registration-edit-dialog/regi
 
 interface RegistrationGroup {
     boardingName: string;
+    waitlist?: boolean;
     registrations: TripRegistration[];
 }
 
@@ -166,16 +168,28 @@ export class TripRegistrationsComponent implements OnInit {
         }
     }
 
+    // Nach Boarding-Ort gruppiert; Wartelisten-Anmeldungen stehen gesammelt am Ende (in Reihenfolge der Anmeldung),
+    // damit sie nie in der Boarding-/Busplanung untergehen.
     get groups(): RegistrationGroup[] {
         const byBoarding = new Map<string, TripRegistration[]>();
+        const waitlist: TripRegistration[] = [];
         for (const registration of this.registrations) {
+            if (registration.status === 'waitlist') {
+                waitlist.push(registration);
+                continue;
+            }
             const key = registration.boardingName || 'Ohne Boarding-Ort';
             if (!byBoarding.has(key)) byBoarding.set(key, []);
             byBoarding.get(key)!.push(registration);
         }
-        return Array.from(byBoarding.entries())
+        const groups: RegistrationGroup[] = Array.from(byBoarding.entries())
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([boardingName, registrations]) => ({ boardingName, registrations }));
+        if (waitlist.length) {
+            waitlist.sort((x, y) => (x.createdAt ?? '').localeCompare(y.createdAt ?? ''));
+            groups.push({ boardingName: `Warteliste (${waitlist.length})`, waitlist: true, registrations: waitlist });
+        }
+        return groups;
     }
 
     onBack(): void {
@@ -228,6 +242,15 @@ export class TripRegistrationsComponent implements OnInit {
     // editor and catch a future field added to TripRegistration at compile
     // time instead of silently dropping it on the next toggle.
     onToggleTransferred(registration: TripRegistration): void {
+        this.updateWith(registration, { transferredToExternalList: !registration.transferredToExternalList });
+    }
+
+    // Schnell-Umschalten Warteliste <-> Bestätigt direkt aus der Liste (Nachrücken von Hand).
+    onSetStatus(registration: TripRegistration, status: RegistrationStatus): void {
+        this.updateWith(registration, { status });
+    }
+
+    private updateWith(registration: TripRegistration, overrides: Partial<TripRegistrationCreationParams>): void {
         if (!this.auth.hasPermission('tiles:write')) return;
 
         const params: TripRegistrationCreationParams = {
@@ -243,12 +266,13 @@ export class TripRegistrationsComponent implements OnInit {
             source: registration.source,
             notes: registration.notes || undefined,
             orderIndex: registration.orderIndex,
-            transferredToExternalList: !registration.transferredToExternalList,
+            transferredToExternalList: registration.transferredToExternalList,
             busOnly: registration.busOnly,
             snowshoes: registration.snowshoes,
             courseRequested: registration.courseRequested,
             level: registration.level,
             sportType: registration.sportType,
+            ...overrides,
         };
 
         this.dataService.updateRegistration(registration.id, params).subscribe(() => this.refresh());
