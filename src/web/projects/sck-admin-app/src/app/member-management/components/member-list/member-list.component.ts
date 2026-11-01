@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
+import { MemberAgeAlerts, memberAgeAlerts } from '../../domain/member-age';
 import { Member } from '../../domain/member';
 import {
     MemberExportDialogComponent,
@@ -69,6 +70,9 @@ export class MemberListComponent implements OnInit {
             .join(', ');
     }
 
+    public alerts: MemberAgeAlerts = { overdue: [], soon: [], missingBirthday: [] };
+    public filterBirthday = '';
+
     private allMembers: Member[] = [];
     private filteredMembers: Member[] = [];
     public pagedMembers: Member[] = [];
@@ -92,6 +96,7 @@ export class MemberListComponent implements OnInit {
     refresh(): void {
         this.dataService.getMembers(1, 1000).subscribe((response) => {
             this.allMembers = response.items;
+            this.alerts = memberAgeAlerts(this.allMembers);
             this.pageIndex = 0;
             this.applyFilters();
         });
@@ -100,6 +105,12 @@ export class MemberListComponent implements OnInit {
     onFilterChange(): void {
         this.pageIndex = 0;
         this.applyFilters();
+    }
+
+    // Hinweis-Banner -> Liste auf die betroffenen Mitglieder einschränken.
+    showOnly(filter: 'missing' | 'adult18'): void {
+        this.filterBirthday = filter;
+        this.onFilterChange();
     }
 
     onPageChange(event: PageEvent): void {
@@ -114,6 +125,8 @@ export class MemberListComponent implements OnInit {
             if (this.filterStatus && member.status !== this.filterStatus) return false;
             if (this.filterSource && member.source !== this.filterSource) return false;
             if (this.filterTeam && !member.isTeachingTeam) return false;
+            if (this.filterBirthday === 'missing' && (member.birthday || member.status !== 'active')) return false;
+            if (this.filterBirthday === 'adult18' && !this.alerts.overdue.includes(member)) return false;
             if (search) {
                 const haystack = `${member.firstName} ${member.lastName} ${member.email ?? ''}`.toLowerCase();
                 if (!haystack.includes(search)) return false;
