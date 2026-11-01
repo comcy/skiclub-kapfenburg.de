@@ -21,3 +21,12 @@ export const setSetting = <T>(key: string, value: T): void => {
      ON CONFLICT (key) DO UPDATE SET value = excluded.value`,
   ).run(key, JSON.stringify(value));
 };
+
+import { PARTICIPATION_FEES_SETTING_KEY, ParticipationFeeSettings } from '../domain/settings.js';
+
+export const DEFAULT_PARTICIPATION_FEES: ParticipationFeeSettings = { organizer: 0, teachingTeam: 50 };
+
+export const getParticipationFees = (): ParticipationFeeSettings => ({
+  ...DEFAULT_PARTICIPATION_FEES,
+  ...getSetting<ParticipationFeeSettings>(PARTICIPATION_FEES_SETTING_KEY),
+});

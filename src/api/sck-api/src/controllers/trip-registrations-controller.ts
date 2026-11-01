@@ -184,6 +184,7 @@ const isAgeCategory = (value: unknown): value is AgeCategory =>
   value === 'adult' || value === 'youthUntil16' || value === 'childUntil6';
 
 interface PricePreviewParticipant {
+  registrationId?: string;
   birthday?: string;
   ageCategory?: string;
   isMember?: boolean;
@@ -192,6 +193,12 @@ interface PricePreviewParticipant {
   courseRequested?: boolean;
   level?: string;
 }
+
+const roleOfRegistration = (registrationId: unknown, tileId: string) => {
+  if (typeof registrationId !== 'string') return undefined;
+  const registration = registrationsService.getRegistration(registrationId);
+  return registration?.tileId === tileId ? registration.participantRole : undefined;
+};
 
 const isValidPricePreviewParticipant = (participant: unknown): participant is PricePreviewParticipant =>
   !!participant && typeof participant === 'object';
@@ -212,7 +219,8 @@ export const getTripPricePreview: RequestHandler = (req, res) => {
       return;
     }
 
-    const tile = getTile(String(req.params.tileId));
+    const tileId = String(req.params.tileId);
+    const tile = getTile(tileId);
     const pricing = getEffectiveTripPricing(tile ?? { tripConfig: undefined });
     const prices = (participants as PricePreviewParticipant[]).map((participant) =>
       calculateParticipantPrice(
@@ -228,6 +236,8 @@ export const getTripPricePreview: RequestHandler = (req, res) => {
               ? participant.ageCategory
               : 'adult',
           isMember: participant.isMember ?? false,
+          // Nur über eine vorhandene Anmeldung dieser Ausfahrt (nie vom Client behauptet): Organisator/Lehrteam.
+          role: roleOfRegistration(participant.registrationId, tileId),
         },
         pricing,
       ),

@@ -23,6 +23,31 @@
             </section>
 
             <section class="settings-card">
+                <app-page-heading title="Teilnahmebeiträge bei Ausfahrten"></app-page-heading>
+                <p class="hint-text">
+                    Pauschalbeträge, die den normalen Ausfahrtspreis ersetzen. Organisatoren sind die Verantwortlichen
+                    der Ausfahrt (werden automatisch auf die Anmeldungsliste gesetzt), Lehrteam gilt für alle
+                    Lehrteam-Mitglieder.
+                </p>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Organisatoren (€)</mat-label>
+                    <input matInput type="number" min="0" step="0.5" [(ngModel)]="fees.organizer" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Lehrteam-Mitglieder (€)</mat-label>
+                    <input matInput type="number" min="0" step="0.5" [(ngModel)]="fees.teachingTeam" />
+                </mat-form-field>
+
+                <div class="actions">
+                    <button mat-raised-button color="primary" (click)="onSaveFees()">Speichern</button>
+                    @if (feesSaved) {
+                        <span class="saved-hint">Gespeichert.</span>
+                    }
+                </div>
+            </section>
+
+            <section class="settings-card">
                 <app-boarding-list></app-boarding-list>
             </section>
         </div>

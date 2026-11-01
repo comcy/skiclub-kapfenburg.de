@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MailTemplateSettings } from '../domain/mail-template-setting';
 import { MembershipFeeSetting } from '../domain/membership-fee-setting';
+import { ParticipationFeeSetting } from '../domain/participation-fee-setting';
 import { NotificationBccSetting } from '../domain/notification-bcc-setting';
 import { SepaCreditorSetting } from '../domain/sepa-creditor-setting';
 import { SkiCoursePricingSetting } from '../domain/ski-course-pricing-setting';
@@ -62,5 +63,13 @@ export class SettingsDataService {
 
     updateMembershipFee(setting: MembershipFeeSetting): Observable<MembershipFeeSetting> {
         return this.http.put<MembershipFeeSetting>(`${this.apiUrl}/settings/membership-fee`, setting);
+    }
+
+    getParticipationFees(): Observable<ParticipationFeeSetting> {
+        return this.http.get<ParticipationFeeSetting>(`${this.apiUrl}/settings/participation-fees`);
+    }
+
+    updateParticipationFees(setting: ParticipationFeeSetting): Observable<ParticipationFeeSetting> {
+        return this.http.put<ParticipationFeeSetting>(`${this.apiUrl}/settings/participation-fees`, setting);
     }
 }

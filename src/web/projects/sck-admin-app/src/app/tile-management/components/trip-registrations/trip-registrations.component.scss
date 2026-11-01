@@ -326,3 +326,32 @@ tr.row-waitlist td {
         padding: 14px 12px 4px;
     }
 }
+
+.badge-organizer,
+.badge-teaching {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 6px;
+    padding: 1px 8px 1px 4px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    vertical-align: middle;
+
+    mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.badge-organizer {
+    background: light-dark(#fff3cd, #4a3b00);
+    color: light-dark(#7a5800, #ffd966);
+}
+
+.badge-teaching {
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+}

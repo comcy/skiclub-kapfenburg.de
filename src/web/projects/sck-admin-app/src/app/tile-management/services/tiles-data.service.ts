@@ -13,6 +13,8 @@ import { CourseRegistration, CourseRegistrationCreationParams } from '../domain/
 // (see trip-registrations-controller.ts) - not tile-specific data, just the
 // participant fields the global pricing config needs.
 export interface TripPricePreviewParticipant {
+    // Bei bestehenden Anmeldungen: der Server leitet daraus Organisator/Lehrteam (Pauschalpreis) ab.
+    registrationId?: string;
     birthday?: string;
     ageCategory?: string;
     isMember?: boolean;

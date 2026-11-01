@@ -26,6 +26,10 @@
 
 .settings-card {
     min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 16px;
+    background: var(--mat-sys-surface-container-low);
 }
 
 .hint-text {

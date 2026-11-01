@@ -79,18 +79,40 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   sportType: row.sport_type ?? undefined,
 });
 
+// Verantwortliche (= Organisatoren) der Ausfahrt aus dem extra_json des Tiles.
+const responsibleIdsOf = (tileId: string): string[] => {
+  const row = db.prepare('SELECT extra_json FROM tiles WHERE id = ?').get(tileId) as { extra_json: string } | undefined;
+  try {
+    const ids = JSON.parse(row?.extra_json || '{}').responsibleMemberIds;
+    return Array.isArray(ids) ? ids.filter((id): id is string => typeof id === 'string') : [];
+  } catch {
+    return [];
+  }
+};
+
+// Rolle ergibt sich aus dem verknüpften Mitglied (E-Mail/Name+Geburtsdatum/Name): Organisator vor Lehrteam.
+const withRole = (registration: TripRegistration, responsibleIds: string[]): TripRegistration => {
+  if (!registration.memberId) return registration;
+  if (responsibleIds.includes(registration.memberId)) return { ...registration, participantRole: 'organizer' };
+  const member = db.prepare('SELECT is_teaching_team FROM members WHERE id = ?').get(registration.memberId) as
+    | { is_teaching_team: number }
+    | undefined;
+  return member?.is_teaching_team === 1 ? { ...registration, participantRole: 'teachingTeam' } : registration;
+};
+
 export const listRegistrationsForTile = (tileId: string): TripRegistration[] => {
   const rows = db
     .prepare(`${SELECT_WITH_BOARDING_NAME} WHERE r.tile_id = ? ORDER BY b.name, r.order_index, r.created_at`)
     .all(tileId) as unknown as TripRegistrationRow[];
-  return rows.map(rowToRegistration);
+  const responsibleIds = responsibleIdsOf(tileId);
+  return rows.map((row) => withRole(rowToRegistration(row), responsibleIds));
 };
 
 export const getRegistration = (id: string): TripRegistration | undefined => {
   const row = db.prepare(`${SELECT_WITH_BOARDING_NAME} WHERE r.id = ?`).get(id) as
     | TripRegistrationRow
     | undefined;
-  return row ? rowToRegistration(row) : undefined;
+  return row ? withRole(rowToRegistration(row), responsibleIdsOf(row.tile_id)) : undefined;
 };
 
 // Mit Geburtsdatum immer daraus abgeleitet (kein Auseinanderlaufen von Datum und Kategorie);
@@ -311,4 +333,45 @@ export const createPublicRegistrations = (
   );
 
   return { status, waitlistPosition, waitlistCount, registrationIds };
+};
+
+// Organisatoren (Verantwortliche) einer Ausfahrt stehen immer auch auf der Anmeldungsliste. Fehlt jemand,
+// wird er als bestätigter Teilnehmer angelegt (Notiz "Organisator"); vorhandene Einträge (gleiches Mitglied
+// oder gleicher Name) bleiben unberührt, es wird nichts gelöscht.
+export const syncOrganizerRegistrations = (tileId: string): void => {
+  const tile = db.prepare('SELECT type, actions FROM tiles WHERE id = ?').get(tileId) as { type: string; actions: string } | undefined;
+  if (!tile || tile.type !== 'event' || !tile.actions.includes('register')) return; // nur Ausfahrten
+  for (const memberId of responsibleIdsOf(tileId)) {
+    const member = db.prepare('SELECT * FROM members WHERE id = ?').get(memberId) as any;
+    if (!member) continue;
+    const exists = db
+      .prepare(
+        `SELECT 1 FROM trip_registrations WHERE tile_id = ?
+         AND (member_id = ? OR (first_name = ? COLLATE NOCASE AND last_name = ? COLLATE NOCASE))`,
+      )
+      .get(tileId, memberId, member.first_name, member.last_name);
+    if (exists) continue;
+    createRegistration(
+      tileId,
+      {
+        firstName: member.first_name,
+        lastName: member.last_name,
+        email: member.email ?? undefined,
+        phone: member.mobile || member.phone || undefined,
+        birthday: member.birthday ?? undefined,
+        ageCategory: 'adult',
+        isMember: true,
+        selfReportedIsMember: false,
+        status: 'confirmed',
+        source: 'manual',
+        notes: 'Organisator',
+        orderIndex: 0,
+        transferredToExternalList: false,
+        busOnly: false,
+        snowshoes: false,
+        courseRequested: false,
+      },
+      'system',
+    );
+  }
 };

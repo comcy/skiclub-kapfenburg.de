@@ -10,6 +10,7 @@ import {
   TileStatus,
   TileType,
 } from '../domain/tile.js';
+import { syncOrganizerRegistrations } from '../services/trip-registrations-service.js';
 import * as tilesService from '../services/tiles-service.js';
 
 const isValidTilePayload = (
@@ -118,6 +119,7 @@ export const createTile: RequestHandler = (req, res) => {
     }
 
     const tile = tilesService.createTile(body);
+    syncOrganizerRegistrations(tile.id);
     res.status(201).json(tile);
   } catch (error: any) {
     console.error('Fehler beim Erstellen des Tiles:', error);
@@ -139,6 +141,7 @@ export const updateTile: RequestHandler = (req, res) => {
       res.status(404).json({ error: 'Tile nicht gefunden.' });
       return;
     }
+    syncOrganizerRegistrations(tile.id);
     res.status(200).json(tile);
   } catch (error: any) {
     console.error('Fehler beim Aktualisieren des Tiles:', error);
