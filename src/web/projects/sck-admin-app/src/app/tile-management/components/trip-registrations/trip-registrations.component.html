@@ -113,7 +113,9 @@
                                 <td>{{ registration.boardingName || '–' }}</td>
                                 <td>
                                     @if (registration.memberId) {
-                                        <span class="badge-member" matTooltip="Per E-Mail verifiziert"
+                                        <span
+                                            class="badge-member"
+                                            matTooltip="Mit Mitglied verknüpft (E-Mail, Name/Geburtsdatum)"
                                             ><mat-icon>verified</mat-icon> Mitglied</span
                                         >
                                     } @else if (registration.isMember) {
@@ -205,6 +207,17 @@
                                                 <button mat-menu-item (click)="onSetStatus(registration, 'confirmed')">
                                                     <mat-icon>how_to_reg</mat-icon>
                                                     <span>Bestätigen (nachrücken)</span>
+                                                </button>
+                                            }
+                                            @if (!registration.isMember) {
+                                                <button mat-menu-item (click)="onVerifyMember(registration)">
+                                                    <mat-icon>verified</mat-icon>
+                                                    <span>Als Mitglied verifizieren</span>
+                                                </button>
+                                            } @else if (!registration.memberId) {
+                                                <button mat-menu-item (click)="onUnverifyMember(registration)">
+                                                    <mat-icon>remove_moderator</mat-icon>
+                                                    <span>Verifizierung aufheben</span>
                                                 </button>
                                             }
                                             @if (auth.session()?.isSuperAdmin) {

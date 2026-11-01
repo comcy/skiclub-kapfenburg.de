@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { Image } from '../domain/image';
 import { PaginatedResponse } from '../domain/paginated-response';
 import { TeachingTeamEntry, Tile, TileCreationParams } from '../domain/tile';
+import { VerifiedPerson } from '../domain/verified-person';
 import { TripRegistration, TripRegistrationCreationParams } from '../domain/trip-registration';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../domain/course-registration';
 
@@ -123,6 +124,27 @@ export class TilesDataService {
 
     updateRegistration(id: string, params: TripRegistrationCreationParams): Observable<TripRegistration> {
         return this.http.put<TripRegistration>(`${this.apiUrl}/registrations/${id}`, params);
+    }
+
+    listVerifiedPersons(): Observable<VerifiedPerson[]> {
+        return this.http.get<VerifiedPerson[]>(`${this.apiUrl}/verified-persons`);
+    }
+
+    createVerifiedPerson(person: {
+        firstName: string;
+        lastName: string;
+        birthday?: string;
+    }): Observable<VerifiedPerson> {
+        return this.http.post<VerifiedPerson>(`${this.apiUrl}/verified-persons`, person);
+    }
+
+    revokeVerifiedPerson(id: string): Observable<VerifiedPerson> {
+        return this.http.post<VerifiedPerson>(`${this.apiUrl}/verified-persons/${id}/revoke`, {});
+    }
+
+    // Je Person: würde sie als Mitglied erkannt (gleiche Regeln wie beim Anlegen durch einen Admin)?
+    matchMembers(people: { firstName: string; lastName: string; birthday?: string }[]): Observable<boolean[]> {
+        return this.http.post<boolean[]>(`${this.apiUrl}/verified-persons/match`, { people });
     }
 
     deleteRegistration(id: string): Observable<void> {

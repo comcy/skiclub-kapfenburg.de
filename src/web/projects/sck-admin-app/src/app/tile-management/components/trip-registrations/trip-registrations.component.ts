@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { forkJoin, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import {
@@ -319,6 +320,43 @@ export class TripRegistrationsComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((changed: boolean | undefined) => {
             if (changed) this.refresh();
+        });
+    }
+
+    // Merkt die Person dauerhaft als Mitglied (auch für künftige Anmeldungen, siehe member-match-service der API).
+    onVerifyMember(registration: TripRegistration): void {
+        const name = `${registration.firstName} ${registration.lastName}`;
+        if (
+            !confirm(
+                `${name} als Mitglied verifizieren? Gilt auch für künftige Anmeldungen (Name${registration.birthday ? ' + Geburtsdatum' : ''}).`,
+            )
+        )
+            return;
+        this.dataService
+            .createVerifiedPerson({
+                firstName: registration.firstName,
+                lastName: registration.lastName,
+                birthday: registration.birthday || undefined,
+            })
+            .subscribe(() => this.updateWith(registration, { isMember: true }));
+    }
+
+    // Widerruft die verifizierte Person (kein Löschen) und nimmt die Markierung dieser Anmeldung zurück.
+    onUnverifyMember(registration: TripRegistration): void {
+        const name = `${registration.firstName} ${registration.lastName}`;
+        if (!confirm(`Verifizierung von ${name} aufheben? Betrifft nur künftige Anmeldungen und diese hier.`)) return;
+        const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
+        this.dataService.listVerifiedPersons().subscribe((people) => {
+            const matches = people.filter(
+                (p) =>
+                    same(p.firstName, registration.firstName) &&
+                    same(p.lastName, registration.lastName) &&
+                    (!p.birthday || !registration.birthday || p.birthday === registration.birthday),
+            );
+            const revokes = matches.map((p) => this.dataService.revokeVerifiedPerson(p.id));
+            (revokes.length ? forkJoin(revokes) : of([])).subscribe(() =>
+                this.updateWith(registration, { isMember: false }),
+            );
         });
     }
 
