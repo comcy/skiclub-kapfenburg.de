@@ -96,7 +96,7 @@
                             <tr class="row">
                                 <td>
                                     {{ registration.firstName }} {{ registration.lastName }}
-                                    @if (news.isNew(registration.createdAt)) {
+                                    @if (news.isNew(registration.createdAt, seenBefore)) {
                                         <span class="badge-new">Neu</span>
                                     }
                                 </td>

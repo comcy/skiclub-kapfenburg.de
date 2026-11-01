@@ -42,6 +42,7 @@ export class TripRegistrationsComponent implements OnInit {
     public readonly auth = inject(AuthService);
 
     public tile: Tile | null = null;
+    public seenBefore: string | null = null;
     public registrations: TripRegistration[] = [];
     public tileId!: string;
     public readonly tileStatusEnum = TileStatus;
@@ -62,7 +63,11 @@ export class TripRegistrationsComponent implements OnInit {
             this.tile = tile;
             this.cdr.markForCheck();
         });
-        this.refresh();
+        // Liste gilt ab jetzt als gesehen; die Neu-Badges dieses Besuchs richten sich nach dem vorherigen Stand.
+        this.news.markListSeen(this.tileId).subscribe((previous) => {
+            this.seenBefore = previous;
+            this.refresh();
+        });
     }
 
     // Zoneless change detection (see app.config.ts) - refresh() is also
