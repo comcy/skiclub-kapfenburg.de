@@ -62,6 +62,10 @@
                 Drucken
             </button>
             @if (auth.hasPermission('tiles:write')) {
+                <button mat-stroked-button (click)="onBulkCreate()">
+                    <mat-icon>playlist_add</mat-icon>
+                    Mehrere hinzufügen
+                </button>
                 <button mat-raised-button color="primary" (click)="onCreate()">
                     <mat-icon>add</mat-icon>
                     Neue Anmeldung

@@ -17,6 +17,7 @@ import { NewsService } from '../../../shared/services/news.service';
 import { Tile } from '../../domain/tile';
 import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService, TripPricePreviewParticipant } from '../../services/tiles-data.service';
+import { BulkRegistrationDialogComponent } from './bulk-registration-dialog/bulk-registration-dialog.component';
 import { RegistrationEditDialogComponent } from './registration-edit-dialog/registration-edit-dialog.component';
 
 interface RegistrationGroup {
@@ -199,6 +200,19 @@ export class TripRegistrationsComponent implements OnInit {
             snowshoes: false,
             courseRequested: false,
         });
+    }
+
+    onBulkCreate(): void {
+        this.dialog
+            .open(BulkRegistrationDialogComponent, {
+                data: { tileId: this.tileId, existing: this.registrations },
+                width: '760px',
+                maxWidth: '95vw',
+            })
+            .afterClosed()
+            .subscribe((created: boolean | undefined) => {
+                if (created) this.refresh();
+            });
     }
 
     onEdit(registration: TripRegistration): void {
