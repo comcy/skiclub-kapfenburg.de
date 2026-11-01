@@ -105,6 +105,15 @@
                                     @if (news.isNew(registration.createdAt, seenBefore)) {
                                         <span class="badge-new">Neu</span>
                                     }
+                                    @if (registration.participantRole === 'organizer') {
+                                        <span class="badge-organizer" matTooltip="Organisator der Ausfahrt"
+                                            ><mat-icon>flag</mat-icon> Organisator</span
+                                        >
+                                    } @else if (registration.participantRole === 'teachingTeam') {
+                                        <span class="badge-teaching" matTooltip="Lehrteam"
+                                            ><mat-icon>school</mat-icon> Lehrteam</span
+                                        >
+                                    }
                                 </td>
                                 <td>
                                     {{ exactAge(registration.birthday) ?? ageCategoryLabels[registration.ageCategory] }}

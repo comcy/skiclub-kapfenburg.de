@@ -5,7 +5,7 @@
 import { Tile } from '../domain/tile.js';
 import { TRIP_PRICING_SETTING_KEY, TripPricing } from '../domain/settings.js';
 import { AgeCategory } from '../domain/trip-registration.js';
-import { getSetting } from './settings-service.js';
+import { getParticipationFees, getSetting } from './settings-service.js';
 
 export const getCurrentTripPricing = (): TripPricing => getSetting<TripPricing>(TRIP_PRICING_SETTING_KEY) ?? {};
 
@@ -39,6 +39,8 @@ export interface PriceableParticipant {
   level?: string;
   ageCategory: AgeCategory;
   isMember: boolean;
+  // Organisator/Lehrteam: Pauschalbetrag aus den allgemeinen Einstellungen statt des normalen Preises.
+  role?: 'organizer' | 'teachingTeam';
 }
 
 // Port of the client-side calculateParticipantPrice (formerly
@@ -46,6 +48,7 @@ export interface PriceableParticipant {
 // now removed - see the plan) - the single remaining implementation, used
 // both by the confirmation mail and the /trip-price-preview endpoint.
 export const calculateParticipantPrice = (participant: PriceableParticipant, pricing: TripPricing): number => {
+  if (participant.role) return getParticipationFees()[participant.role];
   let totalPrice = 0;
 
   // 1. Bus + Lift or Bus Only

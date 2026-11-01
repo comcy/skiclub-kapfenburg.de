@@ -31,10 +31,16 @@ export class SettingsComponent implements OnInit {
 
     private customBccList: string[] = [];
     public isSaved = false;
+    public fees = { organizer: 0, teachingTeam: 50 };
+    public feesSaved = false;
 
     ngOnInit(): void {
         this.dataService.getNotificationBcc().subscribe((setting) => {
             this.customBccList = setting.customBccList;
+            this.cdr.markForCheck();
+        });
+        this.dataService.getParticipationFees().subscribe((fees) => {
+            this.fees = fees;
             this.cdr.markForCheck();
         });
     }
@@ -56,6 +62,14 @@ export class SettingsComponent implements OnInit {
         this.isSaved = false;
         this.dataService.updateNotificationBcc({ customBccList: this.customBccList }).subscribe(() => {
             this.isSaved = true;
+            this.cdr.markForCheck();
+        });
+    }
+
+    onSaveFees(): void {
+        this.feesSaved = false;
+        this.dataService.updateParticipationFees(this.fees).subscribe(() => {
+            this.feesSaved = true;
             this.cdr.markForCheck();
         });
     }

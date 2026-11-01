@@ -113,6 +113,7 @@ const renderParticipant = (
       level: participant.level,
       ageCategory: participant.ageCategory,
       isMember: isEffectiveMember(participant),
+      role: participant.participantRole,
     },
     pricing,
   );
@@ -177,6 +178,7 @@ export const getTripConfirmationMailText = (
           level: p.level,
           ageCategory: p.ageCategory,
           isMember: isEffectiveMember(p),
+          role: p.participantRole,
         },
         pricing,
       ),

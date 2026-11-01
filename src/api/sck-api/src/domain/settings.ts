@@ -90,3 +90,12 @@ export interface MembershipFeeSettings {
   individual: number;
   family: number;
 }
+
+export const PARTICIPATION_FEES_SETTING_KEY = 'participation-fees';
+
+// Pauschale Teilnahmebeiträge bei Ausfahrten, die den normalen Preis ersetzen:
+// Organisatoren (Verantwortliche der Ausfahrt) und Lehrteam-Mitglieder.
+export interface ParticipationFeeSettings {
+  organizer: number;
+  teachingTeam: number;
+}

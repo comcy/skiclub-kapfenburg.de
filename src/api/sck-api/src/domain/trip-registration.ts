@@ -56,6 +56,8 @@ export interface TripRegistration {
   level?: string;
   // 'Ski Alpin' | 'Snowboard' - nur bei gewünschtem Kurs.
   sportType?: string;
+  // Abgeleitet (nicht gespeichert): Organisator (Verantwortlicher der Ausfahrt) bzw. Lehrteam -> Pauschalpreis.
+  participantRole?: 'organizer' | 'teachingTeam';
 }
 
 // memberId is always recomputed server-side from email (see

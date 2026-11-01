@@ -91,6 +91,7 @@ export class TripRegistrationsComponent implements OnInit {
             return;
         }
         const participants: TripPricePreviewParticipant[] = registrations.map((r) => ({
+            registrationId: r.id,
             birthday: r.birthday,
             ageCategory: r.ageCategory,
             // The final, effective member status (possibly admin-corrected,

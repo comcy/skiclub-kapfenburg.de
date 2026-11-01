@@ -6,6 +6,8 @@ import { Router } from 'express';
 import {
   getMailTemplateSettings,
   getMembershipFeeSettings,
+  getParticipationFeeSettings,
+  updateParticipationFeeSettings,
   getNotificationBccSetting,
   getSepaCreditorSettings,
   getSkiCoursePricingSetting,
@@ -61,5 +63,8 @@ router.put('/settings/sepa-creditor', requireAuth, requirePermission('sepa:expor
 
 router.get('/settings/membership-fee', requireAuth, requirePermission('sepa:export'), getMembershipFeeSettings);
 router.put('/settings/membership-fee', requireAuth, requirePermission('sepa:export'), updateMembershipFeeSettings);
+
+router.get('/settings/participation-fees', requireAuth, getParticipationFeeSettings);
+router.put('/settings/participation-fees', requireAuth, requirePermission('tiles:write'), updateParticipationFeeSettings);
 
 export default router;

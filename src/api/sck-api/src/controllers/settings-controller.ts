@@ -20,7 +20,8 @@ import {
   TripMailTemplateText,
   TripPricing,
 } from '../domain/settings.js';
-import { getSetting, setSetting } from '../services/settings-service.js';
+import { getParticipationFees, getSetting, setSetting } from '../services/settings-service.js';
+import { PARTICIPATION_FEES_SETTING_KEY, ParticipationFeeSettings } from '../domain/settings.js';
 
 const EMPTY_BCC_SETTING: NotificationBccSetting = { customBccList: [] };
 
@@ -234,5 +235,26 @@ export const updateMembershipFeeSettings: RequestHandler = (req, res) => {
   } catch (error: any) {
     console.error('Fehler beim Speichern der Mitgliedsbeiträge:', error);
     res.status(500).json({ error: 'Fehler beim Speichern der Mitgliedsbeiträge.' });
+  }
+};
+
+const isFee = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0;
+
+export const getParticipationFeeSettings: RequestHandler = (_req, res) => {
+  res.status(200).json(getParticipationFees());
+};
+
+export const updateParticipationFeeSettings: RequestHandler = (req, res) => {
+  try {
+    const { organizer, teachingTeam } = req.body ?? {};
+    if (!isFee(organizer) || !isFee(teachingTeam)) {
+      res.status(400).json({ error: 'organizer und teachingTeam müssen Beträge >= 0 sein.' });
+      return;
+    }
+    setSetting<ParticipationFeeSettings>(PARTICIPATION_FEES_SETTING_KEY, { organizer, teachingTeam });
+    res.status(200).json({ organizer, teachingTeam });
+  } catch (error: any) {
+    console.error('Fehler beim Speichern der Teilnahmebeiträge:', error);
+    res.status(500).json({ error: 'Fehler beim Speichern der Teilnahmebeiträge.' });
   }
 };
