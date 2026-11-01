@@ -361,6 +361,7 @@ export const syncOrganizerRegistrations = (tileId: string): void => {
         birthday: member.birthday ?? undefined,
         ageCategory: 'adult',
         isMember: true,
+        selfReportedIsMember: false,
         status: 'confirmed',
         source: 'manual',
         notes: 'Organisator',
