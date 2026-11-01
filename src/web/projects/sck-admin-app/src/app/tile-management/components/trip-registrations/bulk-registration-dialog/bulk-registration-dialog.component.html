@@ -47,6 +47,7 @@
                             <th>Alter</th>
                             <th>Zustieg</th>
                             <th>Kurs</th>
+                            <th>Mitglied</th>
                             <th>Notiz</th>
                         </tr>
                     </thead>
@@ -58,6 +59,7 @@
                                 <td>{{ ageLabels[row.ageCategory] }}</td>
                                 <td>{{ boardingName(row.boardingId) }}</td>
                                 <td>{{ row.sportType ?? '–' }}</td>
+                                <td>{{ row.member ? 'erkannt' : '–' }}</td>
                                 <td>{{ row.duplicate ? 'bereits angemeldet' : row.notes || '' }}</td>
                             </tr>
                         }

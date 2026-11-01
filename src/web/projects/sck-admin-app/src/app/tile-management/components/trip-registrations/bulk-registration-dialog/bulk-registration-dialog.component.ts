@@ -23,6 +23,7 @@ export interface BulkRegistrationDialogData {
 
 interface PreviewRow extends ParsedListRow {
     duplicate: boolean;
+    member?: boolean;
 }
 
 const normalize = (value: string): string => value.trim().toLowerCase().replace(/\s+/g, ' ');
@@ -95,6 +96,16 @@ export class BulkRegistrationDialogComponent implements OnInit {
             return { ...row, duplicate };
         });
         this.cdr.markForCheck();
+        // Mitglieder-Erkennung (Name; vom Server, gleiche Regeln wie beim Anlegen) für die Vorschau.
+        const requested = this.rows;
+        if (!requested.length) return;
+        this.dataService
+            .matchMembers(requested.map((r) => ({ firstName: r.firstName, lastName: r.lastName })))
+            .subscribe((matches) => {
+                if (this.rows !== requested) return; // Text hat sich inzwischen geändert
+                requested.forEach((row, i) => (row.member = matches[i]));
+                this.cdr.markForCheck();
+            });
     }
 
     onCreate(): void {

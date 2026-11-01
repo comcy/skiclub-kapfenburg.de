@@ -3,7 +3,7 @@
  */
 
 import { RequestHandler } from 'express';
-import { createVerifiedPerson, listVerifiedPersons, revokeVerifiedPerson } from '../services/member-match-service.js';
+import { createVerifiedPerson, listVerifiedPersons, resolveMember, revokeVerifiedPerson } from '../services/member-match-service.js';
 import { getMember } from '../services/members-service.js';
 
 export const listVerifiedPersonsHandler: RequestHandler = (_req, res) => {
@@ -34,4 +34,16 @@ export const revokeVerifiedPersonHandler: RequestHandler = (req, res) => {
     return;
   }
   res.status(200).json(person);
+};
+
+// Vorschau für Listen-Import: je Person, ob sie (wie bei der Anlage durch einen Admin) als Mitglied erkannt würde.
+export const matchVerifiedPersonsHandler: RequestHandler = (req, res) => {
+  const people = Array.isArray(req.body?.people) ? req.body.people.slice(0, 500) : null;
+  if (!people) {
+    res.status(400).json({ error: 'people (Liste) ist erforderlich.' });
+    return;
+  }
+  res.status(200).json(
+    people.map((p: any) => resolveMember({ firstName: String(p?.firstName ?? ''), lastName: String(p?.lastName ?? ''), birthday: p?.birthday, email: p?.email }, true).isMember === 1),
+  );
 };
