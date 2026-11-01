@@ -69,6 +69,8 @@ export interface Tile {
   // number, no registrant PII, used to derive the "Warteliste" badge on the
   // public site without needing a live-registrations read endpoint there.
   confirmedRegistrationsCount?: number;
+  // Computed, not stored - COUNT von trip_registrations mit status='waitlist', nur fuer type='event'. Bare number wie oben.
+  waitlistRegistrationsCount?: number;
   // Opaque passthrough, stored in `tiles.extra_json` — owned by the richer
   // sck-app Tile union (EventTile/CourseTile/InfoTile in
   // shared-lib/ui-common/models), not validated or edited here. Typed
