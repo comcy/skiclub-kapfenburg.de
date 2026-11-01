@@ -113,3 +113,43 @@ tr.mat-mdc-header-row {
 .team-active {
     color: var(--mat-sys-primary);
 }
+
+.alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+
+    .alert-text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .link {
+        padding: 0 6px;
+        min-width: 0;
+    }
+
+    @media (max-width: 600px) {
+        flex-wrap: wrap;
+    }
+}
+
+.alert-warn {
+    background: light-dark(#fff3cd, #4a3b00);
+    color: light-dark(#7a5800, #ffd966);
+}
+
+.alert-info {
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+}

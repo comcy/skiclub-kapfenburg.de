@@ -51,6 +51,15 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
+            <mat-label>Geburtsdatum</mat-label>
+            <mat-select [(ngModel)]="filterBirthday" (selectionChange)="onFilterChange()">
+                <mat-option value="">Alle</mat-option>
+                <mat-option value="missing">Fehlt</mat-option>
+                <mat-option value="adult18">Familienmitglied 18+</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
             <mat-label>Lehrteam</mat-label>
             <mat-select [(ngModel)]="filterTeam" (selectionChange)="onFilterChange()">
                 <mat-option value="">Alle</mat-option>
@@ -59,6 +68,45 @@
         </mat-form-field>
     </div>
 </app-collapsible-filters>
+
+@if (alerts.overdue.length || alerts.soon.length || alerts.missingBirthday.length) {
+    <div class="alerts">
+        @if (alerts.overdue.length) {
+            <div class="alert alert-warn">
+                <mat-icon>cake</mat-icon>
+                <div class="alert-text">
+                    <strong>{{ alerts.overdue.length }} Familienmitglied(er) sind 18 oder älter</strong> – bitte auf
+                    Einzelmitgliedschaft umstellen:
+                    @for (m of alerts.overdue; track m.id) {
+                        <button mat-button class="link" (click)="onEdit(m)">{{ m.firstName }} {{ m.lastName }}</button>
+                    }
+                </div>
+                <button mat-stroked-button (click)="showOnly('adult18')">Anzeigen</button>
+            </div>
+        }
+        @if (alerts.soon.length) {
+            <div class="alert alert-info">
+                <mat-icon>event</mat-icon>
+                <div class="alert-text">
+                    In den nächsten 60 Tagen werden 18:
+                    @for (m of alerts.soon; track m.id) {
+                        <button mat-button class="link" (click)="onEdit(m)">{{ m.firstName }} {{ m.lastName }}</button>
+                    }
+                </div>
+            </div>
+        }
+        @if (alerts.missingBirthday.length) {
+            <div class="alert alert-info">
+                <mat-icon>info</mat-icon>
+                <div class="alert-text">
+                    Bei {{ alerts.missingBirthday.length }} aktiven Mitgliedern fehlt das Geburtsdatum (nötig für den
+                    18-Jahre-Hinweis).
+                </div>
+                <button mat-stroked-button (click)="showOnly('missing')">Anzeigen</button>
+            </div>
+        }
+    </div>
+}
 
 <div class="table-container">
     <table mat-table [dataSource]="pagedMembers" class="mat-elevation-z8">
