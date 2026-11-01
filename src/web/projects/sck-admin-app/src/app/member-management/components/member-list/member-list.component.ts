@@ -61,6 +61,62 @@ export class MemberListComponent implements OnInit {
     // Loaded once (list is small enough - see getMembers(1, 1000) below) and
     // filtered/paginated client-side, no reason to round-trip to the API for
     // every keystroke or page click.
+    // Zeilen-Info pro Mitglied: Familien-Kind (eingerückt unter dem Hauptanmelder), Block-Index für die Färbung.
+    private rowInfo = new Map<string, { child: boolean; block: number; head?: Member }>();
+
+    isFamilyChild(member: Member): boolean {
+        return this.rowInfo.get(member.id)?.child ?? false;
+    }
+
+    // Jede Familie (und jedes Einzelmitglied) ist ein Block; jeder zweite Block ist dezent getönt.
+    isTintedBlock(member: Member): boolean {
+        return (this.rowInfo.get(member.id)?.block ?? 0) % 2 === 1;
+    }
+
+    familyHeadName(member: Member): string {
+        const head = this.rowInfo.get(member.id)?.head;
+        return head ? `${head.firstName} ${head.lastName}` : '';
+    }
+
+    // Hauptanmelder: wer eine E-Mail hat, dann länger Mitglied, dann älter, dann alphabetisch.
+    private static headOrder = (a: Member, b: Member): number =>
+        Number(!!b.email) - Number(!!a.email) ||
+        (a.memberSince ?? '9999').localeCompare(b.memberSince ?? '9999') ||
+        (a.birthday ?? '9999').localeCompare(b.birthday ?? '9999') ||
+        `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`);
+
+    // Familien zusammenziehen: Hauptanmelder zuerst, die übrigen direkt darunter. Eine Familie steht dort, wo ihr
+    // erstes (gefiltertes) Mitglied vorkommt; Einzelmitglieder bleiben in ihrer Reihenfolge.
+    private groupFamilies(members: Member[]): Member[] {
+        const byGroup = new Map<string, Member[]>();
+        for (const m of members) {
+            if (m.familyGroupId) byGroup.set(m.familyGroupId, [...(byGroup.get(m.familyGroupId) ?? []), m]);
+        }
+        const placed = new Set<string>();
+        const result: Member[] = [];
+        this.rowInfo = new Map();
+        let block = 0;
+        for (const m of members) {
+            const group = m.familyGroupId ? byGroup.get(m.familyGroupId)! : undefined;
+            if (!group || group.length < 2) {
+                this.rowInfo.set(m.id, { child: false, block: block++ });
+                result.push(m);
+                continue;
+            }
+            if (placed.has(m.familyGroupId!)) continue;
+            placed.add(m.familyGroupId!);
+            const [head, ...children] = [...group].sort(MemberListComponent.headOrder);
+            this.rowInfo.set(head.id, { child: false, block });
+            result.push(head);
+            for (const child of children) {
+                this.rowInfo.set(child.id, { child: true, block, head });
+                result.push(child);
+            }
+            block++;
+        }
+        return result;
+    }
+
     // Weitere Mitglieder derselben Familiengruppe (Namen), '' wenn keine/nicht zugeordnet.
     familyOthers(member: Member): string {
         if (!member.familyGroupId) return '';
@@ -133,10 +189,10 @@ export class MemberListComponent implements OnInit {
             }
             return true;
         });
-        this.filteredMembers = filtered;
+        this.filteredMembers = this.groupFamilies(filtered);
         this.totalFiltered = filtered.length;
         const start = this.pageIndex * this.pageSize;
-        this.pagedMembers = filtered.slice(start, start + this.pageSize);
+        this.pagedMembers = this.filteredMembers.slice(start, start + this.pageSize);
         this.cdr.markForCheck();
     }
 

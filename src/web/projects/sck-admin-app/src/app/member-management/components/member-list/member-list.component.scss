@@ -153,3 +153,31 @@ tr.mat-mdc-header-row {
     background: var(--mat-sys-secondary-container);
     color: var(--mat-sys-on-secondary-container);
 }
+
+// Familien/Einzelmitglieder = Blöcke; jeder zweite Block dezent getönt (statt Zebra pro Zeile).
+tr.block-tint {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+}
+
+// Hover immer pro Zeile (überschreibt die Block-Tönung)
+tr.mat-mdc-row:hover {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 14%, transparent);
+}
+
+.family-indent {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin: 0 4px 0 18px;
+    vertical-align: middle;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+tr.family-child-row td.mat-column-name {
+    // Kinder wirken eingerückt, auch ohne Icon-Platz (kleine Bildschirme)
+    padding-left: 8px;
+}
+
+.family-hint-child {
+    padding-left: 40px;
+}
