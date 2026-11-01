@@ -14,9 +14,15 @@ export interface MemberImportCollision {
     diffFields: MemberImportDiffField[];
 }
 
+export interface MemberImportFamilyHint {
+    ibanHint: string;
+    indices: number[];
+}
+
 export interface MemberImportPreview {
     importId: string;
     neu: MemberCreationParams[];
+    familienvorschlaege: MemberImportFamilyHint[];
     identisch: number;
     kollisionen: MemberImportCollision[];
 }

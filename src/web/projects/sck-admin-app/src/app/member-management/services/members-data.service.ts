@@ -69,13 +69,22 @@ export class MembersDataService {
         return this.http.post<MemberImportPreview>(`${this.apiUrl}/members/import/preview`, formData);
     }
 
+    // Eingefügte Liste (bereits in Datensätze zerlegt) statt Datei.
+    previewMembersImportRecords(records: unknown[]): Observable<MemberImportPreview> {
+        return this.http.post<MemberImportPreview>(`${this.apiUrl}/members/import/preview-records`, { records });
+    }
+
     applyMembersImport(
         importId: string,
         collisionOverrides: MemberImportCollisionOverride[],
+        createAsNew: string[] = [],
+        familyGroups: number[][] = [],
     ): Observable<MemberImportApplyResult> {
         return this.http.post<MemberImportApplyResult>(`${this.apiUrl}/members/import/apply`, {
             importId,
             collisionOverrides,
+            createAsNew,
+            familyGroups,
         });
     }
 

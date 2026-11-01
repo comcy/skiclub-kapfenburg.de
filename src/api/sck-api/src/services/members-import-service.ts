@@ -9,16 +9,18 @@ import {
   MemberImportCollision,
   MemberImportCollisionOverride,
   MemberImportDiffField,
+  MemberImportFamilyHint,
   MemberImportPreview,
   MemberImportRecord,
 } from '../domain/member-import.js';
 import { Member, MemberCreationParams } from '../domain/member.js';
-import { createMember, findMemberByEmail, findMemberByExternalId, updateMember } from './members-service.js';
+import { createMember, findMemberByEmail, findMemberByExternalId, getMember, updateMember } from './members-service.js';
 
 // Fields the importer actually maps and can therefore compare/overwrite -
 // keyed by the MemberCreationParams property, value is the German label
 // shown in the admin's Gegenüberstellung.
 const FIELD_LABELS: Record<string, string> = {
+  externalId: 'Mitgliedsnummer',
   firstName: 'Vorname',
   lastName: 'Nachname',
   email: 'E-Mail',
@@ -82,9 +84,30 @@ const findExistingMatch = (mapped: MemberCreationParams): Member | undefined => 
     if (byExternalId) return byExternalId;
   }
   if (mapped.email) {
-    return findMemberByEmail(mapped.email);
+    const byEmail = findMemberByEmail(mapped.email);
+    if (byEmail) return byEmail;
   }
-  return undefined;
+  // Letzter Abgleich über den Namen (gleiche Person ohne Nr/E-Mail-Treffer, z.B. geänderte Daten) -
+  // landet immer in der Gegenüberstellung, der Admin entscheidet. Nur bei genau einem Treffer.
+  const sameName = db
+    .prepare('SELECT id FROM members WHERE first_name = ? COLLATE NOCASE AND last_name = ? COLLATE NOCASE')
+    .all(mapped.firstName, mapped.lastName) as { id: string }[];
+  return sameName.length === 1 ? getMember(sameName[0].id) : undefined;
+};
+
+const normalizeIban = (iban: string): string => iban.replace(/\s+/g, '').toUpperCase();
+
+// Gleiche IBAN bei mehreren neuen Datensätzen -> wahrscheinlich eine Familie (Vorschlag, Admin bestätigt).
+const findFamilyHints = (neu: MemberCreationParams[]): MemberImportFamilyHint[] => {
+  const byIban = new Map<string, number[]>();
+  neu.forEach((record, index) => {
+    if (!record.iban) return;
+    const key = normalizeIban(record.iban);
+    byIban.set(key, [...(byIban.get(key) ?? []), index]);
+  });
+  return [...byIban]
+    .filter(([, indices]) => indices.length >= 2)
+    .map(([iban, indices]) => ({ ibanHint: `…${iban.slice(-4)}`, indices }));
 };
 
 interface CachedPreview {
@@ -145,7 +168,7 @@ export const previewImport = (records: MemberImportRecord[]): MemberImportPrevie
   pruneCache();
   previewCache.set(importId, { createdAt: Date.now(), neu, kollisionen });
 
-  return { importId, neu, identisch, kollisionen };
+  return { importId, neu, familienvorschlaege: findFamilyHints(neu), identisch, kollisionen };
 };
 
 // Creates every "neu" record unconditionally (that list is a pure overview,
@@ -155,6 +178,8 @@ export const previewImport = (records: MemberImportRecord[]): MemberImportPrevie
 export const applyImport = (
   importId: string,
   collisionOverrides: MemberImportCollisionOverride[],
+  createAsNew: string[] = [],
+  familyGroups: number[][] = [],
 ): MemberImportApplyResult => {
   const cached = previewCache.get(importId);
   if (!cached) {
@@ -164,20 +189,37 @@ export const applyImport = (
   let created = 0;
   let updated = 0;
 
+  // Familien: je bestätigter Gruppe (mind. 2, gültige Indizes, jeder Datensatz nur einmal) eine gemeinsame ID.
+  const groupOf = new Map<number, string>();
+  for (const group of familyGroups) {
+    const valid = group.filter((i) => Number.isInteger(i) && i >= 0 && i < cached.neu.length && !groupOf.has(i));
+    if (valid.length < 2) continue;
+    const id = randomUUID();
+    valid.forEach((i) => groupOf.set(i, id));
+  }
+
   // node:sqlite's DatabaseSync has no .transaction() helper (unlike
   // better-sqlite3) - manual BEGIN/COMMIT/ROLLBACK, same pattern as the
   // schema migrations in db/connection.ts, so a failure partway through a
   // large import doesn't leave half the batch written.
   db.exec('BEGIN');
   try {
-    for (const record of cached.neu) {
-      createMember(record);
+    cached.neu.forEach((record, index) => {
+      const familyGroupId = groupOf.get(index);
+      createMember(familyGroupId ? { ...record, isFamilyMembership: true, familyGroupId } : record);
+      created += 1;
+    });
+
+    for (const memberId of createAsNew) {
+      const collision = cached.kollisionen.find((k) => k.memberId === memberId);
+      if (!collision) continue;
+      createMember(collision.mapped);
       created += 1;
     }
 
     for (const override of collisionOverrides) {
       const collision = cached.kollisionen.find((k) => k.memberId === override.memberId);
-      if (!collision || Object.keys(override.fields).length === 0) continue;
+      if (!collision || createAsNew.includes(override.memberId) || Object.keys(override.fields).length === 0) continue;
       const merged: MemberCreationParams = { ...collision.existing, ...override.fields };
       updateMember(override.memberId, merged);
       updated += 1;

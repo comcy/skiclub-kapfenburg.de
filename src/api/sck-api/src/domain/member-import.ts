@@ -41,9 +41,16 @@ export interface MemberImportCollision {
   diffFields: MemberImportDiffField[];
 }
 
+// Mehrere neue Datensätze mit gleicher IBAN = Familienvorschlag (Indizes in `neu`); IBAN nur maskiert.
+export interface MemberImportFamilyHint {
+  ibanHint: string;
+  indices: number[];
+}
+
 export interface MemberImportPreview {
   importId: string;
   neu: MemberCreationParams[];
+  familienvorschlaege: MemberImportFamilyHint[];
   identisch: number;
   kollisionen: MemberImportCollision[];
 }
@@ -56,6 +63,10 @@ export interface MemberImportCollisionOverride {
 export interface MemberImportApplyRequest {
   importId: string;
   collisionOverrides: MemberImportCollisionOverride[];
+  // memberIds von Kollisionen, deren Datensatz als zusätzliches neues Mitglied angelegt werden soll.
+  createAsNew?: string[];
+  // Vom Admin bestätigte Familien: je Gruppe Indizes in `neu` (mind. 2).
+  familyGroups?: number[][];
 }
 
 export interface MemberImportApplyResult {

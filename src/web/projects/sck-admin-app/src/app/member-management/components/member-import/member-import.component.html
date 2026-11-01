@@ -34,6 +34,34 @@
                             JSON-Datei auswählen
                         }
                     </button>
+
+                    <h3>Oder Liste einfügen (Mehrere hinzufügen)</h3>
+                    <p class="hint">
+                        Mitglieder-/Kontaktliste aus dem Altsystem (CSV oder aus Excel kopiert) einfügen. Erkannt werden
+                        Nr., Name, Adresse, Telefon, E-Mail, Eintrittsdatum und Bankdaten. Gleiche Bankverbindung bei
+                        mehreren neuen Mitgliedern wird als Familie vorgeschlagen.
+                    </p>
+                    <mat-form-field appearance="outline" class="paste-field">
+                        <mat-label>Liste einfügen</mat-label>
+                        <textarea
+                            matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="4"
+                            cdkAutosizeMaxRows="12"
+                            [(ngModel)]="pastedText"
+                        ></textarea>
+                    </mat-form-field>
+                    @if (pasteHint) {
+                        <div class="error-banner">{{ pasteHint }}</div>
+                    }
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        [disabled]="isLoading || !pastedText.trim()"
+                        (click)="onPreviewPasted()"
+                    >
+                        Vorschau
+                    </button>
                 </div>
             }
 
@@ -68,6 +96,22 @@
                             </table>
                         }
 
+                        @if (preview.familienvorschlaege.length) {
+                            <h3>Familienvorschläge ({{ preview.familienvorschlaege.length }})</h3>
+                            <p class="hint">
+                                Gleiche Bankverbindung: Diese Personen werden als Familie (gemeinsame Familiengruppe,
+                                ein Familienbeitrag) angelegt, wenn du den Vorschlag bestätigst.
+                            </p>
+                            @for (hint of preview.familienvorschlaege; track $index) {
+                                <mat-checkbox
+                                    [checked]="isFamilyConfirmed($index)"
+                                    (change)="toggleFamily($index, $event.checked)"
+                                >
+                                    {{ familyNames(hint.indices) }} (IBAN {{ hint.ibanHint }})
+                                </mat-checkbox>
+                            }
+                        }
+
                         @if (preview.kollisionen.length) {
                             <h3>Kollisionen ({{ preview.kollisionen.length }})</h3>
                             <p class="hint">
@@ -77,6 +121,13 @@
                             @for (collision of preview.kollisionen; track collision.memberId) {
                                 <div class="collision-card">
                                     <h4>{{ memberName(collision) }}</h4>
+                                    <mat-checkbox
+                                        [checked]="isNewMember(collision.memberId)"
+                                        (change)="setNewMember(collision.memberId, $event.checked)"
+                                    >
+                                        Ist ein anderes Mitglied: zusätzlich als neues Mitglied anlegen (bestehendes
+                                        bleibt unverändert)
+                                    </mat-checkbox>
                                     <table class="diff-table">
                                         <thead>
                                             <tr>
@@ -90,8 +141,8 @@
                                             @for (diff of collision.diffFields; track diff.field) {
                                                 <tr>
                                                     <td>{{ diff.label }}</td>
-                                                    <td>{{ formatValue(diff.existing) }}</td>
-                                                    <td>{{ formatValue(diff.incoming) }}</td>
+                                                    <td>{{ formatDiff(diff, diff.existing) }}</td>
+                                                    <td>{{ formatDiff(diff, diff.incoming) }}</td>
                                                     <td>
                                                         <mat-button-toggle-group
                                                             [value]="
