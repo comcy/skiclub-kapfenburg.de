@@ -4,7 +4,6 @@
 
 import { randomUUID } from 'node:crypto';
 import { db } from '../db/connection.js';
-import { findMemberByEmail } from './members-service.js';
 
 export interface MemberMatchInput {
   email?: string;
@@ -50,17 +49,35 @@ const candidatesByName = (firstName: string, lastName: string): Candidate[] => {
   ];
 };
 
-// Reihenfolge: E-Mail -> Name + Geburtsdatum -> (nur Admin) eindeutiger Name.
+const findMemberByEmailAndName = (email: string, firstName: string, lastName: string): string | undefined => {
+  const withEmail = db
+    .prepare('SELECT id, family_group_id FROM members WHERE email = ? COLLATE NOCASE')
+    .all(email.trim()) as { id: string; family_group_id: string | null }[];
+  for (const owner of withEmail) {
+    const row = db
+      .prepare(
+        `SELECT id FROM members
+         WHERE first_name = ? COLLATE NOCASE AND last_name = ? COLLATE NOCASE
+           AND (id = ? OR (family_group_id IS NOT NULL AND family_group_id = ?))`,
+      )
+      .get(firstName.trim(), lastName.trim(), owner.id, owner.family_group_id) as { id: string } | undefined;
+    if (row) return row.id;
+  }
+  return undefined;
+};
+
+// Reihenfolge: E-Mail + Name -> Name + Geburtsdatum -> (nur Admin) eindeutiger Name.
 // Das Ergebnis wird immer serverseitig abgeleitet, nie vom Client übernommen.
 // `allowNameOnly` nur für Admin-Anlage: öffentlich reicht ein fremder Name nicht als Mitgliedsnachweis.
 export const resolveMember = (
   input: MemberMatchInput,
   allowNameOnly: boolean,
 ): { id: string | null; isMember: number } => {
-  const byEmail = input.email ? findMemberByEmail(input.email) : undefined;
-  if (byEmail) return { id: byEmail.id, isMember: 1 };
-
   if (!input.firstName?.trim() || !input.lastName?.trim()) return { id: null, isMember: 0 };
+  // E-Mail allein reicht nicht (Familien teilen sich eine Adresse): zusätzlich muss der Name zu dem Mitglied
+  // mit dieser E-Mail oder zu einem Mitglied seiner Familiengruppe passen.
+  const byEmail = input.email ? findMemberByEmailAndName(input.email, input.firstName, input.lastName) : undefined;
+  if (byEmail) return { id: byEmail, isMember: 1 };
   const candidates = candidatesByName(input.firstName, input.lastName);
 
   if (input.birthday) {

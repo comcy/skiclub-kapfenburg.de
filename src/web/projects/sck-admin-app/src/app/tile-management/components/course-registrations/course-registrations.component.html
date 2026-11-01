@@ -68,7 +68,9 @@
                             <td>{{ registration.sportType || '–' }}</td>
                             <td>
                                 @if (registration.memberId) {
-                                    <span class="badge-member" matTooltip="Per E-Mail verifiziert"
+                                    <span
+                                        class="badge-member"
+                                        matTooltip="Mit Mitglied verknüpft (E-Mail, Name/Geburtsdatum)"
                                         ><mat-icon>verified</mat-icon> Mitglied</span
                                     >
                                 } @else if (registration.isMember) {
