@@ -2,7 +2,7 @@
  * @copyright Copyright (c) 2026 Christian Silfang
  */
 
-import { Router } from 'express';
+import express, { Router } from 'express';
 import {
   createMember,
   deleteMember,
@@ -15,7 +15,7 @@ import {
   markHonored,
   updateMember,
 } from '../controllers/members-controller.js';
-import { applyMembersImport, previewMembersImport } from '../controllers/members-import-controller.js';
+import { applyMembersImport, previewMembersImport, previewMembersImportRecords } from '../controllers/members-import-controller.js';
 import { requireAuth, requirePermission } from '../middleware/auth-middleware.js';
 
 const router = Router();
@@ -42,6 +42,14 @@ router.post('/members/:id/honor', requireAuth, requirePermission('members:manage
 // Order matters: these must come before /members/:id so 'import' isn't
 // swallowed as an :id.
 router.post('/members/import/preview', requireAuth, requirePermission('members:manage'), previewMembersImport);
+// Größere Listen als das globale 100kb-JSON-Limit (eine Seite Mitgliederliste = mehrere hundert Datensätze).
+router.post(
+  '/members/import/preview-records',
+  requireAuth,
+  requirePermission('members:manage'),
+  express.json({ limit: '5mb' }),
+  previewMembersImportRecords,
+);
 router.post('/members/import/apply', requireAuth, requirePermission('members:manage'), applyMembersImport);
 
 export default router;

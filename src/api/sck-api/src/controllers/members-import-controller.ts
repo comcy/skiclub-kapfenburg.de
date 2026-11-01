@@ -49,14 +49,29 @@ export const previewMembersImport: RequestHandler = (req, res) => {
   });
 };
 
+// Eingefügte Liste (bereits clientseitig in Datensätze zerlegt) statt Datei - gleiche Vorschau/Abgleich-Logik.
+export const previewMembersImportRecords: RequestHandler = (req, res) => {
+  const records = req.body?.records;
+  if (!Array.isArray(records) || records.length === 0 || records.length > 5000) {
+    res.status(400).json({ error: 'records muss eine nicht leere Liste (max. 5000) sein.' });
+    return;
+  }
+  try {
+    res.status(200).json(membersImportService.previewImport(records as MemberImportRecord[]));
+  } catch (error: any) {
+    console.error('Fehler bei der Import-Vorschau:', error);
+    res.status(500).json({ error: 'Fehler bei der Import-Vorschau.' });
+  }
+};
+
 export const applyMembersImport: RequestHandler = (req, res) => {
   try {
-    const { importId, collisionOverrides } = req.body as MemberImportApplyRequest;
+    const { importId, collisionOverrides, createAsNew, familyGroups } = req.body as MemberImportApplyRequest;
     if (!importId) {
       res.status(400).json({ error: 'importId fehlt.' });
       return;
     }
-    res.status(200).json(membersImportService.applyImport(importId, collisionOverrides ?? []));
+    res.status(200).json(membersImportService.applyImport(importId, collisionOverrides ?? [], createAsNew ?? [], familyGroups ?? []));
   } catch (error: any) {
     console.error('Fehler beim Anwenden des Imports:', error);
     res.status(400).json({ error: error.message ?? 'Fehler beim Anwenden des Imports.' });

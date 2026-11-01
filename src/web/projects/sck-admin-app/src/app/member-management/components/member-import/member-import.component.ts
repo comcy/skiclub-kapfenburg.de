@@ -2,9 +2,15 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { MemberCreationParams } from '../../domain/member';
 import { MemberImportApplyResult, MemberImportCollision, MemberImportPreview } from '../../domain/member-import';
+import { parseMemberList } from '../../domain/parse-member-list';
 import { MembersDataService } from '../../services/members-data.service';
 
 type ImportStep = 'upload' | 'preview' | 'done';
@@ -18,7 +24,17 @@ type ChosenKey = `${string}:${string}`;
 @Component({
     selector: 'app-member-import',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatButtonToggleModule, MatIconModule],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatButtonToggleModule,
+        MatCheckboxModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        TextFieldModule,
+    ],
     templateUrl: './member-import.component.html',
     styleUrls: ['./member-import.component.scss'],
 })
@@ -37,7 +53,65 @@ export class MemberImportComponent {
     public preview: MemberImportPreview | null = null;
     public applyResult: MemberImportApplyResult | null = null;
 
+    public pastedText = '';
+    public pasteHint: string | null = null;
     private readonly chosenFields = new Set<ChosenKey>();
+    // Kollisionen, die als zusätzliches neues Mitglied angelegt werden sollen, und bestätigte Familienvorschläge.
+    private readonly createAsNew = new Set<string>();
+    private readonly confirmedFamilies = new Set<number>();
+
+    onPreviewPasted(): void {
+        const records = parseMemberList(this.pastedText);
+        if (!records.length) {
+            this.pasteHint = 'Keine Mitglieder erkannt (erwartet: Liste mit Mitgliedsnummer in der ersten Spalte).';
+            return;
+        }
+        this.pasteHint = null;
+        this.startPreview(this.dataService.previewMembersImportRecords(records));
+    }
+
+    private startPreview(request: ReturnType<MembersDataService['previewMembersImport']>): void {
+        this.isLoading = true;
+        this.error = null;
+        request.subscribe({
+            next: (preview) => {
+                this.preview = preview;
+                this.createAsNew.clear();
+                this.confirmedFamilies.clear();
+                preview.familienvorschlaege.forEach((_, i) => this.confirmedFamilies.add(i));
+                this.step = 'preview';
+                this.isLoading = false;
+                this.cdr.markForCheck();
+            },
+            error: (err) => {
+                this.error = err?.error?.error ?? 'Import-Vorschau fehlgeschlagen.';
+                this.isLoading = false;
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    isFamilyConfirmed(index: number): boolean {
+        return this.confirmedFamilies.has(index);
+    }
+
+    toggleFamily(index: number, on: boolean): void {
+        if (on) this.confirmedFamilies.add(index);
+        else this.confirmedFamilies.delete(index);
+    }
+
+    isNewMember(memberId: string): boolean {
+        return this.createAsNew.has(memberId);
+    }
+
+    setNewMember(memberId: string, on: boolean): void {
+        if (on) this.createAsNew.add(memberId);
+        else this.createAsNew.delete(memberId);
+    }
+
+    familyNames(indices: number[]): string {
+        return indices.map((i) => `${this.preview?.neu[i].firstName} ${this.preview?.neu[i].lastName}`).join(', ');
+    }
 
     onUploadClick(): void {
         this.fileInput.nativeElement.click();
@@ -49,21 +123,7 @@ export class MemberImportComponent {
         target.value = '';
         if (!file) return;
 
-        this.isLoading = true;
-        this.error = null;
-        this.dataService.previewMembersImport(file).subscribe({
-            next: (preview) => {
-                this.preview = preview;
-                this.step = 'preview';
-                this.isLoading = false;
-                this.cdr.markForCheck();
-            },
-            error: (err) => {
-                this.error = err?.error?.error ?? 'Import-Vorschau fehlgeschlagen.';
-                this.isLoading = false;
-                this.cdr.markForCheck();
-            },
-        });
+        this.startPreview(this.dataService.previewMembersImport(file));
     }
 
     isTakingIncoming(memberId: string, field: string): boolean {
@@ -91,26 +151,37 @@ export class MemberImportComponent {
             }
         }
         const collisionOverrides = Array.from(overridesByMember, ([memberId, fields]) => ({ memberId, fields }));
+        const familyGroups = this.preview.familienvorschlaege
+            .filter((_, i) => this.confirmedFamilies.has(i))
+            .map((hint) => hint.indices);
 
         this.isLoading = true;
         this.error = null;
-        this.dataService.applyMembersImport(this.preview.importId, collisionOverrides).subscribe({
-            next: (result) => {
-                this.applyResult = result;
-                this.step = 'done';
-                this.isLoading = false;
-                this.cdr.markForCheck();
-            },
-            error: (err) => {
-                this.error = err?.error?.error ?? 'Import fehlgeschlagen.';
-                this.isLoading = false;
-                this.cdr.markForCheck();
-            },
-        });
+        this.dataService
+            .applyMembersImport(this.preview.importId, collisionOverrides, [...this.createAsNew], familyGroups)
+            .subscribe({
+                next: (result) => {
+                    this.applyResult = result;
+                    this.step = 'done';
+                    this.isLoading = false;
+                    this.cdr.markForCheck();
+                },
+                error: (err) => {
+                    this.error = err?.error?.error ?? 'Import fehlgeschlagen.';
+                    this.isLoading = false;
+                    this.cdr.markForCheck();
+                },
+            });
     }
 
     memberName(collision: MemberImportCollision): string {
         return `${collision.existing.firstName} ${collision.existing.lastName}`;
+    }
+
+    // IBAN in der Gegenüberstellung nur gekürzt (Anfang/Ende reichen zum Vergleichen).
+    formatDiff(diff: { field: string }, value: unknown): string {
+        const text = this.formatValue(value);
+        return diff.field === 'iban' && text.length > 8 ? `${text.slice(0, 4)}…${text.slice(-4)}` : text;
     }
 
     formatValue(value: unknown): string {

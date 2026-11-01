@@ -218,4 +218,50 @@ describe('Members Import Routes', () => {
       .send({ importId: 'does-not-exist', collisionOverrides: [] });
     expect(res.status).toBe(400);
   });
+
+  describe('Liste einfügen', () => {
+    const post = (token: string, records: unknown[]) =>
+      request(app).post('/api/members/import/preview-records').set('Authorization', `Bearer ${token}`).send({ records });
+    const apply = (token: string, body: unknown) =>
+      request(app).post('/api/members/import/apply').set('Authorization', `Bearer ${token}`).send(body);
+
+    it('Vorschau per Liste braucht members:manage', async () => {
+      const token = createAuthedUser(['tiles:write']);
+      expect((await post(token, [sampleRecord])).status).toBe(403);
+    });
+
+    it('schlägt Familien bei gleicher IBAN vor (maskiert) und vergibt bei Bestätigung eine familyGroupId', async () => {
+      const token = createAuthedUser(['members:manage']);
+      const kind = { ...sampleRecord, Nr: '1047', Name: 'Fuchs Kind', Kommunikation: {} };
+      const preview = await post(token, [sampleRecord, kind, { ...sampleRecord, Nr: '2000', Name: 'Ander Person', Bankdaten: { IBAN: 'DE02120300000000202051' } }]);
+      expect(preview.body.familienvorschlaege).toEqual([{ ibanHint: '…3000', indices: [0, 1] }]);
+
+      const res = await apply(token, { importId: preview.body.importId, collisionOverrides: [], familyGroups: [[0, 1]] });
+      expect(res.body.created).toBe(3);
+      const rows = db.prepare('SELECT family_group_id AS g, is_family_membership AS f FROM members ORDER BY external_id').all() as any[];
+      expect(rows[0].g).toBeTruthy();
+      expect(rows[0].g).toBe(rows[1].g);
+      expect(rows[0].f).toBe(1);
+      expect(rows[2].g).toBeNull();
+    });
+
+    it('findet bestehende Person über den Namen und legt auf Wunsch zusätzlich ein neues Mitglied an', async () => {
+      const token = createAuthedUser(['members:manage']);
+      const first = await post(token, [sampleRecord]);
+      await apply(token, { importId: first.body.importId, collisionOverrides: [] });
+
+      const changed = { ...sampleRecord, Nr: '9999', Kommunikation: { 'E-Mail': 'neu@test.com' } };
+      const preview = await post(token, [changed]);
+      expect(preview.body.neu).toHaveLength(0);
+      expect(preview.body.kollisionen).toHaveLength(1);
+
+      const res = await apply(token, {
+        importId: preview.body.importId,
+        collisionOverrides: [],
+        createAsNew: [preview.body.kollisionen[0].memberId],
+      });
+      expect(res.body).toEqual({ created: 1, updated: 0 });
+      expect((db.prepare('SELECT COUNT(*) AS c FROM members').get() as any).c).toBe(2);
+    });
+  });
 });
