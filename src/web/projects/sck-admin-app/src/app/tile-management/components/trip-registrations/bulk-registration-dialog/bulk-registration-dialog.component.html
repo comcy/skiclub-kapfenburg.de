@@ -1,0 +1,79 @@
+<app-dialog-shell title="Mehrere Anmeldungen hinzufügen">
+    <div class="bulk">
+        <p class="hint">
+            Teilnehmerliste aus dem Sheet kopieren und hier einfügen (eine Person pro Zeile, Name zuerst, z. B. „Schmid
+            Tobias“ oder „Schmid, Tobias“). Alter, Telefon und Zustieg werden erkannt; „MV“ und „EZ“ landen in der
+            Notiz. Bitte die Vorschau prüfen, bevor angelegt wird.
+        </p>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Liste einfügen</mat-label>
+            <textarea
+                matInput
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="4"
+                cdkAutosizeMaxRows="10"
+                [(ngModel)]="text"
+                (ngModelChange)="onTextChange()"
+            ></textarea>
+        </mat-form-field>
+
+        @if (rows.length) {
+            <div class="summary">
+                <strong>{{ newRows.length }}</strong> neue Anmeldungen
+                @if (rows.length - newRows.length) {
+                    · {{ rows.length - newRows.length }} bereits angemeldet (werden übersprungen)
+                }
+                @if (ignored) {
+                    · {{ ignored }} Zeilen ohne Namen ignoriert
+                }
+            </div>
+
+            <mat-form-field appearance="outline" class="status-field">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="status">
+                    <mat-option value="confirmed">Bestätigt</mat-option>
+                    <mat-option value="waitlist">Warteliste</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div class="preview-scroll">
+                <table class="preview">
+                    <thead>
+                        <tr>
+                            <th>Nachname</th>
+                            <th>Vorname</th>
+                            <th>Alter</th>
+                            <th>Zustieg</th>
+                            <th>Notiz</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (row of rows; track $index) {
+                            <tr [class.duplicate]="row.duplicate">
+                                <td>{{ row.lastName }}</td>
+                                <td>{{ row.firstName }}</td>
+                                <td>{{ ageLabels[row.ageCategory] }}</td>
+                                <td>{{ boardingName(row.boardingId) }}</td>
+                                <td>{{ row.duplicate ? 'bereits angemeldet' : row.notes || '' }}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        } @else if (text.trim()) {
+            <div class="summary">Keine Personen erkannt.</div>
+        }
+
+        @if (error) {
+            <div class="error">{{ error }}</div>
+        }
+    </div>
+
+    <ng-container dialogActions>
+        <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="saving || !newRows.length">
+            {{ saving ? 'Lege an…' : newRows.length + ' Anmeldungen anlegen' }}
+        </button>
+        <button mat-button (click)="dialogRef.close(false)" [disabled]="saving">Abbrechen</button>
+    </ng-container>
+</app-dialog-shell>
