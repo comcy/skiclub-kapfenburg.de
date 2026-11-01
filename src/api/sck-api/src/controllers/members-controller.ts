@@ -51,7 +51,10 @@ export const createMember: RequestHandler = (req, res) => {
       res.status(400).json({ error: 'Vorname und Nachname sind erforderlich.' });
       return;
     }
-    res.status(201).json(membersService.createMember(body));
+    const member = membersService.createMember(body);
+    // Online-Antrag mit Familie: alle genannten Personen als eigene Mitglieder derselben Familiengruppe anlegen.
+    membersService.createFamilyMembersFromApplication(member);
+    res.status(201).json(membersService.getMember(member.id));
   } catch (error: any) {
     console.error('Fehler beim Anlegen des Mitglieds:', error);
     res.status(500).json({ error: 'Fehler beim Anlegen des Mitglieds.', details: error.message });

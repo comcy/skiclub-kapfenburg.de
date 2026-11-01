@@ -138,6 +138,45 @@ describe('Members Routes', () => {
     expect(mockedListDataByType).toHaveBeenCalledWith('membership-registration');
   });
 
+  it('POST /api/members - Antrag mit Familie legt jede Person als eigenes Mitglied derselben Familiengruppe an', async () => {
+    const token = createAuthedUser(['members:manage']);
+    mockedListDataByType.mockReturnValue([
+      {
+        registrationId: 'reg-family',
+        firstName: 'Paul',
+        lastName: 'Fam',
+        email: 'paul@test.com',
+        isFamilyMembership: true,
+        familyMembers: [
+          { firstName: 'Mia', lastName: 'Fam', birthday: '2015-05-05' },
+          { firstName: 'Ben', lastName: 'Fam', birthday: '2017-07-07' },
+        ],
+      },
+    ]);
+    const body = {
+      ...validMember,
+      firstName: 'Paul',
+      lastName: 'Fam',
+      address: 'Weg 1, D-12345 Ort',
+      memberSince: '2026-10-01',
+      isFamilyMembership: true,
+      applicationRegistrationId: 'reg-family',
+    };
+    const res = await request(app).post('/api/members').set('Authorization', `Bearer ${token}`).send(body);
+    expect(res.status).toBe(201);
+    expect(res.body.familyGroupId).toBeTruthy();
+
+    const rows = db.prepare('SELECT first_name, birthday, address, family_group_id AS g, source FROM members ORDER BY first_name').all() as any[];
+    expect(rows.map((r) => r.first_name)).toEqual(['Ben', 'Mia', 'Paul']);
+    expect(new Set(rows.map((r) => r.g)).size).toBe(1);
+    expect(rows[0]).toMatchObject({ birthday: '2017-07-07', address: 'Weg 1, D-12345 Ort', source: 'online' });
+
+    // Antrag ist übernommen und taucht nicht noch einmal auf.
+    const again = await request(app).post('/api/members').set('Authorization', `Bearer ${token}`).send(body);
+    expect(again.status).toBe(201);
+    expect((db.prepare('SELECT COUNT(*) AS c FROM members').get() as any).c).toBe(4); // nur die Hauptperson doppelt, keine Familien-Duplikate
+  });
+
   it('GET /api/members/anniversaries - meldet jeden, der mindestens N Jahre dabei und dafür noch nicht geehrt ist', async () => {
     const token = createAuthedUser(['members:manage']);
     await request(app)
