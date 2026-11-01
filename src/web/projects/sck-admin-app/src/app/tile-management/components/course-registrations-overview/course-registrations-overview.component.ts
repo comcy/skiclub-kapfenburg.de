@@ -79,7 +79,7 @@ export class CourseRegistrationsOverviewComponent implements OnInit {
             const sport = r.sportType?.trim() || '';
             const entry = bySport.get(sport) ?? { count: 0, newCount: 0 };
             entry.count += 1;
-            if (this.news.isNew(r.createdAt)) entry.newCount += 1;
+            if (this.news.isNew(r.createdAt, this.news.listSeenAt(tile.id))) entry.newCount += 1;
             bySport.set(sport, entry);
         }
         if (!bySport.size) return [{ tile, count: 0, newCount: 0 }];

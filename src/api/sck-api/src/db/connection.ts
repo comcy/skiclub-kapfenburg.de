@@ -225,6 +225,15 @@ db.exec(`
     used_at TEXT
   );
 
+  -- Pro Admin und Anmeldungs-Liste: wann die Liste zuletzt geöffnet wurde. Anmeldungen bis dahin
+  -- gelten für diesen Admin nicht mehr als "neu" (siehe news-service.ts).
+  CREATE TABLE IF NOT EXISTS tile_seen (
+    user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    tile_id TEXT NOT NULL REFERENCES tiles (id) ON DELETE CASCADE,
+    seen_at TEXT NOT NULL,
+    PRIMARY KEY (user_id, tile_id)
+  );
+
   CREATE TABLE IF NOT EXISTS sessions (
     token_hash TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,

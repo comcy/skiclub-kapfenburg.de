@@ -39,7 +39,7 @@ const SINCE = '2026-10-20T10:00:00.000Z';
 
 beforeEach(() => {
   db.exec(
-    'DELETE FROM trip_registrations; DELETE FROM course_registrations; DELETE FROM members; DELETE FROM tiles; DELETE FROM permissions; DELETE FROM sessions; DELETE FROM users;',
+    'DELETE FROM tile_seen; DELETE FROM trip_registrations; DELETE FROM course_registrations; DELETE FROM members; DELETE FROM tiles; DELETE FROM permissions; DELETE FROM sessions; DELETE FROM users;',
   );
   mockedListDataByType.mockReset().mockReturnValue([]);
 });
@@ -124,5 +124,41 @@ describe('News Routes', () => {
 
     const after = await request(app).get('/api/news').set('Authorization', `Bearer ${token}`);
     expect(after.body.trips.total).toBe(0);
+  });
+
+  it('Liste öffnen (POST /news/tiles/:id/seen): pro Admin nicht mehr neu, bei anderen weiterhin; neue Anmeldungen danach wieder neu', async () => {
+    addTile('trip-1', 'event');
+    addTile('trip-2', 'event');
+    const insert = db.prepare(
+      "INSERT INTO trip_registrations (id, tile_id, first_name, last_name, age_category, status, source, created_at) VALUES (?, ?, 'A', 'B', 'adult', 'confirmed', 'manual', ?)",
+    );
+    insert.run('a1', 'trip-1', '2026-10-20T12:00:00.000Z');
+    insert.run('b1', 'trip-2', '2026-10-20T12:00:00.000Z');
+    const alice = createAuthedUser([], SINCE);
+    const bob = createAuthedUser([], SINCE);
+
+    const first = await request(app).post('/api/news/tiles/trip-1/seen').set('Authorization', `Bearer ${alice}`);
+    expect(first.status).toBe(200);
+    expect(first.body.previousSeenAt).toBeNull();
+
+    const aliceNews = await request(app).get('/api/news').set('Authorization', `Bearer ${alice}`);
+    expect(aliceNews.body.trips.byTile).toEqual({ 'trip-2': 1 }); // trip-1 gesehen
+    expect(Object.keys(aliceNews.body.seen)).toEqual(['trip-1']);
+
+    const bobNews = await request(app).get('/api/news').set('Authorization', `Bearer ${bob}`);
+    expect(bobNews.body.trips.byTile).toEqual({ 'trip-1': 1, 'trip-2': 1 }); // Bob hat nichts geöffnet
+
+    insert.run('a2', 'trip-1', new Date(Date.now() + 60_000).toISOString());
+    const later = await request(app).get('/api/news').set('Authorization', `Bearer ${alice}`);
+    expect(later.body.trips.byTile['trip-1']).toBe(1); // nur die neue
+
+    const second = await request(app).post('/api/news/tiles/trip-1/seen').set('Authorization', `Bearer ${alice}`);
+    expect(second.body.previousSeenAt).toBe(aliceNews.body.seen['trip-1']);
+  });
+
+  it('POST /news/tiles/:id/seen - 401 ohne Anmeldung, 404 für unbekannte Liste', async () => {
+    expect((await request(app).post('/api/news/tiles/x/seen')).status).toBe(401);
+    const token = createAuthedUser([], SINCE);
+    expect((await request(app).post('/api/news/tiles/nope/seen').set('Authorization', `Bearer ${token}`)).status).toBe(404);
   });
 });

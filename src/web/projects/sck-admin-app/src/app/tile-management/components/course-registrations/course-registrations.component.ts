@@ -44,6 +44,7 @@ export class CourseRegistrationsComponent implements OnInit {
     public readonly news = inject(NewsService);
 
     public tile: Tile | null = null;
+    public seenBefore: string | null = null;
     public registrations: CourseRegistration[] = [];
     public selectedRegistration: CourseRegistration | null = null;
     public tileId!: string;
@@ -59,7 +60,11 @@ export class CourseRegistrationsComponent implements OnInit {
             this.tile = tile;
             this.cdr.markForCheck();
         });
-        this.refresh();
+        // Liste gilt ab jetzt als gesehen; die Neu-Badges dieses Besuchs richten sich nach dem vorherigen Stand.
+        this.news.markListSeen(this.tileId).subscribe((previous) => {
+            this.seenBefore = previous;
+            this.refresh();
+        });
         this.settingsService.getSkiCoursePricing().subscribe((pricing) => {
             this.skiPricing = pricing;
             this.cdr.markForCheck();
