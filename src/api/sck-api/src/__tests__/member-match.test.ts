@@ -19,9 +19,19 @@ const addMember = (firstName: string, lastName: string, extra: { email?: string;
 };
 
 describe('resolveMember', () => {
-  it('matcht per E-Mail (case-insensitiv)', () => {
+  it('matcht per E-Mail nur zusammen mit passendem Namen (case-insensitiv)', () => {
     const id = addMember('Anna', 'Mail', { email: 'anna.match@test.de' });
-    expect(resolveMember({ email: 'ANNA.MATCH@test.de', firstName: 'X', lastName: 'Y' }, false)).toEqual({ id, isMember: 1 });
+    expect(resolveMember({ email: 'ANNA.MATCH@test.de', firstName: 'anna', lastName: 'MAIL' }, false)).toEqual({ id, isMember: 1 });
+    // gleiche E-Mail, aber andere Person (z.B. Familienangehöriger ohne Mitgliedseintrag) -> kein Mitglied
+    expect(resolveMember({ email: 'anna.match@test.de', firstName: 'Fremd', lastName: 'Mail' }, true)).toEqual({ id: null, isMember: 0 });
+  });
+
+  it('Familie mit gemeinsamer E-Mail: Familienmitglied wird über die Gruppe erkannt, Unbekannte nicht', () => {
+    const owner = addMember('Papa', 'Fam', { email: 'fam@test.de' });
+    const kid = addMember('Kind', 'Fam');
+    db.prepare('UPDATE members SET family_group_id = ? WHERE id IN (?, ?)').run('g-fam', owner, kid);
+    expect(resolveMember({ email: 'fam@test.de', firstName: 'Kind', lastName: 'Fam' }, false)).toEqual({ id: kid, isMember: 1 });
+    expect(resolveMember({ email: 'fam@test.de', firstName: 'Onkel', lastName: 'Fam' }, false)).toEqual({ id: null, isMember: 0 });
   });
 
   it('matcht Name + Geburtsdatum, auch öffentlich', () => {
