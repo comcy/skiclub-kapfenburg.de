@@ -20,6 +20,31 @@
             <input matInput type="email" [(ngModel)]="member.email" />
         </mat-form-field>
 
+        <mat-form-field appearance="outline" class="full-width extra-emails" subscriptSizing="dynamic">
+            <mat-label>Weitere E-Mail-Adressen</mat-label>
+            <mat-chip-grid #emailChips>
+                @for (email of member.additionalEmails ?? []; track email) {
+                    <mat-chip-row (removed)="removeAdditionalEmail(email)">
+                        {{ email }}
+                        <button matChipRemove [attr.aria-label]="email + ' entfernen'">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                }
+                <input
+                    placeholder="Adresse eingeben, Enter zum Hinzufügen"
+                    [matChipInputFor]="emailChips"
+                    [matChipInputSeparatorKeyCodes]="emailSeparators"
+                    [matChipInputAddOnBlur]="true"
+                    (matChipInputTokenEnd)="addAdditionalEmail($event)"
+                />
+            </mat-chip-grid>
+            <mat-hint>Nur intern sichtbar. Gelten wie die Haupt-E-Mail zur Verifizierung bei Anmeldungen.</mat-hint>
+        </mat-form-field>
+        @if (emailError) {
+            <div class="hint-box">{{ emailError }}</div>
+        }
+
         <div class="field-row">
             <mat-form-field appearance="outline">
                 <mat-label>Telefon</mat-label>

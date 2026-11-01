@@ -51,8 +51,11 @@ const candidatesByName = (firstName: string, lastName: string): Candidate[] => {
 
 const findMemberByEmailAndName = (email: string, firstName: string, lastName: string): string | undefined => {
   const withEmail = db
-    .prepare('SELECT id, family_group_id FROM members WHERE email = ? COLLATE NOCASE')
-    .all(email.trim()) as { id: string; family_group_id: string | null }[];
+    .prepare(
+      `SELECT id, family_group_id FROM members WHERE email = ? COLLATE NOCASE
+       OR EXISTS (SELECT 1 FROM json_each(members.extra_emails) WHERE lower(value) = lower(?))`,
+    )
+    .all(email.trim(), email.trim()) as { id: string; family_group_id: string | null }[];
   for (const owner of withEmail) {
     const row = db
       .prepare(

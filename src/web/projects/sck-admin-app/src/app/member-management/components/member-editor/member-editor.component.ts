@@ -12,6 +12,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { COMMA, ENTER, SEMICOLON } from '@angular/cdk/keycodes';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -56,6 +58,7 @@ const toIsoDate = (date: Date): string => {
         MatSelectModule,
         MatCheckboxModule,
         MatAutocompleteModule,
+        MatChipsModule,
         MatIconModule,
         MatButtonModule,
         MatDatepickerModule,
@@ -74,6 +77,31 @@ export class MemberEditorComponent implements OnInit, OnChanges {
 
     private readonly dataService = inject(MembersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+
+    // Weitere E-Mail-Adressen als Chips (Enter/Komma/Semikolon oder Verlassen des Feldes fügt hinzu).
+    public readonly emailSeparators = [ENTER, COMMA, SEMICOLON];
+    public emailError = '';
+
+    addAdditionalEmail(event: MatChipInputEvent): void {
+        const value = (event.value || '').trim().toLowerCase();
+        if (!value || !this.member) return;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            this.emailError = 'Keine gültige E-Mail-Adresse.';
+            this.cdr.markForCheck();
+            return;
+        }
+        this.emailError = '';
+        const list = this.member.additionalEmails ?? [];
+        if (value !== (this.member.email ?? '').toLowerCase() && !list.includes(value)) {
+            this.member.additionalEmails = [...list, value];
+        }
+        event.chipInput.clear();
+        this.cdr.markForCheck();
+    }
+
+    removeAdditionalEmail(email: string): void {
+        if (this.member) this.member.additionalEmails = (this.member.additionalEmails ?? []).filter((e) => e !== email);
+    }
 
     // Familie: Hauptanmelder per Suche wählen (statt Gruppen-ID von Hand). Alle Mitglieder einmal geladen,
     // Suche/Vorschläge laufen im Speicher.
@@ -216,6 +244,7 @@ export class MemberEditorComponent implements OnInit, OnChanges {
             firstName: this.member.firstName,
             lastName: this.member.lastName,
             email: this.member.email || undefined,
+            additionalEmails: this.member.additionalEmails ?? [],
             phone: this.member.phone || undefined,
             mobile: this.member.mobile || undefined,
             birthday: this.birthdayDate ? toIsoDate(this.birthdayDate) : undefined,
