@@ -177,6 +177,23 @@ describe('Members Routes', () => {
     expect((db.prepare('SELECT COUNT(*) AS c FROM members').get() as any).c).toBe(4); // nur die Hauptperson doppelt, keine Familien-Duplikate
   });
 
+  it('familyReferentId ordnet ein Mitglied der Familie des Hauptanmelders zu (Gruppe wird bei Bedarf angelegt)', async () => {
+    const token = createAuthedUser(['members:manage']);
+    const create = (body: object) =>
+      request(app).post('/api/members').set('Authorization', `Bearer ${token}`).send(body);
+    const main = (await create({ ...validMember, firstName: 'Haupt', lastName: 'Fam' })).body;
+    const child = (await create({ ...validMember, firstName: 'Kind', lastName: 'Fam', email: undefined, familyReferentId: main.id })).body;
+    expect(child.familyGroupId).toBeTruthy();
+    expect(child.isFamilyMembership).toBe(true);
+    const reloaded = (await request(app).get(`/api/members/${main.id}`).set('Authorization', `Bearer ${token}`)).body;
+    expect(reloaded.familyGroupId).toBe(child.familyGroupId);
+    expect(reloaded.isFamilyMembership).toBe(true);
+
+    // Zweites Kind landet in derselben Gruppe.
+    const second = (await create({ ...validMember, firstName: 'Zwei', lastName: 'Fam', email: undefined, familyReferentId: main.id })).body;
+    expect(second.familyGroupId).toBe(child.familyGroupId);
+  });
+
   it('GET /api/members/anniversaries - meldet jeden, der mindestens N Jahre dabei und dafür noch nicht geehrt ist', async () => {
     const token = createAuthedUser(['members:manage']);
     await request(app)

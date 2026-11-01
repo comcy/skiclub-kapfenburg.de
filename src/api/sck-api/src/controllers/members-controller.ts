@@ -54,6 +54,7 @@ export const createMember: RequestHandler = (req, res) => {
     const member = membersService.createMember(body);
     // Online-Antrag mit Familie: alle genannten Personen als eigene Mitglieder derselben Familiengruppe anlegen.
     membersService.createFamilyMembersFromApplication(member);
+    if (body.familyReferentId) membersService.linkToFamily(member.id, body.familyReferentId);
     res.status(201).json(membersService.getMember(member.id));
   } catch (error: any) {
     console.error('Fehler beim Anlegen des Mitglieds:', error);
@@ -73,7 +74,8 @@ export const updateMember: RequestHandler = (req, res) => {
       res.status(404).json({ error: 'Mitglied nicht gefunden.' });
       return;
     }
-    res.status(200).json(member);
+    if (body.familyReferentId) membersService.linkToFamily(member.id, body.familyReferentId);
+    res.status(200).json(membersService.getMember(member.id));
   } catch (error: any) {
     console.error('Fehler beim Aktualisieren des Mitglieds:', error);
     res.status(500).json({ error: 'Fehler beim Aktualisieren des Mitglieds.', details: error.message });

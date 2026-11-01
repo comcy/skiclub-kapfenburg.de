@@ -4,13 +4,16 @@ import {
     EventEmitter,
     Input,
     OnChanges,
+    OnInit,
     Output,
     SimpleChanges,
     inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -52,6 +55,8 @@ const toIsoDate = (date: Date): string => {
         MatInputModule,
         MatSelectModule,
         MatCheckboxModule,
+        MatAutocompleteModule,
+        MatIconModule,
         MatButtonModule,
         MatDatepickerModule,
     ],
@@ -63,12 +68,114 @@ const toIsoDate = (date: Date): string => {
     templateUrl: './member-editor.component.html',
     styleUrls: ['./member-editor.component.scss'],
 })
-export class MemberEditorComponent implements OnChanges {
+export class MemberEditorComponent implements OnInit, OnChanges {
     @Input() member: Member | null = null;
     @Output() saved = new EventEmitter<void>();
 
     private readonly dataService = inject(MembersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+
+    // Familie: Hauptanmelder per Suche wählen (statt Gruppen-ID von Hand). Alle Mitglieder einmal geladen,
+    // Suche/Vorschläge laufen im Speicher.
+    private allMembers: Member[] = [];
+    public referent: Member | null = null;
+    public referentQuery = '';
+
+    ngOnInit(): void {
+        this.dataService.getMembers(1, 10000).subscribe((response) => {
+            this.allMembers = response.items;
+            this.cdr.markForCheck();
+        });
+    }
+
+    private static norm = (value: string | undefined): string =>
+        (value ?? '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+    // Beste Treffer zuerst: Suchbegriffe in Name (Anfang zählt mehr); gleiche Adresse/gleicher Nachname geben
+    // Bonus. Ohne Suchtext nur Vorschläge (gleiche Adresse oder gleicher Nachname).
+    get referentOptions(): Member[] {
+        if (!this.member) return [];
+        const self = this.member;
+        const tokens = MemberEditorComponent.norm(this.referentQuery).split(' ').filter(Boolean);
+        const address = MemberEditorComponent.norm(self.address);
+        const last = MemberEditorComponent.norm(self.lastName);
+        return this.allMembers
+            .filter((m) => m.id !== self.id)
+            .map((m) => {
+                const name = MemberEditorComponent.norm(`${m.firstName} ${m.lastName}`);
+                const sameAddress = !!address && MemberEditorComponent.norm(m.address) === address;
+                const sameLast = !!last && MemberEditorComponent.norm(m.lastName) === last;
+                let score = (sameAddress ? 2 : 0) + (sameLast ? 2 : 0);
+                if (tokens.length) {
+                    if (!tokens.every((t) => name.includes(t) || MemberEditorComponent.norm(m.address).includes(t))) {
+                        return { m, score: -1 };
+                    }
+                    score += tokens.reduce((sum, t) => sum + (name.split(' ').some((w) => w.startsWith(t)) ? 3 : 1), 0);
+                } else if (!sameAddress && !sameLast) {
+                    return { m, score: -1 };
+                }
+                return { m, score };
+            })
+            .filter((x) => x.score >= 0)
+            .sort((a, b) => b.score - a.score || a.m.lastName.localeCompare(b.m.lastName))
+            .slice(0, 8)
+            .map((x) => x.m);
+    }
+
+    // Weitere Personen der aktuellen Familiengruppe (Anzeige "Familie mit …").
+    get familyMates(): Member[] {
+        const group = this.member?.familyGroupId;
+        if (!group) return [];
+        return this.allMembers.filter((m) => m.familyGroupId === group && m.id !== this.member?.id);
+    }
+
+    // Gleiche Adresse, aber (noch) nicht in dieser Familie -> Verknüpfung vorschlagen.
+    get addressSuggestions(): Member[] {
+        const address = MemberEditorComponent.norm(this.member?.address);
+        if (!this.member || !address || this.referent) return [];
+        return this.allMembers
+            .filter(
+                (m) =>
+                    m.id !== this.member?.id &&
+                    MemberEditorComponent.norm(m.address) === address &&
+                    !(m.familyGroupId && m.familyGroupId === this.member?.familyGroupId),
+            )
+            .slice(0, 3);
+    }
+
+    get familyNames(): string {
+        return this.familyMates.map((m) => `${m.firstName} ${m.lastName}`).join(', ');
+    }
+
+    // Nach der Auswahl bleibt das Suchfeld leer (die Auswahl steht als "Familie von …" darunter).
+    readonly noDisplay = (): string => '';
+
+    selectReferent(member: Member): void {
+        if (!this.member) return;
+        this.referent = member;
+        this.referentQuery = '';
+        this.member.isFamilyMembership = true;
+        this.cdr.markForCheck();
+    }
+
+    onReferentSelected(event: MatAutocompleteSelectedEvent): void {
+        this.selectReferent(event.option.value as Member);
+    }
+
+    onFamilyToggle(on: boolean): void {
+        if (!this.member) return;
+        this.member.isFamilyMembership = on;
+        if (!on) {
+            this.referent = null;
+            this.referentQuery = '';
+            this.member.familyGroupId = undefined;
+        }
+    }
+
+    clearReferent(): void {
+        this.referent = null;
+        this.cdr.markForCheck();
+    }
 
     // The datepicker (GermanDateAdapter) needs a real Date, but
     // Member.birthday/memberSince are ISO strings (the wire format every
@@ -95,6 +202,8 @@ export class MemberEditorComponent implements OnChanges {
     // not just on first mount.
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['member']) {
+            this.referent = null;
+            this.referentQuery = '';
             this.birthdayDate = parseIsoDate(this.member?.birthday);
             this.memberSinceDate = parseIsoDate(this.member?.memberSince);
         }
@@ -112,7 +221,8 @@ export class MemberEditorComponent implements OnChanges {
             birthday: this.birthdayDate ? toIsoDate(this.birthdayDate) : undefined,
             address: this.member.address || undefined,
             isFamilyMembership: this.member.isFamilyMembership,
-            familyGroupId: this.member.familyGroupId || undefined,
+            familyGroupId: this.member.isFamilyMembership ? this.member.familyGroupId || undefined : undefined,
+            familyReferentId: this.member.isFamilyMembership ? this.referent?.id : undefined,
             status: this.member.status,
             source: this.member.source,
             applicationRegistrationId: this.member.applicationRegistrationId || undefined,
