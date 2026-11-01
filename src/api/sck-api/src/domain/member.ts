@@ -42,7 +42,9 @@ export interface Member {
   isTeachingTeam?: boolean;
 }
 
-export type MemberCreationParams = Omit<Member, 'id'>;
+// familyReferentId: nur beim Speichern - ordnet das Mitglied der Familie dieses Hauptanmelders zu (siehe
+// members-service linkToFamily); wird nicht in der Zeile gespeichert.
+export type MemberCreationParams = Omit<Member, 'id'> & { familyReferentId?: string };
 
 // One entry per requested year-count (Jubiläumsfunktion) - cutoffYear is
 // the reference date's year minus that year-count; members are everyone

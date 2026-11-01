@@ -202,6 +202,21 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
   return getMember(id);
 };
 
+// Ordnet `memberId` der Familie des Hauptanmelders `referentId` zu. Hat der Hauptanmelder noch keine
+// Familiengruppe, wird sie angelegt und beide als Familienmitgliedschaft markiert.
+export const linkToFamily = (memberId: string, referentId: string): Member | undefined => {
+  const member = getMember(memberId);
+  const referent = getMember(referentId);
+  if (!member || !referent || member.id === referent.id) return member;
+  const groupId = referent.familyGroupId || `${referent.lastName} ${referent.id.slice(0, 8)}`;
+  db.prepare("UPDATE members SET family_group_id = ?, is_family_membership = 1, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id IN (?, ?)").run(
+    groupId,
+    member.id,
+    referent.id,
+  );
+  return getMember(memberId);
+};
+
 export const deleteMember = (id: string): boolean => {
   const result = db.prepare('DELETE FROM members WHERE id = ?').run(id);
   return result.changes > 0;

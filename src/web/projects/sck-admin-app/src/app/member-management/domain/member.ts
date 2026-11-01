@@ -33,7 +33,8 @@ export interface Member {
     isTeachingTeam?: boolean;
 }
 
-export type MemberCreationParams = Omit<Member, 'id'>;
+// familyReferentId: beim Speichern dem Hauptanmelder zuordnen (Server legt die Familiengruppe an/übernimmt sie).
+export type MemberCreationParams = Omit<Member, 'id'> & { familyReferentId?: string };
 
 // One entry per requested year-count (Jubiläumsfunktion) - members are
 // everyone who has been in *at least* that long as of the reference date

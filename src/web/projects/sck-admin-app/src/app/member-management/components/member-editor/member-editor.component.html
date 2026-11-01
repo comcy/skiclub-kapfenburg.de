@@ -42,18 +42,74 @@
             <input matInput [(ngModel)]="member.address" />
         </mat-form-field>
 
-        <mat-checkbox [(ngModel)]="member.isFamilyMembership" class="checkbox-row">Familienmitgliedschaft</mat-checkbox>
+        <mat-checkbox
+            [ngModel]="member.isFamilyMembership"
+            (ngModelChange)="onFamilyToggle($event)"
+            class="checkbox-row"
+            >Familienmitgliedschaft</mat-checkbox
+        >
 
         @if (member.isFamilyMembership) {
-            <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
-                <mat-label>Familiengruppe</mat-label>
-                <input matInput [(ngModel)]="member.familyGroupId" placeholder="z. B. Nachname + Adresse" />
-                <mat-hint
-                    >Bei allen Mitgliedern derselben Familie identisch eintragen — bestimmt die gemeinsame Abbuchung
-                    beim SEPA-Beitragseinzug. Bei einem Online-Antrag mit Familie leer lassen: wird automatisch vergeben
-                    und alle im Antrag genannten Personen werden als eigene Mitglieder angelegt.</mat-hint
-                >
-            </mat-form-field>
+            @if (isFromApplication) {
+                <div class="hint-box">
+                    Die im Antrag genannten Familienmitglieder werden beim Speichern automatisch als eigene Mitglieder
+                    angelegt. Dieses Mitglied ist der Hauptanmelder.
+                </div>
+            } @else {
+                @if (referent) {
+                    <div class="hint-box family-selected">
+                        <mat-icon>family_restroom</mat-icon>
+                        <span
+                            >Familie von <strong>{{ referent.firstName }} {{ referent.lastName }}</strong></span
+                        >
+                        <button mat-icon-button type="button" (click)="clearReferent()" aria-label="Zuordnung ändern">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                } @else {
+                    @if (familyMates.length) {
+                        <div class="hint-box">
+                            Familie mit: {{ familyNames }}. Anderen Hauptanmelder wählen, um die Zuordnung zu ändern.
+                        </div>
+                    }
+                    <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
+                        <mat-label>Hauptanmelder der Familie suchen</mat-label>
+                        <input
+                            matInput
+                            [(ngModel)]="referentQuery"
+                            [matAutocomplete]="referentAuto"
+                            placeholder="Name oder Adresse tippen"
+                        />
+                        <mat-autocomplete
+                            #referentAuto="matAutocomplete"
+                            (optionSelected)="onReferentSelected($event)"
+                            [displayWith]="noDisplay"
+                        >
+                            @for (option of referentOptions; track option.id) {
+                                <mat-option [value]="option">
+                                    {{ option.firstName }} {{ option.lastName }}
+                                    <small class="option-sub">{{ option.address }}</small>
+                                </mat-option>
+                            }
+                        </mat-autocomplete>
+                        <mat-hint>
+                            Wer zahlt, bestimmt die gemeinsame Abbuchung beim SEPA-Einzug (Familienbeitrag einmal pro
+                            Familie).
+                        </mat-hint>
+                    </mat-form-field>
+                }
+            }
+        }
+
+        @if (addressSuggestions.length && !member.familyGroupId) {
+            <div class="hint-box">
+                Gleiche Adresse:
+                @for (m of addressSuggestions; track m.id) {
+                    <button mat-stroked-button type="button" (click)="selectReferent(m)">
+                        Familie von {{ m.firstName }} {{ m.lastName }}
+                    </button>
+                }
+            </div>
         }
 
         <div class="field-row">
