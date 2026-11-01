@@ -2,8 +2,9 @@
     <div class="bulk">
         <p class="hint">
             Teilnehmerliste aus dem Sheet kopieren und hier einfügen (eine Person pro Zeile, Name zuerst, z. B. „Schmid
-            Tobias“ oder „Schmid, Tobias“). Alter, Telefon und Zustieg werden erkannt; „MV“ und „EZ“ landen in der
-            Notiz. Bitte die Vorschau prüfen, bevor angelegt wird.
+            Tobias“ oder „Schmid, Tobias“). Alter, Telefon und Zustieg werden erkannt; „S“/„A“ (Snowboard/Alpin) ergibt
+            „Kurs gewünscht“, „MV“ (Musikverein) und „EZ“ landen in der Notiz. Bitte die Vorschau prüfen, bevor angelegt
+            wird.
         </p>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -45,6 +46,7 @@
                             <th>Vorname</th>
                             <th>Alter</th>
                             <th>Zustieg</th>
+                            <th>Kurs</th>
                             <th>Notiz</th>
                         </tr>
                     </thead>
@@ -55,6 +57,7 @@
                                 <td>{{ row.firstName }}</td>
                                 <td>{{ ageLabels[row.ageCategory] }}</td>
                                 <td>{{ boardingName(row.boardingId) }}</td>
+                                <td>{{ row.sportType ?? '–' }}</td>
                                 <td>{{ row.duplicate ? 'bereits angemeldet' : row.notes || '' }}</td>
                             </tr>
                         }

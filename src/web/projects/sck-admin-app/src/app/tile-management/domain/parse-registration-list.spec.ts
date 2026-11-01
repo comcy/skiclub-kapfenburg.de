@@ -10,6 +10,9 @@ describe('parseRegistrationList', () => {
         'MV Oppold Gerhard\tEZ\t\t\t\t\t\t\t\tTobi',
         'Knoll Ida\t5\tK\t\t\t\t\t\t\tTobi',
         'Rup Philomena\t8\tK',
+        'Kind Ohnealter\tK',
+        'Lehrer Lena\t\t\t\tS',
+        'Board Anna\t\t\t\t\tA',
         'Köppel Sabine\t\t\t\t\t\t\t\tWesthausen\tMagges',
         '',
     ].join('\n');
@@ -24,14 +27,21 @@ describe('parseRegistrationList', () => {
             'Oppold|Gerhard',
             'Knoll|Ida',
             'Rup|Philomena',
+            'Kind|Ohnealter',
+            'Lehrer|Lena',
+            'Board|Anna',
             'Köppel|Sabine',
         ]);
-        expect(rows[1].notes).toBe('MV');
-        expect(rows[2].notes).toBe('MV, EZ');
+        expect(rows[1].notes).toBe('Musikverein');
+        expect(rows[2].notes).toBe('Musikverein, EZ');
         expect(rows[3].ageCategory).toBe('childUntil6');
         expect(rows[4].ageCategory).toBe('youthUntil16');
         expect(rows[0].ageCategory).toBe('adult');
-        expect(rows[5].boardingId).toBe('w1');
+        expect(rows[8].boardingId).toBe('w1');
+        expect(rows[5].ageCategory).toBe('youthUntil16'); // K ohne Alter
+        expect(rows[6].sportType).toBe('Snowboard'); // S
+        expect(rows[7].sportType).toBe('Ski Alpin'); // A
+        expect(rows[0].sportType).toBeUndefined();
     });
 
     it('kennt auch "Nachname, Vorname" und mehrteilige Nachnamen', () => {

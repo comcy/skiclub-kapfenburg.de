@@ -7,6 +7,8 @@ export interface ParsedListRow {
     boardingId?: string;
     phone?: string;
     notes?: string;
+    /** nur bei gewünschtem Kurs (Spalte "Kurs Ski/Alpin": S = Snowboard, A = Alpin) */
+    sportType?: 'Ski Alpin' | 'Snowboard';
 }
 
 export interface ParsedList {
@@ -47,14 +49,16 @@ const parseTsv = (text: string): string[][] => {
     return rows;
 };
 
+const TAGS: Record<string, string> = { MV: 'Musikverein' };
+
 // "Nachname, Vorname" oder "Nachname Vorname" (letztes Wort = Vorname). Ein vorangestelltes "MV" ist ein
-// Gruppen-Kürzel und wandert in die Notiz.
+// Gruppen-Kürzel (Musikverein) und wandert als Klartext in die Notiz.
 const splitName = (cell: string): { firstName: string; lastName: string; tag?: string } | undefined => {
     let value = cell.trim();
     let tag: string | undefined;
     const prefix = /^(MV)\s+/i.exec(value);
     if (prefix) {
-        tag = prefix[1].toUpperCase();
+        tag = TAGS[prefix[1].toUpperCase()];
         value = value.slice(prefix[0].length);
     }
     const comma = /^([^,]+),\s*(.+)$/.exec(value);
@@ -65,7 +69,7 @@ const splitName = (cell: string): { firstName: string; lastName: string; tag?: s
 };
 
 // Eine ganze Teilnehmerliste (mehrere Zeilen aus dem Sheet). Der Name steht in der ersten Zelle, alles übrige
-// (Alter, Telefon, Zustieg, Kürzel wie "EZ") wird nach Inhalt erkannt - siehe parseRegistrationRow.
+// (Alter, Telefon, Zustieg, Kürzel wie "EZ", "K", "S"/"A") wird nach Inhalt erkannt - siehe parseRegistrationRow.
 export const parseRegistrationList = (text: string, boardings: { id: string; name: string }[] = []): ParsedList => {
     const rows: ParsedListRow[] = [];
     let ignored = 0;
@@ -80,15 +84,20 @@ export const parseRegistrationList = (text: string, boardings: { id: string; nam
         }
         const rest = cells.slice(1);
         const parsed = parseRegistrationRow(rest.join('\t'), boardings);
-        const tags = [name.tag, ...rest.map((c) => c.trim().toUpperCase()).filter((c) => c === 'EZ')].filter(Boolean);
+        const flags = rest.map((c) => c.trim().toUpperCase());
+        const tags = [name.tag, ...flags.filter((c) => c === 'EZ')].filter(Boolean);
+        // K = Kind: ohne Alter gilt "Jugend", mit Alter entscheidet das Alter.
+        const kid = flags.includes('K');
+        const sportType = flags.includes('S') ? 'Snowboard' : flags.includes('A') ? 'Ski Alpin' : undefined;
 
         rows.push({
             firstName: name.firstName,
             lastName: name.lastName,
-            ageCategory: parsed.ageCategory ?? 'adult',
+            ageCategory: parsed.ageCategory ?? (kid ? 'youthUntil16' : 'adult'),
             boardingId: parsed.boardingId,
             phone: parsed.phone,
             notes: tags.length ? tags.join(', ') : undefined,
+            sportType,
         });
     }
     return { rows, ignored };
