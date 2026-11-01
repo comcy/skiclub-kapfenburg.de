@@ -60,6 +60,15 @@ export class MemberListComponent implements OnInit {
     // Loaded once (list is small enough - see getMembers(1, 1000) below) and
     // filtered/paginated client-side, no reason to round-trip to the API for
     // every keystroke or page click.
+    // Weitere Mitglieder derselben Familiengruppe (Namen), '' wenn keine/nicht zugeordnet.
+    familyOthers(member: Member): string {
+        if (!member.familyGroupId) return '';
+        return this.allMembers
+            .filter((m) => m.familyGroupId === member.familyGroupId && m.id !== member.id)
+            .map((m) => `${m.firstName} ${m.lastName}`)
+            .join(', ');
+    }
+
     private allMembers: Member[] = [];
     private filteredMembers: Member[] = [];
     public pagedMembers: Member[] = [];

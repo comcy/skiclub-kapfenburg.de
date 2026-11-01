@@ -10,6 +10,14 @@
                     @if (news.isNew(application.timestamp)) {
                         <span class="badge-new">Neu</span>
                     }
+                    @if (application.isFamilyMembership && application.familyMembers?.length) {
+                        <div class="family-hint">
+                            Familie, wird als eigene Mitglieder angelegt:
+                            @for (f of application.familyMembers; track $index) {
+                                {{ f.firstName }} {{ f.lastName }}{{ $last ? '' : ',' }}
+                            }
+                        </div>
+                    }
                 </td>
             </ng-container>
 

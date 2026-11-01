@@ -294,6 +294,50 @@ export const listMembershipApplications = (): MembershipApplication[] => {
     .map((application) => ({ ...application, confirmed: confirmed.has(application.registrationId) }));
 };
 
+// Beim Übernehmen eines Online-Antrags mit Familienmitgliedschaft: jede im Antrag genannte Person wird ein
+// eigenes Mitglied (gleiche Familiengruppe, gleiche Adresse/Eintrittsdatum wie die Hauptperson). Die
+// Bankverbindung bleibt nur bei der Hauptperson - der SEPA-Export bucht pro Familie einmal.
+// Bereits vorhandene Namen in der Gruppe werden nicht doppelt angelegt.
+export const createFamilyMembersFromApplication = (main: Member): Member[] => {
+  if (!main.isFamilyMembership || !main.applicationRegistrationId) return [];
+  // Antrag wurde schon einmal übernommen (doppelter Klick/Aufruf) -> Familie nicht noch einmal anlegen.
+  const alreadyPromoted = db
+    .prepare('SELECT COUNT(*) AS c FROM members WHERE application_registration_id = ?')
+    .get(main.applicationRegistrationId) as { c: number };
+  if (alreadyPromoted.c > 1) return [];
+  const application = listDataByType<Omit<MembershipApplication, 'confirmed'>>('membership-registration').find(
+    (a) => a.registrationId === main.applicationRegistrationId,
+  );
+  if (!application?.familyMembers?.length) return [];
+
+  const familyGroupId = main.familyGroupId || `${main.lastName} ${main.address ?? ''}`.trim() + ` ${main.id.slice(0, 8)}`;
+  if (!main.familyGroupId) {
+    db.prepare('UPDATE members SET family_group_id = ? WHERE id = ?').run(familyGroupId, main.id);
+  }
+  const existing = db.prepare('SELECT first_name, last_name FROM members WHERE family_group_id = ?').all(familyGroupId) as {
+    first_name: string;
+    last_name: string;
+  }[];
+  const key = (first: string, last: string) => `${first} ${last}`.trim().toLowerCase();
+  const known = new Set(existing.map((m) => key(m.first_name, m.last_name)));
+
+  return application.familyMembers
+    .filter((f) => f.firstName?.trim() && f.lastName?.trim() && !known.has(key(f.firstName, f.lastName)))
+    .map((f) =>
+      createMember({
+        firstName: f.firstName.trim(),
+        lastName: f.lastName.trim(),
+        birthday: f.birthday || undefined,
+        address: main.address,
+        memberSince: main.memberSince,
+        isFamilyMembership: true,
+        familyGroupId,
+        status: 'active',
+        source: 'online',
+      }),
+    );
+};
+
 // IBAN eines Online-Mitgliedsantrags (sepa-data.ndjson, verschluesselt) im Klartext -
 // nur fuer berechtigte Admins (members:manage, siehe Route). undefined = zu diesem
 // Antrag wurde keine IBAN gespeichert. Wirft, wenn sie mit dem konfigurierten
