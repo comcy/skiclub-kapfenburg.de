@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
+import { familyHeadOrder } from '../../domain/family-head';
 import { MemberAgeAlerts, memberAgeAlerts } from '../../domain/member-age';
 import { Member } from '../../domain/member';
 import {
@@ -78,13 +79,6 @@ export class MemberListComponent implements OnInit {
         return head ? `${head.firstName} ${head.lastName}` : '';
     }
 
-    // Hauptanmelder: wer eine E-Mail hat, dann länger Mitglied, dann älter, dann alphabetisch.
-    private static headOrder = (a: Member, b: Member): number =>
-        Number(!!b.email) - Number(!!a.email) ||
-        (a.memberSince ?? '9999').localeCompare(b.memberSince ?? '9999') ||
-        (a.birthday ?? '9999').localeCompare(b.birthday ?? '9999') ||
-        `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`);
-
     // Familien zusammenziehen: Hauptanmelder zuerst, die übrigen direkt darunter. Eine Familie steht dort, wo ihr
     // erstes (gefiltertes) Mitglied vorkommt; Einzelmitglieder bleiben in ihrer Reihenfolge.
     private groupFamilies(members: Member[]): Member[] {
@@ -105,7 +99,7 @@ export class MemberListComponent implements OnInit {
             }
             if (placed.has(m.familyGroupId!)) continue;
             placed.add(m.familyGroupId!);
-            const [head, ...children] = [...group].sort(MemberListComponent.headOrder);
+            const [head, ...children] = [...group].sort(familyHeadOrder);
             this.rowInfo.set(head.id, { child: false, block });
             result.push(head);
             for (const child of children) {
