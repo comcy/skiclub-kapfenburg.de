@@ -14,6 +14,7 @@ import invitesRoutes from './routes/invites-route.js';
 import membersRoutes from './routes/members-route.js';
 import newsletterRoutes from './routes/newsletter-route.js';
 import newsRoutes from './routes/news-route.js';
+import verifiedPersonsRoutes from './routes/verified-persons-route.js';
 import registrationRoutes from './routes/registration-route.js';
 import membershipRoutes from './routes/membership-route.js';
 import sepaExportRoutes from './routes/sepa-export-route.js';
@@ -73,6 +74,7 @@ app.use('/api', courseRegistrationsRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', newsletterRoutes);
 app.use('/api', newsRoutes);
+app.use('/api', verifiedPersonsRoutes);
 app.use('/api', sepaExportRoutes);
 
 try {

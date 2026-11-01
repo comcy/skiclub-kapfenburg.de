@@ -234,6 +234,19 @@ db.exec(`
     PRIMARY KEY (user_id, tile_id)
   );
 
+  -- Von Admins bestätigte Mitglieder-Personen (z.B. Familienangehörige, die keine eigene Mitglieds-Zeile
+  -- haben). Nie löschen, nur widerrufen (revoked_at). member_id optional: Verknüpfung zu einem Mitglied.
+  CREATE TABLE IF NOT EXISTS verified_persons (
+    id TEXT PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    birthday TEXT,
+    member_id TEXT REFERENCES members (id) ON DELETE SET NULL,
+    created_by TEXT,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    revoked_at TEXT
+  );
+
   CREATE TABLE IF NOT EXISTS sessions (
     token_hash TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,

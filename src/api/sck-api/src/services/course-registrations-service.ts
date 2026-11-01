@@ -10,7 +10,7 @@ import {
   CourseRegistration,
   CourseRegistrationCreationParams,
 } from '../domain/course-registration.js';
-import { findMemberByEmail } from './members-service.js';
+import { resolveMember } from './member-match-service.js';
 
 interface CourseRegistrationRow {
   id: string;
@@ -76,20 +76,13 @@ export const getRegistration = (id: string): CourseRegistration | undefined => {
   return row ? rowToRegistration(row) : undefined;
 };
 
-// The member match is always derived from the email given at write time,
-// never trusted from the client - see CourseRegistrationCreationParams.
-const resolveMember = (email: string | undefined): { id: string | null; isMember: number } => {
-  const member = email ? findMemberByEmail(email) : undefined;
-  return { id: member?.id ?? null, isMember: member ? 1 : 0 };
-};
-
 export const createRegistration = (
   tileId: string,
   params: CourseRegistrationCreationParams,
   enteredBy?: string,
 ): CourseRegistration => {
   const id = randomUUID();
-  const { id: memberId, isMember } = resolveMember(params.email);
+  const { id: memberId, isMember } = resolveMember(params, enteredBy !== undefined);
 
   db.prepare(
     `INSERT INTO course_registrations (
@@ -135,7 +128,7 @@ export const updateRegistration = (
 ): CourseRegistration | undefined => {
   // member_id leitet sich aus der (ggf. korrigierten) E-Mail ab; is_member uebernimmt den
   // Wert des Admin-Editors (siehe CourseRegistrationCreationParams).
-  const { id: memberId } = resolveMember(params.email);
+  const { id: memberId } = resolveMember(params, true);
 
   const result = db
     .prepare(

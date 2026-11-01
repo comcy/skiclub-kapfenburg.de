@@ -13,7 +13,7 @@ import {
   TripRegistrationCreationParams,
 } from '../domain/trip-registration.js';
 import { normalizeBirthday } from '../domain/birthday.js';
-import { findMemberByEmail } from './members-service.js';
+import { resolveMember } from './member-match-service.js';
 
 interface TripRegistrationRow {
   created_at: string;
@@ -93,13 +93,6 @@ export const getRegistration = (id: string): TripRegistration | undefined => {
   return row ? rowToRegistration(row) : undefined;
 };
 
-// The member match is always derived from the email given at write time,
-// never trusted from the client - see TripRegistrationCreationParams.
-const resolveMember = (email: string | undefined): { id: string | null; isMember: number } => {
-  const member = email ? findMemberByEmail(email) : undefined;
-  return { id: member?.id ?? null, isMember: member ? 1 : 0 };
-};
-
 // Mit Geburtsdatum immer daraus abgeleitet (kein Auseinanderlaufen von Datum und Kategorie);
 // ohne Geburtsdatum gilt die vom Admin gewählte Kategorie.
 const ageCategoryFor = (params: Pick<TripRegistrationCreationParams, 'birthday' | 'ageCategory'>): AgeCategory =>
@@ -115,7 +108,7 @@ export const createRegistration = (
   // Always freshly derived on create, ignoring whatever params.isMember may
   // hold (a public submission never sets it at all; an admin-typed one gets
   // a sensible auto-resolved default) - see TripRegistrationCreationParams.
-  const { id: memberId, isMember } = resolveMember(params.email);
+  const { id: memberId, isMember } = resolveMember(params, enteredBy !== undefined);
 
   db.prepare(
     `INSERT INTO trip_registrations (
@@ -170,7 +163,7 @@ export const updateRegistration = (
   params: TripRegistrationCreationParams,
 ): TripRegistration | undefined => {
   params = { ...params, birthday: normalizeBirthday(params.birthday) };
-  const { id: memberId } = resolveMember(params.email);
+  const { id: memberId } = resolveMember(params, true);
 
   const result = db
     .prepare(
