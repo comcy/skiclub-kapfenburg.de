@@ -173,6 +173,15 @@
     background: var(--mat-sys-primary-container);
 }
 
+.group-heading-waitlist {
+    color: light-dark(#8a6a00, #e6c15a);
+    background: light-dark(#fff3cd, #4a3c0a);
+}
+
+tr.row-waitlist td {
+    background: light-dark(rgba(255, 243, 205, 0.45), rgba(74, 60, 10, 0.35));
+}
+
 .empty {
     text-align: center;
     color: var(--mat-sys-on-surface-variant);

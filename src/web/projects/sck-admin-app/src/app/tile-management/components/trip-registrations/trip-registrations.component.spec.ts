@@ -167,4 +167,39 @@ describe('TripRegistrationsComponent', () => {
             expect(cols[10]).toBe('');
         });
     });
+
+    describe('groups (Warteliste)', () => {
+        it('sammelt Wartelisten-Anmeldungen in einer eigenen Gruppe am Ende, in Reihenfolge der Anmeldung', () => {
+            component.registrations = [
+                makeRegistration({
+                    id: 'w2',
+                    firstName: 'Zweite',
+                    status: 'waitlist',
+                    boardingName: 'Hülen',
+                    createdAt: '2026-10-02T10:00:00Z',
+                }),
+                makeRegistration({ id: 'c1', firstName: 'Bestätigt', boardingName: 'Lauchheim' }),
+                makeRegistration({
+                    id: 'w1',
+                    firstName: 'Erste',
+                    status: 'waitlist',
+                    boardingName: 'Lauchheim',
+                    createdAt: '2026-10-01T10:00:00Z',
+                }),
+            ];
+
+            const groups = component.groups;
+
+            expect(groups.map((g) => g.boardingName)).toEqual(['Lauchheim', 'Warteliste (2)']);
+            expect(groups[0].registrations.map((r) => r.id)).toEqual(['c1']);
+            expect(groups[1].waitlist).toBeTrue();
+            expect(groups[1].registrations.map((r) => r.id)).toEqual(['w1', 'w2']);
+        });
+
+        it('ohne Wartelisten-Anmeldungen gibt es keine Wartelisten-Gruppe', () => {
+            component.registrations = [makeRegistration({ boardingName: 'Lauchheim' })];
+
+            expect(component.groups.every((g) => !g.waitlist)).toBeTrue();
+        });
+    });
 });

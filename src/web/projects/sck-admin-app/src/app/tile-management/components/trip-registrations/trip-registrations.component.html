@@ -94,10 +94,12 @@
                 <tbody>
                     @for (group of groups; track group.boardingName) {
                         <tr>
-                            <td colspan="12" class="group-heading">{{ group.boardingName }}</td>
+                            <td colspan="12" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
+                                {{ group.boardingName }}
+                            </td>
                         </tr>
                         @for (registration of group.registrations; track registration.id) {
-                            <tr class="row">
+                            <tr class="row" [class.row-waitlist]="registration.status === 'waitlist'">
                                 <td>
                                     {{ registration.firstName }} {{ registration.lastName }}
                                     @if (news.isNew(registration.createdAt, seenBefore)) {
@@ -194,6 +196,17 @@
                                                 <mat-icon>edit</mat-icon>
                                                 <span>Bearbeiten</span>
                                             </button>
+                                            @if (registration.status === 'confirmed') {
+                                                <button mat-menu-item (click)="onSetStatus(registration, 'waitlist')">
+                                                    <mat-icon>hourglass_top</mat-icon>
+                                                    <span>Auf Warteliste setzen</span>
+                                                </button>
+                                            } @else if (registration.status === 'waitlist') {
+                                                <button mat-menu-item (click)="onSetStatus(registration, 'confirmed')">
+                                                    <mat-icon>how_to_reg</mat-icon>
+                                                    <span>Bestätigen (nachrücken)</span>
+                                                </button>
+                                            }
                                             @if (auth.session()?.isSuperAdmin) {
                                                 <button mat-menu-item (click)="onDelete(registration)">
                                                     <mat-icon>delete</mat-icon>
