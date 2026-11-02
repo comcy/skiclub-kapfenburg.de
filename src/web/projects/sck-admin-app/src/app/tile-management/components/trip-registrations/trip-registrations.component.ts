@@ -16,6 +16,7 @@ import {
     TripRegistrationCreationParams,
 } from '../../domain/trip-registration';
 import { NewsService } from '../../../shared/services/news.service';
+import { RegistrationAlertKey, RegistrationAlerts, registrationAlerts } from '../../domain/registration-alerts';
 import { guardianOf, isMinor, minorState } from '../../domain/registration-minor';
 import { TeachingTeamEntry, Tile } from '../../domain/tile';
 import { SettingsDataService } from '../../../settings/services/settings-data.service';
@@ -228,6 +229,41 @@ export class TripRegistrationsComponent implements OnInit {
         return this.exactAge(r.birthday) ?? { adult: 'E', youthUntil16: 'J', childUntil6: 'K' }[r.ageCategory];
     }
 
+    // Banner: Unregelmäßigkeiten der Liste; ein Klick auf "Anzeigen" filtert die Tabelle darauf.
+    public activeAlert: RegistrationAlertKey | null = null;
+    // Mobil zunächst eingeklappt (sonst bleibt kaum Platz für die Tabelle).
+    public showAlerts = window.innerWidth > 600;
+    public readonly alertDefs: { key: RegistrationAlertKey; icon: string; warn: boolean; text: string }[] = [
+        {
+            key: 'minors',
+            icon: 'child_care',
+            warn: true,
+            text: 'Minderjährig ohne Einverständniserklärung bzw. teilnehmendes Elternteil:',
+        },
+        { key: 'unverified', icon: 'help_outline', warn: true, text: 'Mitglied angegeben, aber nicht verifiziert:' },
+        { key: 'noContact', icon: 'mail_off', warn: true, text: 'Keine E-Mail-Adresse (keine Bestätigung möglich):' },
+        { key: 'noBoarding', icon: 'directions_bus', warn: false, text: 'Kein Zustieg gewählt:' },
+        { key: 'noBirthday', icon: 'cake', warn: false, text: 'Geburtsdatum fehlt (Alter/Preis manuell):' },
+        { key: 'emergency', icon: 'event_seat', warn: false, text: 'Auf Notplätzen:' },
+    ];
+
+    get alerts(): RegistrationAlerts {
+        return registrationAlerts(this.registrations, this.emergencyRegistrationIds);
+    }
+
+    get alertCount(): number {
+        const alerts = this.alerts;
+        return this.alertDefs.reduce((sum, def) => sum + alerts[def.key].length, 0);
+    }
+
+    get visibleRegistrations(): TripRegistration[] {
+        return this.activeAlert ? this.alerts[this.activeAlert] : this.registrations;
+    }
+
+    toggleAlert(key: RegistrationAlertKey): void {
+        this.activeAlert = this.activeAlert === key ? null : key;
+    }
+
     get confirmedCount(): number {
         return this.registrations.filter((r) => r.status === 'confirmed').length;
     }
@@ -278,7 +314,7 @@ export class TripRegistrationsComponent implements OnInit {
     get groups(): RegistrationGroup[] {
         const byBoarding = new Map<string, TripRegistration[]>();
         const waitlist: TripRegistration[] = [];
-        for (const registration of this.registrations) {
+        for (const registration of this.visibleRegistrations) {
             if (registration.status === 'waitlist') {
                 waitlist.push(registration);
                 continue;
