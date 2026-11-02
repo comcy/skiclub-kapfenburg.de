@@ -149,6 +149,13 @@ export class TilesDataService {
         return this.http.post<boolean[]>(`${this.apiUrl}/verified-persons/match`, { people });
     }
 
+    sendConfirmationMail(id: string): Observable<{ sent: boolean; recipient: string; recipientName: string }> {
+        return this.http.post<{ sent: boolean; recipient: string; recipientName: string }>(
+            `${this.apiUrl}/registrations/${id}/send-confirmation`,
+            {},
+        );
+    }
+
     deleteRegistration(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/registrations/${id}`);
     }

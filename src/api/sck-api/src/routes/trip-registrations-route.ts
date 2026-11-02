@@ -10,6 +10,8 @@ import {
   getTripPricePreview,
   listTripRegistrations,
   updateTripRegistration,
+  sendTripRegistrationConfirmation,
+  sendTripRegistrationConfirmation,
 } from '../controllers/trip-registrations-controller.js';
 import { requireAuth, requirePermission, requireSuperAdmin } from '../middleware/auth-middleware.js';
 import { publicReadLimiter, publicWriteLimiter } from '../middleware/rate-limit.js';
@@ -26,6 +28,12 @@ router.post(
   createPublicTripRegistrations,
 );
 router.put('/registrations/:id', requireAuth, requirePermission('tiles:write'), updateTripRegistration);
+router.post(
+  '/registrations/:id/send-confirmation',
+  requireAuth,
+  requirePermission('tiles:write'),
+  sendTripRegistrationConfirmation,
+);
 router.delete('/registrations/:id', requireAuth, requireSuperAdmin, deleteTripRegistration);
 
 // Public, read-only computation (no DB write) - no Turnstile needed, unlike

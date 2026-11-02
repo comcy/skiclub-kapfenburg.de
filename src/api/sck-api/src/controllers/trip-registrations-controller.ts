@@ -166,6 +166,40 @@ export const updateTripRegistration: RequestHandler = (req, res) => {
   }
 };
 
+// Manueller Versand der Bestätigungsmail: immer an den Hauptanmelder (bei über ihn Angemeldeten also nicht an
+// die Person selbst), enthält alle über ihn Angemeldeten. Kein BCC, keine Info-Mails an Dritte.
+export const sendTripRegistrationConfirmation: RequestHandler = async (req, res) => {
+  try {
+    const registration = registrationsService.getRegistration(String(req.params.id));
+    const tile = registration && getTile(registration.tileId);
+    if (!registration || !tile) {
+      res.status(404).json({ error: 'Anmeldung nicht gefunden.' });
+      return;
+    }
+    const { contact, members } = registrationsService.getRegistrationGroup(registration);
+    if (!contact.email?.trim()) {
+      res.status(400).json({ error: `${contact.firstName} ${contact.lastName} hat keine E-Mail-Adresse.` });
+      return;
+    }
+    const waitlist = registrationsService.listRegistrationsForTile(contact.tileId).filter((r) => r.status === 'waitlist');
+    const info = {
+      status: contact.status,
+      waitlistCount: members.length,
+      waitlistPosition: waitlist.filter((r) => r.createdAt < contact.createdAt).length + 1,
+    };
+    const sent = await sendMail(
+      contact.email,
+      getTripConfirmationMailSubject(contact.firstName, contact.status),
+      getTripConfirmationMailText(tile, contact, members, info),
+    );
+    if (sent) registrationsService.markConfirmationMailSent(members.map((m) => m.id));
+    res.status(200).json({ sent, recipient: contact.email, recipientName: `${contact.firstName} ${contact.lastName}` });
+  } catch (error: any) {
+    console.error('Fehler beim Versand der Bestätigungsmail:', error);
+    res.status(500).json({ error: 'Fehler beim Versand der Bestätigungsmail.' });
+  }
+};
+
 export const deleteTripRegistration: RequestHandler = (req, res) => {
   try {
     const deleted = registrationsService.deleteRegistration(String(req.params.id));

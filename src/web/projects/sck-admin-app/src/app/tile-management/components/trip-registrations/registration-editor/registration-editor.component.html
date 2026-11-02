@@ -104,6 +104,19 @@
             </mat-form-field>
         </div>
 
+        @if (headCandidates.length) {
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Angemeldet von (Hauptanmelder)</mat-label>
+                <mat-select [(ngModel)]="registration.registeredById">
+                    <mat-option [value]="undefined">– meldet sich selbst an –</mat-option>
+                    @for (c of headCandidates; track c.id) {
+                        <mat-option [value]="c.id">{{ c.firstName }} {{ c.lastName }}</mat-option>
+                    }
+                </mat-select>
+                <mat-hint>Bestätigungsmails gehen nur an den Hauptanmelder</mat-hint>
+            </mat-form-field>
+        }
+
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Notizen</mat-label>
             <textarea matInput rows="3" [(ngModel)]="registration.notes"></textarea>

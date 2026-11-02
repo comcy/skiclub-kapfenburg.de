@@ -328,6 +328,40 @@ describe('Trip Registrations Routes', () => {
       expect(list.body.every((r: any) => r.confirmationMailSent === true)).toBe(true);
     });
 
+    it('Hauptanmelder: weitere Personen sind über ihn angemeldet, manuelle Mail geht nur an ihn', async () => {
+      const tileId = createTile(10);
+      await request(app)
+        .post(`/api/tiles/${tileId}/registrations/public`)
+        .send({
+          participants: [
+            { firstName: 'Kontakt', lastName: 'Person', email: 'kontakt@test.com', birthday: '1990-01-01' },
+            { firstName: 'Zweite', lastName: 'Person', email: 'zweite@test.com', birthday: '1992-01-01' },
+          ],
+        });
+      mockedSendMail.mockClear();
+      const auth = `Bearer ${createAuthedUser(['tiles:write'])}`;
+      const list = await request(app).get(`/api/tiles/${tileId}/registrations`).set('Authorization', auth);
+      const head = list.body.find((r: any) => r.firstName === 'Kontakt');
+      const second = list.body.find((r: any) => r.firstName === 'Zweite');
+      expect(head.registeredById).toBeUndefined();
+      expect(second.registeredById).toBe(head.id);
+      expect(second.registeredByName).toBe('Kontakt Person');
+
+      const res = await request(app).post(`/api/registrations/${second.id}/send-confirmation`).set('Authorization', auth);
+      expect(res.status).toBe(200);
+      expect(res.body.recipient).toBe('kontakt@test.com');
+      expect(mockedSendMail).toHaveBeenCalledTimes(1);
+      const mail = mockedSendMail.mock.calls[0][0] as any;
+      expect(mail.to).toBe('kontakt@test.com');
+      expect(mail.bcc).toBeUndefined();
+      expect(mail.html).toContain('Zweite');
+
+      // Hauptanmelder ohne E-Mail -> 400
+      db.prepare('UPDATE trip_registrations SET email = NULL WHERE id = ?').run(head.id);
+      const noMail = await request(app).post(`/api/registrations/${second.id}/send-confirmation`).set('Authorization', auth);
+      expect(noMail.status).toBe(400);
+    });
+
     it('Bestätigung zeigt Ausfahrt-Name, Datum und Geburtsdatum der Personen', async () => {
       const tileId = createTile(10);
       db.prepare("UPDATE tiles SET date = '2027-01-23' WHERE id = ?").run(tileId);

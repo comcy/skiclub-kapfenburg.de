@@ -15,7 +15,7 @@
             </thead>
             <tbody>
                 @for (tile of tiles; track tile.id) {
-                    <tr class="row" [class.row-expired]="tile.expired">
+                    <tr class="row" [class.row-expired]="tile.expired" (click)="open(tile)">
                         <td>
                             {{ tile.title }}
                             @if (news.newInTile('trips', tile.id); as count) {
@@ -56,7 +56,7 @@
                                 }
                             }
                         </td>
-                        <td class="actions-cell">
+                        <td class="actions-cell" (click)="$event.stopPropagation()">
                             <a mat-stroked-button [routerLink]="['/registrations', 'ausfahrten', tile.id]">
                                 <mat-icon>how_to_reg</mat-icon>
                                 <span class="btn-label">Anmeldungen</span>
