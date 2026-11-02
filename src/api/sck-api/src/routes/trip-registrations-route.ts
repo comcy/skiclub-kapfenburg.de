@@ -11,7 +11,6 @@ import {
   listTripRegistrations,
   updateTripRegistration,
   sendTripRegistrationConfirmation,
-  sendTripRegistrationConfirmation,
 } from '../controllers/trip-registrations-controller.js';
 import { requireAuth, requirePermission, requireSuperAdmin } from '../middleware/auth-middleware.js';
 import { publicReadLimiter, publicWriteLimiter } from '../middleware/rate-limit.js';
