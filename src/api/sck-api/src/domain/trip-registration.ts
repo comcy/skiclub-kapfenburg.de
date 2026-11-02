@@ -60,6 +60,10 @@ export interface TripRegistration {
   participantRole?: 'organizer' | 'teachingTeam';
   // Abgeleitet: Name des verknüpften Mitglieds (Anzeige im Editor).
   memberName?: string;
+  // Hauptanmelder: ID der Anmeldung, über die diese Person angemeldet wurde (leer = meldet sich selbst an).
+  registeredById?: string;
+  // Abgeleitet: Name des Hauptanmelders.
+  registeredByName?: string;
 }
 
 // memberId is always recomputed server-side from email (see
@@ -74,7 +78,7 @@ export interface TripRegistration {
 // email match got wrong (see registration-editor.component.ts).
 export type TripRegistrationCreationParams = Omit<
   TripRegistration,
-  'id' | 'tileId' | 'memberId' | 'boardingName' | 'confirmationMailSent' | 'enteredBy' | 'createdAt'
+  'id' | 'tileId' | 'memberId' | 'boardingName' | 'confirmationMailSent' | 'enteredBy' | 'createdAt' | 'registeredByName'
 >;
 
 // One participant as submitted by the PUBLIC registration form (see

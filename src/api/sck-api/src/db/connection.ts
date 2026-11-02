@@ -540,6 +540,10 @@ if (!userColumns.some((c) => c.name === 'news_since')) {
 const tripRegistrationColumns = db.prepare("SELECT name FROM pragma_table_info('trip_registrations')").all() as {
   name: string;
 }[];
+// Hauptanmelder: Anmeldung, über die diese Person angemeldet wurde (Bestätigungsmail geht nur an ihn).
+if (!tripRegistrationColumns.some((c) => c.name === 'registered_by_id')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN registered_by_id TEXT;');
+}
 if (!tripRegistrationColumns.some((c) => c.name === 'transferred_to_external_list')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN transferred_to_external_list INTEGER NOT NULL DEFAULT 0;');
 }

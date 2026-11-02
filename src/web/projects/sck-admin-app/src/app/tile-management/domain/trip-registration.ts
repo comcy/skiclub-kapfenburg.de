@@ -49,6 +49,9 @@ export interface TripRegistration {
     participantRole?: 'organizer' | 'teachingTeam';
     // Name des verknüpften Mitglieds (abgeleitet, nur Anzeige).
     memberName?: string;
+    // Hauptanmelder: Anmeldung, über die diese Person angemeldet wurde (Mails gehen nur an ihn).
+    registeredById?: string;
+    registeredByName?: string;
 }
 
 // memberId is always recomputed server-side from email - never sent by the
@@ -67,4 +70,5 @@ export type TripRegistrationCreationParams = Omit<
     | 'enteredBy'
     | 'selfReportedIsMember'
     | 'createdAt'
+    | 'registeredByName'
 >;

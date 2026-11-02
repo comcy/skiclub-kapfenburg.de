@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NewsService } from '../../../shared/services/news.service';
 import { OccupancyBarComponent } from '../../../shared/components/occupancy-bar/occupancy-bar.component';
 import { Tile } from '../../domain/tile';
@@ -36,12 +36,17 @@ import { PageHeadingComponent } from '../../../shared/components/page-heading/pa
 export class RegistrationsOverviewComponent implements OnInit {
     private readonly dataService = inject(TilesDataService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly router = inject(Router);
     public readonly news = inject(NewsService);
 
     public readonly tileStatusEnum = TileStatus;
     public tiles: Tile[] = [];
     public loaded = false;
     public showArchive = false;
+
+    open(tile: Tile): void {
+        this.router.navigate(['/registrations', 'ausfahrten', tile.id]);
+    }
 
     ngOnInit(): void {
         this.load();

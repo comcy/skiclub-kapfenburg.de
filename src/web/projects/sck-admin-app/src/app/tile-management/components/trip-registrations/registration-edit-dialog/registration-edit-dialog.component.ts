@@ -10,6 +10,7 @@ export interface RegistrationEditDialogData {
     tileId: string;
     tile: Tile | null;
     registration: TripRegistration;
+    candidates?: TripRegistration[];
 }
 
 @Component({

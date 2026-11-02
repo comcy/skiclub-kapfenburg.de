@@ -41,6 +41,8 @@ export class RegistrationEditorComponent {
     @Input() tileId!: string;
     @Input() tile: Tile | null = null;
     @Input() registration: TripRegistration | null = null;
+    // Andere Anmeldungen der Ausfahrt - Auswahl für den Hauptanmelder.
+    @Input() candidates: TripRegistration[] = [];
     @Output() saved = new EventEmitter<void>();
 
     private readonly dataService = inject(TilesDataService);
@@ -81,6 +83,11 @@ export class RegistrationEditorComponent {
 
     get showSnowshoes(): boolean {
         return !!this.tile?.tripConfig?.pricing?.addons?.snowshoes || !!this.registration?.snowshoes;
+    }
+
+    // Hauptanmelder-Kandidaten: alle, die nicht selbst über jemanden angemeldet sind (und nicht diese Anmeldung).
+    get headCandidates(): TripRegistration[] {
+        return this.candidates.filter((c) => c.id !== this.registration?.id && !c.registeredById);
     }
 
     public pasteInfo = '';
@@ -157,6 +164,7 @@ export class RegistrationEditorComponent {
             courseRequested: this.registration.courseRequested,
             level: this.registration.level,
             sportType: this.registration.sportType,
+            registeredById: this.registration.registeredById || undefined,
         };
 
         // Zoneless change detection (see app.config.ts) - without

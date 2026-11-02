@@ -346,6 +346,7 @@ export class TripRegistrationsComponent implements OnInit {
             courseRequested: registration.courseRequested,
             level: registration.level,
             sportType: registration.sportType,
+            registeredById: registration.registeredById,
             ...overrides,
         };
 
@@ -387,7 +388,7 @@ export class TripRegistrationsComponent implements OnInit {
 
     private openEditor(registration: TripRegistration): void {
         const dialogRef = this.dialog.open(RegistrationEditDialogComponent, {
-            data: { tileId: this.tileId, tile: this.tile, registration },
+            data: { tileId: this.tileId, tile: this.tile, registration, candidates: this.registrations },
             width: '640px',
             maxWidth: '95vw',
         });
@@ -430,6 +431,26 @@ export class TripRegistrationsComponent implements OnInit {
             (revokes.length ? forkJoin(revokes) : of([])).subscribe(() =>
                 this.updateWith(registration, { isMember: false }),
             );
+        });
+    }
+
+    // Bestätigungsmail manuell senden - geht immer an den Hauptanmelder (bei über ihn Angemeldeten nur an ihn).
+    onSendConfirmation(registration: TripRegistration): void {
+        const recipient = registration.registeredByName || `${registration.firstName} ${registration.lastName}`;
+        if (!confirm(`Bestätigungsmail an ${recipient} senden?`)) return;
+        this.dataService.sendConfirmationMail(registration.id).subscribe({
+            next: (result) => {
+                this.snackBar.open(
+                    result.sent
+                        ? `Mail an ${result.recipient} gesendet.`
+                        : 'Mailversand nicht konfiguriert (nicht gesendet).',
+                    'OK',
+                    { duration: 4000 },
+                );
+                this.refresh();
+            },
+            error: (err) =>
+                this.snackBar.open(err?.error?.error ?? 'Mail konnte nicht gesendet werden.', 'OK', { duration: 5000 }),
         });
     }
 

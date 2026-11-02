@@ -42,6 +42,7 @@ interface TripRegistrationRow {
   course_requested: number;
   level: string | null;
   sport_type: string | null;
+  registered_by_id: string | null;
 }
 
 const SELECT_WITH_BOARDING_NAME = `
@@ -72,6 +73,7 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   notes: row.notes ?? undefined,
   orderIndex: row.order_index,
   enteredBy: row.entered_by ?? undefined,
+  registeredById: row.registered_by_id ?? undefined,
   transferredToExternalList: row.transferred_to_external_list === 1,
   confirmationMailSent: row.confirmation_mail_sent === 1,
   busOnly: row.bus_only === 1,
@@ -103,19 +105,46 @@ const withRole = (registration: TripRegistration, responsibleIds: string[]): Tri
   return member?.is_teaching_team === 1 ? { ...enriched, participantRole: 'teachingTeam' } : enriched;
 };
 
+// Hauptanmelder einer Anmeldung: gleiche Ausfahrt, keine Selbst-/Kettenreferenz (zeigt der Kandidat selbst auf
+// jemanden, gilt dessen Hauptanmelder). Unbekannt/ungültig -> keiner.
+const resolveRegisteredById = (tileId: string, selfId: string, candidate: string | undefined): string | null => {
+  if (!candidate || candidate === selfId) return null;
+  const row = db.prepare('SELECT id, registered_by_id FROM trip_registrations WHERE id = ? AND tile_id = ?').get(candidate, tileId) as
+    | { id: string; registered_by_id: string | null }
+    | undefined;
+  if (!row) return null;
+  return row.registered_by_id ? (row.registered_by_id === selfId ? null : row.registered_by_id) : row.id;
+};
+
+const withRegisteredBy = (registration: TripRegistration): TripRegistration => {
+  if (!registration.registeredById) return registration;
+  const row = db.prepare('SELECT first_name, last_name FROM trip_registrations WHERE id = ?').get(registration.registeredById) as
+    | { first_name: string; last_name: string }
+    | undefined;
+  return { ...registration, registeredByName: row ? `${row.first_name} ${row.last_name}` : undefined };
+};
+
+// Hauptanmelder + alle über ihn Angemeldeten (für die Bestätigungsmail).
+export const getRegistrationGroup = (registration: TripRegistration): { contact: TripRegistration; members: TripRegistration[] } => {
+  const contact = (registration.registeredById && getRegistration(registration.registeredById)) || registration;
+  const rows = db.prepare(`${SELECT_WITH_BOARDING_NAME} WHERE r.registered_by_id = ?`).all(contact.id) as unknown as TripRegistrationRow[];
+  const responsibleIds = responsibleIdsOf(contact.tileId);
+  return { contact, members: [contact, ...rows.map((row) => withRole(rowToRegistration(row), responsibleIds))] };
+};
+
 export const listRegistrationsForTile = (tileId: string): TripRegistration[] => {
   const rows = db
     .prepare(`${SELECT_WITH_BOARDING_NAME} WHERE r.tile_id = ? ORDER BY b.name, r.order_index, r.created_at`)
     .all(tileId) as unknown as TripRegistrationRow[];
   const responsibleIds = responsibleIdsOf(tileId);
-  return rows.map((row) => withRole(rowToRegistration(row), responsibleIds));
+  return rows.map((row) => withRegisteredBy(withRole(rowToRegistration(row), responsibleIds)));
 };
 
 export const getRegistration = (id: string): TripRegistration | undefined => {
   const row = db.prepare(`${SELECT_WITH_BOARDING_NAME} WHERE r.id = ?`).get(id) as
     | TripRegistrationRow
     | undefined;
-  return row ? withRole(rowToRegistration(row), responsibleIdsOf(row.tile_id)) : undefined;
+  return row ? withRegisteredBy(withRole(rowToRegistration(row), responsibleIdsOf(row.tile_id))) : undefined;
 };
 
 // Mit Geburtsdatum immer daraus abgeleitet (kein Auseinanderlaufen von Datum und Kategorie);
@@ -140,8 +169,8 @@ export const createRegistration = (
       id, tile_id, first_name, last_name, email, phone, birthday, member_id, boarding_id,
       age_category, is_member, self_reported_is_member, status, source, notes, order_index,
       entered_by, transferred_to_external_list, confirmation_mail_sent, bus_only, snowshoes,
-      course_requested, level, sport_type
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      course_requested, level, sport_type, registered_by_id
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -169,6 +198,7 @@ export const createRegistration = (
     params.courseRequested ? 1 : 0,
     params.level ?? null,
     params.sportType ?? null,
+    resolveRegisteredById(tileId, id, params.registeredById),
   );
 
   return getRegistration(id) as TripRegistration;
@@ -183,6 +213,9 @@ export const createRegistration = (
 // wrong (see registration-editor.component.ts). member_id still re-derives
 // from the (possibly just-corrected) email, since that's a plain factual
 // lookup an admin has no reason to override by hand.
+const tileIdOf = (id: string): string =>
+  (db.prepare('SELECT tile_id FROM trip_registrations WHERE id = ?').get(id) as { tile_id: string } | undefined)?.tile_id ?? '';
+
 export const updateRegistration = (
   id: string,
   params: TripRegistrationCreationParams,
@@ -195,7 +228,7 @@ export const updateRegistration = (
       `UPDATE trip_registrations SET
         first_name = ?, last_name = ?, email = ?, phone = ?, birthday = ?, member_id = ?, boarding_id = ?,
         age_category = ?, is_member = ?, status = ?, source = ?, notes = ?, order_index = ?,
-        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?, sport_type = ?,
+        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?, sport_type = ?, registered_by_id = ?,
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
@@ -219,6 +252,7 @@ export const updateRegistration = (
       params.courseRequested ? 1 : 0,
       params.level ?? null,
       params.sportType ?? null,
+      resolveRegisteredById(tileIdOf(id), id, params.registeredById),
       id,
     );
 
@@ -312,8 +346,9 @@ export const createPublicRegistrations = (
     waitlistCount = participants.length;
   }
 
-  const registrationIds = participants.map((participant, index) =>
-    createRegistration(tileId, {
+  const registrationIds: string[] = [];
+  participants.forEach((participant, index) => {
+    const created = createRegistration(tileId, {
       firstName: participant.firstName,
       lastName: participant.lastName,
       email: participant.email,
@@ -332,8 +367,11 @@ export const createPublicRegistrations = (
       sportType: participant.sportType,
       isMember: false,
       selfReportedIsMember: participant.isMember ?? false,
-    }).id,
-  );
+      // Die erste Person ist Hauptanmelder, alle weiteren sind über sie angemeldet.
+      registeredById: registrationIds[0],
+    });
+    registrationIds.push(created.id);
+  });
 
   return { status, waitlistPosition, waitlistCount, registrationIds };
 };

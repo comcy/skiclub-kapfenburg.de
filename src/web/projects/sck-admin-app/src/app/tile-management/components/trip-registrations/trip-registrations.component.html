@@ -153,6 +153,9 @@
                                     @if (news.isNew(registration.createdAt, seenBefore)) {
                                         <span class="badge-new">Neu</span>
                                     }
+                                    @if (registration.registeredByName) {
+                                        <div class="registered-by">über {{ registration.registeredByName }}</div>
+                                    }
                                     @if (registration.participantRole === 'organizer') {
                                         <span class="badge-organizer" matTooltip="Organisator der Ausfahrt"
                                             ><mat-icon>flag</mat-icon> Organisator</span
@@ -258,6 +261,10 @@
                                             <button mat-menu-item (click)="onEdit(registration)">
                                                 <mat-icon>edit</mat-icon>
                                                 <span>Bearbeiten</span>
+                                            </button>
+                                            <button mat-menu-item (click)="onSendConfirmation(registration)">
+                                                <mat-icon>forward_to_inbox</mat-icon>
+                                                <span>Bestätigungsmail senden</span>
                                             </button>
                                             @if (registration.status === 'confirmed') {
                                                 <button mat-menu-item (click)="onSetStatus(registration, 'waitlist')">
