@@ -4,6 +4,24 @@
     <span class="spacer"></span>
     <app-theme-switcher></app-theme-switcher>
     @if (auth.session(); as session) {
+        <div class="online-users">
+            @for (user of presence.online(); track user.userId) {
+                <span
+                    class="online-chip"
+                    [class.online-me]="user.userId === presence.me()"
+                    [matTooltip]="
+                        user.name +
+                        (user.userId === presence.me() ? ' (du)' : '') +
+                        ' · ' +
+                        pageLabel(user.page) +
+                        ' · ' +
+                        presence.ago(user.lastSeenAt)
+                    "
+                    matTooltipPosition="below"
+                    >{{ user.initials }}</span
+                >
+            }
+        </div>
         <button mat-button class="user-email" disableRipple [matTooltip]="session.email" matTooltipPosition="below">
             <mat-icon>person</mat-icon>
             <span class="email-text">{{ session.email }}</span>

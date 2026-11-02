@@ -537,6 +537,15 @@ if (!userColumns.some((c) => c.name === 'news_since')) {
   db.exec('ALTER TABLE users ADD COLUMN news_since TEXT;');
 }
 
+// Presence: wann und auf welcher Seite eine Admin-Session zuletzt aktiv war.
+const sessionColumns = db.prepare("SELECT name FROM pragma_table_info('sessions')").all() as { name: string }[];
+if (!sessionColumns.some((c) => c.name === 'last_seen_at')) {
+  db.exec('ALTER TABLE sessions ADD COLUMN last_seen_at TEXT;');
+}
+if (!sessionColumns.some((c) => c.name === 'page')) {
+  db.exec('ALTER TABLE sessions ADD COLUMN page TEXT;');
+}
+
 const tripRegistrationColumns = db.prepare("SELECT name FROM pragma_table_info('trip_registrations')").all() as {
   name: string;
 }[];
