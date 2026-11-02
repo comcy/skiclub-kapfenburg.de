@@ -191,9 +191,10 @@ describe('TripRegistrationsComponent', () => {
         });
     });
 
-    it('ageDisplay: exaktes Alter, sonst "E" für Erwachsene, Gruppenname für Jugend/Kind', () => {
+    it('ageDisplay: exaktes Alter, sonst Kürzel E/J/K', () => {
         expect(component.ageDisplay(makeRegistration({ ageCategory: 'adult' }))).toBe('E');
-        expect(component.ageDisplay(makeRegistration({ ageCategory: 'youthUntil16' }))).toBe('Jugend (bis 16)');
+        expect(component.ageDisplay(makeRegistration({ ageCategory: 'youthUntil16' }))).toBe('J');
+        expect(component.ageDisplay(makeRegistration({ ageCategory: 'childUntil6' }))).toBe('K');
         expect(typeof component.ageDisplay(makeRegistration({ birthday: '1990-01-01' }))).toBe('number');
     });
 

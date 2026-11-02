@@ -97,7 +97,6 @@
                         <tr>
                             <th></th>
                             <th>Mitglied</th>
-                            <th>Minderjährig</th>
                             <th>Nicht-Mitglied</th>
                         </tr>
                     </thead>
@@ -143,7 +142,7 @@
                 <tbody>
                     @for (group of groups; track group.boardingName) {
                         <tr>
-                            <td colspan="13" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
+                            <td colspan="12" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
                                 {{ group.boardingName }}
                             </td>
                         </tr>
@@ -160,6 +159,20 @@
                                     ) {
                                         <div class="registered-by">über {{ registration.registeredByName }}</div>
                                     }
+                                    @if (isMinor(registration)) {
+                                        <div
+                                            class="registered-by"
+                                            [matTooltip]="
+                                                minorState(registration) === 'parent'
+                                                    ? 'Elternteil nimmt teil'
+                                                    : minorState(registration) === 'consent'
+                                                      ? 'Einverständniserklärung der Eltern liegt vor'
+                                                      : 'Einverständniserklärung der Eltern fehlt'
+                                            "
+                                        >
+                                            Minderjährig · {{ guardianOf(registration) ?? '—' }}
+                                        </div>
+                                    }
                                     @if (registration.participantRole === 'organizer') {
                                         <span class="badge-organizer" matTooltip="Organisator der Ausfahrt"
                                             ><mat-icon>flag</mat-icon> Organisator</span
@@ -172,6 +185,31 @@
                                 </td>
                                 <td>
                                     {{ ageDisplay(registration) }}
+                                    @switch (minorState(registration)) {
+                                        @case ('parent') {
+                                            <mat-icon
+                                                class="minor-badge badge-ok"
+                                                [matTooltip]="
+                                                    'Elternteil nimmt teil: ' + (guardianOf(registration) ?? '')
+                                                "
+                                                >family_restroom</mat-icon
+                                            >
+                                        }
+                                        @case ('consent') {
+                                            <mat-icon
+                                                class="minor-badge badge-ok"
+                                                matTooltip="Einverständniserklärung der Eltern liegt vor"
+                                                >verified_user</mat-icon
+                                            >
+                                        }
+                                        @case ('open') {
+                                            <mat-icon
+                                                class="minor-badge badge-open"
+                                                matTooltip="Minderjährig: weder Elternteil dabei noch Einverständnis hinterlegt"
+                                                >warning</mat-icon
+                                            >
+                                        }
+                                    }
                                 </td>
                                 <td>{{ registration.phone || '–' }}</td>
                                 <td>{{ registration.boardingName || '–' }}</td>
@@ -196,41 +234,6 @@
                                         >
                                     } @else {
                                         <span class="badge-nonmember">kein Mitglied</span>
-                                    }
-                                </td>
-                                <td>
-                                    @switch (minorState(registration)) {
-                                        @case ('parent') {
-                                            <span
-                                                class="badge-member"
-                                                [matTooltip]="
-                                                    'Elternteil nimmt teil: ' + (guardianOf(registration) ?? '')
-                                                "
-                                                ><mat-icon>family_restroom</mat-icon> Elternteil dabei</span
-                                            >
-                                        }
-                                        @case ('consent') {
-                                            <span
-                                                class="badge-member"
-                                                [matTooltip]="
-                                                    'Aufsicht: ' +
-                                                    (guardianOf(registration) ?? '—') +
-                                                    ' · Einverständnis liegt vor'
-                                                "
-                                                ><mat-icon>verified_user</mat-icon> Einverständnis</span
-                                            >
-                                        }
-                                        @case ('open') {
-                                            <span
-                                                class="badge-warn"
-                                                [matTooltip]="
-                                                    'Minderjährig: weder Elternteil dabei noch Einverständnis hinterlegt (Aufsicht: ' +
-                                                    (guardianOf(registration) ?? '—') +
-                                                    ')'
-                                                "
-                                                ><mat-icon>warning</mat-icon> Einverst. fehlt</span
-                                            >
-                                        }
                                     }
                                 </td>
                                 <td>{{ registration.snowshoes ? 'ja' : '–' }}</td>
@@ -341,7 +344,7 @@
                     }
                     @if (!groups.length) {
                         <tr>
-                            <td colspan="13" class="empty">Noch keine Anmeldungen.</td>
+                            <td colspan="12" class="empty">Noch keine Anmeldungen.</td>
                         </tr>
                     }
                 </tbody>
@@ -353,14 +356,14 @@
             <table class="print-table">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Alter</th>
-                        <th>Telefon</th>
-                        <th>Mitgl.</th>
-                        <th>Erziehungsberechtigte(r)</th>
-                        <th>Einverst.</th>
-                        <th>Leistungen</th>
-                        <th class="num">Preis</th>
+                        <th class="w-name">Name</th>
+                        <th class="w-age">Alter</th>
+                        <th class="w-phone">Telefon</th>
+                        <th class="w-member">Mitgl.</th>
+                        <th class="w-guardian">Erziehungsber.</th>
+                        <th class="w-consent">Einverst.</th>
+                        <th class="w-services">Leistungen</th>
+                        <th class="num w-price">Preis</th>
                     </tr>
                 </thead>
                 @for (group of groups; track group.boardingName; let gi = $index) {

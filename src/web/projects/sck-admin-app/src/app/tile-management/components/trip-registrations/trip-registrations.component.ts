@@ -160,10 +160,16 @@ export class TripRegistrationsComponent implements OnInit {
             courseRequested: r.courseRequested,
             level: r.level,
         }));
-        this.dataService.getTripPricePreview(this.tileId, participants).subscribe((result) => {
-            this.pricesByRegistrationId = new Map(registrations.map((r, i) => [r.id, result.prices[i]]));
-            this.cdr.markForCheck();
-        });
+        // Die API erlaubt höchstens 20 Teilnehmer pro Preisberechnung - größere Listen in Blöcken abfragen.
+        const chunks: TripPricePreviewParticipant[][] = [];
+        for (let i = 0; i < participants.length; i += 20) chunks.push(participants.slice(i, i + 20));
+        forkJoin(chunks.map((chunk) => this.dataService.getTripPricePreview(this.tileId, chunk))).subscribe(
+            (results) => {
+                const prices = results.flatMap((result) => result.prices);
+                this.pricesByRegistrationId = new Map(registrations.map((r, i) => [r.id, prices[i]]));
+                this.cdr.markForCheck();
+            },
+        );
     }
 
     // Birthday is a plain ISO date (see registration-editor.component.ts) -
@@ -217,9 +223,9 @@ export class TripRegistrationsComponent implements OnInit {
         return rows;
     }
 
-    // Alter für die Tabelle: exakt, sonst Altersgruppe (Erwachsen nur als "E").
+    // Alter für die Tabelle: exakt, sonst Kürzel der Altersgruppe (E = Erwachsen, J = Jugend, K = Kind).
     ageDisplay(r: TripRegistration): string | number {
-        return this.exactAge(r.birthday) ?? (r.ageCategory === 'adult' ? 'E' : this.ageCategoryLabels[r.ageCategory]);
+        return this.exactAge(r.birthday) ?? { adult: 'E', youthUntil16: 'J', childUntil6: 'K' }[r.ageCategory];
     }
 
     get confirmedCount(): number {
