@@ -122,35 +122,50 @@
         }
 
         <div class="conditions" [class.open]="showConditions">
-            <div class="conditions-title print-only">Preise &amp; Konditionen</div>
-            @if (priceRows.length) {
-                <table class="conditions-table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Mitglied</th>
-                            <th>Nicht-Mitglied</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (row of priceRows; track row.label) {
+            <div class="conditions-main">
+                <div class="conditions-title print-only">Preise &amp; Konditionen</div>
+                @if (priceRows.length) {
+                    <table class="conditions-table">
+                        <thead>
                             <tr>
-                                <td>{{ row.label }}</td>
-                                <td>{{ row.member }}&nbsp;€</td>
-                                <td>{{ row.nonMember }}&nbsp;€</td>
+                                <th></th>
+                                <th>Mitglied</th>
+                                <th>Nicht-Mitglied</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            @for (row of priceRows; track row.label) {
+                                <tr>
+                                    <td>{{ row.label }}</td>
+                                    <td>{{ row.member }}&nbsp;€</td>
+                                    <td>{{ row.nonMember }}&nbsp;€</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                @if (fees) {
+                    <div class="conditions-note">
+                        Organisatoren: {{ fees.organizer }}&nbsp;€ · Lehrteam: {{ fees.teachingTeam }}&nbsp;€ pro Person
+                    </div>
+                }
+                @if (tile?.tripConfig?.adultsOnly) {
+                    <div class="conditions-note">Nur Erwachsene</div>
+                }
+            </div>
+            <div class="legend">
+                <div class="conditions-title">Legende</div>
+                @for (item of legendItems; track item.label) {
+                    <div class="legend-item">
+                        @if (item.icon) {
+                            <mat-icon [class]="'legend-icon ' + (item.tone ?? '')">{{ item.icon }}</mat-icon>
+                        } @else {
+                            <span class="legend-symbol">{{ item.symbol }}</span>
                         }
-                    </tbody>
-                </table>
-            }
-            @if (fees) {
-                <div class="conditions-note">
-                    Organisatoren: {{ fees.organizer }}&nbsp;€ · Lehrteam: {{ fees.teachingTeam }}&nbsp;€ pro Person
-                </div>
-            }
-            @if (tile?.tripConfig?.adultsOnly) {
-                <div class="conditions-note">Nur Erwachsene</div>
-            }
+                        {{ item.label }}
+                    </div>
+                }
+            </div>
         </div>
 
         <div class="table-scroll">
@@ -393,7 +408,7 @@
                         <th class="w-phone">Telefon</th>
                         <th class="w-member">Mitgl.</th>
                         <th class="w-guardian">Erziehungsber.</th>
-                        <th class="w-consent">Einverst.</th>
+                        <th class="w-consent"></th>
                         <th class="w-services">Leistungen</th>
                         <th class="num w-price">Preis</th>
                     </tr>
@@ -420,9 +435,9 @@
                                 <td [class.linked-registration]="group.linkedIds.has(registration.id)">
                                     {{ registration.firstName }} {{ registration.lastName }}
                                     @if (registration.participantRole === 'organizer') {
-                                        <em>(Orga)</em>
+                                        <mat-icon class="print-icon">flag</mat-icon>
                                     } @else if (registration.participantRole === 'teachingTeam') {
-                                        <em>(Lehrteam)</em>
+                                        <mat-icon class="print-icon">school</mat-icon>
                                     }
                                     @if (
                                         registration.registeredByName &&
@@ -445,13 +460,13 @@
                                 <td>
                                     @switch (minorState(registration)) {
                                         @case ('parent') {
-                                            <strong>✓ Elternteil dabei</strong>
+                                            <mat-icon class="print-icon ok">family_restroom</mat-icon>
                                         }
                                         @case ('consent') {
-                                            <strong>✓ ja</strong>
+                                            <mat-icon class="print-icon ok">verified_user</mat-icon>
                                         }
                                         @case ('open') {
-                                            <strong class="print-missing">✗ fehlt</strong>
+                                            <mat-icon class="print-icon open">warning</mat-icon>
                                         }
                                     }
                                 </td>
