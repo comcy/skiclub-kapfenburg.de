@@ -74,6 +74,25 @@
     padding-left: 28px;
 }
 
+.minor-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--mat-sys-on-surface-variant);
+
+    mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+    }
+
+    &.minor-missing {
+        color: light-dark(#8a6a00, #e6c15a);
+        font-weight: 500;
+    }
+}
+
 .registered-by {
     font-size: 11px;
     color: var(--mat-sys-on-surface-variant);
@@ -470,6 +489,10 @@ tr.row-waitlist td {
         font-size: 13px;
         border-top: 3px solid var(--bc);
         border-bottom: 1px solid #999;
+    }
+
+    .print-missing {
+        color: #b71c1c;
     }
 
     .print-table .print-gap td {

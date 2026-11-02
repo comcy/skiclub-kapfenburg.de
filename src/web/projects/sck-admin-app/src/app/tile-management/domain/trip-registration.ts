@@ -52,6 +52,9 @@ export interface TripRegistration {
     // Hauptanmelder: Anmeldung, über die diese Person angemeldet wurde (Mails gehen nur an ihn).
     registeredById?: string;
     registeredByName?: string;
+    // Minderjährige: Erziehungsberechtigte(r) (leer = Hauptanmelder) und Einverständniserklärung der Eltern.
+    guardianName?: string;
+    guardianConsent: boolean;
 }
 
 // memberId is always recomputed server-side from email - never sent by the

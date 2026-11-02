@@ -544,6 +544,13 @@ const tripRegistrationColumns = db.prepare("SELECT name FROM pragma_table_info('
 if (!tripRegistrationColumns.some((c) => c.name === 'registered_by_id')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN registered_by_id TEXT;');
 }
+// Minderjährige: Erziehungsberechtigte(r) (leer = Hauptanmelder) und Einverständniserklärung der Eltern.
+if (!tripRegistrationColumns.some((c) => c.name === 'guardian_name')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN guardian_name TEXT;');
+}
+if (!tripRegistrationColumns.some((c) => c.name === 'guardian_consent')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN guardian_consent INTEGER NOT NULL DEFAULT 0;');
+}
 if (!tripRegistrationColumns.some((c) => c.name === 'transferred_to_external_list')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN transferred_to_external_list INTEGER NOT NULL DEFAULT 0;');
 }

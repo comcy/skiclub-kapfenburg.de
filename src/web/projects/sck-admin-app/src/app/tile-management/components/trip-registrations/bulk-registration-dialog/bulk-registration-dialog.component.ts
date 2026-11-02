@@ -127,6 +127,7 @@ export class BulkRegistrationDialogComponent implements OnInit {
                         notes: row.notes,
                         orderIndex: index,
                         transferredToExternalList: false,
+                        guardianConsent: false,
                         busOnly: false,
                         snowshoes: false,
                         courseRequested: !!row.sportType,

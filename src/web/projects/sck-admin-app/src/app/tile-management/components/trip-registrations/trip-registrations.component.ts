@@ -16,6 +16,7 @@ import {
     TripRegistrationCreationParams,
 } from '../../domain/trip-registration';
 import { NewsService } from '../../../shared/services/news.service';
+import { guardianOf, isMinor } from '../../domain/registration-minor';
 import { TeachingTeamEntry, Tile } from '../../domain/tile';
 import { SettingsDataService } from '../../../settings/services/settings-data.service';
 import { ParticipationFeeSetting } from '../../../settings/domain/participation-fee-setting';
@@ -326,6 +327,9 @@ export class TripRegistrationsComponent implements OnInit {
         return this.groups.filter((g) => !g.waitlist).reduce((sum, g) => sum + this.groupTotal(g), 0);
     }
 
+    isMinor = isMinor;
+    guardianOf = guardianOf;
+
     onBack(): void {
         this.router.navigate(['registrations', 'ausfahrten']);
     }
@@ -343,6 +347,7 @@ export class TripRegistrationsComponent implements OnInit {
             source: 'manual',
             orderIndex: 0,
             transferredToExternalList: false,
+            guardianConsent: false,
             confirmationMailSent: false,
             busOnly: false,
             snowshoes: false,
@@ -407,6 +412,8 @@ export class TripRegistrationsComponent implements OnInit {
             level: registration.level,
             sportType: registration.sportType,
             registeredById: registration.registeredById,
+            guardianName: registration.guardianName,
+            guardianConsent: registration.guardianConsent,
             ...overrides,
         };
 

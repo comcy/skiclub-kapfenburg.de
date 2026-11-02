@@ -117,6 +117,19 @@
             </mat-form-field>
         }
 
+        @if (minor) {
+            <div class="minor-box">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Erziehungsberechtigte(r)</mat-label>
+                    <input matInput [(ngModel)]="registration.guardianName" [placeholder]="headName" />
+                    <mat-hint>Leer = Hauptanmelder{{ headName ? ' (' + headName + ')' : '' }}</mat-hint>
+                </mat-form-field>
+                <mat-checkbox [(ngModel)]="registration.guardianConsent">
+                    Einverständniserklärung der Eltern liegt vor
+                </mat-checkbox>
+            </div>
+        }
+
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Notizen</mat-label>
             <textarea matInput rows="3" [(ngModel)]="registration.notes"></textarea>

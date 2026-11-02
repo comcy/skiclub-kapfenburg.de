@@ -62,6 +62,9 @@ export interface TripRegistration {
   memberName?: string;
   // Hauptanmelder: ID der Anmeldung, über die diese Person angemeldet wurde (leer = meldet sich selbst an).
   registeredById?: string;
+  // Minderjährige: Erziehungsberechtigte(r) (leer = Hauptanmelder) und ob die Einverständniserklärung der Eltern vorliegt.
+  guardianName?: string;
+  guardianConsent: boolean;
   // Abgeleitet: Name des Hauptanmelders.
   registeredByName?: string;
 }

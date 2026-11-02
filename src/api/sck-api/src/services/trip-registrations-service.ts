@@ -43,6 +43,8 @@ interface TripRegistrationRow {
   level: string | null;
   sport_type: string | null;
   registered_by_id: string | null;
+  guardian_name: string | null;
+  guardian_consent: number;
 }
 
 const SELECT_WITH_BOARDING_NAME = `
@@ -74,6 +76,8 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   orderIndex: row.order_index,
   enteredBy: row.entered_by ?? undefined,
   registeredById: row.registered_by_id ?? undefined,
+  guardianName: row.guardian_name ?? undefined,
+  guardianConsent: row.guardian_consent === 1,
   transferredToExternalList: row.transferred_to_external_list === 1,
   confirmationMailSent: row.confirmation_mail_sent === 1,
   busOnly: row.bus_only === 1,
@@ -169,8 +173,8 @@ export const createRegistration = (
       id, tile_id, first_name, last_name, email, phone, birthday, member_id, boarding_id,
       age_category, is_member, self_reported_is_member, status, source, notes, order_index,
       entered_by, transferred_to_external_list, confirmation_mail_sent, bus_only, snowshoes,
-      course_requested, level, sport_type, registered_by_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      course_requested, level, sport_type, registered_by_id, guardian_name, guardian_consent
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -199,6 +203,8 @@ export const createRegistration = (
     params.level ?? null,
     params.sportType ?? null,
     resolveRegisteredById(tileId, id, params.registeredById),
+    params.guardianName?.trim() || null,
+    params.guardianConsent ? 1 : 0,
   );
 
   return getRegistration(id) as TripRegistration;
@@ -228,7 +234,7 @@ export const updateRegistration = (
       `UPDATE trip_registrations SET
         first_name = ?, last_name = ?, email = ?, phone = ?, birthday = ?, member_id = ?, boarding_id = ?,
         age_category = ?, is_member = ?, status = ?, source = ?, notes = ?, order_index = ?,
-        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?, sport_type = ?, registered_by_id = ?,
+        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?, sport_type = ?, registered_by_id = ?, guardian_name = ?, guardian_consent = ?,
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
@@ -253,6 +259,8 @@ export const updateRegistration = (
       params.level ?? null,
       params.sportType ?? null,
       resolveRegisteredById(tileIdOf(id), id, params.registeredById),
+      params.guardianName?.trim() || null,
+      params.guardianConsent ? 1 : 0,
       id,
     );
 
@@ -369,6 +377,7 @@ export const createPublicRegistrations = (
       selfReportedIsMember: participant.isMember ?? false,
       // Die erste Person ist Hauptanmelder, alle weiteren sind über sie angemeldet.
       registeredById: registrationIds[0],
+      guardianConsent: false,
     });
     registrationIds.push(created.id);
   });
@@ -403,6 +412,7 @@ export const syncOrganizerRegistrations = (tileId: string): void => {
         ageCategory: 'adult',
         isMember: true,
         selfReportedIsMember: false,
+        guardianConsent: false,
         status: 'confirmed',
         source: 'manual',
         notes: 'Organisator',
