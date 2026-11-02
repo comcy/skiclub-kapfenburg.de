@@ -1,3 +1,4 @@
+import { SettingsDataService } from '../../../settings/services/settings-data.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
@@ -44,7 +45,15 @@ describe('TripRegistrationsComponent', () => {
                     useValue: {
                         getTile: () => of(null),
                         getRegistrations: () => of([]),
+                        getTeachingTeam: () => of([]),
                         deleteRegistration: () => of(undefined),
+                    },
+                },
+                {
+                    provide: SettingsDataService,
+                    useValue: {
+                        getTripPricing: () => of({}),
+                        getParticipationFees: () => of({ organizer: 0, teachingTeam: 50 }),
                     },
                 },
                 { provide: AuthService, useValue: { hasPermission: () => true, session: () => null } },
@@ -54,6 +63,19 @@ describe('TripRegistrationsComponent', () => {
 
         fixture = TestBed.createComponent(TripRegistrationsComponent);
         component = fixture.componentInstance;
+    });
+
+    it('sortiert Abfahrtsorte nach Uhrzeit im Namen, ohne Uhrzeit ans Ende', () => {
+        component.registrations = [
+            makeRegistration({ id: 'a', boardingName: 'Aalen (6:30 Uhr)' }),
+            makeRegistration({ id: 'b', boardingName: 'Zöbingen (5:15 Uhr)' }),
+            makeRegistration({ id: 'c', boardingName: 'Ellwangen' }),
+        ];
+        expect(component.groups.map((g) => g.boardingName)).toEqual([
+            'Zöbingen (5:15 Uhr)',
+            'Aalen (6:30 Uhr)',
+            'Ellwangen',
+        ]);
     });
 
     describe('Kapazitäts-Warnung (Runde 1)', () => {
