@@ -83,15 +83,11 @@
             @if (waitlistCount > 0) {
                 <div class="chip chip-waitlist">{{ waitlistCount }} auf der Warteliste</div>
             }
-            <button mat-button (click)="showConditions = !showConditions">
-                <mat-icon>{{ showConditions ? 'expand_less' : 'euro' }}</mat-icon>
-                Preise &amp; Konditionen
-            </button>
         </div>
 
         @if (alertCount) {
-            <button mat-button class="alerts-toggle no-print" (click)="showAlerts = !showAlerts">
-                <mat-icon>{{ showAlerts ? 'expand_less' : 'warning_amber' }}</mat-icon>
+            <button mat-button class="panel-toggle no-print" (click)="showAlerts = !showAlerts">
+                <mat-icon>{{ showAlerts ? 'expand_less' : 'expand_more' }}</mat-icon>
                 {{ alertCount }} Hinweise zur Liste
             </button>
         }
@@ -120,6 +116,11 @@
                 }
             </div>
         }
+
+        <button mat-button class="panel-toggle no-print" (click)="showConditions = !showConditions">
+            <mat-icon>{{ showConditions ? 'expand_less' : 'expand_more' }}</mat-icon>
+            Preise &amp; Konditionen
+        </button>
 
         <div class="conditions" [class.open]="showConditions">
             <div class="conditions-main">

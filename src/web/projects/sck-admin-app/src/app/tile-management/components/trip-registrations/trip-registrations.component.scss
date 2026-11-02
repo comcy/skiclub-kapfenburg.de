@@ -108,7 +108,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 24px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 
 .capacity-bar-wrap {
@@ -265,7 +265,7 @@ tr.row-waitlist td {
     display: none;
 }
 
-.alerts-toggle {
+.panel-toggle {
     align-self: flex-start;
     margin-bottom: 4px;
 }
