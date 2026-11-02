@@ -6,6 +6,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable, map, take } from 'rxjs';
@@ -30,6 +31,7 @@ import { TilesDataService } from '../../../services/tiles-data.service';
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        MatRadioModule,
         MatButtonModule,
         MatIconModule,
         MatCheckboxModule,
@@ -177,6 +179,7 @@ export class RegistrationEditorComponent {
             sportType: this.registration.sportType,
             registeredById: this.registration.registeredById || undefined,
             guardianName: this.registration.guardianName || undefined,
+            guardianType: this.registration.guardianType || undefined,
             guardianConsent: !!this.registration.guardianConsent,
         };
 

@@ -44,6 +44,7 @@ interface TripRegistrationRow {
   sport_type: string | null;
   registered_by_id: string | null;
   guardian_name: string | null;
+  guardian_type: string | null;
   guardian_consent: number;
 }
 
@@ -77,6 +78,7 @@ const rowToRegistration = (row: TripRegistrationRow): TripRegistration => ({
   enteredBy: row.entered_by ?? undefined,
   registeredById: row.registered_by_id ?? undefined,
   guardianName: row.guardian_name ?? undefined,
+  guardianType: row.guardian_type === 'parent' || row.guardian_type === 'other' ? row.guardian_type : undefined,
   guardianConsent: row.guardian_consent === 1,
   transferredToExternalList: row.transferred_to_external_list === 1,
   confirmationMailSent: row.confirmation_mail_sent === 1,
@@ -119,6 +121,8 @@ const resolveRegisteredById = (tileId: string, selfId: string, candidate: string
   if (!row) return null;
   return row.registered_by_id ? (row.registered_by_id === selfId ? null : row.registered_by_id) : row.id;
 };
+
+const guardianTypeOf = (value: unknown): 'parent' | 'other' | null => (value === 'parent' || value === 'other' ? value : null);
 
 const withRegisteredBy = (registration: TripRegistration): TripRegistration => {
   if (!registration.registeredById) return registration;
@@ -173,8 +177,8 @@ export const createRegistration = (
       id, tile_id, first_name, last_name, email, phone, birthday, member_id, boarding_id,
       age_category, is_member, self_reported_is_member, status, source, notes, order_index,
       entered_by, transferred_to_external_list, confirmation_mail_sent, bus_only, snowshoes,
-      course_requested, level, sport_type, registered_by_id, guardian_name, guardian_consent
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      course_requested, level, sport_type, registered_by_id, guardian_name, guardian_type, guardian_consent
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     tileId,
@@ -204,6 +208,7 @@ export const createRegistration = (
     params.sportType ?? null,
     resolveRegisteredById(tileId, id, params.registeredById),
     params.guardianName?.trim() || null,
+    guardianTypeOf(params.guardianType),
     params.guardianConsent ? 1 : 0,
   );
 
@@ -234,7 +239,7 @@ export const updateRegistration = (
       `UPDATE trip_registrations SET
         first_name = ?, last_name = ?, email = ?, phone = ?, birthday = ?, member_id = ?, boarding_id = ?,
         age_category = ?, is_member = ?, status = ?, source = ?, notes = ?, order_index = ?,
-        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?, sport_type = ?, registered_by_id = ?, guardian_name = ?, guardian_consent = ?,
+        transferred_to_external_list = ?, bus_only = ?, snowshoes = ?, course_requested = ?, level = ?, sport_type = ?, registered_by_id = ?, guardian_name = ?, guardian_type = ?, guardian_consent = ?,
         updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
       WHERE id = ?`,
     )
@@ -260,6 +265,7 @@ export const updateRegistration = (
       params.sportType ?? null,
       resolveRegisteredById(tileIdOf(id), id, params.registeredById),
       params.guardianName?.trim() || null,
+      guardianTypeOf(params.guardianType),
       params.guardianConsent ? 1 : 0,
       id,
     );

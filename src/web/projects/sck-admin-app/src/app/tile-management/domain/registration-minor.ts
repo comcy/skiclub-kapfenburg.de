@@ -8,6 +8,13 @@ export const isMinor = (r: Pick<TripRegistration, 'birthday' | 'ageCategory'>, t
     return today < adultFrom;
 };
 
+// Stand der Minderjährigkeit: geklärt durch teilnehmendes Elternteil, durch Einverständniserklärung, oder offen.
+export type MinorState = 'adult' | 'parent' | 'consent' | 'open';
+export const minorState = (
+    r: Pick<TripRegistration, 'birthday' | 'ageCategory' | 'guardianType' | 'guardianConsent'>,
+): MinorState =>
+    !isMinor(r) ? 'adult' : r.guardianType === 'parent' ? 'parent' : r.guardianConsent ? 'consent' : 'open';
+
 // Erziehungsberechtigte(r): explizit hinterlegt, sonst der Hauptanmelder.
 export const guardianOf = (r: Pick<TripRegistration, 'guardianName' | 'registeredByName'>): string | undefined =>
     r.guardianName || r.registeredByName || undefined;

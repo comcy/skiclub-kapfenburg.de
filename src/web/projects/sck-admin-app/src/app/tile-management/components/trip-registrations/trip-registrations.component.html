@@ -97,6 +97,7 @@
                         <tr>
                             <th></th>
                             <th>Mitglied</th>
+                            <th>Minderjährig</th>
                             <th>Nicht-Mitglied</th>
                         </tr>
                     </thead>
@@ -142,7 +143,7 @@
                 <tbody>
                     @for (group of groups; track group.boardingName) {
                         <tr>
-                            <td colspan="12" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
+                            <td colspan="13" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
                                 {{ group.boardingName }}
                             </td>
                         </tr>
@@ -159,30 +160,6 @@
                                     ) {
                                         <div class="registered-by">über {{ registration.registeredByName }}</div>
                                     }
-                                    @if (isMinor(registration)) {
-                                        <div
-                                            class="minor-info"
-                                            [class.minor-missing]="!registration.guardianConsent"
-                                            [matTooltip]="
-                                                registration.guardianConsent
-                                                    ? 'Einverständniserklärung der Eltern liegt vor'
-                                                    : 'Einverständniserklärung der Eltern fehlt'
-                                            "
-                                        >
-                                            <mat-icon>{{
-                                                registration.guardianConsent ? 'verified_user' : 'warning'
-                                            }}</mat-icon>
-                                            Minderjährig{{
-                                                guardianOf(registration) ? ' · ' + guardianOf(registration) : ''
-                                            }}
-                                            ·
-                                            {{
-                                                registration.guardianConsent
-                                                    ? 'Einverständnis ✓'
-                                                    : 'Einverständnis fehlt'
-                                            }}
-                                        </div>
-                                    }
                                     @if (registration.participantRole === 'organizer') {
                                         <span class="badge-organizer" matTooltip="Organisator der Ausfahrt"
                                             ><mat-icon>flag</mat-icon> Organisator</span
@@ -194,7 +171,7 @@
                                     }
                                 </td>
                                 <td>
-                                    {{ exactAge(registration.birthday) ?? ageCategoryLabels[registration.ageCategory] }}
+                                    {{ ageDisplay(registration) }}
                                 </td>
                                 <td>{{ registration.phone || '–' }}</td>
                                 <td>{{ registration.boardingName || '–' }}</td>
@@ -219,6 +196,41 @@
                                         >
                                     } @else {
                                         <span class="badge-nonmember">kein Mitglied</span>
+                                    }
+                                </td>
+                                <td>
+                                    @switch (minorState(registration)) {
+                                        @case ('parent') {
+                                            <span
+                                                class="badge-member"
+                                                [matTooltip]="
+                                                    'Elternteil nimmt teil: ' + (guardianOf(registration) ?? '')
+                                                "
+                                                ><mat-icon>family_restroom</mat-icon> Elternteil dabei</span
+                                            >
+                                        }
+                                        @case ('consent') {
+                                            <span
+                                                class="badge-member"
+                                                [matTooltip]="
+                                                    'Aufsicht: ' +
+                                                    (guardianOf(registration) ?? '—') +
+                                                    ' · Einverständnis liegt vor'
+                                                "
+                                                ><mat-icon>verified_user</mat-icon> Einverständnis</span
+                                            >
+                                        }
+                                        @case ('open') {
+                                            <span
+                                                class="badge-warn"
+                                                [matTooltip]="
+                                                    'Minderjährig: weder Elternteil dabei noch Einverständnis hinterlegt (Aufsicht: ' +
+                                                    (guardianOf(registration) ?? '—') +
+                                                    ')'
+                                                "
+                                                ><mat-icon>warning</mat-icon> Einverst. fehlt</span
+                                            >
+                                        }
                                     }
                                 </td>
                                 <td>{{ registration.snowshoes ? 'ja' : '–' }}</td>
@@ -329,7 +341,7 @@
                     }
                     @if (!groups.length) {
                         <tr>
-                            <td colspan="12" class="empty">Noch keine Anmeldungen.</td>
+                            <td colspan="13" class="empty">Noch keine Anmeldungen.</td>
                         </tr>
                     }
                 </tbody>
@@ -390,16 +402,22 @@
                                     }
                                 </td>
                                 <td>
-                                    {{ exactAge(registration.birthday) ?? ageCategoryLabels[registration.ageCategory] }}
+                                    {{ ageDisplay(registration) }}
                                 </td>
                                 <td>{{ registration.phone || '' }}</td>
                                 <td>{{ registration.isMember ? 'ja' : '–' }}</td>
                                 <td>{{ isMinor(registration) ? (guardianOf(registration) ?? '—') : '' }}</td>
                                 <td>
-                                    @if (isMinor(registration)) {
-                                        <strong [class.print-missing]="!registration.guardianConsent">{{
-                                            registration.guardianConsent ? '✓ ja' : '✗ fehlt'
-                                        }}</strong>
+                                    @switch (minorState(registration)) {
+                                        @case ('parent') {
+                                            <strong>✓ Elternteil dabei</strong>
+                                        }
+                                        @case ('consent') {
+                                            <strong>✓ ja</strong>
+                                        }
+                                        @case ('open') {
+                                            <strong class="print-missing">✗ fehlt</strong>
+                                        }
                                     }
                                 </td>
                                 <td>{{ servicesText(registration) }}</td>

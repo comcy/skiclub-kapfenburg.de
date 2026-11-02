@@ -16,7 +16,7 @@ import {
     TripRegistrationCreationParams,
 } from '../../domain/trip-registration';
 import { NewsService } from '../../../shared/services/news.service';
-import { guardianOf, isMinor } from '../../domain/registration-minor';
+import { guardianOf, isMinor, minorState } from '../../domain/registration-minor';
 import { TeachingTeamEntry, Tile } from '../../domain/tile';
 import { SettingsDataService } from '../../../settings/services/settings-data.service';
 import { ParticipationFeeSetting } from '../../../settings/domain/participation-fee-setting';
@@ -217,6 +217,11 @@ export class TripRegistrationsComponent implements OnInit {
         return rows;
     }
 
+    // Alter für die Tabelle: exakt, sonst Altersgruppe (Erwachsen nur als "E").
+    ageDisplay(r: TripRegistration): string | number {
+        return this.exactAge(r.birthday) ?? (r.ageCategory === 'adult' ? 'E' : this.ageCategoryLabels[r.ageCategory]);
+    }
+
     get confirmedCount(): number {
         return this.registrations.filter((r) => r.status === 'confirmed').length;
     }
@@ -328,6 +333,7 @@ export class TripRegistrationsComponent implements OnInit {
     }
 
     isMinor = isMinor;
+    minorState = minorState;
     guardianOf = guardianOf;
 
     onBack(): void {
@@ -413,6 +419,7 @@ export class TripRegistrationsComponent implements OnInit {
             sportType: registration.sportType,
             registeredById: registration.registeredById,
             guardianName: registration.guardianName,
+            guardianType: registration.guardianType,
             guardianConsent: registration.guardianConsent,
             ...overrides,
         };

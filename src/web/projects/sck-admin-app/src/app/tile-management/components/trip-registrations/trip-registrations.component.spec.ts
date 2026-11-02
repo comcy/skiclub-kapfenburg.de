@@ -191,6 +191,12 @@ describe('TripRegistrationsComponent', () => {
         });
     });
 
+    it('ageDisplay: exaktes Alter, sonst "E" für Erwachsene, Gruppenname für Jugend/Kind', () => {
+        expect(component.ageDisplay(makeRegistration({ ageCategory: 'adult' }))).toBe('E');
+        expect(component.ageDisplay(makeRegistration({ ageCategory: 'youthUntil16' }))).toBe('Jugend (bis 16)');
+        expect(typeof component.ageDisplay(makeRegistration({ birthday: '1990-01-01' }))).toBe('number');
+    });
+
     describe('groups (Hauptanmelder)', () => {
         it('stellt Hauptanmelder oben und Angemeldete darunter (gleicher Zustieg), sonst allein; sortiert nach Nachname', () => {
             component.registrations = [

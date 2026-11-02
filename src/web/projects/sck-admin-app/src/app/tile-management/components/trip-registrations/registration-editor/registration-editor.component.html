@@ -119,14 +119,22 @@
 
         @if (minor) {
             <div class="minor-box">
+                <mat-radio-group class="guardian-type" [(ngModel)]="registration.guardianType">
+                    <mat-radio-button value="parent">Elternteil nimmt teil</mat-radio-button>
+                    <mat-radio-button value="other">Anderer Erwachsener übernimmt die Aufsicht</mat-radio-button>
+                </mat-radio-group>
                 <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Erziehungsberechtigte(r)</mat-label>
+                    <mat-label>{{
+                        registration.guardianType === 'other' ? 'Aufsichtsperson' : 'Erziehungsberechtigte(r)'
+                    }}</mat-label>
                     <input matInput [(ngModel)]="registration.guardianName" [placeholder]="headName" />
                     <mat-hint>Leer = Hauptanmelder{{ headName ? ' (' + headName + ')' : '' }}</mat-hint>
                 </mat-form-field>
-                <mat-checkbox [(ngModel)]="registration.guardianConsent">
-                    Einverständniserklärung der Eltern liegt vor
-                </mat-checkbox>
+                @if (registration.guardianType !== 'parent') {
+                    <mat-checkbox [(ngModel)]="registration.guardianConsent">
+                        Einverständniserklärung der Eltern liegt vor
+                    </mat-checkbox>
+                }
             </div>
         }
 

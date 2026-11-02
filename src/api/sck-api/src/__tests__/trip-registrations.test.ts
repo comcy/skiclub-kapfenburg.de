@@ -338,16 +338,18 @@ describe('Trip Registrations Routes', () => {
       const created = await request(app)
         .post(`/api/tiles/${tileId}/registrations`)
         .set('Authorization', auth)
-        .send({ ...base, guardianName: ' Markus Mayer ', guardianConsent: true });
+        .send({ ...base, guardianName: ' Markus Mayer ', guardianType: 'parent', guardianConsent: true });
       expect(created.status).toBe(201);
       expect(created.body.guardianName).toBe('Markus Mayer');
       expect(created.body.guardianConsent).toBe(true);
+      expect(created.body.guardianType).toBe('parent');
       const updated = await request(app)
         .put(`/api/registrations/${created.body.id}`)
         .set('Authorization', auth)
         .send({ ...base, guardianConsent: false });
       expect(updated.body.guardianName).toBeUndefined();
       expect(updated.body.guardianConsent).toBe(false);
+      expect(updated.body.guardianType).toBeUndefined();
     });
 
     it('Hauptanmelder: weitere Personen sind über ihn angemeldet, manuelle Mail geht nur an ihn', async () => {
