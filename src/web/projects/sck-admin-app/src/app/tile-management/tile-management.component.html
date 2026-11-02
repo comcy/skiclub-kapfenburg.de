@@ -1,4 +1,5 @@
-<shared-lib-site-header [title]="title" [color]="undefined"></shared-lib-site-header>
+<!-- Abschnittsname steht bereits im Menü links: nur für Screenreader, spart Platz oberhalb der Inhalte -->
+<h1 class="sr-only">{{ title }}</h1>
 
 @if (navLinks.length) {
     <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="no-print">
