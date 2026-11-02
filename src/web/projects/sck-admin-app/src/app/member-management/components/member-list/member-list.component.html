@@ -71,6 +71,13 @@
                 <mat-option value="yes">Nur Lehrteam</mat-option>
             </mat-select>
         </mat-form-field>
+
+        @if (hasActiveFilters) {
+            <button mat-stroked-button type="button" class="reset-filters" (click)="resetFilters()">
+                <mat-icon>filter_alt_off</mat-icon>
+                Zurücksetzen
+            </button>
+        }
     </div>
 </app-collapsible-filters>
 
