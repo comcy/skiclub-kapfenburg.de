@@ -153,8 +153,35 @@
                                     @if (news.isNew(registration.createdAt, seenBefore)) {
                                         <span class="badge-new">Neu</span>
                                     }
-                                    @if (registration.registeredByName) {
+                                    @if (
+                                        registration.registeredByName &&
+                                        (!isMinor(registration) || registration.guardianName)
+                                    ) {
                                         <div class="registered-by">über {{ registration.registeredByName }}</div>
+                                    }
+                                    @if (isMinor(registration)) {
+                                        <div
+                                            class="minor-info"
+                                            [class.minor-missing]="!registration.guardianConsent"
+                                            [matTooltip]="
+                                                registration.guardianConsent
+                                                    ? 'Einverständniserklärung der Eltern liegt vor'
+                                                    : 'Einverständniserklärung der Eltern fehlt'
+                                            "
+                                        >
+                                            <mat-icon>{{
+                                                registration.guardianConsent ? 'verified_user' : 'warning'
+                                            }}</mat-icon>
+                                            Minderjährig{{
+                                                guardianOf(registration) ? ' · ' + guardianOf(registration) : ''
+                                            }}
+                                            ·
+                                            {{
+                                                registration.guardianConsent
+                                                    ? 'Einverständnis ✓'
+                                                    : 'Einverständnis fehlt'
+                                            }}
+                                        </div>
                                     }
                                     @if (registration.participantRole === 'organizer') {
                                         <span class="badge-organizer" matTooltip="Organisator der Ausfahrt"
@@ -318,6 +345,8 @@
                         <th>Alter</th>
                         <th>Telefon</th>
                         <th>Mitgl.</th>
+                        <th>Erziehungsberechtigte(r)</th>
+                        <th>Einverst.</th>
                         <th>Leistungen</th>
                         <th class="num">Preis</th>
                     </tr>
@@ -326,11 +355,11 @@
                     <tbody [class]="group.waitlist ? 'bc-wait' : 'bc-' + (gi % 6)">
                         @if (gi > 0) {
                             <tr class="print-gap">
-                                <td colspan="6"></td>
+                                <td colspan="8"></td>
                             </tr>
                         }
                         <tr>
-                            <td colspan="6" class="print-group">
+                            <td colspan="8" class="print-group">
                                 {{ group.boardingName }}
                                 @if (!group.waitlist) {
                                     <span class="print-group-sum">
@@ -348,7 +377,10 @@
                                     } @else if (registration.participantRole === 'teachingTeam') {
                                         <em>(Lehrteam)</em>
                                     }
-                                    @if (registration.registeredByName) {
+                                    @if (
+                                        registration.registeredByName &&
+                                        (!isMinor(registration) || registration.guardianName)
+                                    ) {
                                         <em>über {{ registration.registeredByName }}</em>
                                     }
                                     @if (registration.status === 'waitlist') {
@@ -362,6 +394,14 @@
                                 </td>
                                 <td>{{ registration.phone || '' }}</td>
                                 <td>{{ registration.isMember ? 'ja' : '–' }}</td>
+                                <td>{{ isMinor(registration) ? (guardianOf(registration) ?? '—') : '' }}</td>
+                                <td>
+                                    @if (isMinor(registration)) {
+                                        <strong [class.print-missing]="!registration.guardianConsent">{{
+                                            registration.guardianConsent ? '✓ ja' : '✗ fehlt'
+                                        }}</strong>
+                                    }
+                                </td>
                                 <td>{{ servicesText(registration) }}</td>
                                 <td class="num">
                                     @if (pricesByRegistrationId.has(registration.id)) {
@@ -374,7 +414,7 @@
                 }
                 <tfoot>
                     <tr>
-                        <td colspan="5">Gesamt (ohne Warteliste)</td>
+                        <td colspan="7">Gesamt (ohne Warteliste)</td>
                         <td class="num">{{ grandTotal }}&nbsp;€</td>
                     </tr>
                 </tfoot>

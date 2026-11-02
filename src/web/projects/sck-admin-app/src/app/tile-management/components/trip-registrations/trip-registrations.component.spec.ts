@@ -20,6 +20,7 @@ const makeRegistration = (overrides: Partial<TripRegistration> = {}): TripRegist
     source: 'manual',
     orderIndex: 0,
     transferredToExternalList: false,
+    guardianConsent: false,
     confirmationMailSent: false,
     busOnly: false,
     snowshoes: false,

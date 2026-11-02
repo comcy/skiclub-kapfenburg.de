@@ -328,6 +328,28 @@ describe('Trip Registrations Routes', () => {
       expect(list.body.every((r: any) => r.confirmationMailSent === true)).toBe(true);
     });
 
+    it('speichert Erziehungsberechtigte(n) und Einverständnis, PUT überschreibt sie', async () => {
+      const tileId = createTile(10);
+      const auth = `Bearer ${createAuthedUser(['tiles:write'])}`;
+      const base = {
+        firstName: 'Kind', lastName: 'Mayer', ageCategory: 'youthUntil16', isMember: false, status: 'confirmed', source: 'manual',
+        busOnly: false, snowshoes: false, courseRequested: false, transferredToExternalList: false, orderIndex: 0,
+      };
+      const created = await request(app)
+        .post(`/api/tiles/${tileId}/registrations`)
+        .set('Authorization', auth)
+        .send({ ...base, guardianName: ' Markus Mayer ', guardianConsent: true });
+      expect(created.status).toBe(201);
+      expect(created.body.guardianName).toBe('Markus Mayer');
+      expect(created.body.guardianConsent).toBe(true);
+      const updated = await request(app)
+        .put(`/api/registrations/${created.body.id}`)
+        .set('Authorization', auth)
+        .send({ ...base, guardianConsent: false });
+      expect(updated.body.guardianName).toBeUndefined();
+      expect(updated.body.guardianConsent).toBe(false);
+    });
+
     it('Hauptanmelder: weitere Personen sind über ihn angemeldet, manuelle Mail geht nur an ihn', async () => {
       const tileId = createTile(10);
       await request(app)
