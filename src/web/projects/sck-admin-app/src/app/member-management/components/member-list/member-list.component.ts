@@ -64,7 +64,10 @@ export class MemberListComponent implements OnInit {
     // filtered/paginated client-side, no reason to round-trip to the API for
     // every keystroke or page click.
     // Zeilen-Info pro Mitglied: Familien-Kind (eingerückt unter dem Hauptanmelder), Block-Index für die Färbung.
-    private rowInfo = new Map<string, { child: boolean; block: number; family?: boolean; head?: Member }>();
+    private rowInfo = new Map<
+        string,
+        { child: boolean; block: number; family?: boolean; last?: boolean; head?: Member }
+    >();
 
     isFamilyChild(member: Member): boolean {
         return this.rowInfo.get(member.id)?.child ?? false;
@@ -78,6 +81,10 @@ export class MemberListComponent implements OnInit {
     // Zeile gehört zu einer Familie (>= 2 Mitglieder in der Liste) -> Gruppierungs-Balken links.
     isFamilyRow(member: Member): boolean {
         return this.rowInfo.get(member.id)?.family ?? false;
+    }
+
+    isFamilyEnd(member: Member): boolean {
+        return this.rowInfo.get(member.id)?.last ?? false;
     }
 
     familyHeadName(member: Member): string {
@@ -108,8 +115,8 @@ export class MemberListComponent implements OnInit {
             const [head, ...children] = [...group].sort(familyHeadOrder);
             this.rowInfo.set(head.id, { child: false, block, family: true });
             result.push(head);
-            for (const child of children) {
-                this.rowInfo.set(child.id, { child: true, block, family: true, head });
+            for (const [i, child] of children.entries()) {
+                this.rowInfo.set(child.id, { child: true, block, family: true, last: i === children.length - 1, head });
                 result.push(child);
             }
             block++;
