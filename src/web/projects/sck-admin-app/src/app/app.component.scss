@@ -46,6 +46,32 @@
         --mdc-icon-button-icon-color: var(--mat-sys-on-primary);
     }
 
+    // Wer gerade noch im Admin unterwegs ist: Kürzel (Vor-/Nachname), Tooltip mit Name, Seite und Zeit.
+    .online-users {
+        display: flex;
+        gap: 4px;
+        margin-right: 8px;
+    }
+
+    .online-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 28px;
+        height: 28px;
+        padding: 0 4px;
+        border-radius: 14px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: default;
+        background: color-mix(in srgb, var(--mat-sys-on-primary) 22%, transparent);
+        color: var(--mat-sys-on-primary);
+
+        &.online-me {
+            outline: 2px solid var(--mat-sys-on-primary);
+        }
+    }
+
     .user-email {
         font-size: 14px;
         // Matches the plain nav items in sck-app's own header (icon + label,

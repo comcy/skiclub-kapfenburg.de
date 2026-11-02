@@ -64,7 +64,7 @@ const nowIso = (): string => new Date().toISOString();
 const addMs = (ms: number): string => new Date(Date.now() + ms).toISOString();
 
 const generateToken = (): string => randomBytes(32).toString('hex');
-const hashToken = (token: string): string => createHash('sha256').update(token).digest('hex');
+export const hashToken = (token: string): string => createHash('sha256').update(token).digest('hex');
 
 interface UserRow {
   id: string;

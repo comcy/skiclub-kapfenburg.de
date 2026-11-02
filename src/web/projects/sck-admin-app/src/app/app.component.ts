@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { environment } from '../environments/environment';
 import { AuthService } from './auth/services/auth.service';
 import { NewsService } from './shared/services/news.service';
+import { PresenceService, pageLabel } from './shared/services/presence.service';
 import { ThemeSwitcherComponent } from './theme/theme-switcher/theme-switcher.component';
 
 interface NavItem {
@@ -37,6 +38,8 @@ export class AppComponent implements OnInit {
     public readonly auth = inject(AuthService);
     private readonly router = inject(Router);
     private readonly news = inject(NewsService);
+    public readonly presence = inject(PresenceService);
+    public readonly pageLabel = pageLabel;
     private readonly destroyRef = inject(DestroyRef);
 
     title = 'SCK Admin';
