@@ -187,10 +187,31 @@ tr.family-child-row td.mat-column-name {
 }
 
 // Familien: farbiger Balken links über alle zusammengehörigen Zeilen; aufeinanderfolgende Familien wechseln den Ton.
+// Am Anfang/Ende einer Familie ist der Balken eingezogen -> sichtbare Lücke zwischen zwei Familien.
 tr.family-row td:first-child {
-    box-shadow: inset 4px 0 0 var(--mat-sys-primary);
+    position: relative;
 }
 
-tr.family-row.block-tint td:first-child {
-    box-shadow: inset 4px 0 0 var(--mat-sys-tertiary);
+tr.family-row td:first-child::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--mat-sys-primary);
+}
+
+tr.family-row.block-tint td:first-child::before {
+    background: var(--mat-sys-tertiary);
+}
+
+tr.family-row:not(.family-child-row) td:first-child::before {
+    top: 8px;
+    border-radius: 2px 2px 0 0;
+}
+
+tr.family-row.family-end td:first-child::before {
+    bottom: 8px;
+    border-radius: 0 0 2px 2px;
 }
