@@ -167,7 +167,7 @@ export const updateTripRegistration: RequestHandler = (req, res) => {
 };
 
 // Manueller Versand der Bestätigungsmail: immer an den Hauptanmelder (bei über ihn Angemeldeten also nicht an
-// die Person selbst), enthält alle über ihn Angemeldeten. Kein BCC, keine Info-Mails an Dritte.
+// die Person selbst), enthält alle über ihn Angemeldeten. BCC wie bei der automatischen Mail (Organisatoren bzw. globale BCC), keine Info-Mails an Dritte.
 export const sendTripRegistrationConfirmation: RequestHandler = async (req, res) => {
   try {
     const registration = registrationsService.getRegistration(String(req.params.id));
@@ -191,6 +191,7 @@ export const sendTripRegistrationConfirmation: RequestHandler = async (req, res)
       contact.email,
       getTripConfirmationMailSubject(contact.firstName, contact.status),
       getTripConfirmationMailText(tile, contact, members, info),
+      getTripConfirmationMailBcc(tile),
     );
     if (sent) registrationsService.markConfirmationMailSent(members.map((m) => m.id));
     res.status(200).json({ sent, recipient: contact.email, recipientName: `${contact.firstName} ${contact.lastName}` });

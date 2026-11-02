@@ -353,7 +353,7 @@ describe('Trip Registrations Routes', () => {
       expect(mockedSendMail).toHaveBeenCalledTimes(1);
       const mail = mockedSendMail.mock.calls[0][0] as any;
       expect(mail.to).toBe('kontakt@test.com');
-      expect(mail.bcc).toBeUndefined();
+      expect(mail.bcc).toContain('registration@skiclub-kapfenburg.de');
       expect(mail.html).toContain('Zweite');
 
       // Hauptanmelder ohne E-Mail -> 400
