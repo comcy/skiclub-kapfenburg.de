@@ -324,6 +324,11 @@
                 </thead>
                 @for (group of groups; track group.boardingName; let gi = $index) {
                     <tbody [class]="group.waitlist ? 'bc-wait' : 'bc-' + (gi % 6)">
+                        @if (gi > 0) {
+                            <tr class="print-gap">
+                                <td colspan="6"></td>
+                            </tr>
+                        }
                         <tr>
                             <td colspan="6" class="print-group">
                                 {{ group.boardingName }}
@@ -342,6 +347,9 @@
                                         <em>(Orga)</em>
                                     } @else if (registration.participantRole === 'teachingTeam') {
                                         <em>(Lehrteam)</em>
+                                    }
+                                    @if (registration.registeredByName) {
+                                        <em>über {{ registration.registeredByName }}</em>
                                     }
                                     @if (registration.status === 'waitlist') {
                                         <em>(Warteliste)</em>
