@@ -231,8 +231,8 @@ export class TripRegistrationsComponent implements OnInit {
 
     // Banner: Unregelmäßigkeiten der Liste; ein Klick auf "Anzeigen" filtert die Tabelle darauf.
     public activeAlert: RegistrationAlertKey | null = null;
-    // Mobil zunächst eingeklappt (sonst bleibt kaum Platz für die Tabelle).
-    public showAlerts = window.innerWidth > 600;
+    // Standardmäßig eingeklappt (mehr Platz für die Tabelle).
+    public showAlerts = false;
     public readonly alertDefs: { key: RegistrationAlertKey; icon: string; warn: boolean; text: string }[] = [
         {
             key: 'minors',

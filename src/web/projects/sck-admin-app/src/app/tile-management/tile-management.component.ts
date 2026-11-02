@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
-import { SiteHeaderComponent } from '@shared/ui-common';
 
 export interface SectionNavLink {
     label: string;
@@ -17,7 +16,7 @@ export interface SectionNavLink {
 @Component({
     selector: 'app-tile-management',
     standalone: true,
-    imports: [CommonModule, RouterModule, MatTabsModule, SiteHeaderComponent],
+    imports: [CommonModule, RouterModule, MatTabsModule],
     templateUrl: './tile-management.component.html',
     styleUrls: ['./tile-management.component.scss'],
 })
