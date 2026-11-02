@@ -9,21 +9,50 @@
     <div class="page-content">
         <div class="print-title">{{ tile?.title }} — Anmeldungsliste</div>
 
-        <div class="tile-meta no-print">
-            <span class="meta-item"><strong>Datum:</strong> {{ tile?.date }}</span>
-            @if (tile?.subTitle) {
-                <span class="meta-item"><strong>Untertitel:</strong> {{ tile!.subTitle }}</span>
+        <div class="print-info">
+            <span>{{ tile?.date }}</span>
+            @if (organizerNames) {
+                <span><strong>Organisation:</strong> {{ organizerNames }}</span>
             }
-            <span class="meta-item">
-                <strong>Status:</strong>
-                <span
-                    class="chip chip-tile-status"
-                    [class.chip-warn]="tile?.status === tileStatusEnum.BookedUp || isOverCapacity"
-                    [class.chip-off]="tile?.status === tileStatusEnum.Canceled"
-                >
-                    {{ tileStatusLabel }}
+        </div>
+
+        <div class="header-row no-print">
+            <div class="tile-meta">
+                <span class="meta-item"><strong>Datum:</strong> {{ tile?.date }}</span>
+                @if (tile?.subTitle) {
+                    <span class="meta-item"><strong>Untertitel:</strong> {{ tile!.subTitle }}</span>
+                }
+                <span class="meta-item">
+                    <strong>Status:</strong>
+                    <span
+                        class="chip chip-tile-status"
+                        [class.chip-warn]="tile?.status === tileStatusEnum.BookedUp || isOverCapacity"
+                        [class.chip-off]="tile?.status === tileStatusEnum.Canceled"
+                    >
+                        {{ tileStatusLabel }}
+                    </span>
                 </span>
-            </span>
+                @if (organizerNames) {
+                    <span class="meta-item"><strong>Organisatoren:</strong> {{ organizerNames }}</span>
+                }
+            </div>
+
+            <div class="toolbar">
+                <button mat-stroked-button (click)="onPrint()">
+                    <mat-icon>print</mat-icon>
+                    Drucken
+                </button>
+                @if (auth.hasPermission('tiles:write')) {
+                    <button mat-stroked-button (click)="onBulkCreate()">
+                        <mat-icon>playlist_add</mat-icon>
+                        Mehrere hinzufügen
+                    </button>
+                    <button mat-raised-button color="primary" (click)="onCreate()">
+                        <mat-icon>add</mat-icon>
+                        Neue Anmeldung
+                    </button>
+                }
+            </div>
         </div>
 
         <div class="capacity-row no-print">
@@ -54,22 +83,41 @@
             @if (waitlistCount > 0) {
                 <div class="chip chip-waitlist">{{ waitlistCount }} auf der Warteliste</div>
             }
+            <button mat-button (click)="showConditions = !showConditions">
+                <mat-icon>{{ showConditions ? 'expand_less' : 'euro' }}</mat-icon>
+                Preise &amp; Konditionen
+            </button>
         </div>
 
-        <div class="toolbar no-print">
-            <button mat-stroked-button (click)="onPrint()">
-                <mat-icon>print</mat-icon>
-                Drucken
-            </button>
-            @if (auth.hasPermission('tiles:write')) {
-                <button mat-stroked-button (click)="onBulkCreate()">
-                    <mat-icon>playlist_add</mat-icon>
-                    Mehrere hinzufügen
-                </button>
-                <button mat-raised-button color="primary" (click)="onCreate()">
-                    <mat-icon>add</mat-icon>
-                    Neue Anmeldung
-                </button>
+        <div class="conditions" [class.open]="showConditions">
+            <div class="conditions-title print-only">Preise &amp; Konditionen</div>
+            @if (priceRows.length) {
+                <table class="conditions-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Mitglied</th>
+                            <th>Nicht-Mitglied</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (row of priceRows; track row.label) {
+                            <tr>
+                                <td>{{ row.label }}</td>
+                                <td>{{ row.member }}&nbsp;€</td>
+                                <td>{{ row.nonMember }}&nbsp;€</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            @if (fees) {
+                <div class="conditions-note">
+                    Organisatoren: {{ fees.organizer }}&nbsp;€ · Lehrteam: {{ fees.teachingTeam }}&nbsp;€ pro Person
+                </div>
+            }
+            @if (tile?.tripConfig?.adultsOnly) {
+                <div class="conditions-note">Nur Erwachsene</div>
             }
         </div>
 

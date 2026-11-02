@@ -76,13 +76,14 @@
 
 .capacity-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 24px;
     margin-bottom: 24px;
 }
 
 .capacity-bar-wrap {
-    flex: 1;
+    flex: 1 1 200px;
 }
 
 .capacity-label {
@@ -131,9 +132,9 @@
 
 .toolbar {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
     gap: 12px;
-    margin-bottom: 16px;
 }
 
 .registrations-table {
@@ -220,13 +221,71 @@ tr.row-waitlist td {
     text-decoration: line-through;
 }
 
+.header-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-bottom: 12px;
+}
+
+.print-info,
+.print-only {
+    display: none;
+}
+
+.conditions {
+    display: none;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface-container-low);
+    font-size: 13px;
+
+    &.open {
+        display: block;
+    }
+}
+
+.conditions-table {
+    border-collapse: collapse;
+
+    th {
+        text-align: left;
+        font-weight: 500;
+        padding: 2px 24px 2px 0;
+        color: var(--mat-sys-on-surface-variant);
+    }
+
+    td {
+        padding: 2px 24px 2px 0;
+    }
+}
+
+.conditions-note {
+    margin-top: 6px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.conditions-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
 .tile-meta {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 8px 24px;
-    margin-bottom: 20px;
     font-size: 14px;
     color: var(--mat-sys-on-surface-variant);
+}
+
+.meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .meta-item strong {
@@ -312,6 +371,23 @@ tr.row-waitlist td {
 
     .registrations-table th {
         position: static;
+    }
+
+    .print-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 24px;
+        margin-bottom: 12px;
+        font-size: 13px;
+    }
+
+    .conditions,
+    .print-only {
+        display: block;
+    }
+
+    .conditions {
+        margin-bottom: 12px;
     }
 
     .print-title {

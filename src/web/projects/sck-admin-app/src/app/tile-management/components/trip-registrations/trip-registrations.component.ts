@@ -16,11 +16,26 @@ import {
     TripRegistrationCreationParams,
 } from '../../domain/trip-registration';
 import { NewsService } from '../../../shared/services/news.service';
-import { Tile } from '../../domain/tile';
+import { TeachingTeamEntry, Tile } from '../../domain/tile';
+import { SettingsDataService } from '../../../settings/services/settings-data.service';
+import { ParticipationFeeSetting } from '../../../settings/domain/participation-fee-setting';
+import { TripPricingSetting } from '../../../settings/domain/trip-pricing-setting';
 import { TileStatus } from '../../domain/tile-enums';
 import { TilesDataService, TripPricePreviewParticipant } from '../../services/tiles-data.service';
 import { BulkRegistrationDialogComponent } from './bulk-registration-dialog/bulk-registration-dialog.component';
 import { RegistrationEditDialogComponent } from './registration-edit-dialog/registration-edit-dialog.component';
+
+interface PriceRow {
+    label: string;
+    member: number;
+    nonMember: number;
+}
+
+// Uhrzeit aus dem Abfahrtsort-Namen, z.B. "Westhausen Turnhalle (5:15 Uhr)" -> Minuten seit 0:00.
+export function boardingTimeMinutes(name: string): number | undefined {
+    const match = name.match(/(\d{1,2})[:.](\d{2})/);
+    return match ? Number(match[1]) * 60 + Number(match[2]) : undefined;
+}
 
 interface RegistrationGroup {
     boardingName: string;
@@ -43,9 +58,14 @@ export class TripRegistrationsComponent implements OnInit {
     public readonly news = inject(NewsService);
     private readonly dialog = inject(MatDialog);
     private readonly snackBar = inject(MatSnackBar);
+    private readonly settings = inject(SettingsDataService);
     public readonly auth = inject(AuthService);
 
     public tile: Tile | null = null;
+    public organizers: TeachingTeamEntry[] = [];
+    public globalPricing: TripPricingSetting = {};
+    public fees: ParticipationFeeSetting | null = null;
+    public showConditions = false;
     public seenBefore: string | null = null;
     public registrations: TripRegistration[] = [];
     public tileId!: string;
@@ -65,6 +85,18 @@ export class TripRegistrationsComponent implements OnInit {
         this.tileId = String(this.route.snapshot.paramMap.get('tileId'));
         this.dataService.getTile(this.tileId).subscribe((tile) => {
             this.tile = tile;
+            this.cdr.markForCheck();
+        });
+        this.dataService.getTeachingTeam().subscribe((team) => {
+            this.organizers = team;
+            this.cdr.markForCheck();
+        });
+        this.settings.getTripPricing().subscribe((pricing) => {
+            this.globalPricing = pricing;
+            this.cdr.markForCheck();
+        });
+        this.settings.getParticipationFees().subscribe((fees) => {
+            this.fees = fees;
             this.cdr.markForCheck();
         });
         // Liste gilt ab jetzt als gesehen; die Neu-Badges dieses Besuchs richten sich nach dem vorherigen Stand.
@@ -123,6 +155,41 @@ export class TripRegistrationsComponent implements OnInit {
             (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
         if (!hadBirthdayThisYear) age -= 1;
         return age;
+    }
+
+    get organizerNames(): string {
+        const ids = this.tile?.responsibleMemberIds ?? [];
+        return this.organizers
+            .filter((m) => ids.includes(m.id))
+            .map((m) => `${m.firstName} ${m.lastName}`)
+            .join(', ');
+    }
+
+    // Wirksame Preise wie auf der öffentlichen Seite: eigene Preise der Ausfahrt, sonst globale Preisverwaltung.
+    get priceRows(): PriceRow[] {
+        const cfg = this.tile?.tripConfig;
+        const own = cfg?.pricing;
+        const hasOwn = !!(own && (own.busLift || own.busOnly || own.addons));
+        const base = hasOwn ? own! : this.globalPricing;
+        const rows: PriceRow[] = [];
+        const ages: RegistrationAgeCategory[] = cfg?.adultsOnly ? ['adult'] : ['adult', 'youthUntil16', 'childUntil6'];
+        for (const age of ages) {
+            const price = base.busLift?.[age];
+            if (price) rows.push({ label: `Bus + Lift – ${this.ageCategoryLabels[age]}`, ...price });
+        }
+        if (base.busOnly) rows.push({ label: 'Nur Busfahrt', ...base.busOnly });
+        const addons: [string, { member: number; nonMember: number } | undefined][] = [
+            ['Schneeschuhe', own?.addons?.snowshoes],
+            ...(cfg?.hasCourseOption
+                ? ([
+                      ['Anfängerkurs', base.addons?.courseBeginner],
+                      ['Techniktraining (1/2 Tag)', base.addons?.technikHalf],
+                      ['Techniktraining (ganzer Tag)', base.addons?.technikFull],
+                  ] as [string, { member: number; nonMember: number } | undefined][])
+                : []),
+        ];
+        for (const [label, price] of addons) if (price) rows.push({ label, ...price });
+        return rows;
     }
 
     get confirmedCount(): number {
@@ -185,7 +252,12 @@ export class TripRegistrationsComponent implements OnInit {
             byBoarding.get(key)!.push(registration);
         }
         const groups: RegistrationGroup[] = Array.from(byBoarding.entries())
-            .sort(([a], [b]) => a.localeCompare(b))
+            // Nach Abfahrtszeit; ohne erkennbare Uhrzeit ans Ende, dann nach Name.
+            .sort(([a], [b]) => {
+                const ta = boardingTimeMinutes(a) ?? Infinity;
+                const tb = boardingTimeMinutes(b) ?? Infinity;
+                return ta === tb ? a.localeCompare(b) : ta < tb ? -1 : 1;
+            })
             .map(([boardingName, registrations]) => ({ boardingName, registrations }));
         if (waitlist.length) {
             waitlist.sort((x, y) => (x.createdAt ?? '').localeCompare(y.createdAt ?? ''));
