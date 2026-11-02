@@ -487,8 +487,12 @@ tr.row-waitlist td {
         font-weight: 700;
         padding: 6px 8px;
         font-size: 13px;
-        border-top: 3px solid var(--bc);
         border-bottom: 1px solid #999;
+    }
+
+    .print-table td:first-child,
+    .print-table td:nth-child(3) {
+        white-space: nowrap;
     }
 
     .print-missing {
@@ -512,10 +516,6 @@ tr.row-waitlist td {
 
     .print-table td.linked-registration {
         padding-left: 18px;
-    }
-
-    .print-table tbody td:first-child {
-        border-left: 5px solid var(--bc);
     }
 
     .print-table tbody .print-group {

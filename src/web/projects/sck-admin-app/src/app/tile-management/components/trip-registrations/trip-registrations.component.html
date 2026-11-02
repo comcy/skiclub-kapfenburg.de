@@ -345,7 +345,8 @@
                         <th>Alter</th>
                         <th>Telefon</th>
                         <th>Mitgl.</th>
-                        <th>Eltern-EV</th>
+                        <th>Erziehungsberechtigte(r)</th>
+                        <th>Einverst.</th>
                         <th>Leistungen</th>
                         <th class="num">Preis</th>
                     </tr>
@@ -354,11 +355,11 @@
                     <tbody [class]="group.waitlist ? 'bc-wait' : 'bc-' + (gi % 6)">
                         @if (gi > 0) {
                             <tr class="print-gap">
-                                <td colspan="7"></td>
+                                <td colspan="8"></td>
                             </tr>
                         }
                         <tr>
-                            <td colspan="7" class="print-group">
+                            <td colspan="8" class="print-group">
                                 {{ group.boardingName }}
                                 @if (!group.waitlist) {
                                     <span class="print-group-sum">
@@ -382,15 +383,6 @@
                                     ) {
                                         <em>über {{ registration.registeredByName }}</em>
                                     }
-                                    @if (isMinor(registration)) {
-                                        <em
-                                            >minderjährig{{
-                                                guardianOf(registration)
-                                                    ? ', Erziehungsber.: ' + guardianOf(registration)
-                                                    : ''
-                                            }}</em
-                                        >
-                                    }
                                     @if (registration.status === 'waitlist') {
                                         <em>(Warteliste)</em>
                                     } @else if (emergencyRegistrationIds.has(registration.id)) {
@@ -402,10 +394,11 @@
                                 </td>
                                 <td>{{ registration.phone || '' }}</td>
                                 <td>{{ registration.isMember ? 'ja' : '–' }}</td>
+                                <td>{{ isMinor(registration) ? (guardianOf(registration) ?? '—') : '' }}</td>
                                 <td>
                                     @if (isMinor(registration)) {
                                         <strong [class.print-missing]="!registration.guardianConsent">{{
-                                            registration.guardianConsent ? '✓ liegt vor' : '✗ fehlt'
+                                            registration.guardianConsent ? '✓ ja' : '✗ fehlt'
                                         }}</strong>
                                     }
                                 </td>
@@ -421,7 +414,7 @@
                 }
                 <tfoot>
                     <tr>
-                        <td colspan="6">Gesamt (ohne Warteliste)</td>
+                        <td colspan="7">Gesamt (ohne Warteliste)</td>
                         <td class="num">{{ grandTotal }}&nbsp;€</td>
                     </tr>
                 </tfoot>
