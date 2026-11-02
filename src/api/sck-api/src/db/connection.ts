@@ -548,6 +548,10 @@ if (!tripRegistrationColumns.some((c) => c.name === 'registered_by_id')) {
 if (!tripRegistrationColumns.some((c) => c.name === 'guardian_name')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN guardian_name TEXT;');
 }
+// 'parent' = Elternteil nimmt selbst teil, 'other' = anderer Erwachsener übernimmt die Aufsicht (Einverständnis der Eltern nötig).
+if (!tripRegistrationColumns.some((c) => c.name === 'guardian_type')) {
+  db.exec('ALTER TABLE trip_registrations ADD COLUMN guardian_type TEXT;');
+}
 if (!tripRegistrationColumns.some((c) => c.name === 'guardian_consent')) {
   db.exec('ALTER TABLE trip_registrations ADD COLUMN guardian_consent INTEGER NOT NULL DEFAULT 0;');
 }

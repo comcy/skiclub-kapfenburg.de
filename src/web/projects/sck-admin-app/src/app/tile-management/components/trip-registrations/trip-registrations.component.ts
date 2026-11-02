@@ -16,7 +16,7 @@ import {
     TripRegistrationCreationParams,
 } from '../../domain/trip-registration';
 import { NewsService } from '../../../shared/services/news.service';
-import { guardianOf, isMinor } from '../../domain/registration-minor';
+import { guardianOf, isMinor, minorState } from '../../domain/registration-minor';
 import { TeachingTeamEntry, Tile } from '../../domain/tile';
 import { SettingsDataService } from '../../../settings/services/settings-data.service';
 import { ParticipationFeeSetting } from '../../../settings/domain/participation-fee-setting';
@@ -160,10 +160,16 @@ export class TripRegistrationsComponent implements OnInit {
             courseRequested: r.courseRequested,
             level: r.level,
         }));
-        this.dataService.getTripPricePreview(this.tileId, participants).subscribe((result) => {
-            this.pricesByRegistrationId = new Map(registrations.map((r, i) => [r.id, result.prices[i]]));
-            this.cdr.markForCheck();
-        });
+        // Die API erlaubt höchstens 20 Teilnehmer pro Preisberechnung - größere Listen in Blöcken abfragen.
+        const chunks: TripPricePreviewParticipant[][] = [];
+        for (let i = 0; i < participants.length; i += 20) chunks.push(participants.slice(i, i + 20));
+        forkJoin(chunks.map((chunk) => this.dataService.getTripPricePreview(this.tileId, chunk))).subscribe(
+            (results) => {
+                const prices = results.flatMap((result) => result.prices);
+                this.pricesByRegistrationId = new Map(registrations.map((r, i) => [r.id, prices[i]]));
+                this.cdr.markForCheck();
+            },
+        );
     }
 
     // Birthday is a plain ISO date (see registration-editor.component.ts) -
@@ -215,6 +221,11 @@ export class TripRegistrationsComponent implements OnInit {
         ];
         for (const [label, price] of addons) if (price) rows.push({ label, ...price });
         return rows;
+    }
+
+    // Alter für die Tabelle: exakt, sonst Kürzel der Altersgruppe (E = Erwachsen, J = Jugend, K = Kind).
+    ageDisplay(r: TripRegistration): string | number {
+        return this.exactAge(r.birthday) ?? { adult: 'E', youthUntil16: 'J', childUntil6: 'K' }[r.ageCategory];
     }
 
     get confirmedCount(): number {
@@ -328,6 +339,7 @@ export class TripRegistrationsComponent implements OnInit {
     }
 
     isMinor = isMinor;
+    minorState = minorState;
     guardianOf = guardianOf;
 
     onBack(): void {
@@ -413,6 +425,7 @@ export class TripRegistrationsComponent implements OnInit {
             sportType: registration.sportType,
             registeredById: registration.registeredById,
             guardianName: registration.guardianName,
+            guardianType: registration.guardianType,
             guardianConsent: registration.guardianConsent,
             ...overrides,
         };

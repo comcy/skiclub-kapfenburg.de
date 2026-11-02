@@ -1,4 +1,4 @@
-import { guardianOf, isMinor } from './registration-minor';
+import { guardianOf, isMinor, minorState } from './registration-minor';
 
 describe('registration-minor', () => {
     const today = new Date(2027, 0, 23);
@@ -17,5 +17,13 @@ describe('registration-minor', () => {
         expect(guardianOf({ guardianName: 'Anna', registeredByName: 'Markus' })).toBe('Anna');
         expect(guardianOf({ registeredByName: 'Markus' })).toBe('Markus');
         expect(guardianOf({})).toBeUndefined();
+    });
+
+    it('Stand: Elternteil dabei / Einverständnis / offen / erwachsen', () => {
+        const kid = { birthday: '2015-01-01', ageCategory: 'youthUntil16' as const };
+        expect(minorState({ ...kid, guardianType: 'parent', guardianConsent: false })).toBe('parent');
+        expect(minorState({ ...kid, guardianType: 'other', guardianConsent: true })).toBe('consent');
+        expect(minorState({ ...kid, guardianConsent: false })).toBe('open');
+        expect(minorState({ birthday: '1980-01-01', ageCategory: 'adult', guardianConsent: false })).toBe('adult');
     });
 });

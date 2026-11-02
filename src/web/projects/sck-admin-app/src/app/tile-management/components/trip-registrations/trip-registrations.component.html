@@ -161,26 +161,16 @@
                                     }
                                     @if (isMinor(registration)) {
                                         <div
-                                            class="minor-info"
-                                            [class.minor-missing]="!registration.guardianConsent"
+                                            class="registered-by"
                                             [matTooltip]="
-                                                registration.guardianConsent
-                                                    ? 'Einverständniserklärung der Eltern liegt vor'
-                                                    : 'Einverständniserklärung der Eltern fehlt'
+                                                minorState(registration) === 'parent'
+                                                    ? 'Elternteil nimmt teil'
+                                                    : minorState(registration) === 'consent'
+                                                      ? 'Einverständniserklärung der Eltern liegt vor'
+                                                      : 'Einverständniserklärung der Eltern fehlt'
                                             "
                                         >
-                                            <mat-icon>{{
-                                                registration.guardianConsent ? 'verified_user' : 'warning'
-                                            }}</mat-icon>
-                                            Minderjährig{{
-                                                guardianOf(registration) ? ' · ' + guardianOf(registration) : ''
-                                            }}
-                                            ·
-                                            {{
-                                                registration.guardianConsent
-                                                    ? 'Einverständnis ✓'
-                                                    : 'Einverständnis fehlt'
-                                            }}
+                                            Minderjährig · {{ guardianOf(registration) ?? '—' }}
                                         </div>
                                     }
                                     @if (registration.participantRole === 'organizer') {
@@ -194,7 +184,32 @@
                                     }
                                 </td>
                                 <td>
-                                    {{ exactAge(registration.birthday) ?? ageCategoryLabels[registration.ageCategory] }}
+                                    {{ ageDisplay(registration) }}
+                                    @switch (minorState(registration)) {
+                                        @case ('parent') {
+                                            <mat-icon
+                                                class="minor-badge badge-ok"
+                                                [matTooltip]="
+                                                    'Elternteil nimmt teil: ' + (guardianOf(registration) ?? '')
+                                                "
+                                                >family_restroom</mat-icon
+                                            >
+                                        }
+                                        @case ('consent') {
+                                            <mat-icon
+                                                class="minor-badge badge-ok"
+                                                matTooltip="Einverständniserklärung der Eltern liegt vor"
+                                                >verified_user</mat-icon
+                                            >
+                                        }
+                                        @case ('open') {
+                                            <mat-icon
+                                                class="minor-badge badge-open"
+                                                matTooltip="Minderjährig: weder Elternteil dabei noch Einverständnis hinterlegt"
+                                                >warning</mat-icon
+                                            >
+                                        }
+                                    }
                                 </td>
                                 <td>{{ registration.phone || '–' }}</td>
                                 <td>{{ registration.boardingName || '–' }}</td>
@@ -341,14 +356,14 @@
             <table class="print-table">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Alter</th>
-                        <th>Telefon</th>
-                        <th>Mitgl.</th>
-                        <th>Erziehungsberechtigte(r)</th>
-                        <th>Einverst.</th>
-                        <th>Leistungen</th>
-                        <th class="num">Preis</th>
+                        <th class="w-name">Name</th>
+                        <th class="w-age">Alter</th>
+                        <th class="w-phone">Telefon</th>
+                        <th class="w-member">Mitgl.</th>
+                        <th class="w-guardian">Erziehungsber.</th>
+                        <th class="w-consent">Einverst.</th>
+                        <th class="w-services">Leistungen</th>
+                        <th class="num w-price">Preis</th>
                     </tr>
                 </thead>
                 @for (group of groups; track group.boardingName; let gi = $index) {
@@ -390,16 +405,22 @@
                                     }
                                 </td>
                                 <td>
-                                    {{ exactAge(registration.birthday) ?? ageCategoryLabels[registration.ageCategory] }}
+                                    {{ ageDisplay(registration) }}
                                 </td>
                                 <td>{{ registration.phone || '' }}</td>
                                 <td>{{ registration.isMember ? 'ja' : '–' }}</td>
                                 <td>{{ isMinor(registration) ? (guardianOf(registration) ?? '—') : '' }}</td>
                                 <td>
-                                    @if (isMinor(registration)) {
-                                        <strong [class.print-missing]="!registration.guardianConsent">{{
-                                            registration.guardianConsent ? '✓ ja' : '✗ fehlt'
-                                        }}</strong>
+                                    @switch (minorState(registration)) {
+                                        @case ('parent') {
+                                            <strong>✓ Elternteil dabei</strong>
+                                        }
+                                        @case ('consent') {
+                                            <strong>✓ ja</strong>
+                                        }
+                                        @case ('open') {
+                                            <strong class="print-missing">✗ fehlt</strong>
+                                        }
                                     }
                                 </td>
                                 <td>{{ servicesText(registration) }}</td>

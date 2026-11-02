@@ -54,6 +54,8 @@ export interface TripRegistration {
     registeredByName?: string;
     // Minderjährige: Erziehungsberechtigte(r) (leer = Hauptanmelder) und Einverständniserklärung der Eltern.
     guardianName?: string;
+    // 'parent': Elternteil nimmt selbst teil; 'other': anderer Erwachsener übernimmt die Aufsicht (Einverständnis nötig).
+    guardianType?: 'parent' | 'other';
     guardianConsent: boolean;
 }
 

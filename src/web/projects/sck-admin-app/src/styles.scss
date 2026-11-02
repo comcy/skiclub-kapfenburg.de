@@ -160,7 +160,12 @@ shared-lib-site-header {
     html,
     body,
     .body,
-    .content {
+    .content,
+    app-root,
+    app-tile-management,
+    .content-area,
+    .mat-mdc-tab-nav-panel {
+        display: block !important;
         height: auto !important;
         overflow: visible !important;
     }

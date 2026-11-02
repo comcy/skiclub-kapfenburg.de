@@ -50,6 +50,12 @@
 
 // Own choices from the registrant's public form (see the plan) - read-only
 // here, not form controls (the editor never overrides what was submitted).
+.guardian-type {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+}
+
 .minor-box {
     margin-bottom: 8px;
     padding: 12px 12px 4px;
