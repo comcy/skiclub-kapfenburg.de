@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { CollapsibleFiltersComponent } from '../../../shared/components/collapsible-filters/collapsible-filters.component';
 import { familyHeadOrder } from '../../domain/family-head';
@@ -51,6 +51,7 @@ export class MemberListComponent implements OnInit {
     private readonly dataService = inject(MembersDataService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
     private readonly dialog = inject(MatDialog);
     private readonly memberChanges = inject(MemberChangesService);
     public readonly auth = inject(AuthService);
@@ -142,6 +143,15 @@ export class MemberListComponent implements OnInit {
         .subscribe(() => this.refresh());
 
     ngOnInit(): void {
+        // Filter-/Seitenzustand aus der URL wiederherstellen (Deep-Link, Reload, Zurück-Button).
+        const q = this.route.snapshot.queryParamMap;
+        this.searchText = q.get('q') ?? '';
+        this.filterStatus = q.get('status') ?? '';
+        this.filterSource = q.get('source') ?? '';
+        this.filterBirthday = q.get('birthday') ?? '';
+        this.filterTeam = q.get('team') ?? '';
+        this.filterSince = q.get('since') ?? '';
+        this.pageIndex = Math.max(0, Number(q.get('page')) || 0);
         this.refresh();
     }
 
@@ -149,7 +159,6 @@ export class MemberListComponent implements OnInit {
         this.dataService.getMembers(1, 1000).subscribe((response) => {
             this.allMembers = response.items;
             this.alerts = memberAgeAlerts(this.allMembers);
-            this.pageIndex = 0;
             this.applyFilters();
         });
     }
@@ -163,6 +172,46 @@ export class MemberListComponent implements OnInit {
     showOnly(filter: 'missing' | 'adult18'): void {
         this.filterBirthday = filter;
         this.onFilterChange();
+    }
+
+    get hasActiveFilters(): boolean {
+        return !!(
+            this.searchText ||
+            this.filterStatus ||
+            this.filterSource ||
+            this.filterBirthday ||
+            this.filterTeam ||
+            this.filterSince
+        );
+    }
+
+    resetFilters(): void {
+        this.searchText =
+            this.filterStatus =
+            this.filterSource =
+            this.filterBirthday =
+            this.filterTeam =
+            this.filterSince =
+                '';
+        this.onFilterChange();
+    }
+
+    private syncUrl(): void {
+        const queryParams = {
+            q: this.searchText.trim() || null,
+            status: this.filterStatus || null,
+            source: this.filterSource || null,
+            birthday: this.filterBirthday || null,
+            team: this.filterTeam || null,
+            since: this.filterSince || null,
+            page: this.pageIndex || null,
+        };
+        void this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams,
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+        });
     }
 
     onPageChange(event: PageEvent): void {
@@ -191,6 +240,7 @@ export class MemberListComponent implements OnInit {
         this.totalFiltered = filtered.length;
         const start = this.pageIndex * this.pageSize;
         this.pagedMembers = this.filteredMembers.slice(start, start + this.pageSize);
+        this.syncUrl();
         this.cdr.markForCheck();
     }
 
