@@ -132,6 +132,8 @@ export class MemberListComponent implements OnInit {
     public filterStatus = '';
     public filterSource = '';
     public filterTeam = '';
+    // ISO-Datum (yyyy-mm-dd) aus <input type="date">: nur Mitglieder mit Eintritt ab diesem Tag.
+    public filterSince = '';
     public pageIndex = 0;
     public pageSize = 20;
 
@@ -175,6 +177,7 @@ export class MemberListComponent implements OnInit {
             if (this.filterStatus && member.status !== this.filterStatus) return false;
             if (this.filterSource && member.source !== this.filterSource) return false;
             if (this.filterTeam && !member.isTeachingTeam) return false;
+            if (this.filterSince && (member.memberSince ?? '') < this.filterSince) return false;
             if (this.filterBirthday === 'missing' && (member.birthday || member.status !== 'active')) return false;
             if (this.filterBirthday === 'adult18' && !this.alerts.overdue.includes(member)) return false;
             if (search) {
