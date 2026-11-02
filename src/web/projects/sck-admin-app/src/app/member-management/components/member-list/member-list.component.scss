@@ -185,3 +185,12 @@ tr.family-child-row td.mat-column-name {
 .reset-filters {
     height: 56px;
 }
+
+// Familien: farbiger Balken links über alle zusammengehörigen Zeilen; aufeinanderfolgende Familien wechseln den Ton.
+tr.family-row td:first-child {
+    box-shadow: inset 4px 0 0 var(--mat-sys-primary);
+}
+
+tr.family-row.block-tint td:first-child {
+    box-shadow: inset 4px 0 0 var(--mat-sys-tertiary);
+}
