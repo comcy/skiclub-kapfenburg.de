@@ -307,6 +307,25 @@ export class TripRegistrationsComponent implements OnInit {
         return groups;
     }
 
+    // Druckansicht: gebuchte Leistungen in einer Zeile (Bus/Lift, Schneeschuhe, Kurs) - der Preis enthält sie bereits.
+    servicesText(r: TripRegistration): string {
+        const parts = [r.busOnly ? 'Nur Bus' : 'Bus + Lift'];
+        if (r.snowshoes) parts.push('Schneeschuhe');
+        if (r.courseRequested) {
+            parts.push(`Kurs${r.level ? ': ' + r.level : ''}${r.sportType ? ' (' + r.sportType + ')' : ''}`);
+        }
+        return parts.join(' · ');
+    }
+
+    groupTotal(group: RegistrationGroup): number {
+        return group.registrations.reduce((sum, r) => sum + (this.pricesByRegistrationId.get(r.id) ?? 0), 0);
+    }
+
+    // Summe aller bestätigten Anmeldungen (Warteliste zahlt noch nicht).
+    get grandTotal(): number {
+        return this.groups.filter((g) => !g.waitlist).reduce((sum, g) => sum + this.groupTotal(g), 0);
+    }
+
     onBack(): void {
         this.router.navigate(['registrations', 'ausfahrten']);
     }

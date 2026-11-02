@@ -240,7 +240,8 @@ tr.row-waitlist td {
 }
 
 .print-info,
-.print-only {
+.print-only,
+.print-list {
     display: none;
 }
 
@@ -368,6 +369,10 @@ tr.row-waitlist td {
 }
 
 @media print {
+    @page {
+        margin: 8mm;
+    }
+
     .page-content {
         display: block;
         overflow: visible;
@@ -375,19 +380,15 @@ tr.row-waitlist td {
     }
 
     .page-content > .table-scroll {
-        overflow: visible;
-    }
-
-    .registrations-table th {
-        position: static;
+        display: none;
     }
 
     .print-info {
         display: flex;
         flex-wrap: wrap;
-        gap: 4px 24px;
-        margin-bottom: 12px;
-        font-size: 13px;
+        gap: 2px 16px;
+        margin-bottom: 6px;
+        font-size: 11px;
     }
 
     .conditions,
@@ -396,19 +397,135 @@ tr.row-waitlist td {
     }
 
     .conditions {
-        margin-bottom: 12px;
+        margin-bottom: 8px;
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+
+    .conditions-table td,
+    .conditions-table th {
+        padding: 0 16px 0 0;
     }
 
     .print-title {
         display: block;
-        font-size: 22px;
+        font-size: 16px;
         font-weight: 700;
-        margin-bottom: 16px;
+        margin-bottom: 4px;
     }
 
-    .group-heading {
-        background: none;
-        padding: 14px 12px 4px;
+    .print-list {
+        display: block;
+    }
+
+    .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+
+        th {
+            text-align: left;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-bottom: 1px solid #000;
+        }
+
+        td {
+            padding: 4px 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .num {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        tbody {
+            break-inside: avoid-page;
+        }
+
+        tr {
+            break-inside: avoid;
+        }
+
+        em {
+            font-style: normal;
+            color: #555;
+            margin-left: 4px;
+        }
+
+        tfoot td {
+            font-weight: 700;
+            border-top: 1px solid #000;
+            padding-top: 3px;
+        }
+    }
+
+    // Zustiegsorte farblich unterscheidbar (Überschrift + linker Balken der Zeilen).
+    .print-group {
+        font-weight: 700;
+        padding: 6px 8px;
+        font-size: 13px;
+        border-top: 3px solid var(--bc);
+        border-bottom: 1px solid #999;
+    }
+
+    .print-table .print-gap td {
+        height: 18px;
+        padding: 0;
+        border: 0;
+    }
+
+    .print-group-sum {
+        float: right;
+        font-weight: 500;
+    }
+
+    .print-table tbody tr {
+        background: none !important;
+    }
+
+    .print-table td.linked-registration {
+        padding-left: 18px;
+    }
+
+    .print-table tbody td:first-child {
+        border-left: 5px solid var(--bc);
+    }
+
+    .print-table tbody .print-group {
+        background: var(--bc-bg);
+    }
+
+    .bc-0 {
+        --bc: #1e88e5;
+        --bc-bg: #dbeafe;
+    }
+    .bc-1 {
+        --bc: #43a047;
+        --bc-bg: #dcfce7;
+    }
+    .bc-2 {
+        --bc: #fb8c00;
+        --bc-bg: #ffedd5;
+    }
+    .bc-3 {
+        --bc: #8e24aa;
+        --bc-bg: #f3e8ff;
+    }
+    .bc-4 {
+        --bc: #e53935;
+        --bc-bg: #fee2e2;
+    }
+    .bc-5 {
+        --bc: #00897b;
+        --bc-bg: #ccfbf1;
+    }
+    .bc-wait {
+        --bc: #757575;
+        --bc-bg: #e5e7eb;
     }
 }
 

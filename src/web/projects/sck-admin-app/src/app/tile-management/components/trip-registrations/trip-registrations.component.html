@@ -308,5 +308,77 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Kompakte Druckansicht: nach Zustieg gruppiert (farbig), Leistungen in einer Spalte, Preis pro Person -->
+        <div class="print-list">
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Alter</th>
+                        <th>Telefon</th>
+                        <th>Mitgl.</th>
+                        <th>Leistungen</th>
+                        <th class="num">Preis</th>
+                    </tr>
+                </thead>
+                @for (group of groups; track group.boardingName; let gi = $index) {
+                    <tbody [class]="group.waitlist ? 'bc-wait' : 'bc-' + (gi % 6)">
+                        @if (gi > 0) {
+                            <tr class="print-gap">
+                                <td colspan="6"></td>
+                            </tr>
+                        }
+                        <tr>
+                            <td colspan="6" class="print-group">
+                                {{ group.boardingName }}
+                                @if (!group.waitlist) {
+                                    <span class="print-group-sum">
+                                        {{ group.registrations.length }} Pers. · {{ groupTotal(group) }}&nbsp;€
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                        @for (registration of group.registrations; track registration.id) {
+                            <tr>
+                                <td [class.linked-registration]="group.linkedIds.has(registration.id)">
+                                    {{ registration.firstName }} {{ registration.lastName }}
+                                    @if (registration.participantRole === 'organizer') {
+                                        <em>(Orga)</em>
+                                    } @else if (registration.participantRole === 'teachingTeam') {
+                                        <em>(Lehrteam)</em>
+                                    }
+                                    @if (registration.registeredByName) {
+                                        <em>über {{ registration.registeredByName }}</em>
+                                    }
+                                    @if (registration.status === 'waitlist') {
+                                        <em>(Warteliste)</em>
+                                    } @else if (emergencyRegistrationIds.has(registration.id)) {
+                                        <em>(Notplatz)</em>
+                                    }
+                                </td>
+                                <td>
+                                    {{ exactAge(registration.birthday) ?? ageCategoryLabels[registration.ageCategory] }}
+                                </td>
+                                <td>{{ registration.phone || '' }}</td>
+                                <td>{{ registration.isMember ? 'ja' : '–' }}</td>
+                                <td>{{ servicesText(registration) }}</td>
+                                <td class="num">
+                                    @if (pricesByRegistrationId.has(registration.id)) {
+                                        {{ pricesByRegistrationId.get(registration.id) }}&nbsp;€
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                }
+                <tfoot>
+                    <tr>
+                        <td colspan="5">Gesamt (ohne Warteliste)</td>
+                        <td class="num">{{ grandTotal }}&nbsp;€</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </div>
