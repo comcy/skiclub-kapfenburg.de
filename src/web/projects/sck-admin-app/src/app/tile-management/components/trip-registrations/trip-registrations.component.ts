@@ -37,7 +37,31 @@ export function boardingTimeMinutes(name: string): number | undefined {
     return match ? Number(match[1]) * 60 + Number(match[2]) : undefined;
 }
 
+// Hauptanmelder zuerst, direkt darunter die über ihn Angemeldeten - aber nur, wenn sie in derselben Gruppe
+// (gleicher Zustieg/Warteliste) stehen, sonst stehen sie allein. Reihenfolge der Hauptanmelder per `compare`,
+// die Angemeldeten darunter nach Nachname/Vorname.
+export function orderWithHeads(
+    list: TripRegistration[],
+    compare: (a: TripRegistration, b: TripRegistration) => number,
+): { ordered: TripRegistration[]; linkedIds: Set<string> } {
+    const ids = new Set(list.map((r) => r.id));
+    const isLinked = (r: TripRegistration) => !!r.registeredById && ids.has(r.registeredById);
+    const byName = (a: TripRegistration, b: TripRegistration) =>
+        a.lastName.localeCompare(b.lastName, 'de') || a.firstName.localeCompare(b.firstName, 'de');
+    const ordered: TripRegistration[] = [];
+    const linkedIds = new Set<string>();
+    for (const head of list.filter((r) => !isLinked(r)).sort(compare)) {
+        ordered.push(head);
+        for (const member of list.filter((r) => r.registeredById === head.id).sort(byName)) {
+            ordered.push(member);
+            linkedIds.add(member.id);
+        }
+    }
+    return { ordered, linkedIds };
+}
+
 interface RegistrationGroup {
+    linkedIds: Set<string>;
     boardingName: string;
     waitlist?: boolean;
     registrations: TripRegistration[];
@@ -258,10 +282,27 @@ export class TripRegistrationsComponent implements OnInit {
                 const tb = boardingTimeMinutes(b) ?? Infinity;
                 return ta === tb ? a.localeCompare(b) : ta < tb ? -1 : 1;
             })
-            .map(([boardingName, registrations]) => ({ boardingName, registrations }));
+            .map(([boardingName, list]) => {
+                // Innerhalb eines Zustiegs nach Nachname, damit Familien zusammen stehen.
+                const { ordered, linkedIds } = orderWithHeads(
+                    list,
+                    (a, b) =>
+                        a.lastName.localeCompare(b.lastName, 'de') ||
+                        a.firstName.localeCompare(b.firstName, 'de') ||
+                        (a.createdAt ?? '').localeCompare(b.createdAt ?? ''),
+                );
+                return { boardingName, registrations: ordered, linkedIds };
+            });
         if (waitlist.length) {
-            waitlist.sort((x, y) => (x.createdAt ?? '').localeCompare(y.createdAt ?? ''));
-            groups.push({ boardingName: `Warteliste (${waitlist.length})`, waitlist: true, registrations: waitlist });
+            const { ordered, linkedIds } = orderWithHeads(waitlist, (x, y) =>
+                (x.createdAt ?? '').localeCompare(y.createdAt ?? ''),
+            );
+            groups.push({
+                boardingName: `Warteliste (${waitlist.length})`,
+                waitlist: true,
+                registrations: ordered,
+                linkedIds,
+            });
         }
         return groups;
     }
