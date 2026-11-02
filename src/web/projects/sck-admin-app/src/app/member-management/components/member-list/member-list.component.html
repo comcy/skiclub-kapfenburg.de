@@ -60,6 +60,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
+            <mat-label>Eintritt ab</mat-label>
+            <input matInput type="date" [(ngModel)]="filterSince" (ngModelChange)="onFilterChange()" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
             <mat-label>Lehrteam</mat-label>
             <mat-select [(ngModel)]="filterTeam" (selectionChange)="onFilterChange()">
                 <mat-option value="">Alle</mat-option>
