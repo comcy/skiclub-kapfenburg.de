@@ -16,6 +16,7 @@ import {
     TripRegistration,
     TripRegistrationCreationParams,
 } from '../../../domain/trip-registration';
+import { isMinor } from '../../../domain/registration-minor';
 import { Tile } from '../../../domain/tile';
 import { parseRegistrationRow } from '../../../domain/parse-registration-row';
 import { TilesDataService } from '../../../services/tiles-data.service';
@@ -88,6 +89,16 @@ export class RegistrationEditorComponent {
     // Hauptanmelder-Kandidaten: alle, die nicht selbst über jemanden angemeldet sind (und nicht diese Anmeldung).
     get headCandidates(): TripRegistration[] {
         return this.candidates.filter((c) => c.id !== this.registration?.id && !c.registeredById);
+    }
+
+    get minor(): boolean {
+        return !!this.registration && isMinor(this.registration);
+    }
+
+    get headName(): string {
+        const id = this.registration?.registeredById;
+        const head = this.candidates.find((c) => c.id === id);
+        return head ? `${head.firstName} ${head.lastName}` : (this.registration?.registeredByName ?? '');
     }
 
     public pasteInfo = '';
@@ -165,6 +176,8 @@ export class RegistrationEditorComponent {
             level: this.registration.level,
             sportType: this.registration.sportType,
             registeredById: this.registration.registeredById || undefined,
+            guardianName: this.registration.guardianName || undefined,
+            guardianConsent: !!this.registration.guardianConsent,
         };
 
         // Zoneless change detection (see app.config.ts) - without

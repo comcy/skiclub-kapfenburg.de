@@ -50,6 +50,13 @@
 
 // Own choices from the registrant's public form (see the plan) - read-only
 // here, not form controls (the editor never overrides what was submitted).
+.minor-box {
+    margin-bottom: 8px;
+    padding: 12px 12px 4px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface-container-low);
+}
+
 .participant-options {
     display: flex;
     flex-wrap: wrap;
