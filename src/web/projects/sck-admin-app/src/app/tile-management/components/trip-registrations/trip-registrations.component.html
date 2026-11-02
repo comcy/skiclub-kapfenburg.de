@@ -148,7 +148,7 @@
                         </tr>
                         @for (registration of group.registrations; track registration.id) {
                             <tr class="row" [class.row-waitlist]="registration.status === 'waitlist'">
-                                <td>
+                                <td [class.linked-registration]="group.linkedIds.has(registration.id)">
                                     {{ registration.firstName }} {{ registration.lastName }}
                                     @if (news.isNew(registration.createdAt, seenBefore)) {
                                         <span class="badge-new">Neu</span>

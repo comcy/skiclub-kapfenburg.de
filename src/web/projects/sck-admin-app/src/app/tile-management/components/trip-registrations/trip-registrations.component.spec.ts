@@ -190,6 +190,36 @@ describe('TripRegistrationsComponent', () => {
         });
     });
 
+    describe('groups (Hauptanmelder)', () => {
+        it('stellt Hauptanmelder oben und Angemeldete darunter (gleicher Zustieg), sonst allein; sortiert nach Nachname', () => {
+            component.registrations = [
+                makeRegistration({ id: 'z', firstName: 'Zoe', lastName: 'Zimmer', boardingName: 'Aalen' }),
+                makeRegistration({
+                    id: 'k',
+                    firstName: 'Kind',
+                    lastName: 'Mayer',
+                    boardingName: 'Aalen',
+                    registeredById: 'm',
+                }),
+                makeRegistration({ id: 'm', firstName: 'Markus', lastName: 'Mayer', boardingName: 'Aalen' }),
+                makeRegistration({
+                    id: 'a',
+                    firstName: 'Anna',
+                    lastName: 'Mayer',
+                    boardingName: 'Ellwangen',
+                    registeredById: 'm',
+                }),
+            ];
+            const aalen = component.groups.find((g) => g.boardingName === 'Aalen')!;
+            expect(aalen.registrations.map((r) => r.id)).toEqual(['m', 'k', 'z']);
+            expect([...aalen.linkedIds]).toEqual(['k']);
+            // anderer Zustieg -> steht allein, nicht als verlinkt eingerückt
+            const ellwangen = component.groups.find((g) => g.boardingName === 'Ellwangen')!;
+            expect(ellwangen.registrations.map((r) => r.id)).toEqual(['a']);
+            expect(ellwangen.linkedIds.size).toBe(0);
+        });
+    });
+
     describe('groups (Warteliste)', () => {
         it('sammelt Wartelisten-Anmeldungen in einer eigenen Gruppe am Ende, in Reihenfolge der Anmeldung', () => {
             component.registrations = [
