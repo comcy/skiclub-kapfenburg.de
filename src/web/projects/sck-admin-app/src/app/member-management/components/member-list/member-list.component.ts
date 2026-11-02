@@ -64,7 +64,7 @@ export class MemberListComponent implements OnInit {
     // filtered/paginated client-side, no reason to round-trip to the API for
     // every keystroke or page click.
     // Zeilen-Info pro Mitglied: Familien-Kind (eingerückt unter dem Hauptanmelder), Block-Index für die Färbung.
-    private rowInfo = new Map<string, { child: boolean; block: number; head?: Member }>();
+    private rowInfo = new Map<string, { child: boolean; block: number; family?: boolean; head?: Member }>();
 
     isFamilyChild(member: Member): boolean {
         return this.rowInfo.get(member.id)?.child ?? false;
@@ -73,6 +73,11 @@ export class MemberListComponent implements OnInit {
     // Jede Familie (und jedes Einzelmitglied) ist ein Block; jeder zweite Block ist dezent getönt.
     isTintedBlock(member: Member): boolean {
         return (this.rowInfo.get(member.id)?.block ?? 0) % 2 === 1;
+    }
+
+    // Zeile gehört zu einer Familie (>= 2 Mitglieder in der Liste) -> Gruppierungs-Balken links.
+    isFamilyRow(member: Member): boolean {
+        return this.rowInfo.get(member.id)?.family ?? false;
     }
 
     familyHeadName(member: Member): string {
@@ -101,10 +106,10 @@ export class MemberListComponent implements OnInit {
             if (placed.has(m.familyGroupId!)) continue;
             placed.add(m.familyGroupId!);
             const [head, ...children] = [...group].sort(familyHeadOrder);
-            this.rowInfo.set(head.id, { child: false, block });
+            this.rowInfo.set(head.id, { child: false, block, family: true });
             result.push(head);
             for (const child of children) {
-                this.rowInfo.set(child.id, { child: true, block, head });
+                this.rowInfo.set(child.id, { child: true, block, family: true, head });
                 result.push(child);
             }
             block++;
