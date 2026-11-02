@@ -89,6 +89,38 @@
             </button>
         </div>
 
+        @if (alertCount) {
+            <button mat-button class="alerts-toggle no-print" (click)="showAlerts = !showAlerts">
+                <mat-icon>{{ showAlerts ? 'expand_less' : 'warning_amber' }}</mat-icon>
+                {{ alertCount }} Hinweise zur Liste
+            </button>
+        }
+        @if (alertCount && showAlerts) {
+            <div class="alerts no-print">
+                @for (def of alertDefs; track def.key) {
+                    @if (alerts[def.key].length; as count) {
+                        <div class="alert" [class.alert-warn]="def.warn" [class.alert-info]="!def.warn">
+                            <mat-icon>{{ def.icon }}</mat-icon>
+                            <div class="alert-text">
+                                <strong>{{ count }}</strong> {{ def.text }}
+                                @for (r of alerts[def.key].slice(0, 6); track r.id) {
+                                    <button mat-button class="link" (click)="onEdit(r)">
+                                        {{ r.firstName }} {{ r.lastName }}
+                                    </button>
+                                }
+                                @if (count > 6) {
+                                    <span>+ {{ count - 6 }} weitere</span>
+                                }
+                            </div>
+                            <button mat-stroked-button (click)="toggleAlert(def.key)">
+                                {{ activeAlert === def.key ? 'Alle anzeigen' : 'Anzeigen' }}
+                            </button>
+                        </div>
+                    }
+                }
+            </div>
+        }
+
         <div class="conditions" [class.open]="showConditions">
             <div class="conditions-title print-only">Preise &amp; Konditionen</div>
             @if (priceRows.length) {
