@@ -338,6 +338,16 @@ export class TripRegistrationsComponent implements OnInit {
         return this.groups.filter((g) => !g.waitlist).reduce((sum, g) => sum + this.groupTotal(g), 0);
     }
 
+    // Legende (Druck + Preise-Panel); hier ergänzen, wenn weitere Symbole hinzukommen.
+    public readonly legendItems: { icon?: string; symbol?: string; tone?: string; label: string }[] = [
+        { icon: 'family_restroom', tone: 'ok', label: 'Minderjährig: Elternteil nimmt teil' },
+        { icon: 'verified_user', tone: 'ok', label: 'Minderjährig: Einverständnis der Eltern liegt vor' },
+        { icon: 'warning', tone: 'open', label: 'Minderjährig: Einverständnis fehlt' },
+        { icon: 'flag', label: 'Organisator' },
+        { icon: 'school', label: 'Lehrteam' },
+        { symbol: 'E · J · K', label: 'Erwachsen · Jugend · Kind (ohne Geburtsdatum)' },
+    ];
+
     isMinor = isMinor;
     minorState = minorState;
     guardianOf = guardianOf;
