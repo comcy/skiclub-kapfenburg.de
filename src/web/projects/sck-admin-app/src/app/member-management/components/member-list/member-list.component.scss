@@ -156,12 +156,12 @@ tr.mat-mdc-header-row {
 
 // Familien/Einzelmitglieder = Blöcke; jeder zweite Block dezent getönt (statt Zebra pro Zeile).
 tr.block-tint {
-    background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+    background-color: color-mix(in srgb, var(--mat-sys-on-surface) 3.5%, transparent);
 }
 
 // Hover immer pro Zeile (überschreibt die Block-Tönung)
 tr.mat-mdc-row:hover {
-    background-color: color-mix(in srgb, var(--mat-sys-primary) 14%, transparent);
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
 }
 
 .family-indent {
