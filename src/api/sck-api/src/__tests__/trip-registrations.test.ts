@@ -770,3 +770,55 @@ describe('Trip Registrations Routes', () => {
     });
   });
 });
+
+describe('Storno per Link (Issue #235)', () => {
+  const register = async (tileId: string): Promise<string> => {
+    mockedSendMail.mockClear();
+    await request(app)
+      .post(`/api/tiles/${tileId}/registrations/public`)
+      .send({
+        participants: [
+          { firstName: 'Hans', lastName: 'Haupt', email: 'hans@test.com', birthday: '1980-01-01' },
+          { firstName: 'Kind', lastName: 'Haupt', birthday: '2015-01-01' },
+        ],
+      });
+    const html = (mockedSendMail.mock.calls[0][0] as any).html as string;
+    return /stornieren\?token=([0-9a-f]+)/.exec(html)![1];
+  };
+
+  it('Bestätigungsmail enthält Link; GET zeigt Gruppe; POST storniert nur gewählte Person + Mail', async () => {
+    const tileId = createTile(5);
+    const token = await register(tileId);
+
+    const info = await request(app).get(`/api/trip-cancel/${token}`);
+    expect(info.status).toBe(200);
+    expect(info.body.canCancel).toBe(true);
+    expect(info.body.people.map((p: { name: string }) => p.name)).toEqual(['Hans Haupt', 'Kind Haupt']);
+
+    mockedSendMail.mockClear();
+    const kid = info.body.people[1].id;
+    const res = await request(app).post(`/api/trip-cancel/${token}`).send({ ids: [kid] });
+    expect(res.status).toBe(200);
+    expect(res.body.cancelled).toEqual([kid]);
+    expect((mockedSendMail.mock.calls[0][0] as any).to).toBe('hans@test.com');
+
+    const after = await request(app).get(`/api/trip-cancel/${token}`);
+    expect(after.body.people.map((p: { status: string }) => p.status)).toEqual(['confirmed', 'cancelled']);
+    // zweites Mal: nichts mehr zu stornieren
+    expect((await request(app).post(`/api/trip-cancel/${token}`).send({ ids: [kid] })).status).toBe(400);
+  });
+
+  it('nach Anmeldeschluss gesperrt (403), ungültiger Token 404', async () => {
+    const tileId = createTile(5);
+    const token = await register(tileId);
+    db.prepare("UPDATE tiles SET extra_json = ? WHERE id = ?").run(
+      JSON.stringify({ registrationDeadline: '2000-01-01' }),
+      tileId,
+    );
+    const info = await request(app).get(`/api/trip-cancel/${token}`);
+    expect(info.body.canCancel).toBe(false);
+    const res = await request(app).post(`/api/trip-cancel/${token}`).send({ ids: [info.body.people[0].id] });
+    expect(res.status).toBe(403);
+    expect((await request(app).get('/api/trip-cancel/nope')).status).toBe(404);
+  });
+});

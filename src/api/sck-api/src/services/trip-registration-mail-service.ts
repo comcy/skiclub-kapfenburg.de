@@ -159,11 +159,16 @@ const renderParticipant = (
     `;
 };
 
+// "bis zum 20.01.2027 " bzw. '' ohne Anmeldeschluss.
+const formatDeadline = (iso: string | undefined): string =>
+  iso && /^\d{4}-\d{2}-\d{2}$/.test(iso) ? `bis zum ${iso.split('-').reverse().join('.')} ` : '';
+
 export const getTripConfirmationMailText = (
   tile: Tile,
   contactPerson: TripRegistration,
   allParticipants: TripRegistration[],
   waitlistInfo: PublicRegistrationResult,
+  cancelUrl?: string,
 ): string => {
   const additionalParticipants = allParticipants.filter((p) => p.id !== contactPerson.id);
   const pricing = getEffectiveTripPricing(tile);
@@ -252,6 +257,18 @@ export const getTripConfirmationMailText = (
                             <div style="margin-top: 24px; padding: 12px; border-left: 4px solid #3f51b5; background-color: #f0f2f9;">
                                 <strong>Zusatzangaben:</strong><br>
                                 ${contactPerson.notes}
+                            </div>
+                          `
+                    : ''
+                }
+
+                ${
+                  cancelUrl
+                    ? `
+                            <div style="margin-top: 24px; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                                <strong>Anmeldung stornieren</strong><br>
+                                Über diesen persönlichen Link kannst du ${formatDeadline(tile.registrationDeadline)}die Anmeldung (oder einzelne Personen) selbst stornieren:<br>
+                                <a href="${cancelUrl}">${cancelUrl}</a>
                             </div>
                           `
                     : ''
@@ -377,3 +394,32 @@ export const allowInfoMail = (email: string, now: Date = new Date()): boolean =>
   infoMailCounts.set(email, { day, count: count + 1 });
   return true;
 };
+
+
+// ---------------------------------------------------------------------------
+// Storno-Bestätigung nach Selbst-Stornierung per Link (Issue #235)
+// ---------------------------------------------------------------------------
+
+export const getTripCancelMailSubject = (tile: Tile): string => `Stornierung: ${tile.title}`;
+
+export const getTripCancelMailText = (
+  tile: Tile,
+  contactPerson: TripRegistration,
+  cancelled: TripRegistration[],
+): string => `
+        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; padding: 20px; background-color: #f4f4f4;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #dddddd;">
+                <h1 style="color: #3f51b5; font-size: 22px; margin-top: 0;">Stornierung</h1>
+                <p style="font-size: 16px; font-weight: bold; color: #555;">
+                    Ausfahrt: ${tile.title}${tile.destination ? ` – ${tile.destination}` : ''} <br>
+                    Datum: ${formatTileDate(tile.date)}
+                </p>
+                <p>Hallo ${contactPerson.firstName},</p>
+                <p>folgende Anmeldung(en) wurden über deinen Storno-Link storniert:</p>
+                <ul>${cancelled.map((p) => `<li>${p.firstName} ${p.lastName}</li>`).join('')}</ul>
+                <p>Falls das ein Versehen war, melde dich bitte beim Verein (registration@skiclub-kapfenburg.de).</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #999;">Diese E-Mail wurde automatisch erstellt.</p>
+            </div>
+        </div>
+    `;

@@ -47,6 +47,8 @@ export interface Tile {
     responsibleMemberIds?: string[];
     // Notplätze zusätzlich zur Capacity - werden nur manuell durch Organisatoren vergeben.
     emergencySeats?: number;
+    // Anmeldeschluss/Stornofrist (ISO yyyy-mm-dd, bis einschl.) - Storno-Link in der Bestätigungsmail ist bis dahin nutzbar.
+    registrationDeadline?: string;
     // Computed server-side, read-only - COUNT of confirmed trip_registrations,
     // only populated for type='event' (see sck-api's rowToTile).
     confirmedRegistrationsCount?: number;

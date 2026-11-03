@@ -15,6 +15,7 @@ import {
     HOME_ROUTE,
     IMPRESSUM_ROUTE,
     MEMBERSHIP_CONFIRM_ROUTE,
+    TRIP_CANCEL_ROUTE,
     SKILIFT_ROUTE,
     TRIPS_ROUTE,
 } from './route-segments';
@@ -59,6 +60,11 @@ const routes: Routes = [
             import('./components/membership-confirm/membership-confirm.component').then(
                 (m) => m.MembershipConfirmComponent,
             ),
+    },
+    {
+        path: TRIP_CANCEL_ROUTE,
+        loadComponent: () =>
+            import('./components/trip-cancel/trip-cancel.component').then((m) => m.TripCancelComponent),
     },
     // Auxiliary Routes for Dialogs
     {

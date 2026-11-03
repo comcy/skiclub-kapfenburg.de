@@ -264,6 +264,14 @@ db.exec(`
     expires_at TEXT NOT NULL,
     confirmed_at TEXT
   );
+
+  -- Storno-Link in der Anmeldebestätigung (Issue #235): ein Token (gehasht) je Hauptanmelder-Anmeldung.
+  -- Mehrere Tokens pro Hauptanmelder möglich (jede erneut versendete Mail enthält einen neuen), alle bleiben gültig.
+  CREATE TABLE IF NOT EXISTS trip_cancel_tokens (
+    token_hash TEXT PRIMARY KEY,
+    registration_id TEXT NOT NULL REFERENCES trip_registrations (id) ON DELETE CASCADE,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+  );
 `);
 
 // CREATE TABLE IF NOT EXISTS leaves an already-existing tiles table (from a
