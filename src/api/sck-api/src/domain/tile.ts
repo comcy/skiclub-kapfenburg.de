@@ -64,6 +64,9 @@ export interface Tile {
   // Notplaetze zusaetzlich zur capacity - nur manuell durch Organisatoren vergeben (oeffentlich zaehlt nur capacity).
   // Liegt in extra_json (siehe EXTRA_FIELD_KEYS).
   emergencySeats?: number;
+  // Anmeldeschluss/Stornofrist der Ausfahrt (ISO-Datum yyyy-mm-dd, bis einschl. dieses Tages, Europe/Berlin).
+  // Ohne Wert: kein Fristende (Storno per Link bleibt möglich). Liegt in extra_json (siehe EXTRA_FIELD_KEYS).
+  registrationDeadline?: string;
   // Computed, not stored - COUNT of trip_registrations with status='confirmed'
   // for this tile, only populated for type='event'. Public-safe: a bare
   // number, no registrant PII, used to derive the "Warteliste" badge on the
@@ -103,6 +106,7 @@ export const EXTRA_FIELD_KEYS = [
   'courseConfig',
   'responsibleMemberIds',
   'emergencySeats',
+  'registrationDeadline',
 ] as const satisfies readonly (keyof Tile)[];
 
 export type TileCreationParams = Omit<Tile, 'id'>;

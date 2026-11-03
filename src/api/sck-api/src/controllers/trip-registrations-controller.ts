@@ -9,6 +9,7 @@ import * as registrationsService from '../services/trip-registrations-service.js
 import { getTile } from '../services/tiles-service.js';
 import { getResponsibleEmails } from '../services/members-service.js';
 import { sendMail } from '../services/mailer.js';
+import { cancelGroupMembers, createCancelToken, findGroupByToken, isCancelOpen } from '../services/trip-cancel-service.js';
 import {
   allowInfoMail,
   getTripParticipantInfoMailSubject,
@@ -18,6 +19,8 @@ import {
   getTripConfirmationMailBcc,
   getTripConfirmationMailSubject,
   getTripConfirmationMailText,
+  getTripCancelMailSubject,
+  getTripCancelMailText,
 } from '../services/trip-registration-mail-service.js';
 import { calculateParticipantPrice, getEffectiveTripPricing } from '../services/trip-pricing-service.js';
 
@@ -112,7 +115,7 @@ export const createPublicTripRegistrations: RequestHandler = async (req, res) =>
         const sent = await sendMail(
           contactPerson.email ?? '',
           getTripConfirmationMailSubject(contactPerson.firstName, publicResult.status),
-          getTripConfirmationMailText(tile, contactPerson, createdRegistrations, publicResult),
+          getTripConfirmationMailText(tile, contactPerson, createdRegistrations, publicResult, cancelUrlFor(contactPerson.id)),
           getTripConfirmationMailBcc(tile),
         );
         if (sent) registrationsService.markConfirmationMailSent(registrationIds);
@@ -190,7 +193,7 @@ export const sendTripRegistrationConfirmation: RequestHandler = async (req, res)
     const sent = await sendMail(
       contact.email,
       getTripConfirmationMailSubject(contact.firstName, contact.status),
-      getTripConfirmationMailText(tile, contact, members, info),
+      getTripConfirmationMailText(tile, contact, members, info, cancelUrlFor(contact.id)),
       getTripConfirmationMailBcc(tile),
     );
     if (sent) registrationsService.markConfirmationMailSent(members.map((m) => m.id));
@@ -282,5 +285,75 @@ export const getTripPricePreview: RequestHandler = (req, res) => {
   } catch (error: any) {
     console.error('Fehler bei der Preisvorschau:', error);
     res.status(500).json({ error: 'Fehler bei der Preisberechnung.' });
+  }
+};
+
+
+// ---- Storno per Link (Issue #235) ----------------------------------------------------------------------------
+
+const SCK_APP_URL = process.env.SCK_APP_URL || 'http://localhost:4200';
+const cancelUrlFor = (contactRegistrationId: string): string =>
+  `${SCK_APP_URL}/ausfahrt/stornieren?token=${createCancelToken(contactRegistrationId)}`;
+
+const cancelView = (token: string) => {
+  const group = findGroupByToken(token);
+  const tile = group && getTile(group.contact.tileId);
+  if (!group || !tile) return undefined;
+  return {
+    ...group,
+    tile,
+    view: {
+      title: tile.title,
+      date: tile.date,
+      deadline: tile.registrationDeadline ?? null,
+      canCancel: isCancelOpen(tile),
+      people: group.members.map((m) => ({ id: m.id, name: `${m.firstName} ${m.lastName}`, status: m.status })),
+    },
+  };
+};
+
+export const getTripCancelInfo: RequestHandler = (req, res) => {
+  const data = cancelView(String(req.params.token));
+  if (!data) {
+    res.status(404).json({ error: 'Link ungültig.' });
+    return;
+  }
+  res.status(200).json(data.view);
+};
+
+export const postTripCancel: RequestHandler = async (req, res) => {
+  try {
+    const data = cancelView(String(req.params.token));
+    if (!data) {
+      res.status(404).json({ error: 'Link ungültig.' });
+      return;
+    }
+    if (!data.view.canCancel) {
+      res.status(403).json({ error: 'Die Frist für eine Stornierung ist abgelaufen. Bitte melde dich beim Verein.' });
+      return;
+    }
+    const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(String) : [];
+    const cancelled = cancelGroupMembers(data.members, ids);
+    if (cancelled.length === 0) {
+      res.status(400).json({ error: 'Keine (noch nicht stornierte) Person ausgewählt.' });
+      return;
+    }
+    const { contact, tile } = data;
+    if (contact.email?.trim()) {
+      try {
+        await sendMail(
+          contact.email,
+          getTripCancelMailSubject(tile),
+          getTripCancelMailText(tile, contact, cancelled),
+          getTripConfirmationMailBcc(tile),
+        );
+      } catch (mailError) {
+        console.error('Fehler beim Versand der Storno-Mail:', mailError);
+      }
+    }
+    res.status(200).json({ cancelled: cancelled.map((c) => c.id) });
+  } catch (error: any) {
+    console.error('Fehler bei der Stornierung per Link:', error);
+    res.status(500).json({ error: 'Fehler bei der Stornierung.' });
   }
 };

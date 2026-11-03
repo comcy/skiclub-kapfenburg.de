@@ -7,7 +7,9 @@ import {
   createPublicTripRegistrations,
   createTripRegistration,
   deleteTripRegistration,
+  getTripCancelInfo,
   getTripPricePreview,
+  postTripCancel,
   listTripRegistrations,
   updateTripRegistration,
   sendTripRegistrationConfirmation,
@@ -33,6 +35,9 @@ router.post(
   requirePermission('tiles:write'),
   sendTripRegistrationConfirmation,
 );
+// Storno per Link aus der Bestätigungsmail (Issue #235): das 256-bit-Token ist das Geheimnis, kein Login/Turnstile.
+router.get('/trip-cancel/:token', publicReadLimiter, getTripCancelInfo);
+router.post('/trip-cancel/:token', publicWriteLimiter, postTripCancel);
 router.delete('/registrations/:id', requireAuth, requireSuperAdmin, deleteTripRegistration);
 
 // Public, read-only computation (no DB write) - no Turnstile needed, unlike
