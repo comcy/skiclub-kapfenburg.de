@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { SortDirection, sortItems } from '../../../shared/utils/sort';
 import { Router, RouterLink } from '@angular/router';
 import { NewsService } from '../../../shared/services/news.service';
 import { OccupancyBarComponent } from '../../../shared/components/occupancy-bar/occupancy-bar.component';
@@ -25,6 +27,7 @@ import { PageHeadingComponent } from '../../../shared/components/page-heading/pa
         CommonModule,
         MatButtonModule,
         MatIconModule,
+        MatSortModule,
         MatCheckboxModule,
         FormsModule,
         RouterLink,
@@ -50,6 +53,22 @@ export class RegistrationsOverviewComponent implements OnInit {
 
     ngOnInit(): void {
         this.load();
+    }
+
+    // Sortierung per Spaltenkopf; ohne Auswahl bleibt die Standardreihenfolge (aktuelle zuerst, nach Ablaufdatum).
+    private sort: { active: string; direction: SortDirection } = { active: '', direction: '' };
+
+    get sortedTiles(): Tile[] {
+        return sortItems(this.tiles, this.sort.active, this.sort.direction, {
+            title: (t) => t.title,
+            date: (t) => t.date,
+            status: (t) => this.resolveStatusLabel(t),
+            capacity: (t) => this.confirmedCount(t),
+        });
+    }
+
+    onSortChange(sort: Sort): void {
+        this.sort = { active: sort.active, direction: sort.direction };
     }
 
     load(): void {
