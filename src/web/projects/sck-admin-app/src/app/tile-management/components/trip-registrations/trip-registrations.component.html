@@ -6,8 +6,8 @@
         <span class="page-title">Anmeldungen: {{ tile?.title }}</span>
     </div>
 
-    <div class="page-content">
-        <div class="print-title">{{ tile?.title }} — Anmeldungsliste</div>
+    <div class="page-content" [class.view-courses]="view === 'courses'">
+        <div class="print-title">{{ tile?.title }} — {{ view === 'courses' ? 'Kursliste' : 'Anmeldungsliste' }}</div>
 
         <div class="print-info">
             <span>{{ tile?.date }}</span>
@@ -38,6 +38,15 @@
             </div>
 
             <div class="toolbar">
+                @if (courseCount > 0) {
+                    <div class="view-toggle" role="group" aria-label="Ansicht">
+                        <button mat-stroked-button [class.active]="view === 'all'" (click)="view = 'all'">Alle</button>
+                        <button mat-stroked-button [class.active]="view === 'courses'" (click)="view = 'courses'">
+                            <mat-icon>school</mat-icon>
+                            Kurse ({{ courseCount }})
+                        </button>
+                    </div>
+                }
                 <button mat-stroked-button (click)="onPrint()">
                     <mat-icon>print</mat-icon>
                     Drucken
@@ -168,6 +177,51 @@
                 }
             </div>
         </div>
+
+        @if (view === 'courses') {
+            <div class="course-view">
+                <div class="course-summary">
+                    @for (g of courseGroupList; track g.sport + g.level) {
+                        <span class="chip course-chip"
+                            >{{ g.sport }} · {{ g.level }}: {{ g.registrations.length }}</span
+                        >
+                    }
+                    <span class="course-total">Gesamt: {{ courseCount }}</span>
+                </div>
+                @for (g of courseGroupList; track g.sport + g.level) {
+                    <div class="course-group">
+                        <div class="course-group-title">
+                            {{ g.sport }} · {{ g.level }}
+                            <span class="course-group-count">{{ g.registrations.length }} Pers.</span>
+                        </div>
+                        <table class="course-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Alter</th>
+                                    <th>Telefon</th>
+                                    <th>Zustieg</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (r of g.registrations; track r.id) {
+                                    <tr [class.row-waitlist]="r.status === 'waitlist'">
+                                        <td>{{ r.firstName }} {{ r.lastName }}</td>
+                                        <td>{{ ageDisplay(r) }}</td>
+                                        <td>{{ r.phone || '–' }}</td>
+                                        <td>{{ r.boardingName || '–' }}</td>
+                                        <td>{{ r.status === 'waitlist' ? 'Warteliste' : 'Bestätigt' }}</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                } @empty {
+                    <div class="empty">Keine Kursanmeldungen.</div>
+                }
+            </div>
+        }
 
         <div class="table-scroll">
             <table class="registrations-table">

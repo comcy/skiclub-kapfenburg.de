@@ -17,6 +17,7 @@ import {
 } from '../../domain/trip-registration';
 import { NewsService } from '../../../shared/services/news.service';
 import { RegistrationAlertKey, RegistrationAlerts, registrationAlerts } from '../../domain/registration-alerts';
+import { CourseGroup, courseGroups } from '../../domain/registration-courses';
 import { guardianOf, isMinor, minorState } from '../../domain/registration-minor';
 import { TeachingTeamEntry, Tile } from '../../domain/tile';
 import { SettingsDataService } from '../../../settings/services/settings-data.service';
@@ -262,6 +263,17 @@ export class TripRegistrationsComponent implements OnInit {
 
     toggleAlert(key: RegistrationAlertKey): void {
         this.activeAlert = this.activeAlert === key ? null : key;
+    }
+
+    // Ansicht: alle Anmeldungen (nach Zustieg) oder nur Kursanmeldungen (nach Sportart/Stufe, fürs Lehrpersonal).
+    public view: 'all' | 'courses' = 'all';
+
+    get courseGroupList(): CourseGroup[] {
+        return courseGroups(this.registrations);
+    }
+
+    get courseCount(): number {
+        return this.courseGroupList.reduce((sum, g) => sum + g.registrations.length, 0);
     }
 
     get confirmedCount(): number {
