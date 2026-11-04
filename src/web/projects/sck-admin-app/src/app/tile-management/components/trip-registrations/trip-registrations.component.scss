@@ -797,6 +797,82 @@ tr.row-waitlist td {
     }
 }
 
+// Mobil: kompakter Kopf (alles in wenigen Zeilen), die Seite scrollt als Ganzes -> die Tabelle ist immer erreichbar.
+@media screen and (max-width: 600px) {
+    .page-content {
+        padding: 8px;
+        overflow-y: auto;
+    }
+
+    .page-content > .table-scroll {
+        flex: 0 0 auto;
+        min-height: 0;
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+
+    .header-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .tile-meta {
+        gap: 2px 12px;
+        font-size: 12px;
+    }
+
+    .meta-optional {
+        display: none;
+    }
+
+    .toolbar {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        gap: 6px;
+
+        button {
+            height: 36px;
+            min-width: 0;
+            padding: 0 10px;
+            font-size: 13px;
+        }
+
+        .btn-label {
+            display: none;
+        }
+
+        // Hauptaktion rechts, nur Icon (Platz)
+        button[color='primary'] {
+            margin-left: auto;
+            white-space: nowrap;
+        }
+    }
+
+    .view-toggle button {
+        padding: 0 8px;
+        white-space: nowrap;
+    }
+
+    .capacity-row {
+        margin-bottom: 4px;
+        gap: 8px;
+    }
+
+    .capacity-label {
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .panel-toggle {
+        min-height: 32px;
+        padding: 0 8px;
+        font-size: 13px;
+        margin-bottom: 0;
+    }
+}
+
 @media print {
     .view-toggle,
     .course-summary .chip {
