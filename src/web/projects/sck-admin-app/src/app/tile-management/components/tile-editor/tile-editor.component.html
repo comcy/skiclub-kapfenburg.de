@@ -24,6 +24,7 @@
                         <app-editable-date
                             class="half-width"
                             label="Event Date"
+                            [dateOnly]="true"
                             [value]="tile.date"
                             (valueChange)="tile.date = $event"
                         ></app-editable-date>
