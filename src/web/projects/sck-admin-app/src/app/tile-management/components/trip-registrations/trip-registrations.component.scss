@@ -716,3 +716,106 @@ tr.row-waitlist td {
     background: var(--mat-sys-secondary-container);
     color: var(--mat-sys-on-secondary-container);
 }
+
+// Kurs-Ansicht (nur Kursanmeldungen, nach Sportart + Stufe)
+.view-toggle {
+    display: inline-flex;
+
+    button.active {
+        background: var(--mat-sys-secondary-container);
+    }
+}
+
+.view-courses > .table-scroll,
+.view-courses > .print-list,
+.view-courses > .conditions,
+.view-courses > .panel-toggle,
+.view-courses > .alerts {
+    display: none;
+}
+
+.course-view {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: auto;
+}
+
+.course-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.course-total {
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.course-group-title {
+    font-weight: 600;
+    padding: 6px 0;
+    border-bottom: 2px solid var(--mat-sys-primary);
+}
+
+.course-group-count {
+    font-weight: 400;
+    color: var(--mat-sys-on-surface-variant);
+    margin-left: 8px;
+}
+
+.course-chip {
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+    font-size: 13px;
+}
+
+.course-table {
+    width: 100%;
+    table-layout: fixed; // gleiche Spaltenbreiten in allen Gruppen
+    border-collapse: collapse;
+
+    th,
+    td {
+        text-align: left;
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+}
+
+@media (max-width: 600px) {
+    .course-table {
+        table-layout: auto;
+        font-size: 13px;
+
+        // Telefon blendet mobil aus - Platz für Name/Zustieg/Status
+        th:nth-child(3),
+        td:nth-child(3) {
+            display: none;
+        }
+    }
+}
+
+@media print {
+    .view-toggle,
+    .course-summary .chip {
+        display: none;
+    }
+
+    .view-courses > .course-view {
+        display: block;
+        overflow: visible;
+    }
+
+    .course-group {
+        break-inside: avoid;
+        margin-bottom: 12px;
+    }
+
+    .course-table td,
+    .course-table th {
+        font-size: 11px;
+        padding: 2px 6px;
+    }
+}
