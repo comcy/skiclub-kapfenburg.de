@@ -20,7 +20,7 @@
             <div class="tile-meta">
                 <span class="meta-item"><strong>Datum:</strong> {{ tile?.date }}</span>
                 @if (tile?.subTitle) {
-                    <span class="meta-item"><strong>Untertitel:</strong> {{ tile!.subTitle }}</span>
+                    <span class="meta-item meta-optional"><strong>Untertitel:</strong> {{ tile!.subTitle }}</span>
                 }
                 <span class="meta-item">
                     <strong>Status:</strong>
@@ -47,18 +47,18 @@
                         </button>
                     </div>
                 }
-                <button mat-stroked-button (click)="onPrint()">
+                <button mat-stroked-button aria-label="Drucken" (click)="onPrint()">
                     <mat-icon>print</mat-icon>
-                    Drucken
+                    <span class="btn-label">Drucken</span>
                 </button>
                 @if (auth.hasPermission('tiles:write')) {
-                    <button mat-stroked-button (click)="onBulkCreate()">
+                    <button mat-stroked-button aria-label="Mehrere hinzufügen" (click)="onBulkCreate()">
                         <mat-icon>playlist_add</mat-icon>
-                        Mehrere hinzufügen
+                        <span class="btn-label">Mehrere hinzufügen</span>
                     </button>
-                    <button mat-raised-button color="primary" (click)="onCreate()">
+                    <button mat-raised-button color="primary" aria-label="Neue Anmeldung" (click)="onCreate()">
                         <mat-icon>add</mat-icon>
-                        Neue Anmeldung
+                        <span class="btn-label">Neue Anmeldung</span>
                     </button>
                 }
             </div>
