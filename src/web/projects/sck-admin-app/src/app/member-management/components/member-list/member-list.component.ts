@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -18,6 +19,7 @@ import { CollapsibleFiltersComponent } from '../../../shared/components/collapsi
 import { familyHeadOrder } from '../../domain/family-head';
 import { MemberAgeAlerts, memberAgeAlerts } from '../../domain/member-age';
 import { Member } from '../../domain/member';
+import { SortDirection, sortItems } from '../../../shared/utils/sort';
 import {
     MemberExportDialogComponent,
     MemberExportDialogData,
@@ -39,6 +41,7 @@ import { PageHeadingComponent } from '../../../shared/components/page-heading/pa
         MatMenuModule,
         MatFormFieldModule,
         MatInputModule,
+        MatSortModule,
         MatSelectModule,
         MatPaginatorModule,
         MatTooltipModule,
@@ -147,6 +150,16 @@ export class MemberListComponent implements OnInit {
     public filterTeam = '';
     // ISO-Datum (yyyy-mm-dd) aus <input type="date">: nur Mitglieder mit Eintritt ab diesem Tag.
     public filterSince = '';
+    // Sortierung (Mat-Sort-Header); Familien bleiben als Block zusammen, ein Block steht an der Position seines ersten Mitglieds.
+    public sortActive = '';
+    public sortDirection: SortDirection = '';
+    private readonly sortAccessors = {
+        name: (m: Member) => `${m.lastName} ${m.firstName}`,
+        email: (m: Member) => m.email,
+        status: (m: Member) => m.status,
+        source: (m: Member) => m.source,
+        memberSince: (m: Member) => m.memberSince,
+    };
     public pageIndex = 0;
     public pageSize = 20;
 
@@ -163,6 +176,8 @@ export class MemberListComponent implements OnInit {
         this.filterBirthday = q.get('birthday') ?? '';
         this.filterTeam = q.get('team') ?? '';
         this.filterSince = q.get('since') ?? '';
+        this.sortActive = q.get('sort') ?? '';
+        this.sortDirection = q.get('dir') === 'desc' ? 'desc' : q.get('dir') === 'asc' ? 'asc' : '';
         this.pageIndex = Math.max(0, Number(q.get('page')) || 0);
         this.refresh();
     }
@@ -216,6 +231,8 @@ export class MemberListComponent implements OnInit {
             birthday: this.filterBirthday || null,
             team: this.filterTeam || null,
             since: this.filterSince || null,
+            sort: (this.sortDirection && this.sortActive) || null,
+            dir: (this.sortDirection && this.sortActive && this.sortDirection) || null,
             page: this.pageIndex || null,
         };
         void this.router.navigate([], {
@@ -224,6 +241,12 @@ export class MemberListComponent implements OnInit {
             queryParamsHandling: 'merge',
             replaceUrl: true,
         });
+    }
+
+    onSortChange(sort: Sort): void {
+        this.sortActive = sort.active;
+        this.sortDirection = sort.direction;
+        this.onFilterChange();
     }
 
     onPageChange(event: PageEvent): void {
@@ -248,7 +271,9 @@ export class MemberListComponent implements OnInit {
             }
             return true;
         });
-        this.filteredMembers = this.groupFamilies(filtered);
+        this.filteredMembers = this.groupFamilies(
+            sortItems(filtered, this.sortActive, this.sortDirection, this.sortAccessors),
+        );
         this.totalFiltered = filtered.length;
         const start = this.pageIndex * this.pageSize;
         this.pagedMembers = this.filteredMembers.slice(start, start + this.pageSize);

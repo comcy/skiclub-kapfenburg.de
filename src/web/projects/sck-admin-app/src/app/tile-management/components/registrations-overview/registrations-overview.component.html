@@ -3,18 +3,18 @@
 
     <div class="page-content">
         <mat-checkbox [(ngModel)]="showArchive" (ngModelChange)="load()">Archiv anzeigen</mat-checkbox>
-        <table class="overview-table">
+        <table class="overview-table" matSort (matSortChange)="onSortChange($event)">
             <thead>
                 <tr>
-                    <th>Ausfahrt</th>
-                    <th>Datum</th>
-                    <th>Status</th>
-                    <th>Kapazität</th>
+                    <th mat-sort-header="title">Ausfahrt</th>
+                    <th mat-sort-header="date">Datum</th>
+                    <th mat-sort-header="status">Status</th>
+                    <th mat-sort-header="capacity">Kapazität</th>
                     <th style="width: 180px"></th>
                 </tr>
             </thead>
             <tbody>
-                @for (tile of tiles; track tile.id) {
+                @for (tile of sortedTiles; track tile.id) {
                     <tr class="row" [class.row-expired]="tile.expired" (click)="open(tile)">
                         <td>
                             {{ tile.title }}
