@@ -136,6 +136,30 @@ export class MemberListComponent implements OnInit {
             .join(', ');
     }
 
+    // Eingeklappte Hinweise (pro Browser gemerkt).
+    private collapsedAlerts = new Set<string>(this.loadCollapsed());
+
+    private loadCollapsed(): string[] {
+        try {
+            return JSON.parse(localStorage.getItem('sck-member-alerts-collapsed') ?? '[]');
+        } catch {
+            return [];
+        }
+    }
+
+    isCollapsed(key: string): boolean {
+        return this.collapsedAlerts.has(key);
+    }
+
+    toggleAlert(key: string): void {
+        if (!this.collapsedAlerts.delete(key)) this.collapsedAlerts.add(key);
+        try {
+            localStorage.setItem('sck-member-alerts-collapsed', JSON.stringify([...this.collapsedAlerts]));
+        } catch {
+            // Speichern nicht möglich (z. B. privates Fenster): Zustand gilt nur für diese Sitzung.
+        }
+    }
+
     public alerts: MemberAgeAlerts = { overdue: [], soon: [], missingBirthday: [] };
     public filterBirthday = '';
 
