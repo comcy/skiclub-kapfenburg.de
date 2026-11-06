@@ -233,18 +233,18 @@
         }
 
         <div class="table-scroll">
-            <table class="registrations-table">
+            <table class="registrations-table" matSort (matSortChange)="onSortChange($event)">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Alter</th>
+                        <th mat-sort-header="name">Name</th>
+                        <th mat-sort-header="age">Alter</th>
                         <th>Telefon</th>
                         <th>Zustieg</th>
-                        <th>Mitglied</th>
+                        <th mat-sort-header="member">Mitglied</th>
                         <th>Schneeschuhe</th>
                         <th>Skipass</th>
                         <th>Preis</th>
-                        <th>Status</th>
+                        <th mat-sort-header="status">Status</th>
                         <th class="no-print">Extern erfasst</th>
                         <th class="no-print">Bestätigungsmail</th>
                         <th class="no-print" style="width: 88px"></th>

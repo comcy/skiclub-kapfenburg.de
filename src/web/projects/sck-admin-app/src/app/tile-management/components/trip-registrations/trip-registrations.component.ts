@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { forkJoin, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,6 +18,7 @@ import {
 } from '../../domain/trip-registration';
 import { NewsService } from '../../../shared/services/news.service';
 import { RegistrationAlertKey, RegistrationAlerts, registrationAlerts } from '../../domain/registration-alerts';
+import { compareValues } from '../../../shared/utils/sort';
 import { CourseInstructor } from '../../domain/course-instructor';
 import { CourseInstructorsComponent } from '../course-instructors/course-instructors.component';
 import { CourseGroup, courseGroups } from '../../domain/registration-courses';
@@ -80,6 +82,7 @@ interface RegistrationGroup {
         MatButtonModule,
         MatIconModule,
         MatMenuModule,
+        MatSortModule,
         MatTooltipModule,
         CourseInstructorsComponent,
     ],
@@ -338,6 +341,24 @@ export class TripRegistrationsComponent implements OnInit {
 
     // Nach Boarding-Ort gruppiert; Wartelisten-Anmeldungen stehen gesammelt am Ende (in Reihenfolge der Anmeldung),
     // damit sie nie in der Boarding-/Busplanung untergehen.
+    public sort: Sort = { active: '', direction: '' };
+    private readonly sortAccessors: Record<string, (r: TripRegistration) => string | number | undefined> = {
+        name: (r) => `${r.lastName} ${r.firstName}`,
+        age: (r) => (r.birthday ? -Date.parse(r.birthday) : undefined), // älter = größer
+        member: (r) => (r.isMember ? 1 : 0),
+        status: (r) => r.status,
+    };
+
+    onSortChange(sort: Sort): void {
+        this.sort = sort;
+    }
+
+    private compareBySort(a: TripRegistration, b: TripRegistration): number {
+        const get = this.sortAccessors[this.sort.active];
+        if (!get || !this.sort.direction) return 0;
+        return compareValues(get(a), get(b), this.sort.direction);
+    }
+
     get groups(): RegistrationGroup[] {
         const byBoarding = new Map<string, TripRegistration[]>();
         const waitlist: TripRegistration[] = [];
@@ -358,10 +379,11 @@ export class TripRegistrationsComponent implements OnInit {
                 return ta === tb ? a.localeCompare(b) : ta < tb ? -1 : 1;
             })
             .map(([boardingName, list]) => {
-                // Innerhalb eines Zustiegs nach Nachname, damit Familien zusammen stehen.
+                // Innerhalb eines Zustiegs nach Nachname (oder gewählter Spalte), Familien bleiben zusammen.
                 const { ordered, linkedIds } = orderWithHeads(
                     list,
                     (a, b) =>
+                        this.compareBySort(a, b) ||
                         a.lastName.localeCompare(b.lastName, 'de') ||
                         a.firstName.localeCompare(b.firstName, 'de') ||
                         (a.createdAt ?? '').localeCompare(b.createdAt ?? ''),

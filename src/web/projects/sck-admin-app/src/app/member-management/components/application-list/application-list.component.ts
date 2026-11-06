@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ import { MembershipApplication } from '../../domain/membership-application';
 import { NewsService } from '../../../shared/services/news.service';
 import { MemberChangesService } from '../../services/member-changes.service';
 import { MembersDataService } from '../../services/members-data.service';
+import { sortItems } from '../../../shared/utils/sort';
 import { PageHeadingComponent } from '../../../shared/components/page-heading/page-heading.component';
 
 // Now its own routed tab (Anträge) rather than a section nested under the
@@ -21,7 +23,15 @@ import { PageHeadingComponent } from '../../../shared/components/page-heading/pa
 @Component({
     selector: 'app-application-list',
     standalone: true,
-    imports: [PageHeadingComponent, CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatTooltipModule],
+    imports: [
+        PageHeadingComponent,
+        CommonModule,
+        MatTableModule,
+        MatSortModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTooltipModule,
+    ],
     templateUrl: './application-list.component.html',
     styleUrls: ['./application-list.component.scss'],
 })
@@ -44,6 +54,23 @@ export class ApplicationListComponent implements OnInit {
     private readonly changesSubscription = this.memberChanges.changed$
         .pipe(takeUntilDestroyed())
         .subscribe(() => this.refresh());
+
+    public sort: Sort = { active: '', direction: '' };
+    private readonly accessors = {
+        name: (a: MembershipApplication) => `${a.lastName} ${a.firstName}`,
+        email: (a: MembershipApplication) => a.email,
+        submittedAt: (a: MembershipApplication) => a.timestamp,
+        confirmed: (a: MembershipApplication) => (a.confirmed ? 1 : 0),
+    };
+
+    sorted(applications: MembershipApplication[]): MembershipApplication[] {
+        return sortItems(applications, this.sort.active, this.sort.direction, this.accessors);
+    }
+
+    onSortChange(sort: Sort): void {
+        this.sort = sort;
+        this.cdr.markForCheck();
+    }
 
     ngOnInit(): void {
         this.refresh();

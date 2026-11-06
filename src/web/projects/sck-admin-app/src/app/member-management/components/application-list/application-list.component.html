@@ -2,9 +2,15 @@
 
 @if (applications$ | async; as applications) {
     @if (applications.length) {
-        <table mat-table [dataSource]="applications" class="mat-elevation-z8">
+        <table
+            mat-table
+            matSort
+            (matSortChange)="onSortChange($event)"
+            [dataSource]="sorted(applications)"
+            class="mat-elevation-z8"
+        >
             <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="name">Name</th>
                 <td mat-cell *matCellDef="let application">
                     {{ application.firstName }} {{ application.lastName }}
                     @if (news.isNew(application.timestamp)) {
@@ -22,17 +28,17 @@
             </ng-container>
 
             <ng-container matColumnDef="email">
-                <th mat-header-cell *matHeaderCellDef>E-Mail</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="email">E-Mail</th>
                 <td mat-cell *matCellDef="let application">{{ application.email }}</td>
             </ng-container>
 
             <ng-container matColumnDef="submittedAt">
-                <th mat-header-cell *matHeaderCellDef>Eingereicht am</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="submittedAt">Eingereicht am</th>
                 <td mat-cell *matCellDef="let application">{{ application.timestamp | date: 'shortDate' }}</td>
             </ng-container>
 
             <ng-container matColumnDef="confirmed">
-                <th mat-header-cell *matHeaderCellDef>Bestätigung</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="confirmed">Bestätigung</th>
                 <td mat-cell *matCellDef="let application">
                     @if (application.confirmed) {
                         <span class="badge-member"><mat-icon>check</mat-icon> Bestätigt</span>
