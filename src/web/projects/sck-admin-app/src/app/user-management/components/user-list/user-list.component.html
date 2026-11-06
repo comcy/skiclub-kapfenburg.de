@@ -1,13 +1,19 @@
 <app-page-heading title="Nutzer"> </app-page-heading>
 
-<table mat-table [dataSource]="(users$ | async) || []" class="mat-elevation-z8">
+<table
+    mat-table
+    matSort
+    (matSortChange)="onSortChange($event)"
+    [dataSource]="sorted(users$ | async)"
+    class="mat-elevation-z8"
+>
     <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>E-Mail</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="email">E-Mail</th>
         <td mat-cell *matCellDef="let user">{{ user.email }}</td>
     </ng-container>
 
     <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef>Rolle</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="role">Rolle</th>
         <td mat-cell *matCellDef="let user">
             @if (user.isSuperAdmin) {
                 <span class="chip chip-superadmin">Superadmin</span>
@@ -22,7 +28,7 @@
     </ng-container>
 
     <ng-container matColumnDef="lastLogin">
-        <th mat-header-cell *matHeaderCellDef>Letzter Login</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="lastLogin">Letzter Login</th>
         <td mat-cell *matCellDef="let user">
             {{ user.lastLoginAt ? (user.lastLoginAt | date: 'short') : '–' }}
         </td>
