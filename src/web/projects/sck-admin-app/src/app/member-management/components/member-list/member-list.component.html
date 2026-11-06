@@ -82,77 +82,71 @@
 </app-collapsible-filters>
 
 @if (alerts.overdue.length || alerts.soon.length || alerts.missingBirthday.length) {
-    <div class="alerts">
-        @if (alerts.overdue.length) {
-            <div class="alert alert-warn">
-                <mat-icon>cake</mat-icon>
-                <div class="alert-text">
-                    <strong>{{ alerts.overdue.length }} Familienmitglied(er) sind 18 oder älter</strong>
-                    @if (!isCollapsed('overdue')) {
-                        – bitte auf Einzelmitgliedschaft umstellen:
+    @if (alertsCollapsed) {
+        <button type="button" class="alerts-bar" (click)="toggleAlerts()" aria-expanded="false">
+            <span class="alerts-bar-title">Hinweise</span>
+            @if (alerts.overdue.length) {
+                <span class="alerts-bar-chip alert-warn" matTooltip="Familienmitglieder ab 18">
+                    <mat-icon>cake</mat-icon>{{ alerts.overdue.length }}
+                </span>
+            }
+            @if (alerts.soon.length) {
+                <span class="alerts-bar-chip alert-info" matTooltip="Werden in 60 Tagen 18">
+                    <mat-icon>event</mat-icon>{{ alerts.soon.length }}
+                </span>
+            }
+            @if (alerts.missingBirthday.length) {
+                <span class="alerts-bar-chip alert-info" matTooltip="Geburtsdatum fehlt">
+                    <mat-icon>info</mat-icon>{{ alerts.missingBirthday.length }}
+                </span>
+            }
+            <mat-icon class="alerts-bar-toggle">expand_more</mat-icon>
+        </button>
+    } @else {
+        <div class="alerts">
+            @if (alerts.overdue.length) {
+                <div class="alert alert-warn">
+                    <mat-icon>cake</mat-icon>
+                    <div class="alert-text">
+                        <strong>{{ alerts.overdue.length }} Familienmitglied(er) sind 18 oder älter</strong> – bitte auf
+                        Einzelmitgliedschaft umstellen:
                         @for (m of alerts.overdue; track m.id) {
                             <button mat-button class="link" (click)="onEdit(m)">
                                 {{ m.firstName }} {{ m.lastName }}
                             </button>
                         }
-                    }
+                    </div>
+                    <button mat-stroked-button (click)="showOnly('adult18')">Anzeigen</button>
                 </div>
-                <button mat-stroked-button (click)="showOnly('adult18')">Anzeigen</button>
-                <button
-                    mat-icon-button
-                    (click)="toggleAlert('overdue')"
-                    [attr.aria-expanded]="!isCollapsed('overdue')"
-                    [attr.aria-label]="isCollapsed('overdue') ? 'Hinweis ausklappen' : 'Hinweis einklappen'"
-                >
-                    <mat-icon>{{ isCollapsed('overdue') ? 'expand_more' : 'expand_less' }}</mat-icon>
-                </button>
-            </div>
-        }
-        @if (alerts.soon.length) {
-            <div class="alert alert-info">
-                <mat-icon>event</mat-icon>
-                <div class="alert-text">
-                    <strong>In den nächsten 60 Tagen werden {{ alerts.soon.length }} Mitglied(er) 18</strong>
-                    @if (!isCollapsed('soon')) {
-                        :
+            }
+            @if (alerts.soon.length) {
+                <div class="alert alert-info">
+                    <mat-icon>event</mat-icon>
+                    <div class="alert-text">
+                        In den nächsten 60 Tagen werden 18:
                         @for (m of alerts.soon; track m.id) {
                             <button mat-button class="link" (click)="onEdit(m)">
                                 {{ m.firstName }} {{ m.lastName }}
                             </button>
                         }
-                    }
+                    </div>
                 </div>
-                <button
-                    mat-icon-button
-                    (click)="toggleAlert('soon')"
-                    [attr.aria-expanded]="!isCollapsed('soon')"
-                    [attr.aria-label]="isCollapsed('soon') ? 'Hinweis ausklappen' : 'Hinweis einklappen'"
-                >
-                    <mat-icon>{{ isCollapsed('soon') ? 'expand_more' : 'expand_less' }}</mat-icon>
-                </button>
-            </div>
-        }
-        @if (alerts.missingBirthday.length) {
-            <div class="alert alert-info">
-                <mat-icon>info</mat-icon>
-                <div class="alert-text">
-                    <strong>Bei {{ alerts.missingBirthday.length }} aktiven Mitgliedern fehlt das Geburtsdatum</strong>
-                    @if (!isCollapsed('missing')) {
-                        (nötig für den 18-Jahre-Hinweis).
-                    }
+            }
+            @if (alerts.missingBirthday.length) {
+                <div class="alert alert-info">
+                    <mat-icon>info</mat-icon>
+                    <div class="alert-text">
+                        Bei {{ alerts.missingBirthday.length }} aktiven Mitgliedern fehlt das Geburtsdatum (nötig für
+                        den 18-Jahre-Hinweis).
+                    </div>
+                    <button mat-stroked-button (click)="showOnly('missing')">Anzeigen</button>
                 </div>
-                <button mat-stroked-button (click)="showOnly('missing')">Anzeigen</button>
-                <button
-                    mat-icon-button
-                    (click)="toggleAlert('missing')"
-                    [attr.aria-expanded]="!isCollapsed('missing')"
-                    [attr.aria-label]="isCollapsed('missing') ? 'Hinweis ausklappen' : 'Hinweis einklappen'"
-                >
-                    <mat-icon>{{ isCollapsed('missing') ? 'expand_more' : 'expand_less' }}</mat-icon>
-                </button>
-            </div>
-        }
-    </div>
+            }
+            <button type="button" class="alerts-collapse" (click)="toggleAlerts()" aria-expanded="true">
+                <mat-icon>expand_less</mat-icon> Hinweise einklappen
+            </button>
+        </div>
+    }
 }
 
 <div class="table-container">
