@@ -139,8 +139,14 @@ tr.mat-mdc-header-row {
         min-width: 0;
     }
 
+    // Mobil: Text nimmt die Zeile neben dem Icon, Buttons rutschen darunter (rechtsbündig).
     @media (max-width: 600px) {
         flex-wrap: wrap;
+        justify-content: flex-end;
+
+        .alert-text {
+            flex: 1 1 calc(100% - 48px);
+        }
     }
 }
 

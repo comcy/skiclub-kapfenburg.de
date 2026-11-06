@@ -87,34 +87,69 @@
             <div class="alert alert-warn">
                 <mat-icon>cake</mat-icon>
                 <div class="alert-text">
-                    <strong>{{ alerts.overdue.length }} Familienmitglied(er) sind 18 oder älter</strong> – bitte auf
-                    Einzelmitgliedschaft umstellen:
-                    @for (m of alerts.overdue; track m.id) {
-                        <button mat-button class="link" (click)="onEdit(m)">{{ m.firstName }} {{ m.lastName }}</button>
+                    <strong>{{ alerts.overdue.length }} Familienmitglied(er) sind 18 oder älter</strong>
+                    @if (!isCollapsed('overdue')) {
+                        – bitte auf Einzelmitgliedschaft umstellen:
+                        @for (m of alerts.overdue; track m.id) {
+                            <button mat-button class="link" (click)="onEdit(m)">
+                                {{ m.firstName }} {{ m.lastName }}
+                            </button>
+                        }
                     }
                 </div>
                 <button mat-stroked-button (click)="showOnly('adult18')">Anzeigen</button>
+                <button
+                    mat-icon-button
+                    (click)="toggleAlert('overdue')"
+                    [attr.aria-expanded]="!isCollapsed('overdue')"
+                    [attr.aria-label]="isCollapsed('overdue') ? 'Hinweis ausklappen' : 'Hinweis einklappen'"
+                >
+                    <mat-icon>{{ isCollapsed('overdue') ? 'expand_more' : 'expand_less' }}</mat-icon>
+                </button>
             </div>
         }
         @if (alerts.soon.length) {
             <div class="alert alert-info">
                 <mat-icon>event</mat-icon>
                 <div class="alert-text">
-                    In den nächsten 60 Tagen werden 18:
-                    @for (m of alerts.soon; track m.id) {
-                        <button mat-button class="link" (click)="onEdit(m)">{{ m.firstName }} {{ m.lastName }}</button>
+                    <strong>In den nächsten 60 Tagen werden {{ alerts.soon.length }} Mitglied(er) 18</strong>
+                    @if (!isCollapsed('soon')) {
+                        :
+                        @for (m of alerts.soon; track m.id) {
+                            <button mat-button class="link" (click)="onEdit(m)">
+                                {{ m.firstName }} {{ m.lastName }}
+                            </button>
+                        }
                     }
                 </div>
+                <button
+                    mat-icon-button
+                    (click)="toggleAlert('soon')"
+                    [attr.aria-expanded]="!isCollapsed('soon')"
+                    [attr.aria-label]="isCollapsed('soon') ? 'Hinweis ausklappen' : 'Hinweis einklappen'"
+                >
+                    <mat-icon>{{ isCollapsed('soon') ? 'expand_more' : 'expand_less' }}</mat-icon>
+                </button>
             </div>
         }
         @if (alerts.missingBirthday.length) {
             <div class="alert alert-info">
                 <mat-icon>info</mat-icon>
                 <div class="alert-text">
-                    Bei {{ alerts.missingBirthday.length }} aktiven Mitgliedern fehlt das Geburtsdatum (nötig für den
-                    18-Jahre-Hinweis).
+                    <strong>Bei {{ alerts.missingBirthday.length }} aktiven Mitgliedern fehlt das Geburtsdatum</strong>
+                    @if (!isCollapsed('missing')) {
+                        (nötig für den 18-Jahre-Hinweis).
+                    }
                 </div>
                 <button mat-stroked-button (click)="showOnly('missing')">Anzeigen</button>
+                <button
+                    mat-icon-button
+                    (click)="toggleAlert('missing')"
+                    [attr.aria-expanded]="!isCollapsed('missing')"
+                    [attr.aria-label]="isCollapsed('missing') ? 'Hinweis ausklappen' : 'Hinweis einklappen'"
+                >
+                    <mat-icon>{{ isCollapsed('missing') ? 'expand_more' : 'expand_less' }}</mat-icon>
+                </button>
             </div>
         }
     </div>

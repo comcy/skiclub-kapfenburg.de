@@ -194,6 +194,15 @@
                             {{ g.sport }} · {{ g.level }}
                             <span class="course-group-count">{{ g.registrations.length }} Pers.</span>
                         </div>
+                        <app-course-instructors
+                            [tileId]="tileId"
+                            [sport]="g.sport"
+                            [level]="g.level"
+                            [team]="organizers"
+                            [assignments]="instructors"
+                            [canEdit]="auth.hasPermission('tiles:write')"
+                            (assignmentsChange)="onInstructors($event)"
+                        ></app-course-instructors>
                         <table class="course-table">
                             <thead>
                                 <tr>
