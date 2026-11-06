@@ -347,6 +347,7 @@ export class TripRegistrationsComponent implements OnInit {
         age: (r) => (r.birthday ? -Date.parse(r.birthday) : undefined), // älter = größer
         member: (r) => (r.isMember ? 1 : 0),
         status: (r) => r.status,
+        course: (r) => (r.courseRequested ? 1 : 0),
     };
 
     onSortChange(sort: Sort): void {
@@ -402,6 +403,10 @@ export class TripRegistrationsComponent implements OnInit {
             });
         }
         return groups;
+    }
+
+    courseLabel(r: TripRegistration): string {
+        return [r.sportType, r.level].filter(Boolean).join(' · ');
     }
 
     // Druckansicht: gebuchte Leistungen in einer Zeile (Bus/Lift, Schneeschuhe, Kurs) - der Preis enthält sie bereits.

@@ -243,6 +243,7 @@
                         <th mat-sort-header="member">Mitglied</th>
                         <th>Schneeschuhe</th>
                         <th>Skipass</th>
+                        <th mat-sort-header="course">Kurs</th>
                         <th>Preis</th>
                         <th mat-sort-header="status">Status</th>
                         <th class="no-print">Extern erfasst</th>
@@ -253,7 +254,7 @@
                 <tbody>
                     @for (group of groups; track group.boardingName) {
                         <tr>
-                            <td colspan="12" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
+                            <td colspan="13" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
                                 {{ group.boardingName }}
                             </td>
                         </tr>
@@ -349,6 +350,16 @@
                                 </td>
                                 <td>{{ registration.snowshoes ? 'ja' : '–' }}</td>
                                 <td>{{ registration.busOnly ? '–' : 'ja' }}</td>
+                                <td>
+                                    @if (registration.courseRequested) {
+                                        <span class="badge-member"><mat-icon>school</mat-icon> Kurs</span>
+                                        @if (courseLabel(registration)) {
+                                            <small class="course-detail">{{ courseLabel(registration) }}</small>
+                                        }
+                                    } @else {
+                                        –
+                                    }
+                                </td>
                                 <td>
                                     @if (pricesByRegistrationId.has(registration.id)) {
                                         {{ pricesByRegistrationId.get(registration.id) }}&nbsp;€
@@ -455,7 +466,7 @@
                     }
                     @if (!groups.length) {
                         <tr>
-                            <td colspan="12" class="empty">Noch keine Anmeldungen.</td>
+                            <td colspan="13" class="empty">Noch keine Anmeldungen.</td>
                         </tr>
                     }
                 </tbody>
