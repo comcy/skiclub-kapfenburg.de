@@ -136,25 +136,21 @@ export class MemberListComponent implements OnInit {
             .join(', ');
     }
 
-    // Eingeklappte Hinweise (pro Browser gemerkt).
-    private collapsedAlerts = new Set<string>(this.loadCollapsed());
+    // Hinweise eingeklappt = eine schmale Leiste statt der Boxen (pro Browser gemerkt).
+    public alertsCollapsed = this.loadAlertsCollapsed();
 
-    private loadCollapsed(): string[] {
+    private loadAlertsCollapsed(): boolean {
         try {
-            return JSON.parse(localStorage.getItem('sck-member-alerts-collapsed') ?? '[]');
+            return localStorage.getItem('sck-member-alerts-collapsed') === '1';
         } catch {
-            return [];
+            return false;
         }
     }
 
-    isCollapsed(key: string): boolean {
-        return this.collapsedAlerts.has(key);
-    }
-
-    toggleAlert(key: string): void {
-        if (!this.collapsedAlerts.delete(key)) this.collapsedAlerts.add(key);
+    toggleAlerts(): void {
+        this.alertsCollapsed = !this.alertsCollapsed;
         try {
-            localStorage.setItem('sck-member-alerts-collapsed', JSON.stringify([...this.collapsedAlerts]));
+            localStorage.setItem('sck-member-alerts-collapsed', this.alertsCollapsed ? '1' : '0');
         } catch {
             // Speichern nicht möglich (z. B. privates Fenster): Zustand gilt nur für diese Sitzung.
         }

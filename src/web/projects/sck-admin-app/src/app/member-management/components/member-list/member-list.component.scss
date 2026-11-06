@@ -150,6 +150,63 @@ tr.mat-mdc-header-row {
     }
 }
 
+// Eingeklappt: eine schmale Zeile mit Zählern statt der Boxen.
+.alerts-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 2px 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--mat-sys-on-surface-variant);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+
+    &:hover {
+        background: color-mix(in srgb, var(--mat-sys-on-surface) 6%, transparent);
+    }
+
+    .alerts-bar-title {
+        font-weight: 500;
+    }
+
+    .alerts-bar-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        padding: 0 8px 0 4px;
+        border-radius: 10px;
+        font-size: 12px;
+
+        mat-icon {
+            width: 16px;
+            height: 16px;
+            font-size: 16px;
+        }
+    }
+
+    .alerts-bar-toggle {
+        margin-left: auto;
+    }
+}
+
+.alerts-collapse {
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 0;
+    background: transparent;
+    color: var(--mat-sys-on-surface-variant);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
 .alert-warn {
     background: light-dark(#fff3cd, #4a3b00);
     color: light-dark(#7a5800, #ffd966);
