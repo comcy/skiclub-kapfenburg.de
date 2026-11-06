@@ -10,7 +10,9 @@ import { calculateAge } from 'projects/shared-lib/src/lib/date-time';
 import { AuthService } from '../../../auth/services/auth.service';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../../domain/course-registration';
 import { NewsService } from '../../../shared/services/news.service';
-import { Tile } from '../../domain/tile';
+import { CourseInstructor } from '../../domain/course-instructor';
+import { CourseInstructorsComponent } from '../course-instructors/course-instructors.component';
+import { TeachingTeamEntry, Tile } from '../../domain/tile';
 import { SkiCoursePricingSetting } from '../../../settings/domain/ski-course-pricing-setting';
 import { SettingsDataService } from '../../../settings/services/settings-data.service';
 import { TilesDataService } from '../../services/tiles-data.service';
@@ -29,6 +31,7 @@ import { CourseRegistrationEditorComponent } from './course-registration-editor/
         MatMenuModule,
         MatTooltipModule,
         CourseRegistrationEditorComponent,
+        CourseInstructorsComponent,
     ],
     templateUrl: './course-registrations.component.html',
     styleUrls: ['./course-registrations.component.scss'],
@@ -48,6 +51,13 @@ export class CourseRegistrationsComponent implements OnInit {
     public registrations: CourseRegistration[] = [];
     public selectedRegistration: CourseRegistration | null = null;
     public tileId!: string;
+    public team: TeachingTeamEntry[] = [];
+    public instructors: CourseInstructor[] = [];
+    onInstructors(all: CourseInstructor[]): void {
+        this.instructors = all;
+        this.cdr.markForCheck();
+    }
+
     // Optional per ?sport=... auf eine Sportart eingeschränkt (A1 Ski vs. A1 Snowboard).
     public sport: string | null = null;
     // Globale Ski-/Snowboardkurs-Preise (Einstellungen -> Preismanagement).
@@ -60,6 +70,11 @@ export class CourseRegistrationsComponent implements OnInit {
             this.tile = tile;
             this.cdr.markForCheck();
         });
+        this.dataService.getTeachingTeam().subscribe((team) => {
+            this.team = team;
+            this.cdr.markForCheck();
+        });
+        this.dataService.getCourseInstructors(this.tileId).subscribe((all) => this.onInstructors(all));
         // Liste gilt ab jetzt als gesehen; die Neu-Badges dieses Besuchs richten sich nach dem vorherigen Stand.
         this.news.markListSeen(this.tileId).subscribe((previous) => {
             this.seenBefore = previous;

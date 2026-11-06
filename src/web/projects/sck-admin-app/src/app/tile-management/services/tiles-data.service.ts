@@ -7,6 +7,7 @@ import { PaginatedResponse } from '../domain/paginated-response';
 import { TeachingTeamEntry, Tile, TileCreationParams } from '../domain/tile';
 import { VerifiedPerson } from '../domain/verified-person';
 import { TripRegistration, TripRegistrationCreationParams } from '../domain/trip-registration';
+import { CourseInstructor } from '../domain/course-instructor';
 import { CourseRegistration, CourseRegistrationCreationParams } from '../domain/course-registration';
 
 // Mirrors sck-api's PricePreviewParticipant / trip-price-preview response
@@ -169,6 +170,24 @@ export class TilesDataService {
     ): Observable<TripPricePreviewResult> {
         return this.http.post<TripPricePreviewResult>(`${this.apiUrl}/${this.endpoint}/${tileId}/trip-price-preview`, {
             participants,
+        });
+    }
+
+    getCourseInstructors(tileId: string): Observable<CourseInstructor[]> {
+        return this.http.get<CourseInstructor[]>(`${this.apiUrl}/tiles/${tileId}/course-instructors`);
+    }
+
+    // Ersetzt die Übungsleiter eines Kurses; liefert die Übungsleiter aller Kurse der Kachel zurück.
+    setCourseInstructors(
+        tileId: string,
+        sportType: string,
+        level: string,
+        memberIds: string[],
+    ): Observable<CourseInstructor[]> {
+        return this.http.put<CourseInstructor[]>(`${this.apiUrl}/tiles/${tileId}/course-instructors`, {
+            sportType,
+            level,
+            memberIds,
         });
     }
 

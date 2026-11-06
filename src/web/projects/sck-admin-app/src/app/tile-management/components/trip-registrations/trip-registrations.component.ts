@@ -17,6 +17,8 @@ import {
 } from '../../domain/trip-registration';
 import { NewsService } from '../../../shared/services/news.service';
 import { RegistrationAlertKey, RegistrationAlerts, registrationAlerts } from '../../domain/registration-alerts';
+import { CourseInstructor } from '../../domain/course-instructor';
+import { CourseInstructorsComponent } from '../course-instructors/course-instructors.component';
 import { CourseGroup, courseGroups } from '../../domain/registration-courses';
 import { guardianOf, isMinor, minorState } from '../../domain/registration-minor';
 import { TeachingTeamEntry, Tile } from '../../domain/tile';
@@ -73,7 +75,14 @@ interface RegistrationGroup {
 @Component({
     selector: 'app-trip-registrations',
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule],
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+        MatTooltipModule,
+        CourseInstructorsComponent,
+    ],
     templateUrl: './trip-registrations.component.html',
     styleUrls: ['./trip-registrations.component.scss'],
 })
@@ -114,6 +123,7 @@ export class TripRegistrationsComponent implements OnInit {
             this.tile = tile;
             this.cdr.markForCheck();
         });
+        this.dataService.getCourseInstructors(this.tileId).subscribe((all) => this.onInstructors(all));
         this.dataService.getTeachingTeam().subscribe((team) => {
             this.organizers = team;
             this.cdr.markForCheck();
@@ -267,6 +277,11 @@ export class TripRegistrationsComponent implements OnInit {
 
     // Ansicht: alle Anmeldungen (nach Zustieg) oder nur Kursanmeldungen (nach Sportart/Stufe, fürs Lehrpersonal).
     public view: 'all' | 'courses' = 'all';
+    public instructors: CourseInstructor[] = [];
+    onInstructors(all: CourseInstructor[]): void {
+        this.instructors = all;
+        this.cdr.markForCheck();
+    }
 
     get courseGroupList(): CourseGroup[] {
         return courseGroups(this.registrations);

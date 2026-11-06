@@ -227,6 +227,16 @@ db.exec(`
 
   -- Pro Admin und Anmeldungs-Liste: wann die Liste zuletzt geöffnet wurde. Anmeldungen bis dahin
   -- gelten für diesen Admin nicht mehr als "neu" (siehe news-service.ts).
+  -- Übungsleiter (Lehrteam-Mitglieder) je Kurs: bei Ausfahrten Sportart+Stufe der Kursanmeldungen, bei
+  -- Kurs-Kacheln (Heimatgelände) Sportart (leer = ganze Kachel) und Stufe leer. Mehrere pro Kurs möglich.
+  CREATE TABLE IF NOT EXISTS course_instructors (
+    tile_id TEXT NOT NULL REFERENCES tiles (id) ON DELETE CASCADE,
+    sport_type TEXT NOT NULL DEFAULT '',
+    level TEXT NOT NULL DEFAULT '',
+    member_id TEXT NOT NULL REFERENCES members (id) ON DELETE CASCADE,
+    PRIMARY KEY (tile_id, sport_type, level, member_id)
+  );
+
   CREATE TABLE IF NOT EXISTS tile_seen (
     user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     tile_id TEXT NOT NULL REFERENCES tiles (id) ON DELETE CASCADE,

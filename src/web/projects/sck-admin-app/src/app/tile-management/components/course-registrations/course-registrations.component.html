@@ -32,6 +32,15 @@
             }
         </div>
 
+        <app-course-instructors
+            [tileId]="tileId"
+            [sport]="sport ?? ''"
+            [team]="team"
+            [assignments]="instructors"
+            [canEdit]="auth.hasPermission('tiles:write')"
+            (assignmentsChange)="onInstructors($event)"
+        ></app-course-instructors>
+
         <div class="table-scroll">
             <table class="registrations-table">
                 <thead>

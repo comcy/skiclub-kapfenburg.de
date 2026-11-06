@@ -14,6 +14,7 @@ import {
   updateCourseGroup,
   updateCourseRegistration,
 } from '../controllers/course-registrations-controller.js';
+import { listCourseInstructors, setCourseInstructors } from '../controllers/course-instructors-controller.js';
 import { requireAuth, requirePermission, requireSuperAdmin } from '../middleware/auth-middleware.js';
 import { publicWriteLimiter } from '../middleware/rate-limit.js';
 import { requireTurnstile } from '../middleware/turnstile-middleware.js';
@@ -40,5 +41,8 @@ router.get('/tiles/:tileId/course-groups', requireAuth, listCourseGroups);
 router.post('/tiles/:tileId/course-groups', requireAuth, requirePermission('tiles:write'), createCourseGroup);
 router.put('/course-groups/:id', requireAuth, requirePermission('tiles:write'), updateCourseGroup);
 router.delete('/course-groups/:id', requireAuth, requirePermission('tiles:write'), deleteCourseGroup);
+
+router.get('/tiles/:tileId/course-instructors', requireAuth, listCourseInstructors);
+router.put('/tiles/:tileId/course-instructors', requireAuth, requirePermission('tiles:write'), setCourseInstructors);
 
 export default router;
