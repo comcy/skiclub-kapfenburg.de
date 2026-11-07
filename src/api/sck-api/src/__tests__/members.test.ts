@@ -192,6 +192,21 @@ describe('Members Routes', () => {
     // Zweites Kind landet in derselben Gruppe.
     const second = (await create({ ...validMember, firstName: 'Zwei', lastName: 'Fam', email: undefined, familyReferentId: main.id })).body;
     expect(second.familyGroupId).toBe(child.familyGroupId);
+
+    // Der gewählte Hauptanmelder ist genau einer je Gruppe und bleibt es für weitere Zuordnungen.
+    const get = async (id: string) =>
+      (await request(app).get(`/api/members/${id}`).set('Authorization', `Bearer ${token}`)).body;
+    expect((await get(main.id)).isFamilyHead).toBe(true);
+    expect((await get(child.id)).isFamilyHead).toBe(false);
+    expect((await get(second.id)).isFamilyHead).toBe(false);
+
+    // Anderen Hauptanmelder wählen: die Markierung wandert.
+    await request(app)
+      .put(`/api/members/${main.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ ...(await get(main.id)), familyReferentId: child.id });
+    expect((await get(child.id)).isFamilyHead).toBe(true);
+    expect((await get(main.id)).isFamilyHead).toBe(false);
   });
 
   it('weitere E-Mail-Adressen: normalisiert gespeichert, bleiben beim Speichern ohne Feld erhalten, dienen dem Abgleich', async () => {

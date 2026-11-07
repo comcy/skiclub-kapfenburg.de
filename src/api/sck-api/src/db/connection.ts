@@ -496,6 +496,12 @@ if (!memberColumns.some((c) => c.name === 'extra_emails')) {
   db.exec(`ALTER TABLE members ADD COLUMN extra_emails TEXT NOT NULL DEFAULT '[]';`);
 }
 
+// Ausdrücklich gewählter Hauptanmelder einer Familie (genau einer je Familiengruppe; ohne Markierung
+// greift im Admin die Heuristik aus family-head.ts).
+if (!memberColumns.some((c) => c.name === 'is_family_head')) {
+  db.exec(`ALTER TABLE members ADD COLUMN is_family_head INTEGER NOT NULL DEFAULT 0;`);
+}
+
 // Lehrteam-Markierung (Vereinsverwaltung → Lehrteam).
 if (!memberColumns.some((c) => c.name === 'is_teaching_team')) {
   db.exec(`ALTER TABLE members ADD COLUMN is_teaching_team INTEGER NOT NULL DEFAULT 0;`);

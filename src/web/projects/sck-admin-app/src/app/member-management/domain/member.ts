@@ -14,6 +14,8 @@ export interface Member {
     address?: string;
     isFamilyMembership: boolean;
     familyGroupId?: string;
+    // Ausdrücklich gewählter Hauptanmelder der Familie (vom Server gesetzt).
+    isFamilyHead?: boolean;
     status: MemberStatus;
     source: MemberSource;
     applicationRegistrationId?: string;

@@ -18,6 +18,8 @@ export interface Member {
   address?: string;
   isFamilyMembership: boolean;
   familyGroupId?: string;
+  // Ausdrücklich gewählter Hauptanmelder der Familie (steht in Listen immer oben); nur serverseitig gesetzt.
+  isFamilyHead?: boolean;
   status: MemberStatus;
   source: MemberSource;
   applicationRegistrationId?: string;

@@ -15,6 +15,14 @@ const m = (firstName: string, extra: Partial<Member> = {}): Member => ({
 const head = (members: Member[]): string => [...members].sort(familyHeadOrder)[0].firstName;
 
 describe('familyHeadOrder', () => {
+    it('ausdrücklich gewählter Hauptanmelder steht immer oben, egal was die Heuristik sagt', () => {
+        const family = [
+            m('Markus', { accountHolder: 'Markus Mayer', iban: 'DE02120300000000202051', email: 'm@mayer.de' }),
+            m('Zoe', { isFamilyHead: true }),
+        ];
+        expect(head(family)).toBe('Zoe');
+    });
+
     it('Kontoinhaber vor Alphabet, auch wenn alles andere gleich ist', () => {
         const family = [
             m('Laura'),

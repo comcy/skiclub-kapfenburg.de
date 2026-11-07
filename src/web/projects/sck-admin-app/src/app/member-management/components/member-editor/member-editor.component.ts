@@ -23,6 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { GERMAN_DATE_FORMATS, GermanDateAdapter } from 'projects/shared-lib/src/lib/date-time';
 import { Member, MemberCreationParams } from '../../domain/member';
+import { familyHeadOrder } from '../../domain/family-head';
 import { MembersDataService } from '../../services/members-data.service';
 
 // "1985-03-26" -> local-time Date(1985, 2, 26), never UTC midnight (the
@@ -154,7 +155,21 @@ export class MemberEditorComponent implements OnInit, OnChanges {
     get familyMates(): Member[] {
         const group = this.member?.familyGroupId;
         if (!group) return [];
-        return this.allMembers.filter((m) => m.familyGroupId === group && m.id !== this.member?.id);
+        return this.allMembers
+            .filter((m) => m.familyGroupId === group && m.id !== this.member?.id)
+            .sort(familyHeadOrder);
+    }
+
+    // Hauptanmelder der Familie (ausdrücklich gewählt, sonst Heuristik) - Reihenfolge wie in der Mitgliederliste.
+    get familyHint(): string {
+        if (!this.member) return '';
+        const all = [this.member, ...this.familyMates].sort(familyHeadOrder);
+        const [head, ...rest] = all;
+        const name = (m: Member) => `${m.firstName} ${m.lastName}`;
+        const others = rest.map(name).join(', ');
+        return head.id === this.member.id
+            ? `Hauptanmelder dieser Familie (Familie mit: ${others}).`
+            : `Hauptanmelder: ${name(head)}. Weitere: ${rest.map(name).join(', ')}.`;
     }
 
     // Gleiche Adresse, aber (noch) nicht in dieser Familie -> Verknüpfung vorschlagen.
@@ -169,10 +184,6 @@ export class MemberEditorComponent implements OnInit, OnChanges {
                     !(m.familyGroupId && m.familyGroupId === this.member?.familyGroupId),
             )
             .slice(0, 3);
-    }
-
-    get familyNames(): string {
-        return this.familyMates.map((m) => `${m.firstName} ${m.lastName}`).join(', ');
     }
 
     // Nach der Auswahl bleibt das Suchfeld leer (die Auswahl steht als "Familie von …" darunter).
