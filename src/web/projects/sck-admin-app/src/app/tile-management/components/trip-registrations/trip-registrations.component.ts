@@ -409,13 +409,10 @@ export class TripRegistrationsComponent implements OnInit {
         return [r.sportType, r.level].filter(Boolean).join(' · ');
     }
 
-    // Druckansicht: gebuchte Leistungen in einer Zeile (Bus/Lift, Schneeschuhe, Kurs) - der Preis enthält sie bereits.
+    // Druckansicht: gebuchte Leistungen in einer Zeile (Bus/Lift, Schneeschuhe; der Kurs hat eine eigene Spalte) - der Preis enthält sie bereits.
     servicesText(r: TripRegistration): string {
         const parts = [r.busOnly ? 'Nur Bus' : 'Bus + Lift'];
         if (r.snowshoes) parts.push('Schneeschuhe');
-        if (r.courseRequested) {
-            parts.push(`Kurs${r.level ? ': ' + r.level : ''}${r.sportType ? ' (' + r.sportType + ')' : ''}`);
-        }
         return parts.join(' · ');
     }
 

@@ -239,7 +239,6 @@
                         <th mat-sort-header="name">Name</th>
                         <th mat-sort-header="age">Alter</th>
                         <th>Telefon</th>
-                        <th>Zustieg</th>
                         <th mat-sort-header="member">Mitglied</th>
                         <th>Schneeschuhe</th>
                         <th>Skipass</th>
@@ -254,7 +253,7 @@
                 <tbody>
                     @for (group of groups; track group.boardingName) {
                         <tr>
-                            <td colspan="13" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
+                            <td colspan="12" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
                                 {{ group.boardingName }}
                             </td>
                         </tr>
@@ -324,7 +323,6 @@
                                     }
                                 </td>
                                 <td>{{ registration.phone || '–' }}</td>
-                                <td>{{ registration.boardingName || '–' }}</td>
                                 <td>
                                     @if (registration.memberId) {
                                         <span
@@ -466,7 +464,7 @@
                     }
                     @if (!groups.length) {
                         <tr>
-                            <td colspan="13" class="empty">Noch keine Anmeldungen.</td>
+                            <td colspan="12" class="empty">Noch keine Anmeldungen.</td>
                         </tr>
                     }
                 </tbody>
@@ -485,6 +483,7 @@
                         <th class="w-guardian">Erziehungsber.</th>
                         <th class="w-consent"></th>
                         <th class="w-services">Leistungen</th>
+                        <th class="w-course">Kurs</th>
                         <th class="num w-price">Preis</th>
                     </tr>
                 </thead>
@@ -492,11 +491,11 @@
                     <tbody [class]="group.waitlist ? 'bc-wait' : 'bc-' + (gi % 6)">
                         @if (gi > 0) {
                             <tr class="print-gap">
-                                <td colspan="8"></td>
+                                <td colspan="9"></td>
                             </tr>
                         }
                         <tr>
-                            <td colspan="8" class="print-group">
+                            <td colspan="9" class="print-group">
                                 {{ group.boardingName }}
                                 @if (!group.waitlist) {
                                     <span class="print-group-sum">
@@ -546,6 +545,11 @@
                                     }
                                 </td>
                                 <td>{{ servicesText(registration) }}</td>
+                                <td>
+                                    @if (registration.courseRequested) {
+                                        {{ courseLabel(registration) || 'ja' }}
+                                    }
+                                </td>
                                 <td class="num">
                                     @if (pricesByRegistrationId.has(registration.id)) {
                                         {{ pricesByRegistrationId.get(registration.id) }}&nbsp;€
@@ -557,7 +561,7 @@
                 }
                 <tfoot>
                     <tr>
-                        <td colspan="7">Gesamt (ohne Warteliste)</td>
+                        <td colspan="8">Gesamt (ohne Warteliste)</td>
                         <td class="num">{{ grandTotal }}&nbsp;€</td>
                     </tr>
                 </tfoot>
