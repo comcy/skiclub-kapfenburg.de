@@ -5,6 +5,7 @@ describe('registration-columns', () => {
         const d = defaultColumns();
         expect(d).toContain('phone');
         expect(d).not.toContain('email');
+        expect(d).not.toContain('boarding');
         expect(d).not.toContain('notes');
     });
 

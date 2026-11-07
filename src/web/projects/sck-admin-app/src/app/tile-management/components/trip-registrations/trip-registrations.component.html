@@ -271,6 +271,9 @@
                         @if (show('phone')) {
                             <th>Telefon</th>
                         }
+                        @if (show('boarding')) {
+                            <th>Zustieg</th>
+                        }
                         @if (show('email')) {
                             <th>E-Mail</th>
                         }
@@ -385,6 +388,9 @@
 
                                 @if (show('phone')) {
                                     <td>{{ registration.phone || '–' }}</td>
+                                }
+                                @if (show('boarding')) {
+                                    <td>{{ registration.boardingName || '–' }}</td>
                                 }
                                 @if (show('email')) {
                                     <td>{{ registration.email || '–' }}</td>
@@ -577,6 +583,9 @@
                         @if (show('phone')) {
                             <th class="w-phone">Telefon</th>
                         }
+                        @if (show('boarding')) {
+                            <th class="w-boarding">Zustieg</th>
+                        }
                         @if (show('member')) {
                             <th class="w-member">Mitgl.</th>
                         }
@@ -639,6 +648,9 @@
 
                                 @if (show('phone')) {
                                     <td>{{ registration.phone || '' }}</td>
+                                }
+                                @if (show('boarding')) {
+                                    <td>{{ registration.boardingName || '' }}</td>
                                 }
                                 @if (show('member')) {
                                     <td>{{ registration.isMember ? 'ja' : '–' }}</td>

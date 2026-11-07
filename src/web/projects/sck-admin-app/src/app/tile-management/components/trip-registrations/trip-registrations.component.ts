@@ -325,7 +325,9 @@ export class TripRegistrationsComponent implements OnInit {
 
     // Druck: Name, Erziehungsberechtigte, Einverständnis (immer) + sichtbare Druckspalten.
     get printColCount(): number {
-        return 3 + ['age', 'phone', 'member', 'services', 'course', 'price'].filter((k) => this.show(k)).length;
+        return (
+            3 + ['age', 'phone', 'boarding', 'member', 'services', 'course', 'price'].filter((k) => this.show(k)).length
+        );
     }
 
     public view: 'all' | 'courses' = 'all';
