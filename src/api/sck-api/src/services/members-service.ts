@@ -21,6 +21,7 @@ interface MemberRow {
   address: string | null;
   is_family_membership: number;
   family_group_id: string | null;
+  is_family_head: number;
   status: string;
   source: string;
   application_registration_id: string | null;
@@ -79,6 +80,7 @@ const rowToMember = (row: MemberRow): Member => ({
   address: row.address ?? undefined,
   isFamilyMembership: row.is_family_membership === 1,
   familyGroupId: row.family_group_id ?? undefined,
+  isFamilyHead: row.is_family_head === 1,
   status: row.status as Member['status'],
   source: row.source as Member['source'],
   applicationRegistrationId: row.application_registration_id ?? undefined,
@@ -226,6 +228,8 @@ export const updateMember = (id: string, params: MemberCreationParams): Member |
       id,
     );
   if (result.changes === 0) return undefined;
+  // Wer aus der Familie genommen wird, ist auch kein Hauptanmelder mehr.
+  db.prepare('UPDATE members SET is_family_head = 0 WHERE id = ? AND (is_family_membership = 0 OR family_group_id IS NULL)').run(id);
   // See createMember() - re-fetch so honoredYears (never part of an
   // ordinary save) reflects what's actually still in the DB, not undefined.
   return getMember(id);
@@ -242,6 +246,11 @@ export const linkToFamily = (memberId: string, referentId: string): Member | und
     groupId,
     member.id,
     referent.id,
+  );
+  // Der gewählte Hauptanmelder steht immer oben: genau einer je Familiengruppe.
+  db.prepare('UPDATE members SET is_family_head = CASE WHEN id = ? THEN 1 ELSE 0 END WHERE family_group_id = ?').run(
+    referent.id,
+    groupId,
   );
   return getMember(memberId);
 };
@@ -359,7 +368,7 @@ export const createFamilyMembersFromApplication = (main: Member): Member[] => {
 
   const familyGroupId = main.familyGroupId || `${main.lastName} ${main.address ?? ''}`.trim() + ` ${main.id.slice(0, 8)}`;
   if (!main.familyGroupId) {
-    db.prepare('UPDATE members SET family_group_id = ? WHERE id = ?').run(familyGroupId, main.id);
+    db.prepare('UPDATE members SET family_group_id = ?, is_family_head = 1 WHERE id = ?').run(familyGroupId, main.id);
   }
   const existing = db.prepare('SELECT first_name, last_name FROM members WHERE family_group_id = ?').all(familyGroupId) as {
     first_name: string;

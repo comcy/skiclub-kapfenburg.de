@@ -6,9 +6,10 @@ const isAccountHolder = (m: Member): boolean => {
     return !!holder && !!m.firstName.trim() && holder.includes(m.firstName.trim().toLowerCase());
 };
 
-// Sortierung für den Hauptanmelder einer Familie (der erste gewinnt): Kontoinhaber, dann wer eine IBAN hat,
+// Sortierung für den Hauptanmelder einer Familie (der erste gewinnt): ausdrücklich gewählter Hauptanmelder, sonst Kontoinhaber, dann wer eine IBAN hat,
 // dann wer eine E-Mail hat, dann länger Mitglied, dann älter, dann alphabetisch.
 export const familyHeadOrder = (a: Member, b: Member): number =>
+    Number(!!b.isFamilyHead) - Number(!!a.isFamilyHead) ||
     Number(isAccountHolder(b)) - Number(isAccountHolder(a)) ||
     Number(!!b.iban) - Number(!!a.iban) ||
     Number(!!b.email) - Number(!!a.email) ||
