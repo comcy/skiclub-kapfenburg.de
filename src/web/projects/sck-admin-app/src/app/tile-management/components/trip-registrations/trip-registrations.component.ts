@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -21,6 +22,7 @@ import { RegistrationAlertKey, RegistrationAlerts, registrationAlerts } from '..
 import { compareValues } from '../../../shared/utils/sort';
 import { CourseInstructor } from '../../domain/course-instructor';
 import { CourseInstructorsComponent } from '../course-instructors/course-instructors.component';
+import { REGISTRATION_COLUMNS, parseColumns, printHas } from '../../domain/registration-columns';
 import { CourseGroup, courseGroups } from '../../domain/registration-courses';
 import { guardianOf, isMinor, minorState } from '../../domain/registration-minor';
 import { TeachingTeamEntry, Tile } from '../../domain/tile';
@@ -80,6 +82,7 @@ interface RegistrationGroup {
     imports: [
         CommonModule,
         MatButtonModule,
+        MatCheckboxModule,
         MatIconModule,
         MatMenuModule,
         MatSortModule,
@@ -279,6 +282,52 @@ export class TripRegistrationsComponent implements OnInit {
     }
 
     // Ansicht: alle Anmeldungen (nach Zustieg) oder nur Kursanmeldungen (nach Sportart/Stufe, fürs Lehrpersonal).
+    // Sichtbare Spalten der Liste (Bildschirm und Druck), pro Browser gemerkt.
+    public readonly columnDefs = REGISTRATION_COLUMNS;
+    private visibleColumns = new Set(parseColumns(this.readColumns()));
+
+    private readColumns(): string | null {
+        try {
+            return localStorage.getItem('sck-trip-registration-columns');
+        } catch {
+            return null;
+        }
+    }
+
+    // Bildschirm: Schlüssel direkt; "services" gibt es nur im Druck.
+    show(key: string): boolean {
+        return printHas(this.visibleColumns, key);
+    }
+
+    toggleColumn(key: string): void {
+        if (!this.visibleColumns.delete(key)) this.visibleColumns.add(key);
+        this.saveColumns();
+    }
+
+    resetColumns(): void {
+        this.visibleColumns = new Set(parseColumns(null));
+        this.saveColumns();
+    }
+
+    private saveColumns(): void {
+        try {
+            localStorage.setItem('sck-trip-registration-columns', JSON.stringify([...this.visibleColumns]));
+        } catch {
+            // Speichern nicht möglich (z. B. privates Fenster): Auswahl gilt nur für diese Sitzung.
+        }
+        this.cdr.markForCheck();
+    }
+
+    // Spaltenzahl für die Gruppenzeilen: Name + sichtbare Spalten (+ Aktionen am Bildschirm).
+    get screenColCount(): number {
+        return 2 + this.columnDefs.filter((c) => this.visibleColumns.has(c.key)).length;
+    }
+
+    // Druck: Name, Erziehungsberechtigte, Einverständnis (immer) + sichtbare Druckspalten.
+    get printColCount(): number {
+        return 3 + ['age', 'phone', 'member', 'services', 'course', 'price'].filter((k) => this.show(k)).length;
+    }
+
     public view: 'all' | 'courses' = 'all';
     public instructors: CourseInstructor[] = [];
     onInstructors(all: CourseInstructor[]): void {

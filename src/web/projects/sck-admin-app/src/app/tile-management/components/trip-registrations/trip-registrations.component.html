@@ -47,6 +47,34 @@
                         </button>
                     </div>
                 }
+                @if (view === 'all') {
+                    <button
+                        mat-stroked-button
+                        aria-label="Spalten auswählen"
+                        [matMenuTriggerFor]="columnMenu"
+                        matTooltip="Spalten ein-/ausblenden (gilt auch für den Druck)"
+                    >
+                        <mat-icon>view_column</mat-icon>
+                        <span class="btn-label">Spalten</span>
+                    </button>
+                    <mat-menu #columnMenu="matMenu" class="column-menu">
+                        @for (c of columnDefs; track c.key) {
+                            <div
+                                class="column-option"
+                                (click)="$event.stopPropagation()"
+                                (keydown)="$event.stopPropagation()"
+                            >
+                                <mat-checkbox [checked]="show(c.key)" (change)="toggleColumn(c.key)">{{
+                                    c.label
+                                }}</mat-checkbox>
+                            </div>
+                        }
+                        <button mat-menu-item (click)="resetColumns(); $event.stopPropagation()">
+                            <mat-icon>restart_alt</mat-icon>
+                            <span>Standard</span>
+                        </button>
+                    </mat-menu>
+                }
                 <button mat-stroked-button aria-label="Drucken" (click)="onPrint()">
                     <mat-icon>print</mat-icon>
                     <span class="btn-label">Drucken</span>
@@ -237,23 +265,53 @@
                 <thead>
                     <tr>
                         <th mat-sort-header="name">Name</th>
-                        <th mat-sort-header="age">Alter</th>
-                        <th>Telefon</th>
-                        <th mat-sort-header="member">Mitglied</th>
-                        <th>Schneeschuhe</th>
-                        <th>Skipass</th>
-                        <th mat-sort-header="course">Kurs</th>
-                        <th>Preis</th>
-                        <th mat-sort-header="status">Status</th>
-                        <th class="no-print">Extern erfasst</th>
-                        <th class="no-print">Bestätigungsmail</th>
+                        @if (show('age')) {
+                            <th mat-sort-header="age">Alter</th>
+                        }
+                        @if (show('phone')) {
+                            <th>Telefon</th>
+                        }
+                        @if (show('email')) {
+                            <th>E-Mail</th>
+                        }
+                        @if (show('member')) {
+                            <th mat-sort-header="member">Mitglied</th>
+                        }
+                        @if (show('snowshoes')) {
+                            <th>Schneeschuhe</th>
+                        }
+                        @if (show('skipass')) {
+                            <th>Skipass</th>
+                        }
+                        @if (show('course')) {
+                            <th mat-sort-header="course">Kurs</th>
+                        }
+                        @if (show('price')) {
+                            <th>Preis</th>
+                        }
+                        @if (show('status')) {
+                            <th mat-sort-header="status">Status</th>
+                        }
+                        @if (show('external')) {
+                            <th class="no-print">Extern erfasst</th>
+                        }
+                        @if (show('mail')) {
+                            <th class="no-print">Bestätigungsmail</th>
+                        }
+                        @if (show('notes')) {
+                            <th>Notizen</th>
+                        }
                         <th class="no-print" style="width: 88px"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @for (group of groups; track group.boardingName) {
                         <tr>
-                            <td colspan="12" class="group-heading" [class.group-heading-waitlist]="group.waitlist">
+                            <td
+                                [attr.colspan]="screenColCount"
+                                class="group-heading"
+                                [class.group-heading-waitlist]="group.waitlist"
+                            >
                                 {{ group.boardingName }}
                             </td>
                         </tr>
@@ -294,117 +352,153 @@
                                         >
                                     }
                                 </td>
-                                <td>
-                                    {{ ageDisplay(registration) }}
-                                    @switch (minorState(registration)) {
-                                        @case ('parent') {
-                                            <mat-icon
-                                                class="minor-badge badge-ok"
-                                                [matTooltip]="
-                                                    'Elternteil nimmt teil: ' + (guardianOf(registration) ?? '')
-                                                "
-                                                >family_restroom</mat-icon
-                                            >
-                                        }
-                                        @case ('consent') {
-                                            <mat-icon
-                                                class="minor-badge badge-ok"
-                                                matTooltip="Einverständniserklärung der Eltern liegt vor"
-                                                >verified_user</mat-icon
-                                            >
-                                        }
-                                        @case ('open') {
-                                            <mat-icon
-                                                class="minor-badge badge-open"
-                                                matTooltip="Minderjährig: weder Elternteil dabei noch Einverständnis hinterlegt"
-                                                >warning</mat-icon
-                                            >
-                                        }
-                                    }
-                                </td>
-                                <td>{{ registration.phone || '–' }}</td>
-                                <td>
-                                    @if (registration.memberId) {
-                                        <span
-                                            class="badge-member"
-                                            matTooltip="Mit Mitglied verknüpft (E-Mail, Name/Geburtsdatum)"
-                                            ><mat-icon>verified</mat-icon> Mitglied</span
-                                        >
-                                    } @else if (registration.isMember) {
-                                        <span
-                                            class="badge-member"
-                                            matTooltip="Von einem Admin als Mitglied bestätigt (keine Verknüpfung zu einer Mitglieds-Zeile)"
-                                            >Mitglied</span
-                                        >
-                                    } @else if (registration.selfReportedIsMember) {
-                                        <span
-                                            class="badge-warn"
-                                            matTooltip="Hat im Formular 'Mitglied' angegeben, ist aber nicht als Mitglied verifiziert"
-                                            ><mat-icon>help_outline</mat-icon> Nicht verifiziert</span
-                                        >
-                                    } @else {
-                                        <span class="badge-nonmember">kein Mitglied</span>
-                                    }
-                                </td>
-                                <td>{{ registration.snowshoes ? 'ja' : '–' }}</td>
-                                <td>{{ registration.busOnly ? '–' : 'ja' }}</td>
-                                <td>
-                                    @if (registration.courseRequested) {
-                                        <span class="badge-member"><mat-icon>school</mat-icon> Kurs</span>
-                                        @if (courseLabel(registration)) {
-                                            <small class="course-detail">{{ courseLabel(registration) }}</small>
-                                        }
-                                    } @else {
-                                        –
-                                    }
-                                </td>
-                                <td>
-                                    @if (pricesByRegistrationId.has(registration.id)) {
-                                        {{ pricesByRegistrationId.get(registration.id) }}&nbsp;€
-                                    }
-                                </td>
-                                <td>
-                                    <span
-                                        class="chip chip-{{ registration.status }}"
-                                        [class.chip-emergency]="emergencyRegistrationIds.has(registration.id)"
-                                    >
-                                        @switch (registration.status) {
-                                            @case ('confirmed') {
-                                                {{
-                                                    emergencyRegistrationIds.has(registration.id)
-                                                        ? 'Notplatz'
-                                                        : 'Bestätigt'
-                                                }}
+                                @if (show('age')) {
+                                    <td>
+                                        {{ ageDisplay(registration) }}
+                                        @switch (minorState(registration)) {
+                                            @case ('parent') {
+                                                <mat-icon
+                                                    class="minor-badge badge-ok"
+                                                    [matTooltip]="
+                                                        'Elternteil nimmt teil: ' + (guardianOf(registration) ?? '')
+                                                    "
+                                                    >family_restroom</mat-icon
+                                                >
                                             }
-                                            @case ('waitlist') {
-                                                Warteliste
+                                            @case ('consent') {
+                                                <mat-icon
+                                                    class="minor-badge badge-ok"
+                                                    matTooltip="Einverständniserklärung der Eltern liegt vor"
+                                                    >verified_user</mat-icon
+                                                >
                                             }
-                                            @case ('cancelled') {
-                                                Storniert
+                                            @case ('open') {
+                                                <mat-icon
+                                                    class="minor-badge badge-open"
+                                                    matTooltip="Minderjährig: weder Elternteil dabei noch Einverständnis hinterlegt"
+                                                    >warning</mat-icon
+                                                >
                                             }
                                         }
-                                    </span>
-                                </td>
-                                <td class="no-print">
-                                    <span
-                                        class="badge-toggle"
-                                        [class.badge-toggle-clickable]="auth.hasPermission('tiles:write')"
-                                        (click)="onToggleTransferred(registration)"
-                                    >
-                                        @if (registration.transferredToExternalList) {
-                                            <span class="badge-member"><mat-icon>check</mat-icon> Erfasst</span>
+                                    </td>
+                                }
+
+                                @if (show('phone')) {
+                                    <td>{{ registration.phone || '–' }}</td>
+                                }
+                                @if (show('email')) {
+                                    <td>{{ registration.email || '–' }}</td>
+                                }
+
+                                @if (show('member')) {
+                                    <td>
+                                        @if (registration.memberId) {
+                                            <span
+                                                class="badge-member"
+                                                matTooltip="Mit Mitglied verknüpft (E-Mail, Name/Geburtsdatum)"
+                                                ><mat-icon>verified</mat-icon> Mitglied</span
+                                            >
+                                        } @else if (registration.isMember) {
+                                            <span
+                                                class="badge-member"
+                                                matTooltip="Von einem Admin als Mitglied bestätigt (keine Verknüpfung zu einer Mitglieds-Zeile)"
+                                                >Mitglied</span
+                                            >
+                                        } @else if (registration.selfReportedIsMember) {
+                                            <span
+                                                class="badge-warn"
+                                                matTooltip="Hat im Formular 'Mitglied' angegeben, ist aber nicht als Mitglied verifiziert"
+                                                ><mat-icon>help_outline</mat-icon> Nicht verifiziert</span
+                                            >
                                         } @else {
-                                            <span class="badge-nonmember">Offen</span>
+                                            <span class="badge-nonmember">kein Mitglied</span>
                                         }
-                                    </span>
-                                </td>
-                                <td class="no-print">
-                                    @if (registration.confirmationMailSent) {
-                                        <span class="badge-member"><mat-icon>check</mat-icon> Gesendet</span>
-                                    } @else {
-                                        <span class="badge-nonmember">Ausstehend</span>
-                                    }
-                                </td>
+                                    </td>
+                                }
+
+                                @if (show('snowshoes')) {
+                                    <td>{{ registration.snowshoes ? 'ja' : '–' }}</td>
+                                }
+
+                                @if (show('skipass')) {
+                                    <td>{{ registration.busOnly ? '–' : 'ja' }}</td>
+                                }
+
+                                @if (show('course')) {
+                                    <td>
+                                        @if (registration.courseRequested) {
+                                            <span class="badge-member"><mat-icon>school</mat-icon> Kurs</span>
+                                            @if (courseLabel(registration)) {
+                                                <small class="course-detail">{{ courseLabel(registration) }}</small>
+                                            }
+                                        } @else {
+                                            –
+                                        }
+                                    </td>
+                                }
+
+                                @if (show('price')) {
+                                    <td>
+                                        @if (pricesByRegistrationId.has(registration.id)) {
+                                            {{ pricesByRegistrationId.get(registration.id) }}&nbsp;€
+                                        }
+                                    </td>
+                                }
+
+                                @if (show('status')) {
+                                    <td>
+                                        <span
+                                            class="chip chip-{{ registration.status }}"
+                                            [class.chip-emergency]="emergencyRegistrationIds.has(registration.id)"
+                                        >
+                                            @switch (registration.status) {
+                                                @case ('confirmed') {
+                                                    {{
+                                                        emergencyRegistrationIds.has(registration.id)
+                                                            ? 'Notplatz'
+                                                            : 'Bestätigt'
+                                                    }}
+                                                }
+                                                @case ('waitlist') {
+                                                    Warteliste
+                                                }
+                                                @case ('cancelled') {
+                                                    Storniert
+                                                }
+                                            }
+                                        </span>
+                                    </td>
+                                }
+
+                                @if (show('external')) {
+                                    <td class="no-print">
+                                        <span
+                                            class="badge-toggle"
+                                            [class.badge-toggle-clickable]="auth.hasPermission('tiles:write')"
+                                            (click)="onToggleTransferred(registration)"
+                                        >
+                                            @if (registration.transferredToExternalList) {
+                                                <span class="badge-member"><mat-icon>check</mat-icon> Erfasst</span>
+                                            } @else {
+                                                <span class="badge-nonmember">Offen</span>
+                                            }
+                                        </span>
+                                    </td>
+                                }
+
+                                @if (show('mail')) {
+                                    <td class="no-print">
+                                        @if (registration.confirmationMailSent) {
+                                            <span class="badge-member"><mat-icon>check</mat-icon> Gesendet</span>
+                                        } @else {
+                                            <span class="badge-nonmember">Ausstehend</span>
+                                        }
+                                    </td>
+                                }
+                                @if (show('notes')) {
+                                    <td>{{ registration.notes || '–' }}</td>
+                                }
+
                                 <td class="no-print actions-cell">
                                     <button
                                         mat-icon-button
@@ -464,7 +558,7 @@
                     }
                     @if (!groups.length) {
                         <tr>
-                            <td colspan="12" class="empty">Noch keine Anmeldungen.</td>
+                            <td [attr.colspan]="screenColCount" class="empty">Noch keine Anmeldungen.</td>
                         </tr>
                     }
                 </tbody>
@@ -477,25 +571,37 @@
                 <thead>
                     <tr>
                         <th class="w-name">Name</th>
-                        <th class="w-age">Alter</th>
-                        <th class="w-phone">Telefon</th>
-                        <th class="w-member">Mitgl.</th>
+                        @if (show('age')) {
+                            <th class="w-age">Alter</th>
+                        }
+                        @if (show('phone')) {
+                            <th class="w-phone">Telefon</th>
+                        }
+                        @if (show('member')) {
+                            <th class="w-member">Mitgl.</th>
+                        }
                         <th class="w-guardian">Erziehungsber.</th>
                         <th class="w-consent"></th>
-                        <th class="w-services">Leistungen</th>
-                        <th class="w-course">Kurs</th>
-                        <th class="num w-price">Preis</th>
+                        @if (show('services')) {
+                            <th class="w-services">Leistungen</th>
+                        }
+                        @if (show('course')) {
+                            <th class="w-course">Kurs</th>
+                        }
+                        @if (show('price')) {
+                            <th class="num w-price">Preis</th>
+                        }
                     </tr>
                 </thead>
                 @for (group of groups; track group.boardingName; let gi = $index) {
                     <tbody [class]="group.waitlist ? 'bc-wait' : 'bc-' + (gi % 6)">
                         @if (gi > 0) {
                             <tr class="print-gap">
-                                <td colspan="9"></td>
+                                <td [attr.colspan]="printColCount"></td>
                             </tr>
                         }
                         <tr>
-                            <td colspan="9" class="print-group">
+                            <td [attr.colspan]="printColCount" class="print-group">
                                 {{ group.boardingName }}
                                 @if (!group.waitlist) {
                                     <span class="print-group-sum">
@@ -525,11 +631,18 @@
                                         <em>(Notplatz)</em>
                                     }
                                 </td>
-                                <td>
-                                    {{ ageDisplay(registration) }}
-                                </td>
-                                <td>{{ registration.phone || '' }}</td>
-                                <td>{{ registration.isMember ? 'ja' : '–' }}</td>
+                                @if (show('age')) {
+                                    <td>
+                                        {{ ageDisplay(registration) }}
+                                    </td>
+                                }
+
+                                @if (show('phone')) {
+                                    <td>{{ registration.phone || '' }}</td>
+                                }
+                                @if (show('member')) {
+                                    <td>{{ registration.isMember ? 'ja' : '–' }}</td>
+                                }
                                 <td>{{ isMinor(registration) ? (guardianOf(registration) ?? '—') : '' }}</td>
                                 <td>
                                     @switch (minorState(registration)) {
@@ -544,27 +657,36 @@
                                         }
                                     }
                                 </td>
-                                <td>{{ servicesText(registration) }}</td>
-                                <td>
-                                    @if (registration.courseRequested) {
-                                        {{ courseLabel(registration) || 'ja' }}
-                                    }
-                                </td>
-                                <td class="num">
-                                    @if (pricesByRegistrationId.has(registration.id)) {
-                                        {{ pricesByRegistrationId.get(registration.id) }}&nbsp;€
-                                    }
-                                </td>
+                                @if (show('services')) {
+                                    <td>{{ servicesText(registration) }}</td>
+                                }
+                                @if (show('course')) {
+                                    <td>
+                                        @if (registration.courseRequested) {
+                                            {{ courseLabel(registration) || 'ja' }}
+                                        }
+                                    </td>
+                                }
+
+                                @if (show('price')) {
+                                    <td class="num">
+                                        @if (pricesByRegistrationId.has(registration.id)) {
+                                            {{ pricesByRegistrationId.get(registration.id) }}&nbsp;€
+                                        }
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>
                 }
-                <tfoot>
-                    <tr>
-                        <td colspan="8">Gesamt (ohne Warteliste)</td>
-                        <td class="num">{{ grandTotal }}&nbsp;€</td>
-                    </tr>
-                </tfoot>
+                @if (show('price')) {
+                    <tfoot>
+                        <tr>
+                            <td [attr.colspan]="printColCount - 1">Gesamt (ohne Warteliste)</td>
+                            <td class="num">{{ grandTotal }}&nbsp;€</td>
+                        </tr>
+                    </tfoot>
+                }
             </table>
         </div>
     </div>
