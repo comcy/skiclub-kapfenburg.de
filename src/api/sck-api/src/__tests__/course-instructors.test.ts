@@ -21,6 +21,12 @@ const auth = (permissions: string[]): string => {
   return token;
 };
 
+const participate = (tileId: string, memberId: string): void => {
+  db.prepare(
+    "INSERT INTO trip_registrations (id, tile_id, first_name, last_name, member_id, status) VALUES (?, ?, 'T', 'T', ?, 'confirmed')",
+  ).run(randomUUID(), tileId, memberId);
+};
+
 const member = (lastName: string, teaching: number): string => {
   const id = randomUUID();
   db.prepare(
@@ -31,7 +37,7 @@ const member = (lastName: string, teaching: number): string => {
 
 beforeEach(() => {
   db.exec(
-    'DELETE FROM course_instructors; DELETE FROM members; DELETE FROM tiles; DELETE FROM permissions; DELETE FROM sessions; DELETE FROM users;',
+    'DELETE FROM course_instructors; DELETE FROM trip_registrations; DELETE FROM members; DELETE FROM tiles; DELETE FROM permissions; DELETE FROM sessions; DELETE FROM users;',
   );
 });
 
@@ -41,6 +47,8 @@ describe('Übungsleiter je Kurs', () => {
     db.prepare("INSERT INTO tiles (id, type, title) VALUES (?, 'event', 'Ausfahrt')").run(tileId);
     const a = member('Adler', 1);
     const b = member('Brandt', 1);
+    participate(tileId, a);
+    participate(tileId, b);
     const token = auth(['tiles:write']);
     const put = (body: object) =>
       request(app).put(`/api/tiles/${tileId}/course-instructors`).set('Authorization', `Bearer ${token}`).send(body);
@@ -53,6 +61,21 @@ describe('Übungsleiter je Kurs', () => {
       'Ski/A1/Adler',
       'Snowboard/B1/Brandt',
     ]);
+  });
+
+  it('Ausfahrt: nur Teilnehmer wählbar; Kurs-Kachel: jedes Lehrteam-Mitglied', async () => {
+    const trip = randomUUID();
+    const course = randomUUID();
+    db.prepare("INSERT INTO tiles (id, type, title) VALUES (?, 'event', 'Ausfahrt'), (?, 'course', 'Skikurs')").run(trip, course);
+    const dabei = member('Dabei', 1);
+    const fehlt = member('Fehlt', 1);
+    participate(trip, dabei);
+    const token = auth(['tiles:write']);
+    const put = (tile: string, ids: string[]) =>
+      request(app).put(`/api/tiles/${tile}/course-instructors`).set('Authorization', `Bearer ${token}`).send({ memberIds: ids });
+    await put(trip, [dabei]).expect(200);
+    await put(trip, [dabei, fehlt]).expect(400);
+    await put(course, [fehlt]).expect(200);
   });
 
   it('lehnt Nicht-Lehrteam ab und verlangt tiles:write', async () => {

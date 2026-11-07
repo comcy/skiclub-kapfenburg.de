@@ -32,6 +32,18 @@ export const setCourseInstructors: RequestHandler = (req, res) => {
     res.status(400).json({ error: 'sportType, level und memberIds sind ungültig.' });
     return;
   }
+  // Ausfahrten: nur Lehrteam-Personen, die selbst teilnehmen (bereits Eingetragene bleiben bestehen).
+  const tile = getTile(tileId);
+  if (tile?.type === 'event') {
+    const allowed = service.listParticipantMemberIds(tileId);
+    for (const i of service.listInstructors(tileId)) {
+      if (i.sportType === sportType && i.level === level) allowed.add(i.memberId);
+    }
+    if (!memberIds.every((id: string) => allowed.has(id))) {
+      res.status(400).json({ error: 'Übungsleiter einer Ausfahrt müssen an der Ausfahrt teilnehmen.' });
+      return;
+    }
+  }
   if (!service.setInstructors(tileId, sportType, level, memberIds)) {
     res.status(400).json({ error: 'Nur aktive Lehrteam-Mitglieder können Übungsleiter sein.' });
     return;
