@@ -9,6 +9,7 @@ export interface ColumnDef {
 export const REGISTRATION_COLUMNS: ColumnDef[] = [
     { key: 'age', label: 'Alter', default: true },
     { key: 'phone', label: 'Telefon', default: true },
+    { key: 'boarding', label: 'Zustieg', default: false },
     { key: 'email', label: 'E-Mail', default: false },
     { key: 'member', label: 'Mitglied', default: true },
     { key: 'snowshoes', label: 'Schneeschuhe', default: true },
