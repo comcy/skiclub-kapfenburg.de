@@ -332,6 +332,15 @@ export class TripRegistrationsComponent implements OnInit {
 
     public view: 'all' | 'courses' = 'all';
     public instructors: CourseInstructor[] = [];
+    // Übungsleiter-Auswahl: nur Lehrteam-Personen, die selbst an der Ausfahrt teilnehmen (bereits Zugewiesene bleiben sichtbar).
+    get instructorCandidates(): TeachingTeamEntry[] {
+        const participating = new Set(
+            this.registrations.filter((r) => r.status === 'confirmed' && r.memberId).map((r) => r.memberId),
+        );
+        const assigned = new Set(this.instructors.map((i) => i.memberId));
+        return this.organizers.filter((m) => participating.has(m.id) || assigned.has(m.id));
+    }
+
     onInstructors(all: CourseInstructor[]): void {
         this.instructors = all;
         this.cdr.markForCheck();

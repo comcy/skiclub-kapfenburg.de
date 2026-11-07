@@ -37,6 +37,16 @@ export const listInstructors = (tileId: string): CourseInstructor[] =>
     lastName: r.last_name,
   }));
 
+// Mitglieder (members.id), die mit bestätigter Anmeldung an der Ausfahrt teilnehmen.
+export const listParticipantMemberIds = (tileId: string): Set<string> =>
+  new Set(
+    (
+      db
+        .prepare("SELECT member_id FROM trip_registrations WHERE tile_id = ? AND status = 'confirmed' AND member_id IS NOT NULL")
+        .all(tileId) as unknown as { member_id: string }[]
+    ).map((r) => r.member_id),
+  );
+
 // Ersetzt die Übungsleiter eines Kurses. Gibt false zurück, wenn eine ID kein aktives Lehrteam-Mitglied ist.
 export const setInstructors = (tileId: string, sportType: string, level: string, memberIds: string[]): boolean => {
   const unique = [...new Set(memberIds)];
